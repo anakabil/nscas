@@ -1,0 +1,61 @@
+{
+  "_catatan": "Sumber: lembar 09 Kalkulator Sampel.",
+  "expected": {
+    "inputs": {
+      "M": 3000,
+      "projects": 40,
+      "locations": 12,
+      "z": 1.96,
+      "e": 0.05,
+      "p": 0.5,
+      "minParticipation": 0.3
+    },
+    "sclMinimumInterviewManagement": 33,
+    "sclMinimumInterviewOperational": 66,
+    "sclMinimumInterviewTotal": 99,
+    "slovin": 353,
+    "cochranInitial": 384.16,
+    "cochranCorrected": 341,
+    "recommendedSurvey": 353,
+    "projectsToVisit": 4,
+    "locationsToVisit": 4,
+    "strata": [
+      {
+        "code": "S1",
+        "name": "Direksi dan manajemen puncak",
+        "population": 15,
+        "proportion": 0.005,
+        "surveyTarget": 5
+      },
+      {
+        "code": "S2",
+        "name": "Manajemen menengah dan manajer proyek",
+        "population": 120,
+        "proportion": 0.04,
+        "surveyTarget": 36
+      },
+      {
+        "code": "S3",
+        "name": "Penyelia dan pengawas lapangan",
+        "population": 300,
+        "proportion": 0.1,
+        "surveyTarget": 90
+      },
+      {
+        "code": "S4",
+        "name": "Pelaksana dan pekerja sendiri",
+        "population": 1800,
+        "proportion": 0.6,
+        "surveyTarget": 540
+      },
+      {
+        "code": "S5",
+        "name": "Pekerja penyedia jasa dan subkontraktor",
+        "population": 765,
+        "proportion": 0.255,
+        "surveyTarget": 230
+      }
+    ],
+    "surveyTargetTotal": 901
+  }
+}

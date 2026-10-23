@@ -1,0 +1,159 @@
+{
+  "_status": "DRAF. Butir disusun Nusa Safety dengan mengacu pada tujuh dimensi Nordic Safety Climate Questionnaire (Kines dan kawan-kawan, 2011), tidak menyalin butir aslinya. Wajib ditelaah ahli dan diuji coba sebelum dipakai. Untuk memenuhi komitmen 90 sampai 120 butir pada proposal, setiap dimensi perlu dikembangkan menjadi sekitar 10 butir.",
+  "scaleLabels": {
+    "1": "Sangat tidak setuju",
+    "2": "Tidak setuju",
+    "3": "Ragu-ragu",
+    "4": "Setuju",
+    "5": "Sangat setuju"
+  },
+  "dimensions": [
+    {
+      "code": "D1",
+      "name": "Prioritas, komitmen, dan kompetensi K3 manajemen",
+      "items": [
+        {
+          "code": "D1.1",
+          "text": "Pimpinan di proyek saya tetap meminta pekerjaan dilakukan sesuai prosedur keselamatan walaupun jadwal sedang mendesak.",
+          "reverse": false
+        },
+        {
+          "code": "D1.2",
+          "text": "Pimpinan di proyek saya memahami bahaya pekerjaan yang kami lakukan sehari-hari.",
+          "reverse": false
+        },
+        {
+          "code": "D1.3",
+          "text": "Masalah keselamatan baru ditangani pimpinan setelah terjadi kecelakaan.",
+          "reverse": true
+        }
+      ]
+    },
+    {
+      "code": "D2",
+      "name": "Pemberdayaan K3 oleh manajemen",
+      "items": [
+        {
+          "code": "D2.1",
+          "text": "Pendapat saya tentang keselamatan didengar ketika pekerjaan direncanakan.",
+          "reverse": false
+        },
+        {
+          "code": "D2.2",
+          "text": "Saya diberi wewenang menghentikan pekerjaan yang menurut saya tidak aman.",
+          "reverse": false
+        },
+        {
+          "code": "D2.3",
+          "text": "Keputusan tentang keselamatan diambil tanpa melibatkan pekerja yang menjalankan pekerjaan.",
+          "reverse": true
+        }
+      ]
+    },
+    {
+      "code": "D3",
+      "name": "Keadilan manajemen dalam K3",
+      "items": [
+        {
+          "code": "D3.1",
+          "text": "Pekerja yang melaporkan kesalahan atau kejadian nyaris celaka tidak disalahkan secara tidak adil.",
+          "reverse": false
+        },
+        {
+          "code": "D3.2",
+          "text": "Aturan keselamatan diberlakukan sama kepada pekerja sendiri dan pekerja penyedia jasa.",
+          "reverse": false
+        },
+        {
+          "code": "D3.3",
+          "text": "Saat terjadi kecelakaan, yang dicari lebih dulu adalah siapa yang salah.",
+          "reverse": true
+        }
+      ]
+    },
+    {
+      "code": "D4",
+      "name": "Komitmen K3 pekerja",
+      "items": [
+        {
+          "code": "D4.1",
+          "text": "Rekan kerja saya mengingatkan satu sama lain bila melihat cara kerja yang tidak aman.",
+          "reverse": false
+        },
+        {
+          "code": "D4.2",
+          "text": "Rekan kerja saya ikut aktif dalam kegiatan keselamatan, bukan sekadar hadir.",
+          "reverse": false
+        },
+        {
+          "code": "D4.3",
+          "text": "Di tempat kerja saya, keselamatan dianggap urusan petugas K3 saja.",
+          "reverse": true
+        }
+      ]
+    },
+    {
+      "code": "D5",
+      "name": "Prioritas K3 pekerja dan penolakan terhadap risiko",
+      "items": [
+        {
+          "code": "D5.1",
+          "text": "Di tempat kerja saya, mengambil jalan pintas yang berbahaya tidak dianggap wajar.",
+          "reverse": false
+        },
+        {
+          "code": "D5.2",
+          "text": "Pekerja di sini lebih memilih menunda pekerjaan daripada bekerja dalam kondisi tidak aman.",
+          "reverse": false
+        },
+        {
+          "code": "D5.3",
+          "text": "Risiko kecil dianggap bagian biasa dari pekerjaan konstruksi.",
+          "reverse": true
+        }
+      ]
+    },
+    {
+      "code": "D6",
+      "name": "Komunikasi, pembelajaran, dan kepercayaan pada kompetensi rekan",
+      "items": [
+        {
+          "code": "D6.1",
+          "text": "Pelajaran dari kejadian di proyek lain disampaikan kepada kami.",
+          "reverse": false
+        },
+        {
+          "code": "D6.2",
+          "text": "Saya percaya rekan kerja saya mampu bekerja dengan aman.",
+          "reverse": false
+        },
+        {
+          "code": "D6.3",
+          "text": "Pertemuan keselamatan pagi jarang membahas bahaya pekerjaan hari itu.",
+          "reverse": true
+        }
+      ]
+    },
+    {
+      "code": "D7",
+      "name": "Kepercayaan pada efektivitas sistem K3",
+      "items": [
+        {
+          "code": "D7.1",
+          "text": "Izin kerja dan analisis keselamatan pekerjaan benar-benar membantu mencegah kecelakaan.",
+          "reverse": false
+        },
+        {
+          "code": "D7.2",
+          "text": "Pemeriksaan keselamatan di lapangan menemukan masalah yang sesungguhnya.",
+          "reverse": false
+        },
+        {
+          "code": "D7.3",
+          "text": "Prosedur keselamatan lebih banyak untuk kelengkapan dokumen daripada untuk melindungi pekerja.",
+          "reverse": true
+        }
+      ]
+    }
+  ]
+}

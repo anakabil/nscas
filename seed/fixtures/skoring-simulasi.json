@@ -1,0 +1,447 @@
+{
+  "_catatan": "Toleransi pembandingan 1e-6. Sumber: lembar 08 Simulasi Skoring.",
+  "parameters": {
+    "layerWeights": {
+      "perception": 0.35,
+      "evidence": 0.4,
+      "validation": 0.25
+    },
+    "divergenceThreshold": 1.0,
+    "targetLevel": 4
+  },
+  "input": {
+    "characteristics": [
+      {
+        "code": "K1.1",
+        "aspectCode": "A1",
+        "isContextual": false,
+        "p": 3.6,
+        "e": 3.0,
+        "v": 3.2
+      },
+      {
+        "code": "K1.2",
+        "aspectCode": "A1",
+        "isContextual": false,
+        "p": 3.4,
+        "e": 3.0,
+        "v": 3.0
+      },
+      {
+        "code": "K1.3",
+        "aspectCode": "A1",
+        "isContextual": false,
+        "p": 3.2,
+        "e": 2.0,
+        "v": 2.4
+      },
+      {
+        "code": "K2.1",
+        "aspectCode": "A2",
+        "isContextual": false,
+        "p": 3.4,
+        "e": 3.0,
+        "v": 3.2
+      },
+      {
+        "code": "K2.2",
+        "aspectCode": "A2",
+        "isContextual": false,
+        "p": 3.6,
+        "e": 3.0,
+        "v": 3.4
+      },
+      {
+        "code": "K3.1",
+        "aspectCode": "A3",
+        "isContextual": false,
+        "p": 3.0,
+        "e": 2.6,
+        "v": 2.8
+      },
+      {
+        "code": "K3.2",
+        "aspectCode": "A3",
+        "isContextual": false,
+        "p": 3.8,
+        "e": 3.4,
+        "v": 3.6
+      },
+      {
+        "code": "K3.3",
+        "aspectCode": "A3",
+        "isContextual": false,
+        "p": 3.6,
+        "e": 3.4,
+        "v": 3.4
+      },
+      {
+        "code": "K4.1",
+        "aspectCode": "A4",
+        "isContextual": false,
+        "p": 3.6,
+        "e": 3.4,
+        "v": 3.4
+      },
+      {
+        "code": "K4.2",
+        "aspectCode": "A4",
+        "isContextual": false,
+        "p": 3.4,
+        "e": 3.0,
+        "v": 3.0
+      },
+      {
+        "code": "K4.3",
+        "aspectCode": "A4",
+        "isContextual": false,
+        "p": 3.4,
+        "e": 3.2,
+        "v": 3.2
+      },
+      {
+        "code": "K5.1",
+        "aspectCode": "A5",
+        "isContextual": false,
+        "p": 3.2,
+        "e": 2.4,
+        "v": 2.6
+      },
+      {
+        "code": "K5.2",
+        "aspectCode": "A5",
+        "isContextual": false,
+        "p": 3.6,
+        "e": 3.2,
+        "v": 3.4
+      },
+      {
+        "code": "K5.3",
+        "aspectCode": "A5",
+        "isContextual": false,
+        "p": 3.8,
+        "e": 3.6,
+        "v": 3.6
+      },
+      {
+        "code": "K6.1",
+        "aspectCode": "A6",
+        "isContextual": false,
+        "p": 3.4,
+        "e": 3.2,
+        "v": 3.2
+      },
+      {
+        "code": "K6.2",
+        "aspectCode": "A6",
+        "isContextual": false,
+        "p": 3.2,
+        "e": 3.0,
+        "v": 3.0
+      },
+      {
+        "code": "KT.1",
+        "aspectCode": "KT",
+        "isContextual": true,
+        "p": 3.8,
+        "e": 3.6,
+        "v": 3.6
+      },
+      {
+        "code": "KT.2",
+        "aspectCode": "KT",
+        "isContextual": true,
+        "p": 3.0,
+        "e": 2.4,
+        "v": 2.6
+      }
+    ],
+    "sclFulfillment": {
+      "A1": {
+        "2": 0.92,
+        "3": 0.86,
+        "4": 0.74,
+        "5": 0.6
+      },
+      "A2": {
+        "2": 0.9,
+        "3": 0.84,
+        "4": 0.72,
+        "5": 0.58
+      },
+      "A3": {
+        "2": 0.88,
+        "3": 0.8,
+        "4": 0.68,
+        "5": 0.55
+      },
+      "A4": {
+        "2": 0.9,
+        "3": 0.85,
+        "4": 0.73,
+        "5": 0.6
+      },
+      "A5": {
+        "2": 0.86,
+        "3": 0.79,
+        "4": 0.66,
+        "5": 0.52
+      },
+      "A6": {
+        "2": 0.9,
+        "3": 0.83,
+        "4": 0.7,
+        "5": 0.56
+      }
+    }
+  },
+  "expected": {
+    "characteristics": [
+      {
+        "code": "K1.1",
+        "aspectCode": "A1",
+        "isContextual": false,
+        "combined": 3.26,
+        "divergence": 0.6,
+        "final": 3.26,
+        "flags": []
+      },
+      {
+        "code": "K1.2",
+        "aspectCode": "A1",
+        "isContextual": false,
+        "combined": 3.14,
+        "divergence": 0.4,
+        "final": 3.14,
+        "flags": []
+      },
+      {
+        "code": "K1.3",
+        "aspectCode": "A1",
+        "isContextual": false,
+        "combined": 2.52,
+        "divergence": 1.2,
+        "final": 2.0,
+        "flags": [
+          "SELISIH_PERSEPSI_BUKTI"
+        ]
+      },
+      {
+        "code": "K2.1",
+        "aspectCode": "A2",
+        "isContextual": false,
+        "combined": 3.19,
+        "divergence": 0.4,
+        "final": 3.19,
+        "flags": []
+      },
+      {
+        "code": "K2.2",
+        "aspectCode": "A2",
+        "isContextual": false,
+        "combined": 3.31,
+        "divergence": 0.6,
+        "final": 3.31,
+        "flags": []
+      },
+      {
+        "code": "K3.1",
+        "aspectCode": "A3",
+        "isContextual": false,
+        "combined": 2.79,
+        "divergence": 0.4,
+        "final": 2.79,
+        "flags": []
+      },
+      {
+        "code": "K3.2",
+        "aspectCode": "A3",
+        "isContextual": false,
+        "combined": 3.59,
+        "divergence": 0.4,
+        "final": 3.59,
+        "flags": []
+      },
+      {
+        "code": "K3.3",
+        "aspectCode": "A3",
+        "isContextual": false,
+        "combined": 3.47,
+        "divergence": 0.2,
+        "final": 3.47,
+        "flags": []
+      },
+      {
+        "code": "K4.1",
+        "aspectCode": "A4",
+        "isContextual": false,
+        "combined": 3.47,
+        "divergence": 0.2,
+        "final": 3.47,
+        "flags": []
+      },
+      {
+        "code": "K4.2",
+        "aspectCode": "A4",
+        "isContextual": false,
+        "combined": 3.14,
+        "divergence": 0.4,
+        "final": 3.14,
+        "flags": []
+      },
+      {
+        "code": "K4.3",
+        "aspectCode": "A4",
+        "isContextual": false,
+        "combined": 3.27,
+        "divergence": 0.2,
+        "final": 3.27,
+        "flags": []
+      },
+      {
+        "code": "K5.1",
+        "aspectCode": "A5",
+        "isContextual": false,
+        "combined": 2.73,
+        "divergence": 0.8,
+        "final": 2.73,
+        "flags": []
+      },
+      {
+        "code": "K5.2",
+        "aspectCode": "A5",
+        "isContextual": false,
+        "combined": 3.39,
+        "divergence": 0.4,
+        "final": 3.39,
+        "flags": []
+      },
+      {
+        "code": "K5.3",
+        "aspectCode": "A5",
+        "isContextual": false,
+        "combined": 3.67,
+        "divergence": 0.2,
+        "final": 3.67,
+        "flags": []
+      },
+      {
+        "code": "K6.1",
+        "aspectCode": "A6",
+        "isContextual": false,
+        "combined": 3.27,
+        "divergence": 0.2,
+        "final": 3.27,
+        "flags": []
+      },
+      {
+        "code": "K6.2",
+        "aspectCode": "A6",
+        "isContextual": false,
+        "combined": 3.07,
+        "divergence": 0.2,
+        "final": 3.07,
+        "flags": []
+      },
+      {
+        "code": "KT.1",
+        "aspectCode": "KT",
+        "isContextual": true,
+        "combined": 3.67,
+        "divergence": 0.2,
+        "final": 3.67,
+        "flags": []
+      },
+      {
+        "code": "KT.2",
+        "aspectCode": "KT",
+        "isContextual": true,
+        "combined": 2.66,
+        "divergence": 0.6,
+        "final": 2.66,
+        "flags": []
+      }
+    ],
+    "aspects": {
+      "A1": {
+        "index": 2.8,
+        "min": 2.0,
+        "weight": 0.266667,
+        "gapToTarget": 1.2
+      },
+      "A2": {
+        "index": 3.25,
+        "min": 3.19,
+        "weight": 0.1,
+        "gapToTarget": 0.75
+      },
+      "A3": {
+        "index": 3.283333,
+        "min": 2.79,
+        "weight": 0.191667,
+        "gapToTarget": 0.716667
+      },
+      "A4": {
+        "index": 3.293333,
+        "min": 3.14,
+        "weight": 0.177778,
+        "gapToTarget": 0.706667
+      },
+      "A5": {
+        "index": 3.263333,
+        "min": 2.73,
+        "weight": 0.219444,
+        "gapToTarget": 0.736667
+      },
+      "A6": {
+        "index": 3.17,
+        "min": 3.07,
+        "weight": 0.044444,
+        "gapToTarget": 0.83
+      }
+    },
+    "organization": {
+      "index": 3.143463,
+      "indicativeLevel": 3,
+      "consolidated": true,
+      "minAspectIndex": 2.8,
+      "minCharacteristicIndex": 2.0,
+      "gapToTarget": 0.856537,
+      "priorityAspect": "A1",
+      "contextualIndex": 3.165
+    },
+    "sclTrack": {
+      "steps": {
+        "2": {
+          "weightedAverage": 0.892722,
+          "minimum": 0.86,
+          "thresholdAverage": 0.75,
+          "thresholdMinimum": 0.7,
+          "passed": true
+        },
+        "3": {
+          "weightedAverage": 0.828028,
+          "minimum": 0.79,
+          "thresholdAverage": 0.8,
+          "thresholdMinimum": 0.7,
+          "passed": true
+        },
+        "4": {
+          "weightedAverage": 0.705389,
+          "minimum": 0.66,
+          "thresholdAverage": 0.8,
+          "thresholdMinimum": 0.75,
+          "passed": false
+        },
+        "5": {
+          "weightedAverage": 0.569083,
+          "minimum": 0.52,
+          "thresholdAverage": 0.85,
+          "thresholdMinimum": 0.75,
+          "passed": false
+        }
+      },
+      "indicativeLevel": 3
+    }
+  }
+}

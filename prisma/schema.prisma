@@ -1,0 +1,11 @@
+// Skema basis data NSCAS.
+// Model data lengkap (docs/02 bagian 3) dikerjakan pada Fase 2.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}

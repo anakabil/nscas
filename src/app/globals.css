@@ -1,0 +1,128 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * Konfigurasi Tailwind CSS v4 NSCAS.
+ * Token warna mengikuti docs/05 bagian 1 dan dipakai sebagai kelas utilitas,
+ * misalnya bg-brand-navy, text-text-muted, bg-surface-alt, bg-heat-good, bg-level-3.
+ * Variabel semantik shadcn/ui (primary, muted, border, dan lainnya) dipetakan ke token yang sama.
+ */
+
+:root {
+  /* Identitas visual Nusa Safety */
+  --brand-navy: #000b9d;
+  --brand-yellow: #fdc830;
+  --brand-purple: #5b4bd6;
+  --text: #1b1b33;
+  --text-muted: #5e6075;
+  --surface: #ffffff;
+  --surface-alt: #f6f7fc;
+  --tint: #ebedfa;
+  --border: #d3d6e8;
+  --success: #1e9e6a;
+  --warning: #b45309;
+  --danger: #c2410c;
+
+  /* Peta warna hasil: >= 3,3 baik; 2,8 sampai 3,2 sedang; < 2,8 rendah; sel disembunyikan */
+  --heat-good: #d7f0e3;
+  --heat-mid: #fff1c7;
+  --heat-low: #f8d7d5;
+  --heat-suppressed: #e5e7ef;
+
+  /* Gradasi lima tingkat kematangan, 1 sampai 5 */
+  --level-1: #b8bbcf;
+  --level-2: #9a9ec4;
+  --level-3: #6f74c2;
+  --level-4: #3b40b8;
+  --level-5: #000b9d;
+
+  /* Variabel semantik shadcn/ui */
+  --radius: 0.75rem; /* 12 piksel untuk kartu */
+  --background: var(--surface-alt);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--brand-navy);
+  --primary-foreground: #ffffff;
+  --secondary: var(--tint);
+  --secondary-foreground: var(--brand-navy);
+  --muted: var(--surface-alt);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--tint);
+  --accent-foreground: var(--brand-navy);
+  --destructive: var(--danger);
+  --input: var(--border);
+  --ring: var(--brand-navy);
+  --chart-1: var(--brand-navy);
+  --chart-2: var(--brand-purple);
+  --chart-3: var(--brand-yellow);
+  --chart-4: var(--level-3);
+  --chart-5: var(--level-1);
+}
+
+@theme inline {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-purple: var(--brand-purple);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-tint: var(--tint);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --color-heat-good: var(--heat-good);
+  --color-heat-mid: var(--heat-mid);
+  --color-heat-low: var(--heat-low);
+  --color-heat-suppressed: var(--heat-suppressed);
+
+  --color-level-1: var(--level-1);
+  --color-level-2: var(--level-2);
+  --color-level-3: var(--level-3);
+  --color-level-4: var(--level-4);
+  --color-level-5: var(--level-5);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "NSCAS",
+    "fullName": "Nusa Safety Culture Assessment System",
+    "tagline": "Pengukuran tingkat kematangan budaya keselamatan dan kesehatan kerja (K3) secara daring",
+    "owner": "PT Nusa Rendra Jayatama (Nusa Safety)",
+    "logoAlt": "Logo Nusa Safety"
+  },
+  "common": {
+    "resultDisclaimer": "Hasil ini merupakan pengukuran dan diagnosis internal yang menggunakan kerangka Safety Culture Ladder sebagai rujukan, dan bukan sertifikat maupun pernyataan resmi Safety Culture Ladder yang diterbitkan lembaga sertifikasi yang diakui NEN.",
+    "draftBanner": "Draf, belum ditetapkan rapat panel"
+  },
+  "home": {
+    "intro": "Aplikasi ini sedang dalam tahap pembangunan. Konsol asesmen, survei responden, dan laporan akan tersedia pada fase berikutnya.",
+    "healthLink": "Periksa status sistem"
+  },
+  "health": {
+    "title": "Status sistem",
+    "description": "Pemeriksaan koneksi ke basis data dan penyimpanan objek.",
+    "overallOk": "Semua komponen berjalan baik",
+    "overallError": "Ada komponen yang tidak dapat dijangkau",
+    "checkedAt": "Diperiksa pada {time}",
+    "latency": "Waktu tanggap {ms} milidetik",
+    "statusOk": "Baik",
+    "statusError": "Gagal",
+    "errorCode": "Kode galat: {code}",
+    "components": {
+      "database": "Basis data PostgreSQL",
+      "storage": "Penyimpanan objek"
+    },
+    "hint": "Bila ada komponen yang gagal, pastikan layanan pengembangan sudah berjalan dengan perintah docker compose up -d dan berkas .env sudah diisi sesuai .env.example.",
+    "back": "Kembali ke beranda"
+  }
+}

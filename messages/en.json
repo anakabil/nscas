@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "NSCAS",
+    "fullName": "Nusa Safety Culture Assessment System",
+    "tagline": "Online measurement of occupational safety and health (OSH) culture maturity",
+    "owner": "PT Nusa Rendra Jayatama (Nusa Safety)",
+    "logoAlt": "Nusa Safety logo"
+  },
+  "common": {
+    "resultDisclaimer": "These results are an internal measurement and diagnosis that use the Safety Culture Ladder framework as a reference. They are not a Safety Culture Ladder certificate or an official Safety Culture Ladder statement issued by a certification body recognised by NEN.",
+    "draftBanner": "Draft, not yet confirmed by the assessor panel meeting"
+  },
+  "home": {
+    "intro": "This application is under construction. The assessment console, respondent survey, and reports will be available in later phases.",
+    "healthLink": "Check system status"
+  },
+  "health": {
+    "title": "System status",
+    "description": "Connection checks for the database and object storage.",
+    "overallOk": "All components are healthy",
+    "overallError": "One or more components cannot be reached",
+    "checkedAt": "Checked at {time}",
+    "latency": "Response time {ms} milliseconds",
+    "statusOk": "Healthy",
+    "statusError": "Failed",
+    "errorCode": "Error code: {code}",
+    "components": {
+      "database": "PostgreSQL database",
+      "storage": "Object storage"
+    },
+    "hint": "If a component fails, make sure the development services are running with docker compose up -d and that the .env file has been filled in according to .env.example.",
+    "back": "Back to home"
+  }
+}

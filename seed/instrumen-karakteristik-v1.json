@@ -1,0 +1,694 @@
+{
+  "_catatan": "Diekspor dari Konsep_Platform_SCML_Daring_NusaSafety.xlsx lembar 06 Bank Item. Pernyataan disusun Nusa Safety; tidak menyalin kriteria skema sertifikasi NEN.",
+  "characteristics": [
+    {
+      "code": "K1.1",
+      "aspectCode": "A1",
+      "name": "Perhatian dan keteladanan manajemen",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Manajemen tidak membicarakan keselamatan kecuali bila ada tuntutan dari pihak luar."
+        },
+        {
+          "level": 2,
+          "statement": "Manajemen membicarakan keselamatan terutama setelah terjadi insiden atau temuan pemeriksaan."
+        },
+        {
+          "level": 3,
+          "statement": "Manajemen membahas keselamatan secara terjadwal dalam rapat dan menuntut kepatuhan terhadap aturan yang telah ditetapkan."
+        },
+        {
+          "level": 4,
+          "statement": "Manajemen hadir di lapangan secara terencana, menegur sekaligus mengapresiasi perilaku secara langsung, dan menjadikan keselamatan sebagai pertimbangan tetap dalam pengambilan keputusan."
+        },
+        {
+          "level": 5,
+          "statement": "Keteladanan manajemen konsisten di seluruh lini, keputusan bisnis ditunda atau diubah bila berisiko terhadap keselamatan, dan hal itu diakui oleh pekerja maupun mitra rantai pasok."
+        }
+      ],
+      "targetRespondents": [
+        "Direksi",
+        "manajemen",
+        "penyelia",
+        "pelaksana"
+      ],
+      "evidenceExamples": [
+        "Risalah rapat direksi",
+        "jadwal dan catatan kunjungan manajemen ke lapangan",
+        "tinjauan manajemen"
+      ]
+    },
+    {
+      "code": "K1.2",
+      "aspectCode": "A1",
+      "name": "Keterlibatan pekerja",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Pekerja tidak dilibatkan dan menganggap keselamatan sepenuhnya urusan unit K3."
+        },
+        {
+          "level": 2,
+          "statement": "Pekerja dilibatkan secara insidental, umumnya hanya setelah terjadi kejadian."
+        },
+        {
+          "level": 3,
+          "statement": "Pekerja dilibatkan melalui forum formal seperti P2K3 dan pertemuan keselamatan terjadwal."
+        },
+        {
+          "level": 4,
+          "statement": "Pekerja aktif mengusulkan perbaikan, terlibat menyusun analisis risiko pekerjaannya, dan usulannya ditindaklanjuti disertai umpan balik."
+        },
+        {
+          "level": 5,
+          "statement": "Pekerja memiliki kepemilikan penuh atas keselamatan pekerjaannya serta saling mengingatkan lintas jabatan dan lintas perusahaan tanpa merasa canggung."
+        }
+      ],
+      "targetRespondents": [
+        "Penyelia",
+        "pelaksana",
+        "pekerja penyedia jasa"
+      ],
+      "evidenceExamples": [
+        "Risalah P2K3",
+        "catatan usulan pekerja dan tindak lanjutnya",
+        "dokumen analisis keselamatan pekerjaan"
+      ]
+    },
+    {
+      "code": "K1.3",
+      "aspectCode": "A1",
+      "name": "Penghargaan dan konsekuensi",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Tidak ada mekanisme penghargaan maupun konsekuensi yang terkait dengan perilaku keselamatan."
+        },
+        {
+          "level": 2,
+          "statement": "Konsekuensi diberikan secara reaktif dan cenderung menyalahkan individu setelah insiden."
+        },
+        {
+          "level": 3,
+          "statement": "Terdapat aturan penghargaan dan sanksi yang tertulis serta diterapkan secara administratif."
+        },
+        {
+          "level": 4,
+          "statement": "Penghargaan diberikan atas perilaku proaktif seperti pelaporan bahaya dan penghentian pekerjaan tidak aman, dengan kriteria yang diketahui pekerja."
+        },
+        {
+          "level": 5,
+          "statement": "Penghargaan dan konsekuensi diterapkan adil dan konsisten sampai ke penyedia jasa, serta terbukti membentuk perilaku yang diinginkan."
+        }
+      ],
+      "targetRespondents": [
+        "Manajemen",
+        "sumber daya manusia",
+        "pelaksana"
+      ],
+      "evidenceExamples": [
+        "Kebijakan penghargaan dan sanksi",
+        "catatan pemberian penghargaan",
+        "catatan penerapan sanksi"
+      ]
+    },
+    {
+      "code": "K2.1",
+      "aspectCode": "A2",
+      "name": "Penyebab kecelakaan dan pembelajaran organisasi",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Penyebab kecelakaan dianggap sebagai kelalaian pekerja atau faktor nasib."
+        },
+        {
+          "level": 2,
+          "statement": "Penyebab dicari setelah kejadian dan umumnya berhenti pada penyebab langsung."
+        },
+        {
+          "level": 3,
+          "statement": "Investigasi menggunakan metode baku dan mengidentifikasi penyebab dasar pada tingkat sistem."
+        },
+        {
+          "level": 4,
+          "statement": "Analisis penyebab mencakup faktor organisasi dan keputusan manajemen, hasilnya mengubah kebijakan dan proses kerja."
+        },
+        {
+          "level": 5,
+          "statement": "Organisasi belajar dari kejadian nyaris celaka, sinyal lemah, dan pengalaman pihak lain di industri sejenis, sebelum kerugian terjadi."
+        }
+      ],
+      "targetRespondents": [
+        "Manajemen K3",
+        "penyelia",
+        "investigator"
+      ],
+      "evidenceExamples": [
+        "Laporan investigasi",
+        "metode analisis yang digunakan",
+        "catatan perubahan kebijakan pascakejadian"
+      ]
+    },
+    {
+      "code": "K2.2",
+      "aspectCode": "A2",
+      "name": "Keselamatan dalam strategi, profitabilitas, dan keberlanjutan",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Keselamatan dipandang sebagai beban biaya yang menghambat produksi."
+        },
+        {
+          "level": 2,
+          "statement": "Anggaran keselamatan disediakan seadanya dan bertambah hanya setelah kejadian besar."
+        },
+        {
+          "level": 3,
+          "statement": "Keselamatan masuk dalam rencana kerja dan anggaran tahunan dengan sasaran yang terukur."
+        },
+        {
+          "level": 4,
+          "statement": "Investasi keselamatan direncanakan berbasis risiko dan dievaluasi manfaatnya terhadap kinerja proyek."
+        },
+        {
+          "level": 5,
+          "statement": "Keselamatan menjadi bagian strategi bisnis dan penilaian kelayakan proyek, sekaligus menjadi pembeda dalam memenangkan pekerjaan."
+        }
+      ],
+      "targetRespondents": [
+        "Direksi",
+        "manajemen keuangan",
+        "manajemen K3"
+      ],
+      "evidenceExamples": [
+        "Rencana kerja dan anggaran perusahaan",
+        "kebijakan K3",
+        "dokumen rencana strategis"
+      ]
+    },
+    {
+      "code": "K3.1",
+      "aspectCode": "A3",
+      "name": "Pengelolaan penyedia jasa dan subkontraktor",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Penyedia jasa dipilih hanya berdasarkan harga dan kinerja keselamatannya tidak ditanyakan."
+        },
+        {
+          "level": 2,
+          "statement": "Persyaratan keselamatan dicantumkan dalam kontrak namun tidak diverifikasi di lapangan."
+        },
+        {
+          "level": 3,
+          "statement": "Prakualifikasi keselamatan dilakukan dan kinerja penyedia jasa dipantau secara berkala."
+        },
+        {
+          "level": 4,
+          "statement": "Kinerja keselamatan menjadi kriteria pemilihan dan evaluasi berulang, penyedia jasa dibina agar meningkat."
+        },
+        {
+          "level": 5,
+          "statement": "Penyedia jasa diperlakukan sebagai bagian dari satu budaya, terlibat dalam perencanaan risiko dan pembelajaran bersama."
+        }
+      ],
+      "targetRespondents": [
+        "Pengadaan",
+        "manajemen proyek",
+        "penyedia jasa"
+      ],
+      "evidenceExamples": [
+        "Dokumen prakualifikasi",
+        "klausul keselamatan dalam kontrak",
+        "laporan evaluasi penyedia jasa"
+      ]
+    },
+    {
+      "code": "K3.2",
+      "aspectCode": "A3",
+      "name": "Kompetensi dan pelatihan",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Pelatihan keselamatan tidak diselenggarakan atau hanya untuk memenuhi formalitas dokumen."
+        },
+        {
+          "level": 2,
+          "statement": "Pelatihan diberikan setelah ada temuan pemeriksaan atau tuntutan regulasi."
+        },
+        {
+          "level": 3,
+          "statement": "Terdapat matriks kompetensi dan program pelatihan tahunan yang dijalankan."
+        },
+        {
+          "level": 4,
+          "statement": "Efektivitas pelatihan dievaluasi sampai pada perubahan perilaku di tempat kerja, dan kompetensi keselamatan menjadi bagian penilaian jabatan."
+        },
+        {
+          "level": 5,
+          "statement": "Pengembangan kompetensi berjalan berkelanjutan, mencakup keterampilan kepemimpinan keselamatan bagi seluruh lini dan mitra kerja."
+        }
+      ],
+      "targetRespondents": [
+        "Sumber daya manusia",
+        "manajemen K3",
+        "pelaksana"
+      ],
+      "evidenceExamples": [
+        "Matriks kompetensi",
+        "program dan realisasi pelatihan",
+        "sertifikat",
+        "laporan evaluasi pelatihan"
+      ]
+    },
+    {
+      "code": "K3.3",
+      "aspectCode": "A3",
+      "name": "Fungsi dan kedudukan unit K3",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Tidak ada personel K3 yang kompeten atau perannya semata administratif."
+        },
+        {
+          "level": 2,
+          "statement": "Unit K3 ada namun berperan sebagai pemadam atas masalah yang muncul."
+        },
+        {
+          "level": 3,
+          "statement": "Unit K3 memiliki personel bersertifikat dengan tugas dan wewenang yang jelas."
+        },
+        {
+          "level": 4,
+          "statement": "Unit K3 berperan sebagai mitra strategis lini operasi dan memiliki akses langsung kepada direksi."
+        },
+        {
+          "level": 5,
+          "statement": "Peran keselamatan melekat pada lini operasi, sedangkan unit K3 berfungsi sebagai pusat keahlian dan pengembangan, bukan pemilik tunggal masalah keselamatan."
+        }
+      ],
+      "targetRespondents": [
+        "Direksi",
+        "manajemen K3",
+        "manajemen lini"
+      ],
+      "evidenceExamples": [
+        "Struktur organisasi",
+        "uraian jabatan",
+        "sertifikat ahli K3",
+        "jalur pelaporan fungsi K3"
+      ]
+    },
+    {
+      "code": "K4.1",
+      "aspectCode": "A4",
+      "name": "Perencanaan pekerjaan",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Pekerjaan dimulai tanpa perencanaan keselamatan."
+        },
+        {
+          "level": 2,
+          "statement": "Perencanaan keselamatan disusun untuk memenuhi persyaratan dokumen tender atau permintaan pemilik pekerjaan."
+        },
+        {
+          "level": 3,
+          "statement": "Analisis keselamatan pekerjaan disusun sebelum pekerjaan dimulai sesuai prosedur baku."
+        },
+        {
+          "level": 4,
+          "statement": "Perencanaan melibatkan pelaksana lapangan, ditinjau ulang ketika kondisi berubah, dan mempertimbangkan interaksi antarpekerjaan."
+        },
+        {
+          "level": 5,
+          "statement": "Perencanaan keselamatan menyatu dengan perencanaan metode kerja dan jadwal, sehingga risiko dihilangkan sejak tahap desain dan rekayasa."
+        }
+      ],
+      "targetRespondents": [
+        "Manajer proyek",
+        "penyelia",
+        "pelaksana"
+      ],
+      "evidenceExamples": [
+        "Rencana keselamatan konstruksi",
+        "analisis keselamatan pekerjaan",
+        "izin kerja",
+        "risalah rapat persiapan"
+      ]
+    },
+    {
+      "code": "K4.2",
+      "aspectCode": "A4",
+      "name": "Keselamatan tempat kerja",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Kondisi tidak aman dibiarkan selama pekerjaan masih dapat berjalan."
+        },
+        {
+          "level": 2,
+          "statement": "Kondisi tidak aman diperbaiki setelah ditemukan pihak lain atau setelah terjadi insiden."
+        },
+        {
+          "level": 3,
+          "statement": "Inspeksi tempat kerja dilakukan terjadwal dan temuannya ditindaklanjuti."
+        },
+        {
+          "level": 4,
+          "statement": "Pekerja berwenang menghentikan pekerjaan tidak aman dan kewenangan itu benar-benar digunakan tanpa rasa takut."
+        },
+        {
+          "level": 5,
+          "statement": "Kondisi tempat kerja terjaga secara mandiri oleh pekerja dan mitra kerja, penyimpangan menjadi hal yang langka dan segera dikoreksi bersama."
+        }
+      ],
+      "targetRespondents": [
+        "Penyelia",
+        "pelaksana",
+        "pekerja penyedia jasa"
+      ],
+      "evidenceExamples": [
+        "Laporan inspeksi",
+        "catatan penghentian pekerjaan",
+        "dokumentasi observasi digital"
+      ]
+    },
+    {
+      "code": "K4.3",
+      "aspectCode": "A4",
+      "name": "Prosedur dan kepatuhan",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Prosedur tidak tersedia atau tidak dikenal pekerja."
+        },
+        {
+          "level": 2,
+          "statement": "Prosedur tersedia namun jarang digunakan dan tidak sesuai dengan praktik lapangan."
+        },
+        {
+          "level": 3,
+          "statement": "Prosedur ditetapkan, disosialisasikan, dan kepatuhannya diperiksa."
+        },
+        {
+          "level": 4,
+          "statement": "Prosedur ditinjau bersama penggunanya agar sesuai kondisi nyata, dan penyimpangan dianalisis untuk memperbaiki prosedur."
+        },
+        {
+          "level": 5,
+          "statement": "Prosedur dipahami maksudnya, bukan sekadar dihafal, dan pekerja mampu mengambil keputusan yang aman ketika menghadapi situasi yang belum diatur."
+        }
+      ],
+      "targetRespondents": [
+        "Penyelia",
+        "pelaksana",
+        "manajemen K3"
+      ],
+      "evidenceExamples": [
+        "Daftar prosedur dan riwayat revisi",
+        "bukti sosialisasi",
+        "catatan pemeriksaan kepatuhan"
+      ]
+    },
+    {
+      "code": "K5.1",
+      "aspectCode": "A5",
+      "name": "Pelaporan penyimpangan",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Pelaporan tidak berjalan atau ditutupi karena takut disalahkan."
+        },
+        {
+          "level": 2,
+          "statement": "Hanya kejadian dengan kerugian nyata yang dilaporkan."
+        },
+        {
+          "level": 3,
+          "statement": "Terdapat sistem pelaporan resmi yang mencakup kejadian nyaris celaka dan kondisi tidak aman."
+        },
+        {
+          "level": 4,
+          "statement": "Pelaporan berjalan tinggi dan sukarela, pelapor memperoleh umpan balik dan tidak dikenai sanksi."
+        },
+        {
+          "level": 5,
+          "statement": "Pelaporan dipandang sebagai kontribusi bernilai, mencakup sinyal lemah dan kesalahan sendiri, serta menjadi sumber utama perbaikan."
+        }
+      ],
+      "targetRespondents": [
+        "Pelaksana",
+        "penyelia",
+        "pekerja penyedia jasa"
+      ],
+      "evidenceExamples": [
+        "Data jumlah dan jenis laporan",
+        "kebijakan pelaporan tanpa sanksi",
+        "bukti umpan balik kepada pelapor"
+      ]
+    },
+    {
+      "code": "K5.2",
+      "aspectCode": "A5",
+      "name": "Investigasi dan tindak lanjut",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Kejadian tidak diinvestigasi."
+        },
+        {
+          "level": 2,
+          "statement": "Investigasi dilakukan seadanya dan berhenti pada kesimpulan kesalahan manusia."
+        },
+        {
+          "level": 3,
+          "statement": "Investigasi dilakukan dengan metode baku, tindakan perbaikan ditetapkan dan dipantau penyelesaiannya."
+        },
+        {
+          "level": 4,
+          "statement": "Efektivitas tindakan perbaikan diverifikasi di lapangan dan pembelajarannya disebarkan lintas proyek."
+        },
+        {
+          "level": 5,
+          "statement": "Pembelajaran dari kejadian mengubah standar, desain, dan cara kerja organisasi, serta dibagikan kepada mitra dan pelaku industri."
+        }
+      ],
+      "targetRespondents": [
+        "Manajemen K3",
+        "penyelia",
+        "manajer proyek"
+      ],
+      "evidenceExamples": [
+        "Laporan investigasi",
+        "register tindakan perbaikan",
+        "bukti verifikasi efektivitas",
+        "media penyebaran pembelajaran"
+      ]
+    },
+    {
+      "code": "K5.3",
+      "aspectCode": "A5",
+      "name": "Pengendalian harian dan komunikasi",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Tidak ada komunikasi keselamatan yang terstruktur."
+        },
+        {
+          "level": 2,
+          "statement": "Komunikasi keselamatan bersifat satu arah dan seremonial."
+        },
+        {
+          "level": 3,
+          "statement": "Pertemuan keselamatan harian dan mingguan berjalan sesuai jadwal dengan materi yang telah ditetapkan."
+        },
+        {
+          "level": 4,
+          "statement": "Komunikasi berlangsung dua arah, materi disesuaikan dengan risiko pekerjaan hari itu, dan masukan pekerja mengubah cara kerja."
+        },
+        {
+          "level": 5,
+          "statement": "Dialog keselamatan berlangsung wajar dalam pekerjaan sehari-hari, termasuk kepada atasan dan mitra kerja, tanpa memerlukan forum formal."
+        }
+      ],
+      "targetRespondents": [
+        "Penyelia",
+        "pelaksana",
+        "pekerja penyedia jasa"
+      ],
+      "evidenceExamples": [
+        "Risalah pertemuan keselamatan",
+        "materi komunikasi harian",
+        "catatan tindak lanjut masukan pekerja"
+      ]
+    },
+    {
+      "code": "K6.1",
+      "aspectCode": "A6",
+      "name": "Audit dan tinjauan",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Tidak dilakukan audit keselamatan."
+        },
+        {
+          "level": 2,
+          "statement": "Audit dilakukan hanya bila diminta pemilik pekerjaan atau regulator."
+        },
+        {
+          "level": 3,
+          "statement": "Audit internal terjadwal dilakukan terhadap pemenuhan sistem manajemen."
+        },
+        {
+          "level": 4,
+          "statement": "Audit mencakup perilaku dan kepemimpinan keselamatan, hasilnya dibahas dalam tinjauan manajemen dan menghasilkan keputusan."
+        },
+        {
+          "level": 5,
+          "statement": "Audit budaya dilakukan berkala atas inisiatif sendiri, hasilnya digunakan untuk menguji asumsi organisasi dan dibandingkan dengan praktik terbaik industri."
+        }
+      ],
+      "targetRespondents": [
+        "Manajemen K3",
+        "auditor internal",
+        "direksi"
+      ],
+      "evidenceExamples": [
+        "Program audit",
+        "laporan audit internal",
+        "risalah tinjauan manajemen"
+      ]
+    },
+    {
+      "code": "K6.2",
+      "aspectCode": "A6",
+      "name": "Tren dan statistik",
+      "isContextual": false,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Data kecelakaan tidak dikumpulkan atau tidak akurat."
+        },
+        {
+          "level": 2,
+          "statement": "Data dikumpulkan untuk pelaporan wajib tanpa dianalisis lebih lanjut."
+        },
+        {
+          "level": 3,
+          "statement": "Indikator tertinggal dipantau dan dilaporkan secara berkala."
+        },
+        {
+          "level": 4,
+          "statement": "Indikator utama dan indikator tertinggal dianalisis bersama untuk memperkirakan dan mencegah kejadian."
+        },
+        {
+          "level": 5,
+          "statement": "Analisis data menjadi dasar pengambilan keputusan strategis sekaligus pengujian efektivitas program budaya keselamatan."
+        }
+      ],
+      "targetRespondents": [
+        "Manajemen K3",
+        "pengendali kinerja",
+        "direksi"
+      ],
+      "evidenceExamples": [
+        "Data statistik kecelakaan",
+        "indikator utama",
+        "laporan analisis tren"
+      ]
+    },
+    {
+      "code": "KT.1",
+      "aspectCode": "KT",
+      "name": "Integrasi Sistem Manajemen Keselamatan Konstruksi",
+      "isContextual": true,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Persyaratan SMKK tidak dipahami dan tidak diterapkan."
+        },
+        {
+          "level": 2,
+          "statement": "Dokumen SMKK disusun untuk memenuhi persyaratan kontrak, penerapannya di lapangan terbatas."
+        },
+        {
+          "level": 3,
+          "statement": "Rencana keselamatan konstruksi dan rencana mutu pekerjaan konstruksi diterapkan sesuai Permen PUPR No. 10 Tahun 2021 dan diverifikasi berkala."
+        },
+        {
+          "level": 4,
+          "statement": "Penerapan SMKK terpadu dengan proses pengendalian proyek dan efektivitasnya dievaluasi."
+        },
+        {
+          "level": 5,
+          "statement": "SMKK menjadi cara kerja yang melekat, mendorong inovasi metode kerja yang lebih aman, dan menjadi rujukan bagi mitra rantai pasok."
+        }
+      ],
+      "targetRespondents": [
+        "Manajer proyek",
+        "ahli K3 konstruksi",
+        "pengendali mutu"
+      ],
+      "evidenceExamples": [
+        "RKK",
+        "RMPK",
+        "laporan pengawasan pekerjaan",
+        "bukti verifikasi penerapan"
+      ]
+    },
+    {
+      "code": "KT.2",
+      "aspectCode": "KT",
+      "name": "Keselamatan psikososial dan keberanian menyuarakan pendapat",
+      "isContextual": true,
+      "levels": [
+        {
+          "level": 1,
+          "statement": "Pekerja tidak berani menyampaikan keberatan atau kekhawatiran."
+        },
+        {
+          "level": 2,
+          "statement": "Keberatan disampaikan hanya melalui jalur informal dan jarang ditindaklanjuti."
+        },
+        {
+          "level": 3,
+          "statement": "Tersedia saluran resmi untuk menyampaikan keluhan dan kekhawatiran keselamatan."
+        },
+        {
+          "level": 4,
+          "statement": "Manajemen aktif menanyakan kekhawatiran pekerja, sedangkan beban kerja dan tekanan jadwal dikelola sebagai faktor risiko."
+        },
+        {
+          "level": 5,
+          "statement": "Keterbukaan menjadi norma, perbedaan pendapat mengenai keselamatan dihargai, dan tekanan produksi tidak pernah mengalahkan pertimbangan keselamatan."
+        }
+      ],
+      "targetRespondents": [
+        "Seluruh lapisan",
+        "khususnya pelaksana"
+      ],
+      "evidenceExamples": [
+        "Kebijakan saluran pengaduan",
+        "data pemanfaatan saluran",
+        "survei beban kerja dan kelelahan"
+      ]
+    }
+  ]
+}

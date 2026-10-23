@@ -1,0 +1,196 @@
+{
+  "_catatan": "Parameter bawaan NSCAS. Seluruh nilai disalin ke snapshot asesmen saat dikunci, sehingga perubahan berkas ini tidak memengaruhi asesmen yang sudah berjalan.",
+  "instrumentVersion": "NS-SCML-1.0",
+  "scale": {
+    "min": 1,
+    "max": 5,
+    "levelNames": {
+      "1": "Patologis",
+      "2": "Reaktif",
+      "3": "Kalkulatif",
+      "4": "Proaktif",
+      "5": "Progresif"
+    }
+  },
+  "aspects": [
+    {
+      "code": "A1",
+      "name": "Kepemimpinan dan keterlibatan",
+      "maxPoints": {
+        "2": 800,
+        "3": 2450,
+        "4": 3800,
+        "5": 4800
+      }
+    },
+    {
+      "code": "A2",
+      "name": "Kebijakan dan strategi",
+      "maxPoints": {
+        "2": 200,
+        "3": 600,
+        "4": 1200,
+        "5": 1800
+      }
+    },
+    {
+      "code": "A3",
+      "name": "Organisasi dan penyedia jasa",
+      "maxPoints": {
+        "2": 550,
+        "3": 1500,
+        "4": 2500,
+        "5": 3450
+      }
+    },
+    {
+      "code": "A4",
+      "name": "Tempat kerja dan prosedur",
+      "maxPoints": {
+        "2": 400,
+        "3": 1300,
+        "4": 2500,
+        "5": 3200
+      }
+    },
+    {
+      "code": "A5",
+      "name": "Penyimpangan dan komunikasi",
+      "maxPoints": {
+        "2": 750,
+        "3": 1650,
+        "4": 3000,
+        "5": 3950
+      }
+    },
+    {
+      "code": "A6",
+      "name": "Audit dan statistik",
+      "maxPoints": {
+        "2": 150,
+        "3": 350,
+        "4": 550,
+        "5": 800
+      }
+    },
+    {
+      "code": "KT",
+      "name": "Dimensi kontekstual nasional",
+      "maxPoints": null,
+      "excludedFromLevel": true
+    }
+  ],
+  "aspectWeightRule": "bobot aspek = maxPoints tingkat 5 dibagi 18000 (Tabel 1 Safety Culture Ladder Manual 5.0)",
+  "layerWeights": {
+    "perception": 0.35,
+    "evidence": 0.4,
+    "validation": 0.25
+  },
+  "selfAssessmentWeightInPerception": 0.3,
+  "divergenceThreshold": 1.0,
+  "consolidation": {
+    "maxAspectBelowLevel": 0.5,
+    "maxCharacteristicBelowLevel": 1.0
+  },
+  "perceptionGapAttention": 0.5,
+  "assessorDisagreementFlag": 1.0,
+  "sclThresholds": [
+    {
+      "step": 2,
+      "criteria": 29,
+      "minWeightedAverage": 0.75,
+      "minPerAspect": 0.7
+    },
+    {
+      "step": 3,
+      "criteria": 46,
+      "minWeightedAverage": 0.8,
+      "minPerAspect": 0.7
+    },
+    {
+      "step": 4,
+      "criteria": 55,
+      "minWeightedAverage": 0.8,
+      "minPerAspect": 0.75
+    },
+    {
+      "step": 5,
+      "criteria": 44,
+      "minWeightedAverage": 0.85,
+      "minPerAspect": 0.75
+    }
+  ],
+  "sclCriterionScale": [
+    {
+      "label": "Terpenuhi penuh",
+      "value": 100
+    },
+    {
+      "label": "Terpenuhi sebagian besar",
+      "value": 80
+    },
+    {
+      "label": "Terpenuhi sebagian",
+      "value": 40
+    },
+    {
+      "label": "Tidak terpenuhi",
+      "value": 0
+    }
+  ],
+  "sampling": {
+    "z": 1.96,
+    "marginOfError": 0.05,
+    "proportion": 0.5,
+    "minParticipationPerStratum": 0.3,
+    "sclInterviewFactorManagement": 0.6,
+    "sclInterviewFactorOperational": 1.2,
+    "sclProjectFactor": 0.6,
+    "fgdMaxParticipantsPerSession": 8
+  },
+  "quality": {
+    "cronbachAlphaMin": 0.7,
+    "rwgMin": 0.7,
+    "minRespondentsPerReportCell": 5,
+    "straightliningShare": 0.9,
+    "speedingFractionOfMedian": 0.33,
+    "dontKnowShareMax": 0.5,
+    "minEvidenceTypesPerCharacteristic": 2,
+    "surveyExtensionMaxWorkdays": 5
+  },
+  "defaultStrata": [
+    {
+      "code": "S1",
+      "name": "Direksi dan manajemen puncak",
+      "group": "MANAGEMENT",
+      "isContractor": false
+    },
+    {
+      "code": "S2",
+      "name": "Manajemen menengah dan manajer proyek",
+      "group": "MANAGEMENT",
+      "isContractor": false
+    },
+    {
+      "code": "S3",
+      "name": "Penyelia dan pengawas lapangan",
+      "group": "SUPERVISORY",
+      "isContractor": false
+    },
+    {
+      "code": "S4",
+      "name": "Pelaksana dan pekerja sendiri",
+      "group": "FIELD",
+      "isContractor": false
+    },
+    {
+      "code": "S5",
+      "name": "Pekerja penyedia jasa dan subkontraktor",
+      "group": "FIELD",
+      "isContractor": true
+    }
+  ],
+  "retention": {
+    "rawDataMonths": 36
+  }
+}

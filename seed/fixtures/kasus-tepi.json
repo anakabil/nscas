@@ -1,0 +1,224 @@
+{
+  "_catatan": "Kasus tepi yang wajib ditangani mesin penilaian.",
+  "contohDeck": {
+    "input": {
+      "p": 3.6,
+      "e": 2.4,
+      "v": 2.8
+    },
+    "expected": {
+      "combined": 2.92,
+      "divergence": 1.2,
+      "final": 2.4,
+      "flags": [
+        "SELISIH_PERSEPSI_BUKTI"
+      ]
+    }
+  },
+  "selisihTepatSatu": {
+    "input": {
+      "p": 3.4,
+      "e": 2.4,
+      "v": 3.0
+    },
+    "expected": {
+      "combined": 2.9,
+      "divergence": 1.0,
+      "final": 2.4,
+      "flags": [
+        "SELISIH_PERSEPSI_BUKTI"
+      ]
+    }
+  },
+  "selisihDiBawahSatu": {
+    "input": {
+      "p": 3.39,
+      "e": 2.4,
+      "v": 3.0
+    },
+    "expected": {
+      "combined": 2.8965,
+      "divergence": 0.99,
+      "final": 2.8965,
+      "flags": []
+    }
+  },
+  "buktiLebihTinggiDariPersepsi": {
+    "input": {
+      "p": 2.2,
+      "e": 3.4,
+      "v": 3.0
+    },
+    "expected": {
+      "combined": 2.88,
+      "divergence": 1.2,
+      "final": 2.88,
+      "flags": [
+        "SELISIH_PERSEPSI_BUKTI"
+      ]
+    }
+  },
+  "validasiKosong": {
+    "input": {
+      "p": 3.6,
+      "e": 3.2,
+      "v": null
+    },
+    "expected": {
+      "combined": 3.386667,
+      "divergence": 0.4,
+      "final": 3.386667,
+      "flags": [
+        "LAPISAN_TIDAK_LENGKAP"
+      ]
+    }
+  },
+  "tingkatDibatasiLima": {
+    "input": {
+      "orgIndex": 5.0
+    },
+    "expected": 5
+  },
+  "tingkatPembulatanFloatingPoint": {
+    "input": {
+      "orgIndex": 3.0
+    },
+    "expected": 3
+  },
+  "persepsiPembobotanStrata": {
+    "input": {
+      "answersByStratum": {
+        "S1": [
+          4,
+          4,
+          5
+        ],
+        "S2": [
+          3,
+          4,
+          null,
+          4,
+          3
+        ],
+        "S4": [
+          2,
+          3,
+          3,
+          2,
+          3
+        ],
+        "S5": [
+          null,
+          null
+        ]
+      },
+      "populationByStratum": {
+        "S1": 15,
+        "S2": 120,
+        "S4": 1800,
+        "S5": 765
+      },
+      "selfAssessmentLevels": [
+        4,
+        4
+      ],
+      "alpha": 0.3
+    },
+    "expected": {
+      "survey": 2.669251,
+      "selfAssessment": 4.0,
+      "perception": 3.068475
+    }
+  },
+  "persepsiTanpaPenilaianMandiri": {
+    "input": {
+      "answersByStratum": {
+        "S3": [
+          3,
+          4
+        ],
+        "S4": [
+          3,
+          3,
+          2
+        ]
+      },
+      "populationByStratum": {
+        "S3": 300,
+        "S4": 1800
+      },
+      "selfAssessmentLevels": [],
+      "alpha": 0.3
+    },
+    "expected": {
+      "survey": 2.785714,
+      "selfAssessment": null,
+      "perception": 2.785714
+    }
+  },
+  "rwgSatuButir": {
+    "input": {
+      "values": [
+        3,
+        3,
+        4,
+        3,
+        4,
+        3,
+        3,
+        4
+      ]
+    },
+    "expected": 0.866071
+  },
+  "rwgSebaranLebar": {
+    "input": {
+      "values": [
+        1,
+        5,
+        2,
+        4,
+        1,
+        5
+      ]
+    },
+    "expected": 0.0
+  },
+  "alphaCronbach": {
+    "input": {
+      "matrix": [
+        [
+          4,
+          4,
+          5
+        ],
+        [
+          3,
+          3,
+          4
+        ],
+        [
+          5,
+          4,
+          5
+        ],
+        [
+          2,
+          3,
+          2
+        ],
+        [
+          4,
+          5,
+          4
+        ],
+        [
+          3,
+          3,
+          3
+        ]
+      ]
+    },
+    "expected": 0.881579
+  }
+}
