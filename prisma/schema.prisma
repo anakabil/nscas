@@ -1,5 +1,14 @@
-// Skema basis data NSCAS.
-// Model data lengkap (docs/02 bagian 3) dikerjakan pada Fase 2.
+// Skema basis data NSCAS sesuai docs/02 bagian 3.
+//
+// Catatan anonimitas (docs/02 bagian 4):
+// - SurveyResponse, CharacteristicAnswer, dan ClimateAnswer tidak memiliki createdAt/updatedAt,
+//   tidak memiliki relasi ke AccessToken maupun RosterEntry, dan memakai id UUID versi 4 yang acak
+//   (cuid versi 1 menyimpan cap waktu di dalam id).
+// - AccessToken tidak memiliki updatedAt, karena kolom itu akan merekam waktu selesai yang presisi
+//   dan meniadakan pembulatan completedAt ke jam terdekat.
+//
+// Batasan yang tidak dapat dinyatakan di Prisma (CHECK, indeks parsial, pemicu AuditLog hanya-tambah)
+// ditulis sebagai migrasi SQL tambahan di prisma/migrations.
 
 generator client {
   provider = "prisma-client"
@@ -8,4 +17,967 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enum
+// ---------------------------------------------------------------------------
+
+enum Role {
+  SUPER_ADMIN
+  LEAD_ASSESSOR
+  ASSESSOR
+  CLIENT_ADMIN
+  UNIT_COORDINATOR
+  EXECUTIVE_VIEWER
+}
+
+enum AssignmentRole {
+  LEAD_ASSESSOR
+  ASSESSOR
+}
+
+enum InstrumentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum AssessmentScope {
+  CORPORATE
+  DIVISION
+  PROJECT
+}
+
+enum AssessmentStatus {
+  DRAFT
+  CONFIGURED
+  LOCKED
+  DATA_COLLECTION
+  SCORING
+  PANEL_REVIEW
+  ACTION_PLANNING
+  REPORTED
+  MONITORING
+  ARCHIVED
+  PURGED
+}
+
+enum UnitType {
+  HEAD_OFFICE
+  DIVISION
+  PROJECT
+  BRANCH
+}
+
+enum StratumGroup {
+  MANAGEMENT
+  SUPERVISORY
+  FIELD
+}
+
+enum TokenKind {
+  SURVEY
+  SELF_ASSESSMENT
+}
+
+enum Locale {
+  id
+  en
+}
+
+enum DurationBucket {
+  UNDER_5       @map("<5")
+  FROM_5_TO_10  @map("5-10")
+  FROM_10_TO_15 @map("10-15")
+  FROM_15_TO_20 @map("15-20")
+  OVER_20       @map(">20")
+}
+
+// Kode tanda mutu sama dengan mesin penilaian (src/lib/scoring, docs/03 bagian 8).
+enum QualityFlag {
+  POLA_SERAGAM
+  TERLALU_CEPAT
+  BANYAK_TIDAK_TAHU
+}
+
+enum SelfAssessmentStatus {
+  DRAFT
+  SUBMITTED
+}
+
+enum ValidationSessionType {
+  INTERVIEW
+  FOCUS_GROUP
+  VIRTUAL_SITE_VISIT
+}
+
+enum ValidationSessionStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum ActionStatus {
+  PLANNED
+  IN_PROGRESS
+  DONE
+  VERIFIED
+  CANCELLED
+}
+
+enum ReportKind {
+  FULL
+  EXECUTIVE_SUMMARY
+  STATEMENT
+}
+
+enum ReportStatus {
+  DRAFT
+  FINAL
+}
+
+// ---------------------------------------------------------------------------
+// Organisasi dan pengguna
+// ---------------------------------------------------------------------------
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  legalName String
+  sector    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships Membership[]
+  assessments Assessment[]
+}
+
+model User {
+  id            String    @id @default(cuid())
+  /// Disimpan dalam huruf kecil.
+  email         String    @unique
+  name          String
+  /// argon2id
+  passwordHash  String
+  /// AES-256-GCM dengan DATA_ENCRYPTION_KEY (src/lib/privacy/crypto.ts)
+  totpSecretEnc String?
+  totpEnabled   Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  memberships              Membership[]
+  assignments              AssessmentAssignment[]
+  lockedAssessments        Assessment[]           @relation("AssessmentLockedBy")
+  excludedSurveyResponses  SurveyResponse[]       @relation("SurveyResponseExcludedBy")
+  uploadedEvidence         EvidenceItem[]         @relation("EvidenceUploadedBy")
+  createdObservationWindow ObservationWindow[]    @relation("ObservationWindowCreatedBy")
+  uploadedCaptures         ObservationCapture[]   @relation("ObservationCaptureUploadedBy")
+  validationRatings        ValidationRating[]     @relation("ValidationRatingAssessor")
+  evidenceRatings          EvidenceRating[]       @relation("EvidenceRatingAssessor")
+  sclFulfillments          SclFulfillment[]       @relation("SclFulfillmentEnteredBy")
+  scoreRuns                ScoreRun[]             @relation("ScoreRunRunBy")
+  panelAdjustments         PanelAdjustment[]      @relation("PanelAdjustmentDecidedBy")
+  verifiedActions          ActionItem[]           @relation("ActionItemVerifiedBy")
+  actionUpdates            ActionUpdate[]         @relation("ActionUpdateCreatedBy")
+  signedReports            Report[]               @relation("ReportSignedBy")
+  destructionRecords       DestructionRecord[]    @relation("DestructionExecutedBy")
+}
+
+model Membership {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String
+  role           Role
+  /// Daftar id unit untuk UNIT_COORDINATOR.
+  unitScope      String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([userId, organizationId, role])
+  @@index([organizationId])
+}
+
+// ---------------------------------------------------------------------------
+// Instrumen (berversi, tidak diubah setelah dipakai)
+// ---------------------------------------------------------------------------
+
+model InstrumentVersion {
+  id                String           @id @default(cuid())
+  /// Contoh: NS-SCML-1.0
+  code              String           @unique
+  status            InstrumentStatus @default(DRAFT)
+  publishedAt       DateTime?
+  /// Parameter bawaan dari seed/aspek-dan-parameter.json; disalin ke Assessment.parameterSnapshot saat dikunci.
+  defaultParameters Json
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  aspects           Aspect[]
+  characteristics   Characteristic[]
+  climateDimensions ClimateDimension[]
+  assessments       Assessment[]
+  surveyResponses   SurveyResponse[]
+}
+
+model Aspect {
+  id                  String   @id @default(cuid())
+  instrumentVersionId String
+  /// A1 sampai A6, KT
+  code                String
+  name                String
+  /// Null untuk aspek kontekstual KT.
+  maxPointsStep5      Int?
+  excludedFromLevel   Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  instrumentVersion InstrumentVersion @relation(fields: [instrumentVersionId], references: [id])
+  characteristics   Characteristic[]
+
+  @@unique([instrumentVersionId, code])
+}
+
+model Characteristic {
+  id                  String   @id @default(cuid())
+  /// Disalin dari aspek agar kode karakteristik unik per versi instrumen.
+  instrumentVersionId String
+  aspectId            String
+  /// Contoh: K1.1
+  code                String
+  nameId              String
+  /// Terjemahan Inggris; belum tersedia di seed versi 1.
+  nameEn              String?
+  isContextual        Boolean  @default(false)
+  order               Int
+  /// Sasaran narasumber dari seed (targetRespondents).
+  targetRespondents   String[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  instrumentVersion     InstrumentVersion      @relation(fields: [instrumentVersionId], references: [id])
+  aspect                Aspect                 @relation(fields: [aspectId], references: [id])
+  levelStatements       LevelStatement[]
+  evidenceRequirements  EvidenceRequirement[]
+  characteristicAnswers CharacteristicAnswer[]
+  selfAssessmentAnswers SelfAssessmentAnswer[]
+  evidenceLinks         EvidenceLink[]
+  validationRatings     ValidationRating[]
+  evidenceRatings       EvidenceRating[]
+  panelAdjustments      PanelAdjustment[]
+  gapItems              GapItem[]
+
+  @@unique([instrumentVersionId, code])
+  @@index([aspectId])
+}
+
+model LevelStatement {
+  id               String   @id @default(cuid())
+  characteristicId String
+  /// 1 sampai 5 (CHECK di migrasi)
+  level            Int
+  textId           String
+  textEn           String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id], onDelete: Cascade)
+
+  @@unique([characteristicId, level])
+}
+
+model EvidenceRequirement {
+  id               String   @id @default(cuid())
+  characteristicId String
+  description      String
+  order            Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id], onDelete: Cascade)
+
+  @@unique([characteristicId, order])
+}
+
+model ClimateDimension {
+  id                  String   @id @default(cuid())
+  instrumentVersionId String
+  /// D1 sampai D7
+  code                String
+  nameId              String
+  nameEn              String?
+  order               Int
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  instrumentVersion InstrumentVersion @relation(fields: [instrumentVersionId], references: [id])
+  items             ClimateItem[]
+
+  @@unique([instrumentVersionId, code])
+}
+
+model ClimateItem {
+  id           String   @id @default(cuid())
+  dimensionId  String
+  /// Contoh: D1.1
+  code         String
+  textId       String
+  textEn       String?
+  reverseCoded Boolean  @default(false)
+  order        Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  dimension ClimateDimension @relation(fields: [dimensionId], references: [id], onDelete: Cascade)
+  answers   ClimateAnswer[]
+
+  @@unique([dimensionId, code])
+}
+
+// ---------------------------------------------------------------------------
+// Asesmen
+// ---------------------------------------------------------------------------
+
+model Assessment {
+  id                  String           @id @default(cuid())
+  organizationId      String
+  name                String
+  scopeType           AssessmentScope
+  periodStart         DateTime         @db.Date
+  periodEnd           DateTime         @db.Date
+  targetLevel         Int
+  status              AssessmentStatus @default(DRAFT)
+  instrumentVersionId String
+  /// Diisi saat LOCKED; sumber satu-satunya bobot, ambang, dan strata untuk penilaian.
+  parameterSnapshot   Json?
+  lockedAt            DateTime?
+  lockedById          String?
+  consentTextId       String?
+  consentTextEn       String?
+  dpaSigned           Boolean          @default(false)
+  surveyOpensAt       DateTime?
+  surveyClosesAt      DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  organization       Organization           @relation(fields: [organizationId], references: [id])
+  instrumentVersion  InstrumentVersion      @relation(fields: [instrumentVersionId], references: [id])
+  lockedBy           User?                  @relation("AssessmentLockedBy", fields: [lockedById], references: [id])
+  assignments        AssessmentAssignment[]
+  units              Unit[]
+  strata             Stratum[]
+  rosterEntries      RosterEntry[]
+  accessTokens       AccessToken[]
+  unitQrCodes        UnitQrCode[]
+  surveyResponses    SurveyResponse[]
+  selfAssessments    SelfAssessment[]
+  evidenceItems      EvidenceItem[]
+  observationWindows ObservationWindow[]
+  validationSessions ValidationSession[]
+  evidenceRatings    EvidenceRating[]
+  sclFulfillments    SclFulfillment[]
+  scoreRuns          ScoreRun[]
+  gapItems           GapItem[]
+  reports            Report[]
+  destructionRecords DestructionRecord[]
+
+  @@index([organizationId, status])
+}
+
+model AssessmentAssignment {
+  id           String         @id @default(cuid())
+  assessmentId String
+  userId       String
+  role         AssignmentRole
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@unique([assessmentId, userId])
+  @@index([userId])
+}
+
+model Unit {
+  id           String   @id @default(cuid())
+  assessmentId String
+  parentId     String?
+  name         String
+  type         UnitType
+  latitude     Float?
+  longitude    Float?
+  radiusMeters Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assessment         Assessment          @relation(fields: [assessmentId], references: [id])
+  parent             Unit?               @relation("UnitHierarchy", fields: [parentId], references: [id])
+  children           Unit[]              @relation("UnitHierarchy")
+  rosterEntries      RosterEntry[]
+  accessTokens       AccessToken[]
+  unitQrCodes        UnitQrCode[]
+  surveyResponses    SurveyResponse[]
+  evidenceItems      EvidenceItem[]
+  observationWindows ObservationWindow[]
+  validationSessions ValidationSession[]
+
+  @@index([assessmentId])
+  @@index([parentId])
+}
+
+model Stratum {
+  id           String       @id @default(cuid())
+  assessmentId String
+  code         String
+  name         String
+  group        StratumGroup
+  population   Int
+  isContractor Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  assessment         Assessment          @relation(fields: [assessmentId], references: [id])
+  rosterEntries      RosterEntry[]
+  accessTokens       AccessToken[]
+  surveyResponses    SurveyResponse[]
+  validationSessions ValidationSession[]
+
+  @@unique([assessmentId, code])
+}
+
+// ---------------------------------------------------------------------------
+// Responden (data pribadi, dipisah dari jawaban)
+// ---------------------------------------------------------------------------
+
+model RosterEntry {
+  id           String   @id @default(cuid())
+  assessmentId String
+  unitId       String
+  stratumId    String
+  fullName     String
+  employeeNo   String?
+  emailEnc     String?
+  phoneEnc     String?
+  isContractor Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assessment   Assessment    @relation(fields: [assessmentId], references: [id])
+  unit         Unit          @relation(fields: [unitId], references: [id])
+  stratum      Stratum       @relation(fields: [stratumId], references: [id])
+  accessTokens AccessToken[]
+
+  @@index([assessmentId, unitId])
+  @@index([assessmentId, employeeNo])
+}
+
+/// Tanpa updatedAt: lihat catatan anonimitas di awal berkas.
+model AccessToken {
+  id            String    @id @default(cuid())
+  assessmentId  String
+  /// Kosong untuk token yang diterbitkan dari kode QR unit.
+  rosterEntryId String?
+  /// Kode QR unit yang menerbitkan token ini, untuk membatasi maxIssuance.
+  unitQrCodeId  String?
+  unitId        String
+  /// Kosong sampai responden token kode QR memilih strata.
+  stratumId     String?
+  kind          TokenKind
+  /// SHA-256 dari token mentah; token mentah hanya ada di tautan.
+  tokenHash     String    @unique
+  issuedAt      DateTime  @default(now())
+  firstOpenedAt DateTime?
+  consentAt     DateTime?
+  /// Dibulatkan ke jam terdekat oleh aplikasi.
+  completedAt   DateTime?
+  revokedAt     DateTime?
+  reminderCount Int       @default(0)
+
+  assessment     Assessment      @relation(fields: [assessmentId], references: [id])
+  rosterEntry    RosterEntry?    @relation(fields: [rosterEntryId], references: [id])
+  unitQrCode     UnitQrCode?     @relation(fields: [unitQrCodeId], references: [id])
+  unit           Unit            @relation(fields: [unitId], references: [id])
+  stratum        Stratum?        @relation(fields: [stratumId], references: [id])
+  selfAssessment SelfAssessment?
+
+  @@index([assessmentId, kind, completedAt])
+  @@index([rosterEntryId])
+  @@index([unitQrCodeId])
+}
+
+model UnitQrCode {
+  id           String   @id @default(cuid())
+  assessmentId String
+  unitId       String
+  codeHash     String   @unique
+  isActive     Boolean  @default(true)
+  maxIssuance  Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assessment   Assessment    @relation(fields: [assessmentId], references: [id])
+  unit         Unit          @relation(fields: [unitId], references: [id])
+  accessTokens AccessToken[]
+
+  @@index([assessmentId, unitId])
+}
+
+// ---------------------------------------------------------------------------
+// Jawaban survei (anonim): tanpa relasi ke AccessToken/RosterEntry, tanpa waktu presisi
+// ---------------------------------------------------------------------------
+
+model SurveyResponse {
+  id                  String         @id @default(uuid(4))
+  assessmentId        String
+  /// Disalin dari token saat dikirim.
+  unitId              String
+  /// Disalin dari token saat dikirim.
+  stratumId           String
+  instrumentVersionId String
+  language            Locale
+  /// Tanggal saja, tanpa jam.
+  submittedOn         DateTime       @db.Date
+  durationBucket      DurationBucket
+  qualityFlags        QualityFlag[]
+  excluded            Boolean        @default(false)
+  excludedReason      String?
+  excludedById        String?
+
+  assessment            Assessment             @relation(fields: [assessmentId], references: [id])
+  unit                  Unit                   @relation(fields: [unitId], references: [id])
+  stratum               Stratum                @relation(fields: [stratumId], references: [id])
+  instrumentVersion     InstrumentVersion      @relation(fields: [instrumentVersionId], references: [id])
+  excludedBy            User?                  @relation("SurveyResponseExcludedBy", fields: [excludedById], references: [id])
+  characteristicAnswers CharacteristicAnswer[]
+  climateAnswers        ClimateAnswer[]
+
+  @@index([assessmentId, unitId, stratumId])
+}
+
+model CharacteristicAnswer {
+  id               String @id @default(uuid(4))
+  responseId       String
+  characteristicId String
+  /// 1 sampai 5; kosong berarti "Tidak tahu".
+  level            Int?
+
+  response       SurveyResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id])
+
+  @@unique([responseId, characteristicId])
+  @@index([characteristicId])
+}
+
+model ClimateAnswer {
+  id         String @id @default(uuid(4))
+  responseId String
+  itemId     String
+  /// 1 sampai 5
+  value      Int
+
+  response SurveyResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  item     ClimateItem    @relation(fields: [itemId], references: [id])
+
+  @@unique([responseId, itemId])
+  @@index([itemId])
+}
+
+// ---------------------------------------------------------------------------
+// Penilaian mandiri (teridentifikasi)
+// ---------------------------------------------------------------------------
+
+model SelfAssessment {
+  id                 String               @id @default(cuid())
+  assessmentId       String
+  accessTokenId      String               @unique
+  respondentName     String
+  respondentPosition String
+  status             SelfAssessmentStatus @default(DRAFT)
+  submittedAt        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  assessment  Assessment             @relation(fields: [assessmentId], references: [id])
+  accessToken AccessToken            @relation(fields: [accessTokenId], references: [id])
+  answers     SelfAssessmentAnswer[]
+
+  @@index([assessmentId, status])
+}
+
+model SelfAssessmentAnswer {
+  id               String   @id @default(cuid())
+  selfAssessmentId String
+  characteristicId String
+  level            Int?
+  /// Minimal 50 karakter saat dikirim (divalidasi aplikasi).
+  justification    String?
+  evidenceIds      String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  selfAssessment SelfAssessment @relation(fields: [selfAssessmentId], references: [id], onDelete: Cascade)
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id])
+
+  @@unique([selfAssessmentId, characteristicId])
+}
+
+// ---------------------------------------------------------------------------
+// Bukti dan observasi
+// ---------------------------------------------------------------------------
+
+model EvidenceItem {
+  id           String    @id @default(cuid())
+  assessmentId String
+  unitId       String?
+  title        String
+  description  String?
+  /// {organizationId}/{assessmentId}/{kind}/{cuid}.{ext}
+  storageKey   String    @unique
+  sha256       String
+  mimeType     String
+  sizeBytes    Int
+  version      Int       @default(1)
+  supersedesId String?   @unique
+  uploadedById String
+  /// Penghapusan logis (docs/04 bagian 6); berkas tetap tersimpan sampai pemusnahan.
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  assessment   Assessment     @relation(fields: [assessmentId], references: [id])
+  unit         Unit?          @relation(fields: [unitId], references: [id])
+  supersedes   EvidenceItem?  @relation("EvidenceVersion", fields: [supersedesId], references: [id])
+  supersededBy EvidenceItem?  @relation("EvidenceVersion")
+  uploadedBy   User           @relation("EvidenceUploadedBy", fields: [uploadedById], references: [id])
+  links        EvidenceLink[]
+
+  @@index([assessmentId, unitId])
+}
+
+model EvidenceLink {
+  id               String   @id @default(cuid())
+  evidenceItemId   String
+  characteristicId String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  evidenceItem   EvidenceItem   @relation(fields: [evidenceItemId], references: [id], onDelete: Cascade)
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id])
+
+  @@unique([evidenceItemId, characteristicId])
+  @@index([characteristicId])
+}
+
+model ObservationWindow {
+  id           String   @id @default(cuid())
+  assessmentId String
+  unitId       String
+  opensAt      DateTime
+  closesAt     DateTime
+  checklist    Json
+  createdById  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assessment Assessment           @relation(fields: [assessmentId], references: [id])
+  unit       Unit                 @relation(fields: [unitId], references: [id])
+  createdBy  User                 @relation("ObservationWindowCreatedBy", fields: [createdById], references: [id])
+  captures   ObservationCapture[]
+
+  @@index([assessmentId, unitId])
+}
+
+model ObservationCapture {
+  id                     String   @id @default(cuid())
+  windowId               String
+  checklistItemCode      String
+  storageKey             String   @unique
+  sha256                 String
+  mimeType               String
+  serverCapturedAt       DateTime @default(now())
+  latitude               Float?
+  longitude              Float?
+  accuracyMeters         Float?
+  distanceFromSiteMeters Float?
+  outsideRadius          Boolean  @default(false)
+  uploadedById           String
+  note                   String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  window     ObservationWindow @relation(fields: [windowId], references: [id])
+  uploadedBy User              @relation("ObservationCaptureUploadedBy", fields: [uploadedById], references: [id])
+
+  @@index([windowId])
+}
+
+// ---------------------------------------------------------------------------
+// Validasi
+// ---------------------------------------------------------------------------
+
+model ValidationSession {
+  id               String                  @id @default(cuid())
+  assessmentId     String
+  type             ValidationSessionType
+  unitId           String?
+  stratumId        String?
+  scheduledAt      DateTime
+  meetingUrl       String?
+  /// Templat panduan pertanyaan (M7); modelnya dibuat pada fase validasi.
+  guideTemplateId  String?
+  participantCount Int?
+  recordingConsent Boolean                 @default(false)
+  status           ValidationSessionStatus @default(SCHEDULED)
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  assessment   Assessment              @relation(fields: [assessmentId], references: [id])
+  unit         Unit?                   @relation(fields: [unitId], references: [id])
+  stratum      Stratum?                @relation(fields: [stratumId], references: [id])
+  participants ValidationParticipant[]
+  ratings      ValidationRating[]
+
+  @@index([assessmentId, scheduledAt])
+}
+
+/// Untuk lampiran laporan; tidak dikaitkan ke catatan atau nilai sesi.
+model ValidationParticipant {
+  id        String   @id @default(cuid())
+  sessionId String
+  fullName  String
+  position  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  session ValidationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model ValidationRating {
+  id               String   @id @default(cuid())
+  sessionId        String
+  characteristicId String
+  assessorId       String
+  /// 1,0 sampai 5,0 kelipatan 0,5 (CHECK di migrasi)
+  level            Float
+  note             String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  session        ValidationSession @relation(fields: [sessionId], references: [id])
+  characteristic Characteristic    @relation(fields: [characteristicId], references: [id])
+  assessor       User              @relation("ValidationRatingAssessor", fields: [assessorId], references: [id])
+
+  @@unique([sessionId, characteristicId, assessorId])
+  @@index([characteristicId])
+}
+
+// ---------------------------------------------------------------------------
+// Penilaian asesor dan hasil
+// ---------------------------------------------------------------------------
+
+model EvidenceRating {
+  id               String   @id @default(cuid())
+  assessmentId     String
+  characteristicId String
+  assessorId       String
+  /// 1,0 sampai 5,0 kelipatan 0,5 (CHECK di migrasi)
+  level            Float
+  rationale        String
+  evidenceIds      String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  assessment     Assessment     @relation(fields: [assessmentId], references: [id])
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id])
+  assessor       User           @relation("EvidenceRatingAssessor", fields: [assessorId], references: [id])
+
+  @@unique([assessmentId, characteristicId, assessorId])
+}
+
+model SclFulfillment {
+  id            String   @id @default(cuid())
+  assessmentId  String
+  /// A1 sampai A6
+  aspectCode    String
+  /// 2 sampai 5 (CHECK di migrasi)
+  step          Int
+  /// 0 sampai 100 (CHECK di migrasi)
+  percent       Float
+  justification String
+  enteredById   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  enteredBy  User       @relation("SclFulfillmentEnteredBy", fields: [enteredById], references: [id])
+
+  @@unique([assessmentId, aspectCode, step])
+}
+
+model ScoreRun {
+  id                String   @id @default(cuid())
+  assessmentId      String
+  engineVersion     String
+  inputSnapshot     Json
+  parameterSnapshot Json
+  result            Json
+  runById           String
+  /// Paling banyak satu ScoreRun final per asesmen (indeks parsial di migrasi).
+  isFinal           Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  assessment       Assessment        @relation(fields: [assessmentId], references: [id])
+  runBy            User              @relation("ScoreRunRunBy", fields: [runById], references: [id])
+  panelAdjustments PanelAdjustment[]
+
+  @@index([assessmentId, createdAt])
+}
+
+model PanelAdjustment {
+  id               String   @id @default(cuid())
+  scoreRunId       String
+  characteristicId String
+  engineValue      Float
+  adjustedValue    Float
+  rationale        String
+  decidedById      String
+  decidedAt        DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  scoreRun       ScoreRun       @relation(fields: [scoreRunId], references: [id])
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id])
+  decidedBy      User           @relation("PanelAdjustmentDecidedBy", fields: [decidedById], references: [id])
+
+  @@unique([scoreRunId, characteristicId])
+}
+
+// ---------------------------------------------------------------------------
+// Kesenjangan dan tindakan
+// ---------------------------------------------------------------------------
+
+model GapItem {
+  id               String   @id @default(cuid())
+  assessmentId     String
+  characteristicId String
+  currentIndex     Float
+  targetLevel      Int
+  gap              Float
+  priorityScore    Float
+  rootCause        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  assessment     Assessment     @relation(fields: [assessmentId], references: [id])
+  characteristic Characteristic @relation(fields: [characteristicId], references: [id])
+  actions        ActionItem[]
+
+  @@unique([assessmentId, characteristicId])
+}
+
+model ActionItem {
+  id               String       @id @default(cuid())
+  gapItemId        String
+  title            String
+  description      String?
+  ownerName        String
+  ownerPosition    String
+  dueDate          DateTime     @db.Date
+  successIndicator String
+  status           ActionStatus @default(PLANNED)
+  verifiedById     String?
+  verifiedAt       DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  gapItem    GapItem        @relation(fields: [gapItemId], references: [id])
+  verifiedBy User?          @relation("ActionItemVerifiedBy", fields: [verifiedById], references: [id])
+  updates    ActionUpdate[]
+
+  @@index([gapItemId])
+}
+
+model ActionUpdate {
+  id              String   @id @default(cuid())
+  actionItemId    String
+  note            String
+  progressPercent Int
+  createdById     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  actionItem ActionItem @relation(fields: [actionItemId], references: [id], onDelete: Cascade)
+  createdBy  User       @relation("ActionUpdateCreatedBy", fields: [createdById], references: [id])
+
+  @@index([actionItemId])
+}
+
+// ---------------------------------------------------------------------------
+// Laporan, audit, retensi
+// ---------------------------------------------------------------------------
+
+model Report {
+  id           String       @id @default(cuid())
+  assessmentId String
+  version      Int
+  kind         ReportKind
+  status       ReportStatus @default(DRAFT)
+  storageKey   String?
+  signedById   String?
+  signedAt     DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  signedBy   User?      @relation("ReportSignedBy", fields: [signedById], references: [id])
+
+  @@unique([assessmentId, kind, version])
+}
+
+/// Hanya tambah: pemicu PostgreSQL menolak UPDATE, DELETE, dan TRUNCATE.
+/// Sengaja tanpa relasi (foreign key) agar tindakan referensial tidak pernah mencoba mengubah baris audit.
+model AuditLog {
+  id             String   @id @default(cuid())
+  at             DateTime @default(now())
+  actorId        String?
+  actorRole      Role?
+  organizationId String?
+  assessmentId   String?
+  action         String
+  entityType     String
+  entityId       String?
+  before         Json?
+  after          Json?
+  ipHash         String?
+  userAgent      String?
+
+  @@index([assessmentId, at])
+  @@index([organizationId, at])
+  @@index([actorId, at])
+}
+
+model DestructionRecord {
+  id           String   @id @default(cuid())
+  assessmentId String
+  scope        String
+  executedAt   DateTime
+  executedById String
+  objectCount  Int
+  witnessName  String
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+  executedBy User       @relation("DestructionExecutedBy", fields: [executedById], references: [id])
+
+  @@index([assessmentId])
 }
