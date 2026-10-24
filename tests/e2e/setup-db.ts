@@ -438,6 +438,13 @@ async function main(): Promise<void> {
   await prisma.assessmentAssignment.create({ data: { assessmentId: assessmentArchive.id, userId: leadArchive.id, role: "LEAD_ASSESSOR" } });
   await prisma.auditLog.create({ data: { action: "assessment.status_change", entityType: "Assessment", entityId: assessmentArchive.id, assessmentId: assessmentArchive.id, organizationId: orgC.id, actorId: leadArchive.id, actorRole: "LEAD_ASSESSOR", before: { status: "MONITORING" }, after: { status: "ARCHIVED", note: "=1+1" } } });
 
+  // Fase 15: organisasi tanpa asesmen untuk tes satu siklus penuh dari draf sampai dilaporkan melalui antarmuka.
+  const orgCycle = await prisma.organization.create({ data: { name: "PT Siklus Konstruksi", legalName: "PT Siklus Konstruksi", sector: "Konstruksi" } });
+  const leadCycle = await user("leadCycle", "asesor.utama.siklus@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true });
+  const assessorCycle = await user("assessorCycle", "asesor.siklus@e2e.test", operator.id, "ASSESSOR", { totp: true });
+  const adminCycle = await user("adminCycle", "admin.siklus@e2e.test", orgCycle.id, "CLIENT_ADMIN", { totp: true });
+  Object.assign(users, { leadCycle, assessorCycle, adminCycle });
+
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
