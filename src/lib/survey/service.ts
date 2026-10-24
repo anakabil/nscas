@@ -2,6 +2,7 @@ import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import type { AssessmentStatus, QualityFlag } from "@/generated/prisma/enums";
 import { getDb } from "@/lib/db";
+import { cachedByKey } from "./instrument-cache";
 import { hashToken, looksLikeToken, roundToNearestHour } from "@/lib/privacy/tokens";
 import { responseQualityFlags } from "@/lib/scoring/quality";
 import { durationBucket, estimatedMedianMinutes, respondentOrder, wibDateOnly, type DurationBucketCode, type SurveySubmission } from "./rules";
@@ -100,29 +101,34 @@ export interface SurveyContent {
 
 export async function loadSurveyContent(instrumentVersionId: string, assessmentId: string, seed: string, needsStratum: boolean): Promise<SurveyContent> {
   const db = getDb();
-  const [characteristics, dimensions, strata] = await Promise.all([
-    db.characteristic.findMany({
-      where: { instrumentVersionId },
-      orderBy: { order: "asc" },
-      select: { id: true, code: true, nameId: true, nameEn: true, levelStatements: { select: { id: true, textId: true, textEn: true } } },
-    }),
-    db.climateDimension.findMany({
-      where: { instrumentVersionId },
-      orderBy: { order: "asc" },
-      select: { items: { orderBy: { order: "asc" }, select: { id: true, textId: true, textEn: true } } },
+  const [instrument, strata] = await Promise.all([
+    cachedByKey(`content:${instrumentVersionId}`, async () => {
+      const [characteristics, dimensions] = await Promise.all([
+        db.characteristic.findMany({
+          where: { instrumentVersionId },
+          orderBy: { order: "asc" },
+          select: { id: true, code: true, nameId: true, nameEn: true, levelStatements: { select: { id: true, textId: true, textEn: true } } },
+        }),
+        db.climateDimension.findMany({
+          where: { instrumentVersionId },
+          orderBy: { order: "asc" },
+          select: { items: { orderBy: { order: "asc" }, select: { id: true, textId: true, textEn: true } } },
+        }),
+      ]);
+      return { characteristics, dimensions };
     }),
     needsStratum
       ? db.stratum.findMany({ where: { assessmentId }, orderBy: { code: "asc" }, select: { id: true, name: true } })
       : Promise.resolve([]),
   ]);
   return {
-    characteristics: characteristics.map((c) => ({
+    characteristics: instrument.characteristics.map((c) => ({
       id: c.id,
       code: c.code,
       name: { id: c.nameId, en: c.nameEn },
-      statements: respondentOrder(c.levelStatements, seed).map((s) => ({ id: s.id, text: { id: s.textId, en: s.textEn } })),
+      statements: respondentOrder(c.levelStatements, seed).map((st) => ({ id: st.id, text: { id: st.textId, en: st.textEn } })),
     })),
-    climateScreens: dimensions.filter((d) => d.items.length > 0).map((d) => d.items.map((i) => ({ id: i.id, text: { id: i.textId, en: i.textEn } }))),
+    climateScreens: instrument.dimensions.filter((d) => d.items.length > 0).map((d) => d.items.map((i) => ({ id: i.id, text: { id: i.textId, en: i.textEn } }))),
     strata,
   };
 }
@@ -147,10 +153,91 @@ export type SubmitResult =
  * SurveyResponse dibuat dengan unit dan strata yang disalin dari token, tanpa rujukan ke token maupun daftar
  * responden, dengan tanggal tanpa jam dan durasi dalam rentang. Tanda mutu dihitung sesuai docs/03 bagian 8.
  */
+interface SubmitInstrument {
+  characteristics: { id: string; levelStatements: { id: string; level: number }[] }[];
+  itemIds: string[];
+}
+
+/** Struktur instrumen untuk validasi kiriman, dari cache proses (lihat instrument-cache.ts). */
+function submitInstrument(instrumentVersionId: string): Promise<SubmitInstrument> {
+  return cachedByKey(`submit:${instrumentVersionId}`, async () => {
+    const db = getDb();
+    const [characteristics, items] = await Promise.all([
+      db.characteristic.findMany({ where: { instrumentVersionId }, select: { id: true, levelStatements: { select: { id: true, level: true } } } }),
+      db.climateItem.findMany({ where: { dimension: { instrumentVersionId } }, select: { id: true } }),
+    ]);
+    return { characteristics, itemIds: items.map((i) => i.id) };
+  });
+}
+
+type AnswerCheck =
+  | { ok: true; characteristicAnswers: { characteristicId: string; level: number | null }[]; climateAnswers: { itemId: string; value: number }[] }
+  | { ok: false; status: 422; code: "INCOMPLETE" | "UNKNOWN_ITEM" };
+
+/** Seluruh karakteristik dan butir iklim versi instrumen ini wajib dijawab tepat satu kali. */
+function checkAnswers(instrument: SubmitInstrument, input: SurveySubmission): AnswerCheck {
+  const answers = new Map(input.characteristics.map((c) => [c.characteristicId, c.statementId]));
+  const values = new Map(input.climate.map((c) => [c.itemId, c.value]));
+  if (answers.size !== input.characteristics.length || values.size !== input.climate.length) return { ok: false, status: 422, code: "INCOMPLETE" };
+  if (answers.size !== instrument.characteristics.length || values.size !== instrument.itemIds.length) return { ok: false, status: 422, code: "INCOMPLETE" };
+
+  const characteristicAnswers: { characteristicId: string; level: number | null }[] = [];
+  for (const c of instrument.characteristics) {
+    if (!answers.has(c.id)) return { ok: false, status: 422, code: "UNKNOWN_ITEM" };
+    const statementId = answers.get(c.id) ?? null;
+    if (statementId === null) {
+      characteristicAnswers.push({ characteristicId: c.id, level: null });
+      continue;
+    }
+    const statement = c.levelStatements.find((st) => st.id === statementId);
+    if (!statement) return { ok: false, status: 422, code: "UNKNOWN_ITEM" };
+    characteristicAnswers.push({ characteristicId: c.id, level: statement.level });
+  }
+  if (instrument.itemIds.some((id) => !values.has(id))) return { ok: false, status: 422, code: "UNKNOWN_ITEM" };
+  return { ok: true, characteristicAnswers, climateAnswers: instrument.itemIds.map((id) => ({ itemId: id, value: values.get(id) as number })) };
+}
+
+/** Lonjakan pengiriman serentak mengantre menunggu koneksi, bukan gagal (docs/07). */
+const SUBMIT_TRANSACTION = { maxWait: 15_000, timeout: 10_000 } as const;
+
 export async function submitSurvey(raw: string, input: SurveySubmission, now: Date = new Date()): Promise<SubmitResult> {
   if (!looksLikeToken(raw)) return { ok: false, status: 404, code: "INVALID_TOKEN" };
   const tokenHash = hashToken(raw);
-  return getDb().$transaction(async (tx) => {
+  const db = getDb();
+
+  // Pemeriksaan awal tanpa kunci: status token, jendela survei, kelengkapan jawaban, dan tanda mutu dihitung
+  // sebelum transaksi dibuka, agar koneksi basis data hanya ditahan selama penguncian token dan penulisan.
+  // Status token dan jendela diperiksa ulang di dalam transaksi setelah baris token dikunci.
+  const pre = await db.accessToken.findUnique({ where: { tokenHash }, select: tokenSelect });
+  if (!pre || pre.kind !== "SURVEY" || pre.revokedAt) return { ok: false, status: 404, code: "INVALID_TOKEN" };
+  if (pre.completedAt) return { ok: false, status: 409, code: "ALREADY_SUBMITTED" };
+  const preWindow = windowState(pre.assessment, now);
+  if (preWindow === "CLOSED") return { ok: false, status: 409, code: "SURVEY_CLOSED" };
+  if (preWindow === "NOT_OPEN") return { ok: false, status: 409, code: "SURVEY_NOT_OPEN" };
+  const a = pre.assessment;
+
+  const checked = checkAnswers(await submitInstrument(a.instrumentVersionId), input);
+  if (!checked.ok) return checked;
+  const { characteristicAnswers, climateAnswers } = checked;
+
+  const bucketRows = await db.surveyResponse.groupBy({ by: ["durationBucket"], where: { assessmentId: a.id }, _count: { _all: true } });
+  const medianMinutes = estimatedMedianMinutes(Object.fromEntries(bucketRows.map((r) => [r.durationBucket, r._count._all])) as Record<DurationBucketCode, number>);
+  const quality = (a.parameterSnapshot as { parameters?: { quality?: Record<string, number> } } | null)?.parameters?.quality ?? {};
+  const qualityFlags = responseQualityFlags(
+    {
+      climateValues: climateAnswers.map((c) => c.value),
+      characteristicLevels: characteristicAnswers.map((c) => c.level),
+      durationMinutes: input.durationSeconds / 60,
+    },
+    medianMinutes,
+    {
+      straightliningShare: quality.straightliningShare ?? 0.9,
+      speedingFractionOfMedian: quality.speedingFractionOfMedian ?? 0.33,
+      dontKnowShareMax: quality.dontKnowShareMax ?? 0.5,
+    },
+  ) as QualityFlag[];
+
+  return db.$transaction(async (tx) => {
     // Kunci baris token: dua kiriman bersamaan dengan token yang sama tidak boleh sama-sama tersimpan.
     const locked = await tx.$queryRaw<{ id: string }[]>`SELECT "id" FROM "AccessToken" WHERE "tokenHash" = ${tokenHash} FOR UPDATE`;
     if (locked.length === 0) return { ok: false, status: 404, code: "INVALID_TOKEN" } as const;
@@ -160,7 +247,6 @@ export async function submitSurvey(raw: string, input: SurveySubmission, now: Da
     const window = windowState(token.assessment, now);
     if (window === "CLOSED") return { ok: false, status: 409, code: "SURVEY_CLOSED" } as const;
     if (window === "NOT_OPEN") return { ok: false, status: 409, code: "SURVEY_NOT_OPEN" } as const;
-    const a = token.assessment;
 
     let stratumId = token.stratumId;
     if (!stratumId) {
@@ -168,49 +254,6 @@ export async function submitSurvey(raw: string, input: SurveySubmission, now: Da
       if (!chosen) return { ok: false, status: 422, code: "STRATUM_REQUIRED" } as const;
       stratumId = chosen.id;
     }
-
-    // Seluruh karakteristik dan butir iklim versi instrumen ini wajib dijawab tepat satu kali.
-    const characteristics = await tx.characteristic.findMany({
-      where: { instrumentVersionId: a.instrumentVersionId },
-      select: { id: true, levelStatements: { select: { id: true, level: true } } },
-    });
-    const items = await tx.climateItem.findMany({ where: { dimension: { instrumentVersionId: a.instrumentVersionId } }, select: { id: true } });
-    const answers = new Map(input.characteristics.map((c) => [c.characteristicId, c.statementId]));
-    const values = new Map(input.climate.map((c) => [c.itemId, c.value]));
-    if (answers.size !== input.characteristics.length || values.size !== input.climate.length) return { ok: false, status: 422, code: "INCOMPLETE" } as const;
-    if (answers.size !== characteristics.length || values.size !== items.length) return { ok: false, status: 422, code: "INCOMPLETE" } as const;
-
-    const characteristicAnswers: { characteristicId: string; level: number | null }[] = [];
-    for (const c of characteristics) {
-      if (!answers.has(c.id)) return { ok: false, status: 422, code: "UNKNOWN_ITEM" } as const;
-      const statementId = answers.get(c.id) ?? null;
-      if (statementId === null) {
-        characteristicAnswers.push({ characteristicId: c.id, level: null });
-        continue;
-      }
-      const statement = c.levelStatements.find((s) => s.id === statementId);
-      if (!statement) return { ok: false, status: 422, code: "UNKNOWN_ITEM" } as const;
-      characteristicAnswers.push({ characteristicId: c.id, level: statement.level });
-    }
-    if (items.some((i) => !values.has(i.id))) return { ok: false, status: 422, code: "UNKNOWN_ITEM" } as const;
-    const climateAnswers = items.map((i) => ({ itemId: i.id, value: values.get(i.id) as number }));
-
-    const bucketRows = await tx.surveyResponse.groupBy({ by: ["durationBucket"], where: { assessmentId: a.id }, _count: { _all: true } });
-    const medianMinutes = estimatedMedianMinutes(Object.fromEntries(bucketRows.map((r) => [r.durationBucket, r._count._all])) as Record<DurationBucketCode, number>);
-    const quality = (a.parameterSnapshot as { parameters?: { quality?: Record<string, number> } } | null)?.parameters?.quality ?? {};
-    const qualityFlags = responseQualityFlags(
-      {
-        climateValues: climateAnswers.map((c) => c.value),
-        characteristicLevels: characteristicAnswers.map((c) => c.level),
-        durationMinutes: input.durationSeconds / 60,
-      },
-      medianMinutes,
-      {
-        straightliningShare: quality.straightliningShare ?? 0.9,
-        speedingFractionOfMedian: quality.speedingFractionOfMedian ?? 0.33,
-        dontKnowShareMax: quality.dontKnowShareMax ?? 0.5,
-      },
-    ) as QualityFlag[];
 
     const roundedNow = roundToNearestHour(now);
     await tx.accessToken.update({
@@ -233,5 +276,5 @@ export async function submitSurvey(raw: string, input: SurveySubmission, now: Da
       select: { id: true },
     });
     return { ok: true } as const;
-  });
+  }, SUBMIT_TRANSACTION);
 }

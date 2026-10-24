@@ -104,11 +104,18 @@ function expectOk<T extends { ok: boolean }>(result: T, step: string): Extract<T
 async function ensureUser(email: string, name: string, organizationId: string, role: Role, unitScope: string[] = []) {
   const existing = await db.user.findUnique({ where: { email }, select: { id: true } });
   const user = existing ?? (await db.user.create({ data: { email, name, passwordHash: await hashPassword(password) }, select: { id: true } }));
-  const membership = await db.membership.findFirst({ where: { userId: user.id, organizationId, role } });
+  const membership = await db.membership.findFirst({ where: { userId: user.id, organizationId, role }, select: { id: true, unitScope: true } });
   if (!membership) {
     await db.$transaction(async (tx) => {
       const m = await tx.membership.create({ data: { userId: user.id, organizationId, role, unitScope }, select: { id: true } });
       await logAudit(tx, { action: "membership.role_grant", entityType: "Membership", entityId: m.id, organizationId, after: { email, role, unitScope, source: "demo" } });
+    });
+  } else if (unitScope.some((u) => !membership.unitScope.includes(u))) {
+    // Demo kedua (--name) di basis data yang sama: koordinator ditambahkan ke proyek asesmen baru.
+    const merged = [...new Set([...membership.unitScope, ...unitScope])];
+    await db.$transaction(async (tx) => {
+      await tx.membership.update({ where: { id: membership.id }, data: { unitScope: merged } });
+      await logAudit(tx, { action: "membership.role_grant", entityType: "Membership", entityId: membership.id, organizationId, before: { unitScope: membership.unitScope }, after: { email, role, unitScope: merged, source: "demo" } });
     });
   }
   return user.id;
@@ -240,8 +247,10 @@ async function main() {
   });
   const csv = ["Nama;Nomor induk;Surel;Telepon;Unit;Strata;Penyedia jasa", ...rows.map((r) => [r.name, r.employeeNo, r.email, r.phone, r.unit, r.stratum, r.contractor].join(";"))].join("\n");
   const client = await actorFor(clientAdminId, assessmentId, ["CLIENT_ADMIN"]);
+  // Kriteria penerimaan docs/01 M2: impor 3.000 baris di bawah 30 detik.
+  const importStart = performance.now();
   const imported = expectOk(await importRoster(client, new TextEncoder().encode(csv), true, meta), "roster import");
-  log(`daftar responden diimpor: ${imported.imported}`);
+  log(`daftar responden diimpor: ${imported.imported} baris dalam ${((performance.now() - importStart) / 1000).toFixed(1)} detik`);
 
   log("tautan survei dan jendela survei");
   const links = await issueSurveyLinks(client, { unitId: null, onlyWithoutEmail: false }, meta);

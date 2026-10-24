@@ -6,6 +6,11 @@ import { z } from "zod";
 
 const databaseSchema = z.object({
   DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }),
+  /**
+   * Jumlah koneksi basis data paling banyak per proses. Bawaan 20; hasil uji beban 300 pengisian serentak di
+   * docs/07. Jumlah seluruh proses (aplikasi dan worker) harus di bawah max_connections PostgreSQL.
+   */
+  DATABASE_POOL_MAX: z.coerce.number().int().min(2).max(200).default(20),
 });
 
 const storageSchema = z.object({
