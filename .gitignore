@@ -53,3 +53,6 @@ next-env.d.ts
 
 # data uji e2e (memuat rahasia TOTP uji)
 /tests/e2e/.fixtures.json
+
+# token survei demo untuk uji beban (scripts/demo.ts --tokens-out)
+/.demo/
