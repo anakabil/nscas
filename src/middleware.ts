@@ -54,6 +54,9 @@ export async function middleware(request: NextRequest) {
   const csp = buildContentSecurityPolicy(nonce, { development });
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
+  // Penanda rute untuk layout akar (selalu ditimpa, tidak dapat dikirim dari luar): halaman bertoken hanya
+  // menerima pesan antarmuka yang diperlukannya agar muatan halaman survei tetap ringan.
+  requestHeaders.set("x-nscas-route", SURVEY_PATH.test(pathname) ? "token" : "app");
   requestHeaders.set("Content-Security-Policy", csp);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });

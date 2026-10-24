@@ -11,6 +11,7 @@ import { generateSecret } from "otplib";
 import { Client } from "pg";
 import { PrismaClient, type Role } from "../../src/generated/prisma/client";
 import { encryptField, fieldContext } from "../../src/lib/privacy/crypto";
+import { generateToken, hashToken } from "../../src/lib/privacy/tokens";
 import { seedDatabase } from "../../prisma/seeding";
 import { e2eDatabaseUrl } from "./database-url";
 
@@ -87,6 +88,54 @@ async function main(): Promise<void> {
     data: strataC.map(([code, stratumName, group, population, isContractor]) => ({ assessmentId: assessmentC.id, code, name: stratumName, group, population, isContractor })),
   });
 
+  // Fase 6: asesmen yang sedang mengumpulkan data, dengan token survei mentah untuk tiap proyek uji
+  // (tidak ada token yang dipakai dua proyek sekaligus).
+  const parameters = version.defaultParameters as { quality?: Record<string, number> };
+  const assessmentS = await prisma.assessment.create({
+    data: {
+      ...base,
+      organizationId: orgC.id,
+      name: "Survei Budaya K3 Gamma 2026",
+      status: "DATA_COLLECTION",
+      lockedAt: new Date(),
+      dpaSigned: true,
+      surveyOpensAt: new Date(Date.now() - 24 * 3_600_000),
+      surveyClosesAt: new Date(Date.now() + 14 * 24 * 3_600_000),
+      parameterSnapshot: {
+        consent: {
+          id: "PT Gamma Karya bersama Nusa Safety mengukur budaya keselamatan dan kesehatan kerja. Jawaban Anda anonim.",
+          en: "PT Gamma Karya and Nusa Safety are measuring occupational safety and health culture. Your answers are anonymous.",
+        },
+        parameters: { quality: parameters.quality ?? {} },
+      },
+    },
+  });
+  const unitS = await unit(assessmentS.id, "Proyek Survei Timur");
+  const stratumS = await prisma.stratum.create({ data: { assessmentId: assessmentS.id, code: "S4", name: "Pelaksana dan pekerja sendiri", group: "FIELD", population: 200 } });
+  await prisma.stratum.create({ data: { assessmentId: assessmentS.id, code: "S5", name: "Pekerja penyedia jasa dan subkontraktor", group: "FIELD", population: 300, isContractor: true } });
+  const surveyTokens: Record<string, string> = {};
+  for (const project of ["desktop-chromium", "mobile-chromium"]) {
+    for (const purpose of ["main", "payload", "decline", "qr"]) {
+      const raw = generateToken();
+      await prisma.accessToken.create({
+        data: {
+          assessmentId: assessmentS.id,
+          unitId: unitS.id,
+          stratumId: purpose === "qr" ? null : stratumS.id,
+          kind: "SURVEY",
+          channel: purpose === "qr" ? "QR" : "LINK",
+          tokenHash: hashToken(raw),
+        },
+      });
+      surveyTokens[`${project}:${purpose}`] = raw;
+    }
+  }
+  const revokedRaw = generateToken();
+  await prisma.accessToken.create({
+    data: { assessmentId: assessmentS.id, unitId: unitS.id, stratumId: stratumS.id, kind: "SURVEY", channel: "LINK", tokenHash: hashToken(revokedRaw), revokedAt: new Date(), revokedReason: "MANUAL" },
+  });
+  surveyTokens.revoked = revokedRaw;
+
   const secrets: Record<string, string> = {};
   async function user(key: string, email: string, org: string, role: Role, options: { totp?: boolean; unitScope?: string[]; mustChangePassword?: boolean } = {}) {
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -119,7 +168,8 @@ async function main(): Promise<void> {
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
-    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id },
+    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id },
+    surveyTokens,
     units: { a1: unitA1.id, a2: unitA2.id, b1: unitB1.id, c1: unitC1.id, c2: unitC2.id },
     users,
     totpSecrets: secrets,

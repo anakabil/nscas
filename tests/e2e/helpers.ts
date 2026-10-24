@@ -6,7 +6,9 @@ import { generateSync } from "otplib";
 export interface Fixtures {
   password: string;
   organizations: { a: string; b: string; operator: string };
-  assessments: { a: string; b: string; c: string };
+  assessments: { a: string; b: string; c: string; survey: string };
+  /** Token survei mentah, berkunci "<proyek>:<keperluan>" dan "revoked". Hanya untuk basis data e2e. */
+  surveyTokens: Record<string, string>;
   units: { a1: string; a2: string; b1: string; c1: string; c2: string };
   users: Record<string, { id: string; email: string }>;
   totpSecrets: Record<string, string>;

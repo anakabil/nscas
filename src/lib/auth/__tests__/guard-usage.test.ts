@@ -12,6 +12,9 @@ const ALLOWED_EXEMPTIONS = new Map([
   ["src/app/api/auth/[...nextauth]/route.ts", "auth.js"],
   // Pemindaian kode QR unit oleh responden tanpa akun (docs/01 M2).
   ["src/app/q/[code]/route.ts", "survey-qr"],
+  // Survei responden bertoken tanpa akun (docs/01 M3, docs/02 bagian 4).
+  ["src/app/s/[token]/submit/route.ts", "survey-token"],
+  ["src/app/s/[token]/open/route.ts", "survey-token"],
 ]);
 
 function walk(dir: string): string[] {
@@ -36,7 +39,7 @@ describe("pemakaian guard", () => {
   it.each([...serverActions, ...routeHandlers].map((f) => [f.path, f] as const))("%s memakai guard", (path, file) => {
     if (ALLOWED_EXEMPTIONS.has(path)) {
       // Pengecualian yang disetujui tetap harus ditandai di berkasnya.
-      if (path.endsWith("actions.ts") || path.startsWith("src/app/q/")) {
+      if (path.endsWith("actions.ts") || /^src\/app\/(q|s)\//.test(path)) {
         expect(file.content).toContain(`guard-exempt: ${ALLOWED_EXEMPTIONS.get(path)}`);
       }
       return;

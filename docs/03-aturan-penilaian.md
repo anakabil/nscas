@@ -148,6 +148,8 @@ Ambang 0,70 (Nunnally dan Bernstein, 1994).
 | `TERLALU_CEPAT` | durasi kurang dari 0,33 kali median durasi asesmen |
 | `BANYAK_TIDAK_TAHU` | lebih dari 50 persen jawaban karakteristik "Tidak tahu" |
 
+Durasi tepat tidak pernah disimpan (docs/02 bagian 4). `TERLALU_CEPAT` dihitung saat jawaban dikirim: durasi tepat dari peramban dibandingkan dengan median asesmen yang ditaksir dari titik tengah rentang durasi jawaban yang sudah masuk (2,5; 7,5; 12,5; 17,5; dan 25 menit untuk rentang di atas 20 menit). Sebelum ada 10 jawaban, median memakai durasi nominal 15 menit.
+
 ## 9. Bentuk keluaran mesin (TypeScript)
 
 ```ts

@@ -136,7 +136,7 @@ Tujuan: tidak seorang pun, termasuk Nusa Safety, dapat mengetahui jawaban seoran
 1. Token mentah hanya ada di tautan. Basis data menyimpan `tokenHash`.
 2. Saat survei dikirim, dalam satu transaksi: (a) `AccessToken.completedAt` diisi; (b) `SurveyResponse` baru dibuat dengan `unitId` dan `stratumId` yang disalin dari token, **tanpa** kolom yang merujuk token atau `RosterEntry`.
 3. `SurveyResponse` hanya menyimpan tanggal kirim tanpa jam, dan durasi dalam rentang, agar tidak dapat dicocokkan dengan `AccessToken.completedAt`.
-4. `AccessToken.completedAt` dibulatkan ke jam terdekat.
+4. `AccessToken.completedAt` dibulatkan ke jam terdekat. `firstOpenedAt` dan `consentAt` juga dibulatkan ke jam, karena selisih waktu buka dan waktu selesai yang presisi dapat dicocokkan dengan rentang durasi. Pengiriman survei tidak menulis `AuditLog`.
 5. Alamat IP tidak disimpan untuk rute `/s/*`. Pembatas laju memakai hash IP yang berumur pendek di memori.
 6. Draf jawaban hanya disimpan di perangkat (IndexedDB), bukan di server.
 7. Unit dengan kurang dari 5 respons digabungkan ke unit induknya pada setiap tampilan dan ekspor (`src/lib/privacy/suppression.ts`).
