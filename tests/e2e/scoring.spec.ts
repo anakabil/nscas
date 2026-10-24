@@ -130,7 +130,9 @@ test("mesin dijalankan, rapat panel menyesuaikan nilai dengan alasan, lalu hasil
 
   await page.getByLabel("Saya memahami hasil tidak dapat diubah setelah ditetapkan.").check();
   await page.getByRole("button", { name: "Tetapkan hasil" }).click();
-  await expect(page.getByTestId("finalized")).toBeVisible();
+  // Pesan sukses formulir hanya sesaat: revalidasi halaman langsung melepas formulir karena hasil sudah final,
+  // sehingga yang diperiksa adalah pita status final yang bertahan.
+  await expect(page.getByTestId("final-ribbon")).toBeVisible();
   await page.reload();
   await expect(page.getByTestId("final-ribbon")).toContainText("Ditetapkan rapat panel pada");
   await expect(page.getByTestId("draft-ribbon")).toHaveCount(0);
