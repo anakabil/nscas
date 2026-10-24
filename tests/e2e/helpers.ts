@@ -6,7 +6,9 @@ import { generateSync } from "otplib";
 export interface Fixtures {
   password: string;
   organizations: { a: string; b: string; operator: string };
-  assessments: { a: string; b: string; c: string; survey: string; panel: string };
+  assessments: { a: string; b: string; c: string; survey: string; panel: string; dashboard: string };
+  /** Id respons survei bertanda pada asesmen survei (Fase 11). */
+  flaggedResponses: string[];
   /** Token survei mentah, berkunci "<proyek>:<keperluan>" dan "revoked". Hanya untuk basis data e2e. */
   surveyTokens: Record<string, string>;
   observationWindows: { open: string; closed: string; site: { latitude: number; longitude: number; radiusMeters: number } };

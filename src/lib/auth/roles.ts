@@ -116,3 +116,15 @@ export const SCORING_ROLES = {
   panelRead: ["LEAD_ASSESSOR", "ASSESSOR"],
   panelWrite: ["LEAD_ASSESSOR"],
 } as const satisfies Record<string, readonly Role[]>;
+/**
+ * Dasbor hasil (docs/04 baris "Dasbor hasil"): pembaca menurut matriks, dengan koordinator unit dan pimpinan
+ * eksekutif dibatasi oleh layanan dasbor (unitnya, setelah final; ringkasan dan grafik, setelah final).
+ * Panel mutu data berisi agregat; daftar jawaban bertanda dan tombol keluarkan atau pulihkan hanya untuk asesor
+ * (baris "Jawaban survei mentah").
+ */
+export const DASHBOARD_ROLES = {
+  read: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN", "UNIT_COORDINATOR", "EXECUTIVE_VIEWER"],
+  quality: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN"],
+  exclude: ["LEAD_ASSESSOR", "ASSESSOR"],
+  export: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN"],
+} as const satisfies Record<string, readonly Role[]>;

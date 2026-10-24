@@ -12,7 +12,9 @@ import { Client } from "pg";
 import { PrismaClient, type Role } from "../../src/generated/prisma/client";
 import { encryptField, fieldContext } from "../../src/lib/privacy/crypto";
 import { generateToken, hashToken } from "../../src/lib/privacy/tokens";
+import { runEngine, toEngineParameters, type ParameterSnapshot } from "../../src/lib/scoring";
 import { samplePlan } from "../../src/lib/scoring/sampling";
+import simulation from "../../seed/fixtures/skoring-simulasi.json";
 import { seedDatabase } from "../../prisma/seeding";
 import { e2eDatabaseUrl } from "./database-url";
 
@@ -297,10 +299,95 @@ async function main(): Promise<void> {
     data: { assessmentId: assessmentS.id, unitId: unitS.id, title: "Observasi yang sudah ditutup", opensAt: new Date(Date.now() - 3 * 24 * 3_600_000), closesAt: new Date(Date.now() - 2 * 24 * 3_600_000), checklist, createdById: users.leadAssessor.id, ...site },
   });
 
+  // Fase 11: asesmen dengan hasil final untuk dasbor, periode sebelumnya untuk pembandingan, dan respons survei
+  // dengan sel kecil (S1 3 responden; Proyek Dasbor Selatan 2 responden) untuk menguji penyembunyian sel.
+  const engineParams = toEngineParameters(parameters as unknown as ParameterSnapshot);
+  const resultFrom = (shift: number) =>
+    runEngine({ characteristics: simulation.input.characteristics.map((c) => ({ ...c, perception: c.p + shift, evidence: c.e + shift, validation: c.v + shift })), targetLevel: 4 }, engineParams);
+  const dashboardAssessment = async (name: string, periodStart: string) => {
+    const a = await prisma.assessment.create({
+      data: { ...base, organizationId: orgC.id, name, status: "ACTION_PLANNING", lockedAt: new Date(), dpaSigned: true, periodStart: new Date(periodStart), periodEnd: new Date(new Date(periodStart).getTime() + 90 * 86_400_000) },
+    });
+    await prisma.stratum.createMany({
+      data: [
+        { assessmentId: a.id, code: "S1", name: "Direksi dan manajemen puncak", group: "MANAGEMENT", population: 10 },
+        { assessmentId: a.id, code: "S2", name: "Manajemen menengah dan manajer proyek", group: "MANAGEMENT", population: 40 },
+        { assessmentId: a.id, code: "S4", name: "Pelaksana dan pekerja sendiri", group: "FIELD", population: 300 },
+      ],
+    });
+    const strata = await prisma.stratum.findMany({ where: { assessmentId: a.id }, orderBy: { code: "asc" }, select: { id: true, code: true, name: true, group: true, population: true, isContractor: true } });
+    await prisma.assessment.update({ where: { id: a.id }, data: { parameterSnapshot: { schemaVersion: 1, parameters, samplePlan: null, strata, consent: { id: "Persetujuan.", en: "Consent." }, dpaSigned: true } as never } });
+    return { assessment: a, strata };
+  };
+  const previousD = await dashboardAssessment("Asesmen Dasbor Gamma 2025", "2025-11-01");
+  await prisma.scoreRun.create({
+    data: { assessmentId: previousD.assessment.id, engineVersion: "1.0.0", inputSnapshot: { sources: {} }, parameterSnapshot: {}, result: resultFrom(-0.3) as never, runById: users.leadAssessor.id, isFinal: true, finalResult: resultFrom(-0.3) as never, finalizedAt: new Date(), finalizedById: users.leadAssessor.id },
+  });
+  const currentD = await dashboardAssessment("Asesmen Dasbor Gamma 2026", "2026-11-01");
+  const assessmentD = currentD.assessment;
+  const [unitD1, unitD2] = [await unit(assessmentD.id, "Proyek Dasbor Utara"), await unit(assessmentD.id, "Proyek Dasbor Selatan")];
+  const climateItems = await prisma.climateItem.findMany({ where: { dimension: { instrumentVersionId: version.id } }, select: { id: true } });
+  const patterns = [[4, 4, 3], [5, 4, 4], [3, 3, 3], [2, 3, 2], [4, 5, 4]];
+  let responseNo = 0;
+  for (const [stratumCode, unitId, count, level] of [["S1", unitD1.id, 3, 4], ["S2", unitD1.id, 6, 3], ["S4", unitD1.id, 6, 3], ["S4", unitD2.id, 2, 5]] as const) {
+    const stratumId = currentD.strata.find((x) => x.code === stratumCode)?.id as string;
+    for (let i = 0; i < count; i++, responseNo++) {
+      const pattern = patterns[responseNo % patterns.length] as number[];
+      await prisma.surveyResponse.create({
+        data: {
+          assessmentId: assessmentD.id,
+          unitId,
+          stratumId,
+          instrumentVersionId: version.id,
+          language: "id",
+          submittedOn: new Date("2026-11-20"),
+          durationBucket: "FROM_10_TO_15",
+          characteristicAnswers: { create: characteristics.map((c) => ({ characteristicId: c.id, level: c.code === "K1.3" ? 4 : level })) },
+          climateAnswers: { create: climateItems.map((item, j) => ({ itemId: item.id, value: pattern[j % 3] as number })) },
+        },
+      });
+    }
+  }
+  const sourcesD = Object.fromEntries(characteristics.map((c) => [c.code, { surveyAnswers: 17, dontKnow: 0 }]));
+  await prisma.scoreRun.create({
+    data: { assessmentId: assessmentD.id, engineVersion: "1.0.0", inputSnapshot: { sources: sourcesD }, parameterSnapshot: {}, result: resultFrom(0) as never, runById: users.leadAssessor.id, isFinal: true, finalResult: resultFrom(0) as never, finalizedAt: new Date(), finalizedById: users.leadAssessor.id },
+  });
+  // Respons bertanda pada asesmen survei untuk panel mutu data (keluarkan dan pulihkan).
+  const stratumS4 = await prisma.stratum.findFirstOrThrow({ where: { assessmentId: assessmentS.id, code: "S4" } });
+  const flaggedResponses: string[] = [];
+  for (const flags of [["POLA_SERAGAM"], ["TERLALU_CEPAT", "BANYAK_TIDAK_TAHU"]] as const) {
+    const r = await prisma.surveyResponse.create({
+      data: {
+        assessmentId: assessmentS.id,
+        unitId: unitS.id,
+        stratumId: stratumS4.id,
+        instrumentVersionId: version.id,
+        language: "id",
+        submittedOn: new Date("2026-10-20"),
+        durationBucket: flags.length === 1 ? "FROM_10_TO_15" : "UNDER_5",
+        qualityFlags: [...flags],
+        characteristicAnswers: { create: characteristics.map((c, i) => ({ characteristicId: c.id, level: flags.length === 1 || i % 3 === 0 ? 3 : null })) },
+        climateAnswers: { create: climateItems.map((item) => ({ itemId: item.id, value: 3 })) },
+      },
+    });
+    flaggedResponses.push(r.id);
+  }
+  const leadDashboard = await user("leadDashboard", "asesor.utama.dasbor@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true });
+  const executiveC = await user("executiveC", "eksekutif.gamma@e2e.test", orgC.id, "EXECUTIVE_VIEWER");
+  const coordinatorDashboard = await user("coordinatorDashboard", "koordinator.dasbor@e2e.test", orgC.id, "UNIT_COORDINATOR", { unitScope: [unitD2.id] });
+  Object.assign(users, { leadDashboard, executiveC, coordinatorDashboard });
+  await prisma.assessmentAssignment.createMany({
+    data: [
+      { assessmentId: assessmentD.id, userId: leadDashboard.id, role: "LEAD_ASSESSOR" },
+      { assessmentId: assessmentS.id, userId: leadDashboard.id, role: "LEAD_ASSESSOR" },
+    ],
+  });
+
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
-    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id },
+    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id, dashboard: assessmentD.id },
+    flaggedResponses,
     surveyTokens,
     observationWindows: { open: observationOpen.id, closed: observationClosed.id, site },
     units: { a1: unitA1.id, a2: unitA2.id, b1: unitB1.id, c1: unitC1.id, c2: unitC2.id },

@@ -79,7 +79,11 @@ export type AuditAction =
   | "score.run"
   | "panel.adjust"
   | "panel.adjust_remove"
-  | "panel.finalize";
+  | "panel.finalize"
+  // Fase 11: dasbor dan mutu data
+  | "survey.exclude"
+  | "survey.restore"
+  | "dashboard.export";
 
 export interface AuditActor {
   id: string | null;

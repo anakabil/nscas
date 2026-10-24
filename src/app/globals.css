@@ -207,3 +207,9 @@
     cursor: not-allowed;
   }
 }
+
+/* Sel peta warna yang disembunyikan karena kurang dari 5 responden: arsir abu-abu (docs/05). */
+.heat-hatched {
+  background-color: var(--heat-suppressed);
+  background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgb(94 96 117 / 0.18) 6px 8px);
+}
