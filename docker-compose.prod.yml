@@ -1,0 +1,203 @@
+# Penempatan produksi NSCAS (docs/02 bagian 7, panduan langkah demi langkah di docs/08).
+#
+#   Pengguna -> Caddy (TLS otomatis, header keamanan) -> app (Next.js, beberapa replika) -> PostgreSQL
+#                                                        \-> MinIO (berkas bukti, rekaman, PDF)
+#                                                        \-> worker pg-boss (image sama, perintah berbeda)
+#
+# Hanya Caddy yang membuka port ke luar. PostgreSQL dan MinIO hanya dapat dijangkau di jaringan internal.
+# Nilai rahasia dibaca dari .env.production (tidak dikomit; templat di .env.production.example).
+#
+#   docker compose -f docker-compose.prod.yml --env-file .env.production build
+#   docker compose -f docker-compose.prod.yml --env-file .env.production run --rm migrate
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+#   docker compose -f docker-compose.prod.yml --env-file .env.production run --rm backup   (dijalankan timer systemd)
+
+name: nscas
+
+x-app: &app
+  image: nscas:${NSCAS_VERSION:-latest}
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      NODE_IMAGE: ${NODE_IMAGE:-node:22.22.0-bookworm-slim}
+  env_file: .env.production
+  environment:
+    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    S3_ENDPOINT: http://minio:9000
+    S3_PUBLIC_ENDPOINT: https://${STORAGE_DOMAIN}
+    AUTH_URL: https://${DOMAIN}
+    APP_URL: https://${DOMAIN}
+    AUTH_TRUST_HOST: "true"
+  depends_on:
+    postgres:
+      condition: service_healthy
+    minio:
+      condition: service_healthy
+  restart: unless-stopped
+  networks: [internal]
+  read_only: true
+  tmpfs:
+    - /tmp:size=512m,uid=1000,gid=1000
+    - /app/.next/cache:size=256m,uid=1000,gid=1000
+    # @swc/core (plugin next-intl saat memuat next.config.ts) menyalin biner native ke cache pengguna dan
+    # menjalankannya dari sana, sehingga direktori ini perlu exec; /tmp tetap noexec.
+    - /home/node/.cache:exec,size=256m,uid=1000,gid=1000
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  logging: &logging
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+
+services:
+  app:
+    <<: *app
+    # Tiga proses aplikasi menurunkan antrean render pada lonjakan pembukaan survei (docs/07 bagian 5.3).
+    deploy:
+      replicas: ${APP_REPLICAS:-3}
+      resources:
+        limits: { memory: 1g }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/login').then((r) => process.exit(r.status < 500 ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  worker:
+    <<: *app
+    command: ["node", "--conditions=react-server", "--import", "tsx", "src/worker.ts"]
+    deploy:
+      resources:
+        limits: { memory: 1536m }
+
+  # Migrasi basis data, dijalankan manual sebelum memulai versi baru (docs/08 langkah 9 dan 14).
+  migrate:
+    <<: *app
+    command: ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
+    restart: "no"
+    profiles: [tools]
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      TZ: Asia/Jakarta
+    # max_connections > replika aplikasi × DATABASE_POOL_MAX + worker + pg-boss (docs/07 bagian 7).
+    command:
+      - postgres
+      - -c
+      - max_connections=150
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - effective_cache_size=3GB
+      - -c
+      - work_mem=16MB
+      - -c
+      - log_min_duration_statement=2000
+      - -c
+      - log_statement=none
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [internal]
+    shm_size: 256m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    logging: *logging
+
+  minio:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      # Unggah langsung dari peramban melalui URL bertanda tangan hanya dari asal aplikasi (docs/06 R8).
+      MINIO_API_CORS_ALLOW_ORIGIN: https://${DOMAIN}
+      MINIO_BROWSER: "off"
+      TZ: Asia/Jakarta
+    volumes:
+      - miniodata:/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    logging: *logging
+
+  # Sekali jalan: membuat bucket privat dan akses khusus aplikasi yang hanya berlaku untuk bucket itu.
+  minio-init:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "/ops/minio-init.sh"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY}
+    volumes:
+      - ./ops/minio/minio-init.sh:/ops/minio-init.sh:ro
+    networks: [internal]
+    restart: "no"
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN}
+      STORAGE_DOMAIN: ${STORAGE_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+      MONITORING_IPS: ${MONITORING_IPS:-127.0.0.1/32}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [internal]
+    logging: *logging
+
+  # Cadangan harian pg_dump terenkripsi ke penyimpanan objek kedua (ops/backup, docs/08 langkah 12).
+  backup:
+    build:
+      context: ops/backup
+    image: nscas-backup:${NSCAS_VERSION:-latest}
+    env_file: .env.production
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      SOURCE_S3_ENDPOINT: http://minio:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+    restart: "no"
+    profiles: [tools]
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  pgdata:
+  miniodata:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,15 @@
+# Cadangan harian NSCAS (docs/08 langkah 12). Pasang di /etc/systemd/system/, lalu:
+#   sudo systemctl daemon-reload && sudo systemctl enable --now nscas-backup.timer
+[Unit]
+Description=Cadangan harian NSCAS (pg_dump terenkripsi ke penyimpanan objek kedua)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=nscas
+Group=nscas
+WorkingDirectory=/opt/nscas
+ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml --env-file .env.production run --rm backup
+TimeoutStartSec=2h

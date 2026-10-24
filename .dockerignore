@@ -1,0 +1,31 @@
+# Berkas yang tidak masuk ke konteks build image produksi.
+.git
+node_modules
+.next
+coverage
+test-results
+playwright-report
+blob-report
+tsconfig.tsbuildinfo
+
+# Rahasia dan data lokal tidak pernah masuk image.
+.env
+.env.*
+.demo
+tests/e2e/.fixtures.json
+
+# Skrip data demo tidak boleh dijalankan di produksi; tes dan konfigurasinya tidak diperlukan di image.
+scripts/demo.ts
+scripts/demo
+tests
+playwright.config.ts
+vitest.config.mts
+vitest.integration.config.mts
+
+# Berkas operasional dan dokumen tidak diperlukan di dalam image.
+ops
+docs
+docker-compose*.yml
+Caddyfile
+Dockerfile
+.dockerignore

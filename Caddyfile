@@ -1,0 +1,84 @@
+# Caddy untuk NSCAS (docs/02 bagian 7, docs/08). TLS otomatis dari Let's Encrypt, HTTP/3, header keamanan,
+# penyeimbang beban ke beberapa replika aplikasi, dan tanpa log untuk rute bertoken.
+#
+# Variabel lingkungan (docker-compose.prod.yml):
+#   DOMAIN          nscas.nusasafety.co.id
+#   STORAGE_DOMAIN  berkas.nscas.nusasafety.co.id (URL bertanda tangan untuk unggah dan unduh berkas)
+#   ACME_EMAIL      surel pemberitahuan sertifikat
+#   MONITORING_IPS  alamat pemantau yang boleh membuka /health, dipisah spasi (docs/06 R7)
+{
+	email {$ACME_EMAIL}
+	servers {
+		protocols h1 h2 h3
+	}
+}
+
+# Header keamanan dasar. Aplikasi sudah mengirim CSP, X-Frame-Options, dan Referrer-Policy per rute
+# (src/middleware.ts, no-referrer untuk rute survei); Caddy hanya mengisi bila belum ada (awalan ?),
+# agar kebijakan per rute dari aplikasi tidak tertimpa.
+(security_headers) {
+	header {
+		?Strict-Transport-Security "max-age=63072000; includeSubDomains"
+		?X-Content-Type-Options "nosniff"
+		?X-Frame-Options "DENY"
+		?Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+		-X-Powered-By
+	}
+}
+
+{$DOMAIN} {
+	import security_headers
+	encode zstd gzip
+
+	# Log akses tidak mencatat rute bertoken: token survei dan penilaian mandiri ada di jalur URL, dan alamat IP
+	# responden tidak boleh tersimpan (CLAUDE.md aturan 2, docs/06 R5).
+	@token_routes path /s/* /sa/* /q/* /o/*
+	log_skip @token_routes
+	log {
+		output file /data/logs/access.log {
+			roll_size 50MiB
+			roll_keep 10
+			roll_keep_for 720h
+		}
+		format json
+	}
+
+	# /health hanya untuk pemantau (docs/06 R7); dari luar dijawab 404.
+	@health_external {
+		path /health /health/*
+		not remote_ip {$MONITORING_IPS:127.0.0.1/32}
+	}
+	respond @health_external 404
+
+	# Unggah daftar responden dan berkas melalui aplikasi dibatasi 30 MB; berkas bukti langsung ke STORAGE_DOMAIN.
+	request_body {
+		max_size 30MB
+	}
+
+	reverse_proxy {
+		# Seluruh replika layanan app di jaringan Docker, dibaca ulang dari DNS internal.
+		dynamic a {
+			name app
+			port 3000
+			refresh 10s
+		}
+		lb_policy least_conn
+		# Pemeriksaan pasif: replika yang gagal dijawab dilewati 30 detik, permintaan dicoba ke replika lain.
+		lb_try_duration 10s
+		fail_duration 30s
+	}
+}
+
+# Penyimpanan objek untuk URL bertanda tangan (berumur 5 sampai 10 menit). Tanpa log karena URL memuat tanda tangan.
+{$STORAGE_DOMAIN} {
+	import security_headers
+	log_skip
+	request_body {
+		max_size 30MB
+	}
+	reverse_proxy minio:9000 {
+		# MinIO memeriksa tanda tangan terhadap Host asli dari peramban.
+		header_up Host {host}
+	}
+}

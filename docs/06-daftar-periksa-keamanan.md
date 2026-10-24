@@ -53,10 +53,10 @@ Perintah pemeriksaan yang dijalankan: `npm run lint`, `npm run typecheck`, `npm 
 
 | No | Butir | Status | Bukti | Catatan |
 |---|---|---|---|---|
-| 4.1 | TLS 1.2 ke atas melalui Caddy, HSTS aktif | Terpenuhi sebagian | Header `Strict-Transport-Security` di `src/lib/security-headers.ts` (produksi) | Konfigurasi TLS Caddy disiapkan di Fase 16. |
+| 4.1 | TLS 1.2 ke atas melalui Caddy, HSTS aktif | Terpenuhi sebagian | HSTS di `src/lib/security-headers.ts`; `Caddyfile` (Fase 16) dengan TLS otomatis, HTTP/3, dan pengalihan HTTP ke HTTPS, diuji lokal | Penerbitan sertifikat Let's Encrypt dan peringkat SSL Labs diperiksa di server (docs/08 langkah 11). |
 | 4.2 | Kolom `emailEnc`, `phoneEnc`, `totpSecretEnc` AES-256-GCM | Terpenuhi | `src/lib/privacy/crypto.ts`; tes `src/lib/privacy/__tests__` | Kunci dari `DATA_ENCRYPTION_KEY` di `.env`, tidak pernah dikomit. |
-| 4.3 | Volume basis data dan penyimpanan objek terenkripsi di tingkat disk | Operasional | `S3_SSE` opsional di `src/lib/storage.ts` untuk enkripsi sisi server | Wajib dipastikan pada penyedia pusat data. |
-| 4.4 | Cadangan basis data dienkripsi sebelum dikirim | Operasional | | Skrip cadangan dan uji pemulihan disiapkan di Fase 16. |
+| 4.3 | Volume basis data dan penyimpanan objek terenkripsi di tingkat disk | Operasional | `S3_SSE` opsional di `src/lib/storage.ts`; prasyarat penyedia di docs/08 langkah 1 | Wajib dipastikan pada penyedia pusat data (konfirmasi tertulis) atau dengan LUKS. |
+| 4.4 | Cadangan basis data dienkripsi sebelum dikirim | Terpenuhi sebagian | `ops/backup/backup.sh` mengalirkan pg_dump ke age (kunci publik) lalu ke penyimpanan objek kedua, simpan 30 hari; `ops/backup/restore-test.sh` dan `checks.sql`; keduanya diuji nyata pada basis data demo (docs/08 bagian 16) | Pemasangan timer dan uji pemulihan pertama di server (docs/08 langkah 12). |
 
 ## 5. Header dan pembatasan
 
@@ -137,12 +137,12 @@ Hasil setelah perbaikan: `found 0 vulnerabilities`.
 
 | Kode | Risiko | Penanganan yang disarankan |
 |---|---|---|
-| R1 | Urutan fisik baris `SurveyResponse` di PostgreSQL dapat mencerminkan urutan pengiriman, yang dapat dicocokkan dengan `AccessToken.completedAt` oleh pihak yang memiliki akses langsung ke basis data. | Akses basis data produksi hanya untuk administrator dengan prosedur tertulis; jalankan `VACUUM FULL` atau `CLUSTER` berkala pada tabel respons setelah survei ditutup (Fase 16). |
+| R1 | Urutan fisik baris `SurveyResponse` di PostgreSQL dapat mencerminkan urutan pengiriman, yang dapat dicocokkan dengan `AccessToken.completedAt` oleh pihak yang memiliki akses langsung ke basis data. | `ops/maintenance/shuffle-survey-rows.sql` (Fase 16) menjalankan CLUSTER menurut kunci primer UUID acak setelah survei ditutup, sehingga urutan pengiriman hilang dari tabel dan dari cadangan berikutnya; diuji pada basis data demo. Akses basis data produksi hanya untuk administrator (docs/08 langkah 4). |
 | R2 | Inferensi silang antartabel: sel tersembunyi dapat dihitung dari selisih dasbor berbeda tingkat agregasi bila pembaca menggabungkan beberapa ekspor. | Penyembunyian komplementer sudah diterapkan dalam satu tabel. Batasi ekspor ke peran yang memerlukan, dan sebutkan larangan rekonstruksi di perjanjian pemrosesan data. |
 | R3 | Batas 60 permintaan per menit per hash IP dapat menolak pekerja yang mengisi survei dari satu jaringan Wi-Fi lokasi proyek (NAT bersama). | Atur `SURVEY_RATE_LIMIT_PER_MINUTE` sekitar 600 di produksi dan pantau penolakan 429. |
 | R4 | Penghitung pembatas laju tersimpan di memori proses; tidak berlaku bersama bila aplikasi dijalankan lebih dari satu proses. Uji beban Fase 15 (docs/07) merekomendasikan tiga proses aplikasi selama jendela survei. | Dengan N proses, batas efektif menjadi N kali nilai yang diatur; tetapkan nilainya dengan memperhitungkan hal ini. Bila diperlukan batas yang tepat, pindahkan penghitung ke PostgreSQL atau penyimpanan bersama. |
-| R5 | Log akses server web dapat merekam token survei di jalur `/s/*` dan `/sa/*` beserta alamat IP. | Caddyfile Fase 16 tidak mencatat log untuk `/s/*`, `/sa/*`, dan `/q/*`. |
+| R5 | Log akses server web dapat merekam token survei di jalur `/s/*` dan `/sa/*` beserta alamat IP. | `Caddyfile` memakai `log_skip` untuk `/s/*`, `/sa/*`, `/q/*`, dan `/o/*`, serta tanpa log untuk domain berkas; diuji lokal (0 baris `/s/` di log akses). |
 | R6 | Laporan final yang disimpan setelah pemusnahan memuat lampiran nama dan jabatan narasumber validasi. | Perlu keputusan pemilik proyek: tetap dicantumkan sebagai bagian laporan yang diserahkan kepada klien, atau diganti dengan jumlah peserta per sesi. |
-| R7 | Halaman `/health` publik menampilkan status basis data dan penyimpanan. | Tidak memuat data pribadi. Di produksi, batasi `/health` ke jaringan pemantauan melalui Caddy. |
-| R8 | CORS penyimpanan objek dan enkripsi sisi server (`S3_SSE`) belum diatur untuk produksi. | Atur CORS bucket hanya untuk asal aplikasi dan aktifkan `S3_SSE` (Fase 16). |
-| R9 | Next.js mengirim telemetri anonim saat build. | Tetapkan `NEXT_TELEMETRY_DISABLED=1` di Dockerfile (Fase 16). Telemetri tidak memuat data responden. |
+| R7 | Halaman `/health` publik menampilkan status basis data dan penyimpanan. | `Caddyfile` menjawab 404 untuk `/health` dari luar `MONITORING_IPS`; diuji lokal. |
+| R8 | CORS penyimpanan objek dan enkripsi sisi server belum diatur untuk produksi. | `docker-compose.prod.yml` membatasi CORS MinIO ke asal aplikasi (`MINIO_API_CORS_ALLOW_ORIGIN`) dan memakai akses khusus aplikasi yang hanya berlaku untuk bucketnya (`ops/minio/minio-init.sh`). Enkripsi data MinIO mengandalkan enkripsi disk (4.3); bucket cadangan wajib memakai enkripsi sisi server penyedia. |
+| R9 | Next.js mengirim telemetri anonim saat build. | `NEXT_TELEMETRY_DISABLED=1` di `Dockerfile` (Fase 16). Telemetri tidak memuat data responden. |
