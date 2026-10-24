@@ -16,8 +16,16 @@ function cookieName(code: string): string {
   return `nscas_q_${hashToken(code).slice(0, 16)}`;
 }
 
-export async function GET(request: Request, { params }: { params: Promise<{ code: string }> }) {
-  const unavailable = (reason: string) => NextResponse.redirect(new URL(`/q/unavailable?reason=${reason}`, request.url), 303);
+/**
+ * Pengalihan 303 dengan alamat relatif. Peramban menyelesaikannya terhadap alamat yang dibukanya, sehingga tetap
+ * benar di balik proksi yang mengganti header Host (request.url bisa berisi alamat internal).
+ */
+function seeOther(path: string): NextResponse {
+  return new NextResponse(null, { status: 303, headers: { Location: path } });
+}
+
+export async function GET(_request: Request, { params }: { params: Promise<{ code: string }> }) {
+  const unavailable = (reason: string) => seeOther(`/q/unavailable?reason=${reason}`);
   const parsed = paramsSchema.safeParse(await params);
   if (!parsed.success) return unavailable("INVALID");
 
@@ -27,7 +35,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
   const result = await issueTokenFromQr(code, previous && looksLikeToken(previous) ? previous : null);
   if (!result.ok) return unavailable(result.reason);
 
-  const response = NextResponse.redirect(new URL(`/s/${result.raw}`, request.url), 303);
+  const response = seeOther(`/s/${result.raw}`);
   response.cookies.set(cookieName(code), result.raw, {
     httpOnly: true,
     sameSite: "lax",

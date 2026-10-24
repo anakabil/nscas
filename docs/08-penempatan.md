@@ -328,3 +328,36 @@ Yang belum dapat diverifikasi karena kebijakan jaringan lingkungan pengembangan 
 3. Penerbitan sertifikat Let's Encrypt dan pengiriman SMTP nyata.
 
 Ketiganya terperiksa pada langkah 9 sampai 12 di server.
+
+## 17. Penempatan di VPS Hostinger tanpa sesi SSH
+
+Bagian ini mencatat jalur penempatan di VPS Hostinger pusat data Jakarta (kode `dci`), yang disiapkan pada 24 Oktober 2026. Penempatan ini ditunda sampai klien memberi kepastian. Selama itu uji coba memakai GitHub Codespaces (docs/09).
+
+### 17.1 Berkas
+
+| Berkas | Fungsi |
+|---|---|
+| `ops/hostinger/post-install.sh` | Mengunduh repositori pada commit tertentu ke `/opt/nscas`, lalu menjalankan `bootstrap.sh`. Dapat diunggah sebagai post-install script Hostinger, atau dijalankan dari terminal hPanel. |
+| `ops/hostinger/bootstrap.sh` | Langkah 3 sampai 11 panduan ini: paket sistem, pembaruan otomatis, Docker, firewall, pengguna `nscas`, rahasia acak di `.env.production`, build, migrasi, seed, menjalankan aplikasi, dan menunggu sertifikat TLS. Aman dijalankan ulang. Rahasia dibuat di server dan tidak pernah dicetak ke log. Kata sandi SUPER_ADMIN awal disimpan di `/root/nscas-admin-awal.txt` (hanya root). Kemajuan ringkas ada di `/var/log/nscas/langkah.log`, keluaran lengkap di `/var/log/nscas/bootstrap.log`. |
+
+### 17.2 Langkah
+
+1. Beli VPS di hPanel: KVM 4 (4 vCPU, 16 GB RAM, 200 GB), lokasi Indonesia (Jakarta), sistem operasi Ubuntu 24.04 with Docker. Matikan pemindai Monarx (layanan pihak ketiga, CLAUDE.md aturan 7).
+2. Di zona DNS `nusasafety.co.id`, hapus rekaman ALIAS `nscas` yang mengarah ke CDN web hosting, lalu buat rekaman A `nscas` dan `berkas.nscas` ke IP VPS (bagian 2).
+3. Buka terminal VPS di hPanel, lalu jalankan dengan `<ref>` berupa commit yang akan dipasang:
+
+   ```bash
+   curl -fsSL -o /root/nscas-post-install.sh https://raw.githubusercontent.com/anakabil/nscas/<ref>/ops/hostinger/post-install.sh
+   systemd-run --unit nscas-bootstrap --setenv=NSCAS_REF=<ref> --setenv=NSCAS_ADMIN_EMAIL=admin@nusasafety.co.id bash /root/nscas-post-install.sh
+   tail -f /var/log/nscas/langkah.log
+   ```
+
+   `systemd-run` menjaga pemasangan tetap berjalan walaupun terminal peramban tertutup. Pemasangan selesai bila log menampilkan `NSCAS_BOOTSTRAP_DONE`.
+4. Baca kata sandi awal dengan `cat /root/nscas-admin-awal.txt`. Ikuti instruksi di berkas itu: ganti kata sandi, aktifkan verifikasi dua langkah, simpan `DATA_ENCRYPTION_KEY` dan `AUTH_SECRET` di pengelola kata sandi perusahaan, lalu hapus berkasnya.
+5. Lanjutkan bagian 11 (pemeriksaan setelah penempatan), bagian 12 (cadangan), dan bagian 15 (daftar periksa sebelum survei pertama).
+
+### 17.3 Catatan dari percobaan 24 Oktober 2026
+
+1. Pembuatan post-install script melalui API Hostinger ditolak dengan HTTP 403. Pembelian VPS melalui API berhenti pada status `payment_initiated` dan tidak pernah menjadi langganan, sehingga pembelian sebaiknya dilakukan langsung di hPanel.
+2. Sebelum data responden sungguhan masuk, tiga hal wajib dipastikan secara tertulis kepada Hostinger: enkripsi disk VPS di tingkat penyedia (docs/04 bagian 4), lokasi penyimpanan cadangan mingguan VPS (CLAUDE.md aturan 7), dan lokasi server surel bila SMTP Hostinger dipakai untuk undangan.
+3. `ops/hostinger/bootstrap.sh` belum pernah dijalankan di VPS sungguhan. Yang sudah diuji baru tata tulis skrip dan fungsi pengisian rahasianya.

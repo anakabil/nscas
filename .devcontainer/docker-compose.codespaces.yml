@@ -1,0 +1,19 @@
+# Tambahan untuk Codespaces (docs/09), dipakai bersama docker-compose.yml.
+#
+# Penerus port Codespaces dapat mengganti header Host menjadi localhost. URL bertanda tangan untuk unggah dan
+# unduh bukti ditandatangani untuk alamat publik, sehingga MinIO menolaknya bila menerima Host yang berbeda.
+# Proksi ini mengembalikan Host ke alamat publik sebelum meneruskan permintaan ke MinIO.
+
+services:
+  storage-proxy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      STORAGE_PUBLIC_HOST: ${STORAGE_PUBLIC_HOST:?STORAGE_PUBLIC_HOST wajib diisi di .env}
+    ports:
+      - "9100:9100"
+    volumes:
+      - ./.devcontainer/storage-proxy.Caddyfile:/etc/caddy/Caddyfile:ro

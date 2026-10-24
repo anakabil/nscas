@@ -12,6 +12,7 @@ tsconfig.tsbuildinfo
 .env
 .env.*
 .demo
+.codespace
 tests/e2e/.fixtures.json
 
 # Skrip data demo tidak boleh dijalankan di produksi; tes dan konfigurasinya tidak diperlukan di image.
@@ -25,6 +26,7 @@ vitest.integration.config.mts
 # Berkas operasional dan dokumen tidak diperlukan di dalam image.
 ops
 docs
+.devcontainer
 docker-compose*.yml
 Caddyfile
 Dockerfile

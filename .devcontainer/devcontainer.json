@@ -1,0 +1,26 @@
+// Lingkungan uji coba NSCAS di GitHub Codespaces (docs/09). Hanya untuk data demo fiktif: server Codespaces
+// berada di luar Indonesia, sehingga data responden sungguhan tidak boleh dimasukkan (CLAUDE.md aturan 7).
+{
+  "name": "NSCAS uji coba",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "32gb" },
+  "containerEnv": { "TZ": "Asia/Jakarta" },
+  // 3000 aplikasi, 9100 proksi penyimpanan berkas (unggah dan unduh bukti), 8025 kotak surat uji.
+  "forwardPorts": [3000, 9100, 8025],
+  "portsAttributes": {
+    "3000": { "label": "NSCAS", "onAutoForward": "notify" },
+    "9100": { "label": "Berkas NSCAS", "onAutoForward": "silent" },
+    "8025": { "label": "Kotak surat uji (Mailpit)", "onAutoForward": "silent" }
+  },
+  "otherPortsAttributes": { "onAutoForward": "ignore" },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "bash .devcontainer/start.sh",
+  "postAttachCommand": "bash .devcontainer/ports.sh",
+  "customizations": {
+    "codespaces": { "openFiles": ["docs/09-uji-coba-codespaces.md"] }
+  }
+}

@@ -30,6 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Codespaces uji coba: log dan berkas akun berisi kata sandi (docs/09)
+/.codespace/
+
 # env files: rahasia tidak pernah dikomit, hanya .env.example
 .env
 .env.*
