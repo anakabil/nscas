@@ -46,6 +46,7 @@ export default defineConfig({
         reuseExistingServer: false,
         timeout: 420_000,
         // E2E_DATABASE_URL dikirim eksplisit agar skrip penyiapan memakai alamat yang sama tanpa menambah akhiran lagi.
-        env: { E2E_DATABASE_URL: e2eDatabaseUrl(), DATABASE_URL: e2eDatabaseUrl(), AUTH_URL: baseURL },
+        // Seluruh tes berjalan dari satu alamat IP, sehingga batas laju rute bertoken dilonggarkan.
+        env: { E2E_DATABASE_URL: e2eDatabaseUrl(), DATABASE_URL: e2eDatabaseUrl(), AUTH_URL: baseURL, SURVEY_RATE_LIMIT_PER_MINUTE: "5000" },
       },
 });

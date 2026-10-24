@@ -163,6 +163,8 @@ async function main(): Promise<void> {
     assessorStaff: await user("assessorStaff", "asesor@e2e.test", operator.id, "ASSESSOR"),
     adminC: await user("adminC", "admin.gamma@e2e.test", orgC.id, "CLIENT_ADMIN", { totp: true }),
     coordinatorC: await user("coordinatorC", "koordinator.gamma@e2e.test", orgC.id, "UNIT_COORDINATOR", { unitScope: [unitC1.id] }),
+    // Fase 7: administrator klien kedua organisasi C, agar kode TOTP-nya tidak bentrok dengan adminC.
+    adminSurvey: await user("adminSurvey", "admin.survei@e2e.test", orgC.id, "CLIENT_ADMIN", { totp: true }),
   };
 
   const fixtures = {

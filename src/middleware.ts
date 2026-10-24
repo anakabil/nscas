@@ -6,6 +6,9 @@ import { buildContentSecurityPolicy, securityHeaders, SURVEY_PATH } from "@/lib/
 // Pemeriksaan hak akses TIDAK dilakukan di sini; seluruhnya di server melalui src/lib/auth/guard.ts.
 
 const development = process.env.NODE_ENV !== "production";
+// Batas bawaan 60 per menit per hash IP (docs/04 bagian 5); dapat diatur bila banyak responden berbagi satu
+// alamat IP, misalnya Wi-Fi lokasi proyek atau NAT operator seluler.
+const surveyLimit = Number(process.env.SURVEY_RATE_LIMIT_PER_MINUTE) || SURVEY_RATE_LIMIT.limit;
 
 // Pembatas laju rute survei: kunci berupa hash SHA-256 dari IP dengan garam acak di memori yang berganti
 // setiap hari, sehingga hash tidak dapat dihubungkan antarhari dan tidak pernah disimpan (docs/02 bagian 4).
@@ -33,7 +36,7 @@ async function surveyRateLimited(request: NextRequest): Promise<number | null> {
     surveyHits.set(key, entry);
   }
   entry.count += 1;
-  return entry.count > SURVEY_RATE_LIMIT.limit ? Math.ceil((entry.resetAt - now) / 1000) : null;
+  return entry.count > surveyLimit ? Math.ceil((entry.resetAt - now) / 1000) : null;
 }
 
 export async function middleware(request: NextRequest) {

@@ -270,7 +270,8 @@
       "label": "Assessment navigation",
       "respondents": "Respondents",
       "qr": "QR codes",
-      "participation": "Participation"
+      "participation": "Participation",
+      "selfAssessments": "Self-assessments"
     },
     "newTitle": "New assessment",
     "newButton": "Create new assessment",
@@ -339,7 +340,8 @@
       "FILE_EMPTY": "Choose a respondent file first.",
       "FILE_UNREADABLE": "The file cannot be read. Make sure it is not damaged or password protected.",
       "FILE_TOO_LARGE": "The file is larger than 10 MB.",
-      "INVALID_ROWS": "The file cannot be saved yet. Fix the errors below, then check again."
+      "INVALID_ROWS": "The file cannot be saved yet. Fix the errors below, then check again.",
+      "SELF_ASSESSMENT_SUBMITTED": "This self-assessment has been sent and can no longer be changed."
     },
     "units": {
       "title": "Units",
@@ -869,5 +871,132 @@
       }
     },
     "closesAt": "The survey is open until {date}."
+  },
+  "selfAssessmentForm": {
+    "metaTitle": "Occupational safety and health culture self-assessment",
+    "heading": "Occupational safety and health (K3) culture self-assessment",
+    "identified": {
+      "title": "This self-assessment is identified",
+      "body": "Your name and position are stored with your answers. The self-assessment is a matter of accountability: Nusa Safety assessors trace the reasons and evidence you give and confirm them in interviews or discussions. It is therefore not anonymous, unlike the worker survey.",
+      "access": "Your answers can be read by Nusa Safety assessors and the assessment administrator in your organisation, and are not combined with the worker survey answers."
+    },
+    "profile": {
+      "title": "About you",
+      "name": "Full name",
+      "position": "Position",
+      "save": "Save details",
+      "saved": "Details saved."
+    },
+    "start": "Start the assessment",
+    "characteristic": {
+      "label": "Characteristic {current} of {total}",
+      "instruction": "Choose the one statement that best describes your organisation today.",
+      "justification": "Reason",
+      "justificationHint": "Explain the basis for your choice, for example practices, data, or events that support it. At least {min} characters.",
+      "counter": "{count} of at least {min} characters",
+      "evidence": "Supporting evidence",
+      "evidenceLinked": "Evidence mapped to this characteristic",
+      "evidenceOther": "Other evidence in this assessment",
+      "noEvidence": "No evidence linked yet. You can continue, but the assessors will rate this without supporting evidence.",
+      "noEvidenceUploaded": "No evidence has been uploaded for this assessment yet. Coordinators upload evidence through the Evidence menu in the console.",
+      "version": "version {version}"
+    },
+    "jump": "Go to characteristic",
+    "nav": {
+      "previous": "Previous",
+      "saveNext": "Save and continue",
+      "saveReview": "Save and review",
+      "saving": "Saving...",
+      "saved": "Draft saved."
+    },
+    "review": {
+      "title": "Review before sending",
+      "complete": "All characteristics are complete.",
+      "incomplete": "{count} characteristics are not complete:",
+      "reasons": {
+        "LEVEL": "no statement chosen",
+        "JUSTIFICATION": "reason shorter than {min} characters"
+      },
+      "noEvidence": "{count} characteristics have no evidence. You can still send the assessment.",
+      "warning": "Once sent, the answers are locked and cannot be changed.",
+      "submit": "Send self-assessment",
+      "submitting": "Sending...",
+      "edit": "Edit"
+    },
+    "submitted": {
+      "title": "Self-assessment sent",
+      "body": "Thank you. Your answers have been locked since {date}.",
+      "answers": "Your answers"
+    },
+    "status": {
+      "INVALID": {
+        "title": "Link not valid",
+        "body": "This self-assessment link is not recognised or has been replaced. Contact the assessment administrator in your organisation for the latest link."
+      },
+      "CLOSED": {
+        "title": "Self-assessment closed",
+        "body": "The self-assessment period has ended."
+      }
+    },
+    "errors": {
+      "INVALID_INPUT": "Please check your entries.",
+      "INVALID_TOKEN": "This link is no longer valid. Contact the assessment administrator for the latest link.",
+      "SELF_ASSESSMENT_SUBMITTED": "The self-assessment has been sent and can no longer be changed.",
+      "DISTRIBUTION_CLOSED": "The filling period has ended.",
+      "UNKNOWN_ITEM": "Choice not recognised. Reload the page.",
+      "UNKNOWN_EVIDENCE": "One of the evidence items is no longer available. Reload the page.",
+      "INCOMPLETE": "Some characteristics are not complete yet.",
+      "NETWORK": "Cannot reach the server. Check your connection and try again. Your entries on this screen are still here."
+    }
+  },
+  "selfAssessments": {
+    "intro": "Self-assessments are completed by management and the designated K3 function. They are identified: the name and position of the person filling it in are stored with the answers.",
+    "issue": {
+      "title": "Issue a self-assessment link",
+      "name": "Name",
+      "position": "Position",
+      "unit": "Unit",
+      "submit": "Issue link",
+      "pending": "Issuing...",
+      "issued": "The link for {name} has been issued. It is shown only once; copy it and send it to the person.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "table": {
+      "title": "Self-assessments",
+      "name": "Name",
+      "position": "Position",
+      "unit": "Unit",
+      "status": "Status",
+      "issuedAt": "Issued",
+      "progress": "Answered",
+      "progressValue": "{count} of {total}",
+      "actions": "Actions",
+      "empty": "No self-assessments have been issued yet.",
+      "statuses": {
+        "NOT_OPENED": "Not opened",
+        "DRAFT": "Draft",
+        "SUBMITTED": "Sent",
+        "REVOKED": "Link revoked"
+      },
+      "revoke": "Revoke link",
+      "reissue": "Reissue link",
+      "confirmRevoke": "Revoke this self-assessment link? The draft is kept and can be continued with a new link.",
+      "revoked": "Link revoked.",
+      "newLink": "New link (shown only once):",
+      "view": "View answers"
+    },
+    "detail": {
+      "respondent": "{name}, {position}",
+      "submittedAt": "Sent {date}",
+      "draft": "Still a draft; answers may change until it is sent.",
+      "level": "Level {level}",
+      "noAnswer": "Not answered",
+      "justification": "Reason",
+      "evidence": "Evidence",
+      "noEvidence": "No evidence",
+      "deleted": "deleted",
+      "back": "Back to the list"
+    }
   }
 }

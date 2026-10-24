@@ -50,7 +50,14 @@ export type AuditAction =
   | "invitation.sent"
   | "reminder.sent"
   | "qr.create"
-  | "qr.deactivate";
+  | "qr.deactivate"
+  // Penilaian mandiri (docs/01 M4); pengisi tanpa akun dicatat dengan pelaku kosong
+  | "selfAssessment.issue"
+  | "selfAssessment.revoke"
+  | "selfAssessment.reissue"
+  | "selfAssessment.profile_update"
+  | "selfAssessment.answer_save"
+  | "selfAssessment.submit";
 
 export interface AuditActor {
   id: string | null;
