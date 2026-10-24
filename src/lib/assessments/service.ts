@@ -29,7 +29,7 @@ import { wouldCreateCycle } from "./unit-tree";
 
 export class AssessmentRuleError extends Error {
   constructor(
-    readonly status: 400 | 403 | 404 | 409 | 422,
+    readonly status: 400 | 403 | 404 | 409 | 413 | 422 | 429,
     readonly code: string,
     readonly details?: unknown,
   ) {

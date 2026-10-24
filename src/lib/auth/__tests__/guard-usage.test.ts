@@ -19,6 +19,9 @@ const ALLOWED_EXEMPTIONS = new Map([
   ["src/app/sa/[token]/answer/route.ts", "self-assessment-token"],
   ["src/app/sa/[token]/profile/route.ts", "self-assessment-token"],
   ["src/app/sa/[token]/submit/route.ts", "self-assessment-token"],
+  // Berkas statis aplikasi observasi yang dapat dipasang (PWA), tanpa data.
+  ["src/app/o/manifest.webmanifest/route.ts", "pwa-manifest"],
+  ["src/app/o/sw.js/route.ts", "pwa-service-worker"],
 ]);
 
 function walk(dir: string): string[] {
@@ -43,7 +46,7 @@ describe("pemakaian guard", () => {
   it.each([...serverActions, ...routeHandlers].map((f) => [f.path, f] as const))("%s memakai guard", (path, file) => {
     if (ALLOWED_EXEMPTIONS.has(path)) {
       // Pengecualian yang disetujui tetap harus ditandai di berkasnya.
-      if (path.endsWith("actions.ts") || /^src\/app\/(q|s|sa)\//.test(path)) {
+      if (path.endsWith("actions.ts") || /^src\/app\/(q|s|sa|o)\//.test(path)) {
         expect(file.content).toContain(`guard-exempt: ${ALLOWED_EXEMPTIONS.get(path)}`);
       }
       return;

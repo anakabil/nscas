@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SURVEY_RATE_LIMIT } from "@/lib/rate-limit";
-import { buildContentSecurityPolicy, securityHeaders, SURVEY_PATH } from "@/lib/security-headers";
+import { buildContentSecurityPolicy, securityHeaders, storageOriginFromEnv, SURVEY_PATH } from "@/lib/security-headers";
 
 // Header keamanan dan pembatas laju rute survei (docs/04 bagian 5).
 // Pemeriksaan hak akses TIDAK dilakukan di sini; seluruhnya di server melalui src/lib/auth/guard.ts.
@@ -9,6 +9,7 @@ const development = process.env.NODE_ENV !== "production";
 // Batas bawaan 60 per menit per hash IP (docs/04 bagian 5); dapat diatur bila banyak responden berbagi satu
 // alamat IP, misalnya Wi-Fi lokasi proyek atau NAT operator seluler.
 const surveyLimit = Number(process.env.SURVEY_RATE_LIMIT_PER_MINUTE) || SURVEY_RATE_LIMIT.limit;
+const storageOrigin = storageOriginFromEnv();
 
 // Pembatas laju rute survei: kunci berupa hash SHA-256 dari IP dengan garam acak di memori yang berganti
 // setiap hari, sehingga hash tidak dapat dihubungkan antarhari dan tidak pernah disimpan (docs/02 bagian 4).
@@ -54,7 +55,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const nonce = btoa(crypto.randomUUID());
-  const csp = buildContentSecurityPolicy(nonce, { development });
+  const csp = buildContentSecurityPolicy(nonce, { development, storageOrigin });
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
   // Penanda rute untuk layout akar (selalu ditimpa, tidak dapat dikirim dari luar): halaman bertoken hanya

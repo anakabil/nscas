@@ -14,6 +14,10 @@ const storageSchema = z.object({
   S3_BUCKET: z.string().min(3),
   S3_ACCESS_KEY_ID: z.string().min(1),
   S3_SECRET_ACCESS_KEY: z.string().min(1),
+  /** Alamat penyimpanan objek yang dijangkau peramban untuk URL bertanda tangan; bawaan sama dengan S3_ENDPOINT. */
+  S3_PUBLIC_ENDPOINT: z.url().optional().or(z.literal("").transform(() => undefined)),
+  /** Enkripsi sisi server, misalnya AES256 (docs/02 bagian 5). Kosong bila penyedia mengenkripsi secara bawaan. */
+  S3_SSE: z.enum(["AES256", "aws:kms"]).optional().or(z.literal("").transform(() => undefined)),
 });
 
 export type DatabaseEnv = z.infer<typeof databaseSchema>;

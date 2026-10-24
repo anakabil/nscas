@@ -165,13 +165,29 @@ async function main(): Promise<void> {
     coordinatorC: await user("coordinatorC", "koordinator.gamma@e2e.test", orgC.id, "UNIT_COORDINATOR", { unitScope: [unitC1.id] }),
     // Fase 7: administrator klien kedua organisasi C, agar kode TOTP-nya tidak bentrok dengan adminC.
     adminSurvey: await user("adminSurvey", "admin.survei@e2e.test", orgC.id, "CLIENT_ADMIN", { totp: true }),
+    // Fase 8: koordinator unit asesmen survei (tanpa TOTP) untuk bukti dan observasi digital.
+    coordinatorSurvey: await user("coordinatorSurvey", "koordinator.survei@e2e.test", orgC.id, "UNIT_COORDINATOR", { unitScope: [unitS.id] }),
   };
+
+  // Fase 8: jendela observasi yang sedang terbuka dan yang sudah ditutup, di titik Jakarta dengan radius 500 meter.
+  const site = { latitude: -6.2088, longitude: 106.8456, radiusMeters: 500 };
+  const checklist = [
+    { code: "O1", label: "Pemakaian alat pelindung diri di area kerja" },
+    { code: "O2", label: "Rambu dan pembatas area berbahaya" },
+  ];
+  const observationOpen = await prisma.observationWindow.create({
+    data: { assessmentId: assessmentS.id, unitId: unitS.id, title: "Observasi area kerja pekan pertama", opensAt: new Date(Date.now() - 3_600_000), closesAt: new Date(Date.now() + 7 * 24 * 3_600_000), checklist, createdById: users.leadAssessor.id, ...site },
+  });
+  const observationClosed = await prisma.observationWindow.create({
+    data: { assessmentId: assessmentS.id, unitId: unitS.id, title: "Observasi yang sudah ditutup", opensAt: new Date(Date.now() - 3 * 24 * 3_600_000), closesAt: new Date(Date.now() - 2 * 24 * 3_600_000), checklist, createdById: users.leadAssessor.id, ...site },
+  });
 
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
     assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id },
     surveyTokens,
+    observationWindows: { open: observationOpen.id, closed: observationClosed.id, site },
     units: { a1: unitA1.id, a2: unitA2.id, b1: unitB1.id, c1: unitC1.id, c2: unitC2.id },
     users,
     totpSecrets: secrets,

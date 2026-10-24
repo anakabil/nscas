@@ -57,7 +57,14 @@ export type AuditAction =
   | "selfAssessment.reissue"
   | "selfAssessment.profile_update"
   | "selfAssessment.answer_save"
-  | "selfAssessment.submit";
+  | "selfAssessment.submit"
+  // Bukti dan observasi (docs/01 M5 dan M6)
+  | "evidence.upload"
+  | "evidence.version"
+  | "evidence.map"
+  | "evidence.delete"
+  | "observation.window_create"
+  | "observation.capture";
 
 export interface AuditActor {
   id: string | null;

@@ -36,6 +36,12 @@ export default async function AssessmentLayout({ children, params }: { children:
     ...(has(["LEAD_ASSESSOR", "CLIENT_ADMIN"]) ? [{ href: `${base}/respondents/qr`, label: t("assessment.nav.qr") }] : []),
     ...(has(rolesFor("tokensAndParticipation", "read")) ? [{ href: `${base}/participation`, label: t("assessment.nav.participation") }] : []),
     ...(has(rolesFor("selfAssessments", "read")) ? [{ href: `${base}/self-assessments`, label: t("assessment.nav.selfAssessments") }] : []),
+    ...(has(rolesFor("evidenceAndObservations", "read"))
+      ? [
+          { href: `${base}/evidence`, label: t("assessment.nav.evidence") },
+          { href: `${base}/observations`, label: t("assessment.nav.observations") },
+        ]
+      : []),
   ];
 
   return (

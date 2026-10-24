@@ -92,3 +92,5 @@ export const ASSESSMENT_TEAM_ROLES = {
  * parameter terkunci (CLAUDE.md aturan 5) karena jadwal lapangan dapat bergeser selama pengumpulan data.
  */
 export const SURVEY_WINDOW_WRITE_ROLES = ["LEAD_ASSESSOR", "CLIENT_ADMIN"] as const satisfies readonly Role[];
+/** Jendela observasi dibuat asesor Nusa Safety yang ditugaskan (docs/01 M6). */
+export const OBSERVATION_WINDOW_WRITE_ROLES = ["LEAD_ASSESSOR", "ASSESSOR"] as const satisfies readonly Role[];

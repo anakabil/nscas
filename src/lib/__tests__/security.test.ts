@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { redactForAudit } from "@/lib/audit";
-import { buildContentSecurityPolicy, securityHeaders } from "@/lib/security-headers";
+import { buildContentSecurityPolicy, securityHeaders, storageOriginFromEnv } from "@/lib/security-headers";
 
 describe("Content-Security-Policy", () => {
   it("skrip hanya dari asal sendiri dengan nonce, tanpa 'unsafe-inline' dan tanpa pihak ketiga", () => {
@@ -62,3 +62,18 @@ describe("jejak audit tidak pernah memuat kredensial", () => {
     });
   });
 });
+
+describe("asal penyimpanan objek di CSP", () => {
+  it("mengizinkan unggah dan pratinjau langsung ke penyimpanan objek, tanpa melonggarkan skrip", () => {
+    const origin = storageOriginFromEnv({ S3_ENDPOINT: "http://minio:9000", S3_PUBLIC_ENDPOINT: "https://berkas.nscas.nusasafety.co.id/bucket" });
+    expect(origin).toBe("https://berkas.nscas.nusasafety.co.id");
+    const csp = buildContentSecurityPolicy("n", { development: false, storageOrigin: origin });
+    expect(csp).toContain("connect-src 'self' https://berkas.nscas.nusasafety.co.id");
+    expect(csp).toContain("img-src 'self' data: blob: https://berkas.nscas.nusasafety.co.id");
+    expect(csp).not.toMatch(/script-src[^;]*berkas/);
+    expect(storageOriginFromEnv({})).toBeNull();
+    expect(csp).toContain("upgrade-insecure-requests");
+    expect(buildContentSecurityPolicy("n", { development: false, storageOrigin: "http://localhost:9000" })).not.toContain("upgrade-insecure-requests");
+  });
+});
+

@@ -741,6 +741,8 @@ model EvidenceLink {
   id               String   @id @default(cuid())
   evidenceItemId   String
   characteristicId String
+  /// Butir daftar periksa (EvidenceRequirement) karakteristik ini yang dipenuhi bukti; dasar hitungan jenis bukti.
+  requirementIds   String[] @default([])
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -755,9 +757,15 @@ model ObservationWindow {
   id           String   @id @default(cuid())
   assessmentId String
   unitId       String
+  title        String   @default("")
   opensAt      DateTime
   closesAt     DateTime
+  /// Larik { code, label } butir yang diobservasi.
   checklist    Json
+  /// Titik proyek dan radius toleransi untuk jendela ini (awalnya disalin dari unit).
+  latitude     Float
+  longitude    Float
+  radiusMeters Int
   createdById  String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -777,6 +785,7 @@ model ObservationCapture {
   storageKey             String   @unique
   sha256                 String
   mimeType               String
+  sizeBytes              Int      @default(0)
   serverCapturedAt       DateTime @default(now())
   latitude               Float?
   longitude              Float?
