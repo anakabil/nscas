@@ -71,7 +71,9 @@ describe("seed instrumen NS-SCML-1.0", () => {
   });
 
   it("bobot aspek dan karakteristik kontekstual sesuai seed", async () => {
-    const aspects = await prisma.aspect.findMany({ orderBy: { code: "asc" } });
+    // Disaring ke versi NS-SCML-1.0: tes integrasi lain membuat versi instrumen uji dengan kode aspek yang sama.
+    const scope = { instrumentVersion: { code: INSTRUMENT_CODE } };
+    const aspects = await prisma.aspect.findMany({ where: scope, orderBy: { code: "asc" } });
     expect(aspects.map((a) => [a.code, a.maxPointsStep5, a.excludedFromLevel])).toEqual([
       ["A1", 4800, false],
       ["A2", 1800, false],
@@ -81,14 +83,14 @@ describe("seed instrumen NS-SCML-1.0", () => {
       ["A6", 800, false],
       ["KT", null, true],
     ]);
-    const contextual = await prisma.characteristic.findMany({ where: { isContextual: true }, select: { code: true } });
+    const contextual = await prisma.characteristic.findMany({ where: { ...scope, isContextual: true }, select: { code: true } });
     expect(contextual.map((c) => c.code).sort()).toEqual(["KT.1", "KT.2"]);
   });
 
   it("butir iklim negatif ditandai sesuai seed", async () => {
     const files = loadSeedFiles(SEED_DIR);
     const expected = files.climate.dimensions.flatMap((d) => d.items.filter((i) => i.reverse).map((i) => i.code));
-    const reverse = await prisma.climateItem.findMany({ where: { reverseCoded: true }, select: { code: true } });
+    const reverse = await prisma.climateItem.findMany({ where: { reverseCoded: true, dimension: { instrumentVersion: { code: INSTRUMENT_CODE } } }, select: { code: true } });
     expect(reverse.map((i) => i.code).sort()).toEqual(expected.sort());
   });
 });
@@ -142,7 +144,7 @@ describe("idempotensi", () => {
   });
 
   it("memulihkan isi instrumen yang menyimpang selama versi belum dipakai", async () => {
-    const statement = await prisma.levelStatement.findFirstOrThrow({ where: { level: 3 } });
+    const statement = await prisma.levelStatement.findFirstOrThrow({ where: { level: 3, characteristic: { instrumentVersion: { code: INSTRUMENT_CODE } } } });
     await prisma.levelStatement.update({ where: { id: statement.id }, data: { textId: "diubah manual" } });
 
     await seedInstrument(prisma, loadSeedFiles(SEED_DIR));

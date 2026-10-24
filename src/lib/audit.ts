@@ -72,7 +72,14 @@ export type AuditAction =
   | "validation.session_update"
   | "validation.participant_add"
   | "validation.participant_remove"
-  | "validation.rating_save";
+  | "validation.rating_save"
+  // Fase 10: penilaian asesor dan rapat panel
+  | "rating.evidence_save"
+  | "rating.scl_save"
+  | "score.run"
+  | "panel.adjust"
+  | "panel.adjust_remove"
+  | "panel.finalize";
 
 export interface AuditActor {
   id: string | null;

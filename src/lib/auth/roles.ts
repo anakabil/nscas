@@ -103,3 +103,16 @@ export const VALIDATION_ROLES = {
   schedule: ["LEAD_ASSESSOR"],
   rate: ["LEAD_ASSESSOR", "ASSESSOR"],
 } as const satisfies Record<string, readonly Role[]>;
+/**
+ * Penilaian asesor dan rapat panel (docs/01 M8, baris "Nilai asesor" dan "Penyesuaian panel dan finalisasi"):
+ * setiap asesor mengisi nilai buktinya sendiri; asesor utama mengisi jalur setara Safety Culture Ladder,
+ * menjalankan mesin, menyesuaikan nilai di rapat panel, dan menetapkan hasil.
+ */
+export const SCORING_ROLES = {
+  read: ["LEAD_ASSESSOR", "ASSESSOR"],
+  rate: ["LEAD_ASSESSOR", "ASSESSOR"],
+  scl: ["LEAD_ASSESSOR"],
+  run: ["LEAD_ASSESSOR"],
+  panelRead: ["LEAD_ASSESSOR", "ASSESSOR"],
+  panelWrite: ["LEAD_ASSESSOR"],
+} as const satisfies Record<string, readonly Role[]>;

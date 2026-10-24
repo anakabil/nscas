@@ -195,6 +195,7 @@ model User {
   evidenceRatings          EvidenceRating[]       @relation("EvidenceRatingAssessor")
   sclFulfillments          SclFulfillment[]       @relation("SclFulfillmentEnteredBy")
   scoreRuns                ScoreRun[]             @relation("ScoreRunRunBy")
+  scoreRunsFinalized       ScoreRun[]             @relation("ScoreRunFinalizedBy")
   panelAdjustments         PanelAdjustment[]      @relation("PanelAdjustmentDecidedBy")
   verifiedActions          ActionItem[]           @relation("ActionItemVerifiedBy")
   actionUpdates            ActionUpdate[]         @relation("ActionUpdateCreatedBy")
@@ -902,6 +903,8 @@ model EvidenceRating {
   level            Float
   rationale        String
   evidenceIds      String[]
+  /// Rekaman observasi digital yang dirujuk asesor (butir observasi tidak dipetakan ke karakteristik).
+  observationIds   String[] @default([])
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -933,7 +936,7 @@ model SclFulfillment {
 }
 
 model ScoreRun {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   assessmentId      String
   engineVersion     String
   inputSnapshot     Json
@@ -941,12 +944,17 @@ model ScoreRun {
   result            Json
   runById           String
   /// Paling banyak satu ScoreRun final per asesmen (indeks parsial di migrasi).
-  isFinal           Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  isFinal           Boolean   @default(false)
+  /// Hasil mesin dengan penyesuaian panel, ditulis sekali saat finalisasi. `result` tetap hasil mesin murni.
+  finalResult       Json?
+  finalizedAt       DateTime?
+  finalizedById     String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   assessment       Assessment        @relation(fields: [assessmentId], references: [id])
   runBy            User              @relation("ScoreRunRunBy", fields: [runById], references: [id])
+  finalizedBy      User?             @relation("ScoreRunFinalizedBy", fields: [finalizedById], references: [id])
   panelAdjustments PanelAdjustment[]
 
   @@index([assessmentId, createdAt])

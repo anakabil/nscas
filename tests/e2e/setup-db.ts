@@ -123,6 +123,10 @@ async function main(): Promise<void> {
   const unitS = await unit(assessmentS.id, "Proyek Survei Timur");
   await prisma.stratum.createMany({ data: strataS.map((s) => ({ ...s, assessmentId: assessmentS.id })) });
   const stratumS = await prisma.stratum.findFirstOrThrow({ where: { assessmentId: assessmentS.id, code: "S4" } });
+  // Seperti hasil penguncian sebenarnya, snapshot memuat strata beserta id-nya.
+  const snapshotS = assessmentS.parameterSnapshot as Record<string, unknown>;
+  const lockedStrataS = await prisma.stratum.findMany({ where: { assessmentId: assessmentS.id }, orderBy: { code: "asc" }, select: { id: true, code: true, name: true, group: true, population: true, isContractor: true } });
+  await prisma.assessment.update({ where: { id: assessmentS.id }, data: { parameterSnapshot: { ...snapshotS, schemaVersion: 1, strata: lockedStrataS, dpaSigned: true } as never } });
   const surveyTokens: Record<string, string> = {};
   for (const project of ["desktop-chromium", "mobile-chromium"]) {
     for (const purpose of ["main", "payload", "decline", "qr"]) {
@@ -181,11 +185,103 @@ async function main(): Promise<void> {
     leadValidation: await user("leadValidation", "asesor.utama.validasi@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true }),
     assessorValidation: await user("assessorValidation", "asesor.validasi@e2e.test", operator.id, "ASSESSOR", { totp: true }),
   };
+  // Fase 10: lead assessor dan asesor tersendiri untuk penilaian asesor dan rapat panel.
+  const leadScoring = await user("leadScoring", "asesor.utama.penilaian@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true });
+  const assessorScoring = await user("assessorScoring", "asesor.penilaian@e2e.test", operator.id, "ASSESSOR", { totp: true });
+  Object.assign(users, { leadScoring, assessorScoring });
   await prisma.assessmentAssignment.createMany({
     data: [
       { assessmentId: assessmentS.id, userId: users.leadValidation.id, role: "LEAD_ASSESSOR" },
       { assessmentId: assessmentS.id, userId: users.assessorValidation.id, role: "ASSESSOR" },
+      { assessmentId: assessmentS.id, userId: leadScoring.id, role: "LEAD_ASSESSOR" },
+      { assessmentId: assessmentS.id, userId: assessorScoring.id, role: "ASSESSOR" },
     ],
+  });
+  const characteristics = await prisma.characteristic.findMany({ where: { instrumentVersionId: version.id }, orderBy: { order: "asc" }, select: { id: true, code: true } });
+  const characteristicId = (code: string) => characteristics.find((c) => c.code === code)?.id as string;
+  // Nilai asesor lain yang sudah ada untuk K2.1, agar layar penilaian menyembunyikannya sebelum asesor menyimpan.
+  await prisma.evidenceRating.create({
+    data: { assessmentId: assessmentS.id, characteristicId: characteristicId("K2.1"), assessorId: users.leadAssessor.id, level: 4, rationale: "Kebijakan K3 ditinjau tahunan dan dikomunikasikan ke proyek.", evidenceIds: [] },
+  });
+
+  // Fase 10: asesmen berstatus penilaian dengan data lengkap untuk eksekusi mesin dan rapat panel.
+  const assessmentP = await prisma.assessment.create({
+    data: {
+      ...base,
+      organizationId: orgC.id,
+      name: "Asesmen Panel Gamma 2026",
+      status: "SCORING",
+      lockedAt: new Date(),
+      dpaSigned: true,
+      surveyOpensAt: new Date(Date.now() - 30 * 24 * 3_600_000),
+      surveyClosesAt: new Date(Date.now() - 2 * 24 * 3_600_000),
+    },
+  });
+  const unitP = await unit(assessmentP.id, "Proyek Panel Selatan");
+  await prisma.stratum.createMany({
+    data: [
+      { assessmentId: assessmentP.id, code: "S2", name: "Manajemen menengah dan manajer proyek", group: "MANAGEMENT", population: 20 },
+      { assessmentId: assessmentP.id, code: "S4", name: "Pelaksana dan pekerja sendiri", group: "FIELD", population: 200 },
+    ],
+  });
+  const strataP = await prisma.stratum.findMany({ where: { assessmentId: assessmentP.id }, orderBy: { code: "asc" }, select: { id: true, code: true, name: true, group: true, population: true, isContractor: true } });
+  await prisma.assessment.update({
+    where: { id: assessmentP.id },
+    data: {
+      parameterSnapshot: {
+        schemaVersion: 1,
+        parameters,
+        samplePlan: null,
+        strata: strataP,
+        consent: { id: "Persetujuan responden asesmen panel.", en: "Respondent consent for the panel assessment." },
+        dpaSigned: true,
+      } as never,
+    },
+  });
+  await prisma.assessmentAssignment.createMany({
+    data: [
+      { assessmentId: assessmentP.id, userId: leadScoring.id, role: "LEAD_ASSESSOR" },
+      { assessmentId: assessmentP.id, userId: assessorScoring.id, role: "ASSESSOR" },
+    ],
+  });
+  // Persepsi: manajemen 4, lapangan 3 (K1.3 lebih tinggi agar selisih dengan bukti mencapai ambang).
+  for (const [code, count, level] of [["S2", 5, 4], ["S4", 6, 3]] as const) {
+    const stratumId = strataP.find((x) => x.code === code)?.id as string;
+    for (let i = 0; i < count; i++) {
+      await prisma.surveyResponse.create({
+        data: {
+          assessmentId: assessmentP.id,
+          unitId: unitP.id,
+          stratumId,
+          instrumentVersionId: version.id,
+          language: "id",
+          submittedOn: new Date(Date.now() - 10 * 24 * 3_600_000),
+          durationBucket: "FROM_10_TO_15",
+          characteristicAnswers: { create: characteristics.map((c) => ({ characteristicId: c.id, level: c.code === "K1.3" ? 4 : level })) },
+        },
+      });
+    }
+  }
+  // Bukti dari dua asesor: K1.3 rendah (selisih persepsi dan bukti), K3.1 berselisih 2,0 (perlu rekonsiliasi).
+  const evidenceLevels = (code: string): [number, number] => (code === "K1.3" ? [2.5, 2.5] : code === "K3.1" ? [2, 4] : [3, 3.5]);
+  await prisma.evidenceRating.createMany({
+    data: characteristics.flatMap((c) =>
+      [users.leadAssessor.id, users.assessorStaff.id].map((assessorId, i) => ({
+        assessmentId: assessmentP.id,
+        characteristicId: c.id,
+        assessorId,
+        level: evidenceLevels(c.code)[i] as number,
+        rationale: `Penilaian bukti ${c.code} berdasarkan dokumen dan observasi proyek.`,
+        evidenceIds: [],
+      })),
+    ),
+  });
+  const sessionP = await prisma.validationSession.create({ data: { assessmentId: assessmentP.id, type: "FOCUS_GROUP", label: "Diskusi kelompok S4 nomor 1", status: "COMPLETED" } });
+  await prisma.validationRating.createMany({ data: characteristics.map((c) => ({ sessionId: sessionP.id, characteristicId: c.id, assessorId: users.leadAssessor.id, level: 3 })) });
+  await prisma.sclFulfillment.createMany({
+    data: ["A1", "A2", "A3", "A4", "A5", "A6"].flatMap((aspectCode) =>
+      [2, 3, 4, 5].map((step) => ({ assessmentId: assessmentP.id, aspectCode, step, percent: [90, 82, 70, 50][step - 2] as number, justification: `Pemenuhan kriteria tingkat ${step}.`, enteredById: users.leadAssessor.id })),
+    ),
   });
 
   // Fase 8: jendela observasi yang sedang terbuka dan yang sudah ditutup, di titik Jakarta dengan radius 500 meter.
@@ -204,7 +300,7 @@ async function main(): Promise<void> {
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
-    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id },
+    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id },
     surveyTokens,
     observationWindows: { open: observationOpen.id, closed: observationClosed.id, site },
     units: { a1: unitA1.id, a2: unitA2.id, b1: unitB1.id, c1: unitC1.id, c2: unitC2.id },
