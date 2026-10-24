@@ -267,7 +267,10 @@
       "parameters": "Parameters",
       "sampling": "Sample calculator",
       "team": "Assessor team",
-      "label": "Assessment navigation"
+      "label": "Assessment navigation",
+      "respondents": "Respondents",
+      "qr": "QR codes",
+      "participation": "Participation"
     },
     "newTitle": "New assessment",
     "newButton": "Create new assessment",
@@ -326,7 +329,17 @@
       "ALREADY_ASSIGNED": "This user is already assigned to this assessment.",
       "LAST_LEAD_ASSESSOR": "The assessment must have at least one lead assessor.",
       "INVALID_TRANSITION": "The assessment status has changed. Reload the page and check again.",
-      "TRANSITION_BLOCKED": "The conditions for this status change are not yet met. Complete the unchecked items."
+      "TRANSITION_BLOCKED": "The conditions for this status change are not yet met. Complete the unchecked items.",
+      "DISTRIBUTION_CLOSED": "The respondent list and tokens can only be changed after the configuration is locked and during data collection.",
+      "NO_ACTIVE_TOKEN": "This respondent has no active token to revoke.",
+      "TOKEN_ALREADY_USED": "This respondent has completed the survey, so the token cannot be reissued.",
+      "NO_EMAIL": "This respondent has no email address.",
+      "WINDOW_ORDER": "The closing time must be after the opening time.",
+      "FILE_TYPE": "File format not recognised. Use Excel (.xlsx) or CSV. Old .xls files must be saved again as .xlsx.",
+      "FILE_EMPTY": "Choose a respondent file first.",
+      "FILE_UNREADABLE": "The file cannot be read. Make sure it is not damaged or password protected.",
+      "FILE_TOO_LARGE": "The file is larger than 10 MB.",
+      "INVALID_ROWS": "The file cannot be saved yet. Fix the errors below, then check again."
     },
     "units": {
       "title": "Units",
@@ -512,5 +525,252 @@
       "RETENTION_EXPIRED": "The raw data retention period has ended",
       "DESTRUCTION_RECORDED": "The destruction record has been created"
     }
+  },
+  "email": {
+    "invitation": {
+      "subject": "Invitation to the occupational safety and health culture survey of {organization}",
+      "intro": "{organization} and Nusa Safety are conducting a survey to measure occupational safety and health (OSH) culture. Your opinion matters for improving safety at work."
+    },
+    "reminder": {
+      "subject": "Reminder: occupational safety and health culture survey of {organization}",
+      "intro": "We have not yet received your answers to the occupational safety and health (OSH) culture survey. The new link below replaces the previous one."
+    },
+    "continue": {
+      "subject": "Continue the occupational safety and health culture survey of {organization}",
+      "intro": "You have opened the occupational safety and health (OSH) culture survey but have not submitted your answers. Continue from the same link on the same device you used before. Your answers so far are saved on that device."
+    },
+    "greeting": "Dear {name},",
+    "anonymity": "Your answers cannot be linked to your identity. Results are only presented in combined form for groups of at least five people.",
+    "duration": "It takes about 15 minutes and can be completed on a mobile phone.",
+    "button": "Open the survey",
+    "linkIntro": "Open the following link to start:",
+    "deadline": "The survey is open until {date}.",
+    "personal": "This link is for you only. Do not forward it to anyone else.",
+    "closing": "Thank you for taking part.",
+    "signature": "Nusa Safety",
+    "otherLanguage": "Versi bahasa Indonesia di atas."
+  },
+  "respondents": {
+    "intro": "Manage the survey respondent list, issue links, and send invitations. Survey answers can never be linked to this list.",
+    "notYetLocked": "The respondent list can be imported after the assessment configuration is locked.",
+    "closed": "Data collection has closed. The respondent list and tokens can no longer be changed.",
+    "summary": {
+      "registered": "Registered respondents",
+      "withEmail": "With email",
+      "tokens": "Tokens issued"
+    },
+    "window": {
+      "title": "Survey window",
+      "intro": "Times are in WIB (UTC+7). Survey links and QR codes only work between the opening and closing times.",
+      "opensAt": "Opens",
+      "closesAt": "Closes",
+      "save": "Save survey window",
+      "notSet": "Not set",
+      "current": "{opens} to {closes}"
+    },
+    "import": {
+      "title": "Import respondent list",
+      "intro": "Upload an Excel (.xlsx) or CSV file with the columns Name, Employee number, Email, Phone, Unit, Stratum, and Contractor. Required columns: Name, Unit, and Stratum. Unit names and stratum codes must match those registered in this assessment.",
+      "template": "Download Excel template",
+      "file": "Respondent file",
+      "preview": "Check file",
+      "previewing": "Checking...",
+      "commit": "Save {count} respondents",
+      "committing": "Saving...",
+      "rows": "Rows",
+      "valid": "Valid rows",
+      "errorCount": "Errors found",
+      "errorsTitle": "Errors by row",
+      "errorsTruncated": "Showing {shown} of {total} errors.",
+      "rowNumber": "Row",
+      "column": "Column",
+      "problem": "Problem",
+      "missingColumns": "Required columns not found: {columns}.",
+      "tooManyRows": "The file has more than {max} rows. Split it into several files.",
+      "ready": "All rows are valid. Review the summary, then save.",
+      "imported": "{count} respondents saved.",
+      "byUnit": "By unit",
+      "byStratum": "By stratum",
+      "count": "Count",
+      "fixAndRetry": "Nothing is saved until every row is valid. Fix the file, then check again."
+    },
+    "columns": {
+      "name": "Name",
+      "employeeNo": "Employee number",
+      "email": "Email",
+      "phone": "Phone",
+      "unit": "Unit",
+      "stratum": "Stratum",
+      "contractor": "Contractor"
+    },
+    "rowErrors": {
+      "NAME_REQUIRED": "Name is required.",
+      "UNIT_REQUIRED": "Unit is required.",
+      "UNIT_NOT_FOUND": "Unit is not registered in this assessment.",
+      "UNIT_OUT_OF_SCOPE": "This unit is not assigned to you.",
+      "STRATUM_REQUIRED": "Stratum is required.",
+      "STRATUM_NOT_FOUND": "Stratum code is not registered in this assessment.",
+      "EMAIL_INVALID": "Invalid email address.",
+      "PHONE_INVALID": "Invalid phone number.",
+      "CONTRACTOR_INVALID": "Enter Yes or No.",
+      "DUPLICATE_IN_FILE": "This value appears more than once in the file.",
+      "ALREADY_REGISTERED": "A respondent with this value is already registered.",
+      "TEXT_TOO_LONG": "Value is too long."
+    },
+    "template": {
+      "title": "Instructions for the respondent list",
+      "optionsSheet": "Options",
+      "instructionsSheet": "Instructions",
+      "lines": {
+        "line1": "1. Enter one respondent per row in the \"Daftar responden\" sheet. Do not change the header row.",
+        "line2": "2. Required columns: Name (Nama), Unit, and Stratum (Strata). Other columns may be left empty.",
+        "line3": "3. Choose Unit and Stratum from the lists in the \"Options\" sheet so they match the assessment exactly.",
+        "line4": "4. Email is used for invitations and reminders. Respondents without email can receive a link from the coordinator or use the unit QR code.",
+        "line5": "5. Enter phone numbers as text, for example 081234567890. Numbers are stored in +62 format.",
+        "line6": "6. Contractor (Penyedia jasa) is Ya (yes) or Tidak (no). If empty, the stratum setting applies.",
+        "line7": "7. Employee numbers and emails must not repeat in the file or match respondents already registered.",
+        "line8": "8. Contact data is stored encrypted and is never linked to survey answers."
+      }
+    },
+    "distribution": {
+      "title": "Token distribution",
+      "unitFilter": "Unit",
+      "allUnits": "All units",
+      "invite": {
+        "title": "Email invitations",
+        "intro": "Sends invitations to respondents with email who do not have a token yet. Links are created when the email is sent. Automatic reminders are sent at 08.00 WIB at most three times, at least three days apart, only while the survey window is open.",
+        "submit": "Send invitations",
+        "pending": "Queueing...",
+        "queued": "{count} invitations queued for sending.",
+        "none": "No respondents with email are waiting for a token."
+      },
+      "links": {
+        "title": "Links for coordinators to share",
+        "intro": "Issues links for respondents who do not have a token yet, for example to share by text message. Automatic reminders are not sent for these links.",
+        "onlyWithoutEmail": "Only respondents without email",
+        "submit": "Issue links",
+        "pending": "Issuing...",
+        "issued": "{count} links issued.",
+        "none": "No respondents need a link.",
+        "once": "Links are shown only this once. Download the CSV file now; the links cannot be shown again after you leave this page.",
+        "download": "Download links CSV",
+        "copy": "Copy",
+        "copied": "Copied",
+        "link": "Link",
+        "warning": "Store this file securely. Each link is personal and gives access to one survey.",
+        "fileName": "survey-links"
+      }
+    },
+    "table": {
+      "title": "Respondent list",
+      "search": "Search name or employee number",
+      "apply": "Apply",
+      "empty": "No respondents yet.",
+      "total": "{count} respondents",
+      "token": "Token",
+      "tokenStates": {
+        "NONE": "Not issued",
+        "ISSUED": "Issued",
+        "REVOKED": "Revoked"
+      },
+      "actions": "Actions",
+      "revoke": "Revoke",
+      "reissueLink": "Reissue link",
+      "reissueEmail": "Resend email",
+      "confirmRevoke": "Revoke this respondent's token? The old link will stop working.",
+      "revoked": "Token revoked.",
+      "reissueQueued": "An email with a new link has been queued.",
+      "page": "Page {page} of {pages}",
+      "previous": "Previous",
+      "next": "Next",
+      "privacy": "Individual completion status is not shown to protect anonymity. Aggregate figures are on the Participation page.",
+      "manage": "Manage token"
+    },
+    "qr": {
+      "title": "Unit QR codes",
+      "intro": "Unit QR codes for contractor workers without email. Each scan issues a single-use token, and respondents choose their own stratum from a closed list.",
+      "unit": "Unit",
+      "maxIssuance": "Token issuance limit",
+      "maxIssuanceHint": "Leave empty for no limit.",
+      "create": "Create QR code",
+      "creating": "Creating...",
+      "activeTitle": "Active codes",
+      "created": "Created",
+      "issued": "Tokens issued",
+      "limit": "Limit",
+      "noLimit": "No limit",
+      "deactivate": "Deactivate",
+      "confirmDeactivate": "Deactivate this QR code? Sheets already posted will stop working.",
+      "none": "No active QR codes yet.",
+      "rotateNote": "A code can only be shown when it is created. Reprinting means creating a new code, and the unit's old code is deactivated automatically.",
+      "print": "Print A4 sheet",
+      "printReady": "The QR code for {unit} is ready to print. It cannot be shown again after you leave this page.",
+      "openNote": "Scanning issues tokens only while the assessment status is Data collection and the survey window is open.",
+      "sheet": {
+        "heading": "Occupational safety and health (K3) culture survey",
+        "scan": "Scan this QR code with your phone camera to take the survey.",
+        "anonymous": "The survey does not ask for your name. Your answers cannot be linked to your identity and are only reported for groups of at least five people.",
+        "duration": "It takes about 15 minutes. Each person only needs to fill it in once.",
+        "closes": "The survey is open until {date}.",
+        "manual": "If your camera cannot scan, type this address in your browser:",
+        "unit": "Unit",
+        "footer": "Nusa Safety"
+      }
+    }
+  },
+  "participation": {
+    "title": "Participation",
+    "intro": "Participation is counted from tokens that completed the survey, not from answers. Completion counts below {min} respondents are hidden to protect anonymity.",
+    "totals": {
+      "population": "Population",
+      "registered": "Registered",
+      "issued": "Tokens issued",
+      "completed": "Completed",
+      "rate": "Participation rate"
+    },
+    "suppressed": "fewer than {min}",
+    "notAvailable": "not available",
+    "strata": {
+      "title": "By stratum",
+      "code": "Code",
+      "name": "Stratum",
+      "population": "Population",
+      "registered": "Registered",
+      "completed": "Completed",
+      "rate": "Participation",
+      "status": "Status",
+      "below": "Below {min}",
+      "ok": "Meets minimum"
+    },
+    "belowCount": "{count} strata are below the minimum participation threshold of {min}.",
+    "allAbove": "All strata meet the minimum participation threshold of {min}.",
+    "pendingStratum": "{count} QR code tokens have not chosen a stratum yet.",
+    "units": {
+      "title": "By unit",
+      "name": "Unit",
+      "registered": "Registered",
+      "issued": "Tokens issued",
+      "completed": "Completed",
+      "rate": "Participation",
+      "note": "Unit participation is calculated against registered respondents. Units that only use QR codes have no denominator, so their rate is not available."
+    },
+    "trend": {
+      "title": "Daily progress",
+      "intro": "Snapshot taken at 23.00 WIB every day during data collection.",
+      "empty": "No daily snapshots yet.",
+      "date": "Date",
+      "completed": "Completed",
+      "rate": "Participation rate"
+    },
+    "percent": "{value} percent"
+  },
+  "qrScan": {
+    "title": "Occupational safety and health culture survey",
+    "reasons": {
+      "INVALID": "This QR code is not valid or has been replaced. Ask your unit coordinator for the latest code.",
+      "CLOSED": "The survey is not open at the moment. Check the survey schedule with your unit coordinator.",
+      "LIMIT": "The quota for this QR code has been used up. Contact your unit coordinator."
+    },
+    "help": "This page does not store your identity or your device address."
   }
 }

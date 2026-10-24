@@ -155,7 +155,8 @@ Penilaian mandiri, observasi, dan validasi tidak anonim karena memerlukan pertan
 
 | Tugas | Jadwal |
 |---|---|
-| `reminders.send` | Harian pukul 08.00 WIB selama jendela survei |
+| `invitations.send` | Saat diminta; satu pekerjaan per responden, token dibuat saat surel dikirim |
+| `reminders.send` | Harian pukul 08.00 WIB selama jendela survei; mengantre `reminders.deliver` per token surel yang belum selesai (paling banyak tiga kali, jarak paling sedikit tiga hari) |
 | `participation.snapshot` | Harian pukul 23.00 WIB |
 | `report.render` | Saat diminta |
 | `retention.scan` | Mingguan; menandai asesmen yang melewati masa retensi untuk ditinjau SUPER_ADMIN |

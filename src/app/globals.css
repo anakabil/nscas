@@ -126,3 +126,26 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 }
+
+/* Lembar cetak A4 (kode QR unit). Salinan cetak dipasang langsung di bawah body; saat mencetak, seluruh isi
+   lain disembunyikan sehingga dokumen hanya satu halaman. */
+.print-only {
+  display: none;
+}
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  body > :not(.print-only) {
+    display: none !important;
+  }
+  .print-only {
+    display: block;
+    break-inside: avoid;
+  }
+}

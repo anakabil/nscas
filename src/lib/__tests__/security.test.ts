@@ -25,7 +25,7 @@ describe("header keamanan", () => {
   });
 
   it("Referrer-Policy no-referrer pada rute survei agar token tidak bocor", () => {
-    for (const path of ["/s/abc", "/sa/xyz", "/o/w1"]) {
+    for (const path of ["/s/abc", "/sa/xyz", "/o/w1", "/q/kode"]) {
       expect(securityHeaders(path, { development: false })["Referrer-Policy"]).toBe("no-referrer");
     }
     expect(securityHeaders("/sample", { development: false })["Referrer-Policy"]).toBe("strict-origin-when-cross-origin");

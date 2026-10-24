@@ -39,7 +39,18 @@ export type AuditAction =
   | "stratum.update"
   | "stratum.delete"
   | "assignment.create"
-  | "assignment.delete";
+  | "assignment.delete"
+  // Manajemen responden dan distribusi token (docs/01 M2, docs/04 bagian 6)
+  | "assessment.survey_window"
+  | "roster.import"
+  | "token.issue"
+  | "token.revoke"
+  | "token.reissue"
+  | "invitation.queue"
+  | "invitation.sent"
+  | "reminder.sent"
+  | "qr.create"
+  | "qr.deactivate";
 
 export interface AuditActor {
   id: string | null;

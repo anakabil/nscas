@@ -24,6 +24,7 @@ Next.js 15 App Router, TypeScript strict, Node.js 22 LTS, PostgreSQL 16, Prisma,
 ```bash
 docker compose up -d          # postgres, minio, mailpit
 npm run dev                   # aplikasi di http://localhost:3000
+npm run worker                # worker pg-boss: undangan, pengingat, cuplikan partisipasi
 npm run db:migrate            # prisma migrate dev
 npm run db:seed               # muat seed/ ke basis data
 npm test                      # vitest

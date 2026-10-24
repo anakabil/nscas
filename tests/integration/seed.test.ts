@@ -113,9 +113,11 @@ describe("pengguna SUPER_ADMIN dan organisasi demo", () => {
     });
     expect(demo._count.assessments).toBe(0);
     expect(demo._count.memberships).toBe(0);
-    expect(await prisma.rosterEntry.count()).toBe(0);
-    expect(await prisma.accessToken.count()).toBe(0);
-    expect(await prisma.surveyResponse.count()).toBe(0);
+    // Dibatasi ke organisasi demo karena berkas tes lain di basis data yang sama membuat data responden sendiri.
+    const demoScope = { assessment: { organizationId: demo.id } };
+    expect(await prisma.rosterEntry.count({ where: demoScope })).toBe(0);
+    expect(await prisma.accessToken.count({ where: demoScope })).toBe(0);
+    expect(await prisma.surveyResponse.count({ where: demoScope })).toBe(0);
   });
 
   it("menolak kata sandi kurang dari 12 karakter", async () => {

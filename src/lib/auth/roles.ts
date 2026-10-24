@@ -87,3 +87,8 @@ export const ASSESSMENT_TEAM_ROLES = {
   read: ["SUPER_ADMIN", "LEAD_ASSESSOR", "ASSESSOR"],
   write: ["SUPER_ADMIN", "LEAD_ASSESSOR"],
 } as const satisfies { read: readonly Role[]; write: readonly Role[] };
+/**
+ * Jendela survei (tanggal buka dan tutup): diatur asesor utama atau administrator klien. Tidak termasuk
+ * parameter terkunci (CLAUDE.md aturan 5) karena jadwal lapangan dapat bergeser selama pengumpulan data.
+ */
+export const SURVEY_WINDOW_WRITE_ROLES = ["LEAD_ASSESSOR", "CLIENT_ADMIN"] as const satisfies readonly Role[];

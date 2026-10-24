@@ -421,26 +421,27 @@ model Assessment {
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
 
-  organization       Organization           @relation(fields: [organizationId], references: [id])
-  instrumentVersion  InstrumentVersion      @relation(fields: [instrumentVersionId], references: [id])
-  lockedBy           User?                  @relation("AssessmentLockedBy", fields: [lockedById], references: [id])
-  assignments        AssessmentAssignment[]
-  units              Unit[]
-  strata             Stratum[]
-  rosterEntries      RosterEntry[]
-  accessTokens       AccessToken[]
-  unitQrCodes        UnitQrCode[]
-  surveyResponses    SurveyResponse[]
-  selfAssessments    SelfAssessment[]
-  evidenceItems      EvidenceItem[]
-  observationWindows ObservationWindow[]
-  validationSessions ValidationSession[]
-  evidenceRatings    EvidenceRating[]
-  sclFulfillments    SclFulfillment[]
-  scoreRuns          ScoreRun[]
-  gapItems           GapItem[]
-  reports            Report[]
-  destructionRecords DestructionRecord[]
+  organization           Organization            @relation(fields: [organizationId], references: [id])
+  instrumentVersion      InstrumentVersion       @relation(fields: [instrumentVersionId], references: [id])
+  lockedBy               User?                   @relation("AssessmentLockedBy", fields: [lockedById], references: [id])
+  assignments            AssessmentAssignment[]
+  units                  Unit[]
+  strata                 Stratum[]
+  rosterEntries          RosterEntry[]
+  accessTokens           AccessToken[]
+  unitQrCodes            UnitQrCode[]
+  surveyResponses        SurveyResponse[]
+  selfAssessments        SelfAssessment[]
+  evidenceItems          EvidenceItem[]
+  observationWindows     ObservationWindow[]
+  validationSessions     ValidationSession[]
+  evidenceRatings        EvidenceRating[]
+  sclFulfillments        SclFulfillment[]
+  scoreRuns              ScoreRun[]
+  gapItems               GapItem[]
+  reports                Report[]
+  destructionRecords     DestructionRecord[]
+  participationSnapshots ParticipationSnapshot[]
 
   @@index([organizationId, status])
 }
@@ -535,25 +536,31 @@ model RosterEntry {
 
 /// Tanpa updatedAt: lihat catatan anonimitas di awal berkas.
 model AccessToken {
-  id            String    @id @default(cuid())
-  assessmentId  String
+  id             String    @id @default(cuid())
+  assessmentId   String
   /// Kosong untuk token yang diterbitkan dari kode QR unit.
-  rosterEntryId String?
+  rosterEntryId  String?
   /// Kode QR unit yang menerbitkan token ini, untuk membatasi maxIssuance.
-  unitQrCodeId  String?
-  unitId        String
+  unitQrCodeId   String?
+  unitId         String
   /// Kosong sampai responden token kode QR memilih strata.
-  stratumId     String?
-  kind          TokenKind
+  stratumId      String?
+  kind           TokenKind
   /// SHA-256 dari token mentah; token mentah hanya ada di tautan.
-  tokenHash     String    @unique
-  issuedAt      DateTime  @default(now())
-  firstOpenedAt DateTime?
-  consentAt     DateTime?
+  tokenHash      String    @unique
+  issuedAt       DateTime  @default(now())
+  firstOpenedAt  DateTime?
+  consentAt      DateTime?
   /// Dibulatkan ke jam terdekat oleh aplikasi.
-  completedAt   DateTime?
-  revokedAt     DateTime?
-  reminderCount Int       @default(0)
+  completedAt    DateTime?
+  revokedAt      DateTime?
+  /// MANUAL, REISSUED, ROTATED_REMINDER, atau SEND_FAILED.
+  revokedReason  String?
+  /// Kanal distribusi: EMAIL, LINK, atau QR. Pengingat otomatis hanya untuk EMAIL.
+  channel        String?
+  reminderCount  Int       @default(0)
+  /// Pengingat terakhir; jarak antarpengingat paling sedikit 3 hari.
+  lastReminderAt DateTime?
 
   assessment     Assessment      @relation(fields: [assessmentId], references: [id])
   rosterEntry    RosterEntry?    @relation(fields: [rosterEntryId], references: [id])
@@ -582,6 +589,20 @@ model UnitQrCode {
   accessTokens AccessToken[]
 
   @@index([assessmentId, unitId])
+}
+
+/// Potret partisipasi harian (tugas participation.snapshot, docs/02 bagian 6). Berisi jumlah per strata
+/// dan per unit yang dihitung dari AccessToken.completedAt, tidak pernah dari SurveyResponse.
+model ParticipationSnapshot {
+  id           String   @id @default(cuid())
+  assessmentId String
+  takenOn      DateTime @db.Date
+  data         Json
+  createdAt    DateTime @default(now())
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id])
+
+  @@unique([assessmentId, takenOn])
 }
 
 // ---------------------------------------------------------------------------

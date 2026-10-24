@@ -69,6 +69,24 @@ async function main(): Promise<void> {
     ],
   });
 
+  // Fase 5: asesmen organisasi ketiga yang sudah dikunci, untuk alur impor responden dan distribusi token.
+  // Organisasi tersendiri agar pengguna ber-TOTP-nya tidak dipakai bersamaan dengan spesifikasi lain.
+  const orgC = await prisma.organization.create({ data: { name: "PT Gamma Karya", legalName: "PT Gamma Karya", sector: "Konstruksi" } });
+  const assessmentC = await prisma.assessment.create({
+    data: { ...base, organizationId: orgC.id, name: "Asesmen Budaya K3 Gamma 2026", status: "LOCKED", lockedAt: new Date(), dpaSigned: true },
+  });
+  const [unitC1, unitC2] = await Promise.all([unit(assessmentC.id, "Proyek Gedung Utama"), unit(assessmentC.id, "Proyek Jembatan Barat")]);
+  const strataC: [string, string, "MANAGEMENT" | "SUPERVISORY" | "FIELD", number, boolean][] = [
+    ["S1", "Direksi dan manajemen puncak", "MANAGEMENT", 10, false],
+    ["S2", "Manajemen menengah dan manajer proyek", "MANAGEMENT", 40, false],
+    ["S3", "Penyelia dan pengawas lapangan", "SUPERVISORY", 100, false],
+    ["S4", "Pelaksana dan pekerja sendiri", "FIELD", 400, false],
+    ["S5", "Pekerja penyedia jasa dan subkontraktor", "FIELD", 450, true],
+  ];
+  await prisma.stratum.createMany({
+    data: strataC.map(([code, stratumName, group, population, isContractor]) => ({ assessmentId: assessmentC.id, code, name: stratumName, group, population, isContractor })),
+  });
+
   const secrets: Record<string, string> = {};
   async function user(key: string, email: string, org: string, role: Role, options: { totp?: boolean; unitScope?: string[]; mustChangePassword?: boolean } = {}) {
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -94,13 +112,15 @@ async function main(): Promise<void> {
     tempPasswordUser: await user("tempPasswordUser", "sementara@e2e.test", orgA.id, "EXECUTIVE_VIEWER", { mustChangePassword: true }),
     leadAssessor: await user("leadAssessor", "asesor.utama@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true }),
     assessorStaff: await user("assessorStaff", "asesor@e2e.test", operator.id, "ASSESSOR"),
+    adminC: await user("adminC", "admin.gamma@e2e.test", orgC.id, "CLIENT_ADMIN", { totp: true }),
+    coordinatorC: await user("coordinatorC", "koordinator.gamma@e2e.test", orgC.id, "UNIT_COORDINATOR", { unitScope: [unitC1.id] }),
   };
 
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
-    assessments: { a: assessmentA.id, b: assessmentB.id },
-    units: { a1: unitA1.id, a2: unitA2.id, b1: unitB1.id },
+    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id },
+    units: { a1: unitA1.id, a2: unitA2.id, b1: unitB1.id, c1: unitC1.id, c2: unitC2.id },
     users,
     totpSecrets: secrets,
   };

@@ -639,7 +639,7 @@ export async function gatherTransitionFacts(tx: Tx, assessmentId: string, now: D
       tx.stratum.findMany({ where: { assessmentId }, select: { population: true } }),
       tx.assessmentAssignment.count({ where: { assessmentId, role: "LEAD_ASSESSOR" } }),
       tx.rosterEntry.count({ where: { assessmentId } }),
-      tx.accessToken.count({ where: { assessmentId, kind: "SURVEY" } }),
+      tx.accessToken.count({ where: { assessmentId, kind: "SURVEY", revokedAt: null } }),
       tx.characteristic.count({ where: { instrumentVersionId: assessment.instrumentVersionId } }),
       tx.evidenceRating.groupBy({ by: ["characteristicId"], where: { assessmentId }, _count: { assessorId: true } }),
       tx.scoreRun.count({ where: { assessmentId } }),

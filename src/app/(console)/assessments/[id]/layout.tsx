@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { loadAssessmentHeader } from "@/lib/assessments/load";
 import { configurationReadRoles } from "@/lib/assessments/permissions";
 import { guardPage, requireRole } from "@/lib/auth/guard";
-import { ALL_ROLES, ASSESSMENT_TEAM_ROLES } from "@/lib/auth/roles";
+import { ALL_ROLES, ASSESSMENT_TEAM_ROLES, rolesFor } from "@/lib/auth/roles";
 
 const paramsSchema = z.object({ id: z.string().min(1).max(64) });
 
@@ -18,7 +18,8 @@ export default async function AssessmentLayout({ children, params }: { children:
 
   const base = `/assessments/${assessment.id}`;
   const canReadConfiguration = access.roles.some((r) => configurationReadRoles(assessment.status).includes(r));
-  const canReadTeam = access.roles.some((r) => (ASSESSMENT_TEAM_ROLES.read as readonly string[]).includes(r));
+  const has = (roles: readonly string[]) => access.roles.some((r) => roles.includes(r));
+  const canReadTeam = has(ASSESSMENT_TEAM_ROLES.read);
   const tabs = [
     { href: base, label: t("assessment.nav.overview"), exact: true },
     ...(canReadConfiguration
@@ -31,6 +32,9 @@ export default async function AssessmentLayout({ children, params }: { children:
         ]
       : []),
     ...(canReadTeam ? [{ href: `${base}/setup/team`, label: t("assessment.nav.team") }] : []),
+    ...(has(rolesFor("roster", "read")) ? [{ href: `${base}/respondents`, label: t("assessment.nav.respondents"), exact: true }] : []),
+    ...(has(["LEAD_ASSESSOR", "CLIENT_ADMIN"]) ? [{ href: `${base}/respondents/qr`, label: t("assessment.nav.qr") }] : []),
+    ...(has(rolesFor("tokensAndParticipation", "read")) ? [{ href: `${base}/participation`, label: t("assessment.nav.participation") }] : []),
   ];
 
   return (

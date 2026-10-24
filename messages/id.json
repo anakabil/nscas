@@ -267,7 +267,10 @@
       "parameters": "Parameter",
       "sampling": "Kalkulator sampel",
       "team": "Tim asesor",
-      "label": "Navigasi asesmen"
+      "label": "Navigasi asesmen",
+      "respondents": "Responden",
+      "qr": "Kode QR",
+      "participation": "Partisipasi"
     },
     "newTitle": "Asesmen baru",
     "newButton": "Buat asesmen baru",
@@ -326,7 +329,17 @@
       "ALREADY_ASSIGNED": "Pengguna ini sudah ditugaskan di asesmen ini.",
       "LAST_LEAD_ASSESSOR": "Asesmen harus memiliki minimal satu asesor utama.",
       "INVALID_TRANSITION": "Status asesmen sudah berubah. Muat ulang halaman, lalu periksa kembali.",
-      "TRANSITION_BLOCKED": "Syarat perubahan status belum terpenuhi. Lengkapi butir yang belum dicentang."
+      "TRANSITION_BLOCKED": "Syarat perubahan status belum terpenuhi. Lengkapi butir yang belum dicentang.",
+      "DISTRIBUTION_CLOSED": "Daftar responden dan token hanya dapat diubah setelah konfigurasi dikunci dan selama pengumpulan data.",
+      "NO_ACTIVE_TOKEN": "Responden ini tidak memiliki token aktif yang dapat dicabut.",
+      "TOKEN_ALREADY_USED": "Responden ini sudah menyelesaikan survei sehingga token tidak dapat diterbitkan ulang.",
+      "NO_EMAIL": "Responden ini tidak memiliki alamat surel.",
+      "WINDOW_ORDER": "Waktu tutup harus setelah waktu buka.",
+      "FILE_TYPE": "Format berkas tidak dikenali. Gunakan Excel (.xlsx) atau CSV. Berkas .xls lama perlu disimpan ulang sebagai .xlsx.",
+      "FILE_EMPTY": "Pilih berkas daftar responden lebih dulu.",
+      "FILE_UNREADABLE": "Berkas tidak dapat dibaca. Pastikan berkas tidak rusak dan tidak dilindungi kata sandi.",
+      "FILE_TOO_LARGE": "Ukuran berkas melebihi 10 MB.",
+      "INVALID_ROWS": "Berkas belum dapat disimpan. Perbaiki galat di bawah, lalu periksa ulang."
     },
     "units": {
       "title": "Unit",
@@ -512,5 +525,252 @@
       "RETENTION_EXPIRED": "Masa simpan data mentah sudah habis",
       "DESTRUCTION_RECORDED": "Berita acara pemusnahan sudah dibuat"
     }
+  },
+  "email": {
+    "invitation": {
+      "subject": "Undangan survei budaya keselamatan dan kesehatan kerja {organization}",
+      "intro": "{organization} bersama Nusa Safety mengadakan survei untuk mengukur budaya keselamatan dan kesehatan kerja (K3). Pendapat Anda penting untuk perbaikan keselamatan di tempat kerja."
+    },
+    "reminder": {
+      "subject": "Pengingat survei budaya keselamatan dan kesehatan kerja {organization}",
+      "intro": "Kami belum menerima jawaban survei budaya keselamatan dan kesehatan kerja (K3) dari Anda. Tautan baru berikut menggantikan tautan sebelumnya."
+    },
+    "continue": {
+      "subject": "Lanjutkan survei budaya keselamatan dan kesehatan kerja {organization}",
+      "intro": "Anda sudah membuka survei budaya keselamatan dan kesehatan kerja (K3) tetapi belum mengirimkan jawaban. Lanjutkan pengisian dari tautan yang sama dan perangkat yang sama dengan yang Anda pakai sebelumnya. Jawaban yang sudah diisi tersimpan di perangkat tersebut."
+    },
+    "greeting": "Yth. {name},",
+    "anonymity": "Jawaban Anda tidak dapat dihubungkan dengan identitas Anda. Hasil hanya disajikan secara gabungan untuk kelompok paling sedikit lima orang.",
+    "duration": "Pengisian memerlukan sekitar 15 menit dan dapat dilakukan melalui telepon genggam.",
+    "button": "Buka survei",
+    "linkIntro": "Buka tautan berikut untuk memulai:",
+    "deadline": "Survei dibuka sampai {date}.",
+    "personal": "Tautan ini khusus untuk Anda. Jangan meneruskannya kepada orang lain.",
+    "closing": "Terima kasih atas partisipasi Anda.",
+    "signature": "Nusa Safety",
+    "otherLanguage": "English version below."
+  },
+  "respondents": {
+    "intro": "Kelola daftar responden survei, terbitkan tautan, dan kirim undangan. Jawaban survei tidak pernah dapat dihubungkan dengan daftar ini.",
+    "notYetLocked": "Daftar responden dapat diimpor setelah konfigurasi asesmen dikunci.",
+    "closed": "Pengumpulan data sudah ditutup. Daftar responden dan token tidak dapat diubah lagi.",
+    "summary": {
+      "registered": "Responden terdaftar",
+      "withEmail": "Memiliki surel",
+      "tokens": "Token diterbitkan"
+    },
+    "window": {
+      "title": "Jendela survei",
+      "intro": "Waktu dalam WIB. Tautan survei dan kode QR hanya dapat dipakai di antara waktu buka dan waktu tutup.",
+      "opensAt": "Dibuka",
+      "closesAt": "Ditutup",
+      "save": "Simpan jendela survei",
+      "notSet": "Belum diatur",
+      "current": "{opens} sampai {closes}"
+    },
+    "import": {
+      "title": "Impor daftar responden",
+      "intro": "Unggah berkas Excel (.xlsx) atau CSV dengan kolom Nama, Nomor induk, Surel, Telepon, Unit, Strata, dan Penyedia jasa. Kolom wajib: Nama, Unit, dan Strata. Nama unit dan kode strata harus sama dengan yang terdaftar di asesmen ini.",
+      "template": "Unduh templat Excel",
+      "file": "Berkas daftar responden",
+      "preview": "Periksa berkas",
+      "previewing": "Memeriksa...",
+      "commit": "Simpan {count} responden",
+      "committing": "Menyimpan...",
+      "rows": "Jumlah baris",
+      "valid": "Baris valid",
+      "errorCount": "Galat ditemukan",
+      "errorsTitle": "Galat per baris",
+      "errorsTruncated": "Menampilkan {shown} dari {total} galat.",
+      "rowNumber": "Baris",
+      "column": "Kolom",
+      "problem": "Masalah",
+      "missingColumns": "Kolom wajib tidak ditemukan: {columns}.",
+      "tooManyRows": "Berkas memuat lebih dari {max} baris. Bagi menjadi beberapa berkas.",
+      "ready": "Seluruh baris valid. Periksa ringkasan, lalu simpan.",
+      "imported": "{count} responden berhasil disimpan.",
+      "byUnit": "Per unit",
+      "byStratum": "Per strata",
+      "count": "Jumlah",
+      "fixAndRetry": "Tidak ada data yang disimpan sebelum seluruh baris valid. Perbaiki berkas, lalu periksa ulang."
+    },
+    "columns": {
+      "name": "Nama",
+      "employeeNo": "Nomor induk",
+      "email": "Surel",
+      "phone": "Telepon",
+      "unit": "Unit",
+      "stratum": "Strata",
+      "contractor": "Penyedia jasa"
+    },
+    "rowErrors": {
+      "NAME_REQUIRED": "Nama wajib diisi.",
+      "UNIT_REQUIRED": "Unit wajib diisi.",
+      "UNIT_NOT_FOUND": "Unit tidak terdaftar di asesmen ini.",
+      "UNIT_OUT_OF_SCOPE": "Unit ini bukan unit yang ditugaskan kepada Anda.",
+      "STRATUM_REQUIRED": "Strata wajib diisi.",
+      "STRATUM_NOT_FOUND": "Kode strata tidak terdaftar di asesmen ini.",
+      "EMAIL_INVALID": "Alamat surel tidak sah.",
+      "PHONE_INVALID": "Nomor telepon tidak sah.",
+      "CONTRACTOR_INVALID": "Isi Ya atau Tidak.",
+      "DUPLICATE_IN_FILE": "Nilai ini muncul lebih dari sekali di berkas.",
+      "ALREADY_REGISTERED": "Responden dengan nilai ini sudah terdaftar.",
+      "TEXT_TOO_LONG": "Isian terlalu panjang."
+    },
+    "template": {
+      "title": "Petunjuk pengisian daftar responden",
+      "optionsSheet": "Pilihan",
+      "instructionsSheet": "Petunjuk",
+      "lines": {
+        "line1": "1. Isi satu responden per baris di lembar \"Daftar responden\". Jangan mengubah baris judul.",
+        "line2": "2. Kolom wajib: Nama, Unit, dan Strata. Kolom lain boleh dikosongkan.",
+        "line3": "3. Unit dan Strata dipilih dari daftar di lembar \"Pilihan\" agar sama persis dengan data asesmen.",
+        "line4": "4. Surel dipakai untuk mengirim undangan dan pengingat. Responden tanpa surel dapat menerima tautan dari koordinator atau memakai kode QR unit.",
+        "line5": "5. Telepon ditulis sebagai teks, misalnya 081234567890. Nomor akan disimpan dalam format +62.",
+        "line6": "6. Penyedia jasa diisi Ya atau Tidak. Bila dikosongkan, mengikuti pengaturan strata.",
+        "line7": "7. Nomor induk dan surel tidak boleh berulang di berkas maupun dengan responden yang sudah terdaftar.",
+        "line8": "8. Data kontak disimpan terenkripsi dan tidak pernah dihubungkan dengan jawaban survei."
+      }
+    },
+    "distribution": {
+      "title": "Distribusi token",
+      "unitFilter": "Unit",
+      "allUnits": "Semua unit",
+      "invite": {
+        "title": "Undangan surel",
+        "intro": "Mengirim undangan kepada responden bersurel yang belum memiliki token. Tautan dibuat saat surel dikirim. Pengingat otomatis dikirim pukul 08.00 WIB paling banyak tiga kali, dengan jarak paling sedikit tiga hari, hanya selama jendela survei terbuka.",
+        "submit": "Kirim undangan",
+        "pending": "Mengantre...",
+        "queued": "{count} undangan masuk antrean pengiriman.",
+        "none": "Tidak ada responden bersurel yang belum memiliki token."
+      },
+      "links": {
+        "title": "Tautan untuk dibagikan koordinator",
+        "intro": "Menerbitkan tautan untuk responden yang belum memiliki token, misalnya untuk dibagikan melalui pesan singkat. Pengingat otomatis tidak dikirim untuk tautan ini.",
+        "onlyWithoutEmail": "Hanya responden tanpa surel",
+        "submit": "Terbitkan tautan",
+        "pending": "Menerbitkan...",
+        "issued": "{count} tautan diterbitkan.",
+        "none": "Tidak ada responden yang perlu diterbitkan tautan.",
+        "once": "Tautan hanya ditampilkan sekali ini. Unduh berkas CSV sekarang; tautan tidak dapat ditampilkan lagi setelah halaman ditinggalkan.",
+        "download": "Unduh CSV tautan",
+        "copy": "Salin",
+        "copied": "Tersalin",
+        "link": "Tautan",
+        "warning": "Simpan berkas ini dengan aman. Setiap tautan bersifat pribadi dan memberi akses ke satu survei.",
+        "fileName": "tautan-survei"
+      }
+    },
+    "table": {
+      "title": "Daftar responden",
+      "search": "Cari nama atau nomor induk",
+      "apply": "Terapkan",
+      "empty": "Belum ada responden.",
+      "total": "{count} responden",
+      "token": "Token",
+      "tokenStates": {
+        "NONE": "Belum diterbitkan",
+        "ISSUED": "Diterbitkan",
+        "REVOKED": "Dicabut"
+      },
+      "actions": "Tindakan",
+      "revoke": "Cabut",
+      "reissueLink": "Terbitkan ulang tautan",
+      "reissueEmail": "Kirim ulang surel",
+      "confirmRevoke": "Cabut token responden ini? Tautan lama tidak dapat dipakai lagi.",
+      "revoked": "Token dicabut.",
+      "reissueQueued": "Surel dengan tautan baru masuk antrean pengiriman.",
+      "page": "Halaman {page} dari {pages}",
+      "previous": "Sebelumnya",
+      "next": "Berikutnya",
+      "privacy": "Status penyelesaian survei per orang tidak ditampilkan untuk menjaga anonimitas. Angka gabungan ada di halaman Partisipasi.",
+      "manage": "Kelola token"
+    },
+    "qr": {
+      "title": "Kode QR unit",
+      "intro": "Kode QR unit untuk pekerja penyedia jasa tanpa surel. Setiap pemindaian menerbitkan token sekali pakai, dan responden memilih stratanya sendiri dari daftar tertutup.",
+      "unit": "Unit",
+      "maxIssuance": "Batas penerbitan token",
+      "maxIssuanceHint": "Kosongkan bila tanpa batas.",
+      "create": "Buat kode QR",
+      "creating": "Membuat...",
+      "activeTitle": "Kode aktif",
+      "created": "Dibuat",
+      "issued": "Token diterbitkan",
+      "limit": "Batas",
+      "noLimit": "Tanpa batas",
+      "deactivate": "Nonaktifkan",
+      "confirmDeactivate": "Nonaktifkan kode QR ini? Lembar yang sudah ditempel tidak dapat dipakai lagi.",
+      "none": "Belum ada kode QR aktif.",
+      "rotateNote": "Kode hanya dapat ditampilkan saat dibuat. Mencetak ulang berarti membuat kode baru, dan kode lama unit tersebut otomatis dinonaktifkan.",
+      "print": "Cetak lembar A4",
+      "printReady": "Kode QR untuk {unit} siap dicetak. Kode ini tidak dapat ditampilkan lagi setelah halaman ditinggalkan.",
+      "openNote": "Pemindaian hanya menerbitkan token selama status asesmen Pengumpulan data dan jendela survei terbuka.",
+      "sheet": {
+        "heading": "Survei budaya keselamatan dan kesehatan kerja (K3)",
+        "scan": "Pindai kode QR ini dengan kamera telepon genggam Anda untuk mengisi survei.",
+        "anonymous": "Survei tidak meminta nama. Jawaban Anda tidak dapat dihubungkan dengan identitas Anda dan hanya disajikan secara gabungan untuk kelompok paling sedikit lima orang.",
+        "duration": "Pengisian memerlukan sekitar 15 menit. Setiap orang cukup mengisi satu kali.",
+        "closes": "Survei dibuka sampai {date}.",
+        "manual": "Bila kamera tidak dapat memindai, ketik alamat berikut di peramban:",
+        "unit": "Unit",
+        "footer": "Nusa Safety"
+      }
+    }
+  },
+  "participation": {
+    "title": "Partisipasi",
+    "intro": "Partisipasi dihitung dari token yang sudah menyelesaikan survei, bukan dari jawaban. Jumlah selesai di bawah {min} responden tidak ditampilkan untuk menjaga anonimitas.",
+    "totals": {
+      "population": "Populasi",
+      "registered": "Terdaftar",
+      "issued": "Token diterbitkan",
+      "completed": "Selesai",
+      "rate": "Tingkat partisipasi"
+    },
+    "suppressed": "kurang dari {min}",
+    "notAvailable": "tidak tersedia",
+    "strata": {
+      "title": "Per strata",
+      "code": "Kode",
+      "name": "Strata",
+      "population": "Populasi",
+      "registered": "Terdaftar",
+      "completed": "Selesai",
+      "rate": "Partisipasi",
+      "status": "Keterangan",
+      "below": "Di bawah {min}",
+      "ok": "Memenuhi"
+    },
+    "belowCount": "{count} strata di bawah ambang partisipasi minimum {min}.",
+    "allAbove": "Seluruh strata memenuhi ambang partisipasi minimum {min}.",
+    "pendingStratum": "{count} token dari kode QR belum memilih strata.",
+    "units": {
+      "title": "Per unit",
+      "name": "Unit",
+      "registered": "Terdaftar",
+      "issued": "Token diterbitkan",
+      "completed": "Selesai",
+      "rate": "Partisipasi",
+      "note": "Partisipasi unit dihitung terhadap responden terdaftar. Unit yang hanya memakai kode QR tidak memiliki pembagi sehingga tingkat partisipasinya tidak tersedia."
+    },
+    "trend": {
+      "title": "Perkembangan harian",
+      "intro": "Cuplikan pukul 23.00 WIB setiap hari selama pengumpulan data.",
+      "empty": "Belum ada cuplikan harian.",
+      "date": "Tanggal",
+      "completed": "Selesai",
+      "rate": "Tingkat partisipasi"
+    },
+    "percent": "{value} persen"
+  },
+  "qrScan": {
+    "title": "Survei budaya keselamatan dan kesehatan kerja",
+    "reasons": {
+      "INVALID": "Kode QR ini tidak berlaku atau sudah diganti. Mintalah kode terbaru kepada koordinator unit Anda.",
+      "CLOSED": "Survei sedang tidak dibuka. Periksa jadwal survei dari koordinator unit Anda.",
+      "LIMIT": "Kuota pengisian untuk kode QR ini sudah habis. Hubungi koordinator unit Anda."
+    },
+    "help": "Halaman ini tidak menyimpan identitas maupun alamat perangkat Anda."
   }
 }

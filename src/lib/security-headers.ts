@@ -1,6 +1,7 @@
 // Header keamanan (docs/04 bagian 5). Dipakai oleh src/middleware.ts.
 
-export const SURVEY_PATH = /^\/(s|sa|o)(\/|$)/;
+/** Rute bertoken: survei (/s), penilaian mandiri (/sa), observasi (/o), dan kode QR unit (/q). */
+export const SURVEY_PATH = /^\/(s|sa|o|q)(\/|$)/;
 
 export function buildContentSecurityPolicy(nonce: string, options: { development: boolean }): string {
   const scriptSrc = ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'"];
