@@ -38,7 +38,8 @@
     "account": "Akun saya",
     "logout": "Keluar",
     "signedInAs": "Masuk sebagai {name}",
-    "mainNavigation": "Navigasi utama"
+    "mainNavigation": "Navigasi utama",
+    "retention": "Retensi data"
   },
   "roles": {
     "SUPER_ADMIN": "Administrator sistem",
@@ -279,7 +280,8 @@
       "panel": "Rapat panel",
       "dashboard": "Dasbor",
       "gaps": "Rencana aksi",
-      "report": "Laporan"
+      "report": "Laporan",
+      "audit": "Jejak audit"
     },
     "newTitle": "Asesmen baru",
     "newButton": "Buat asesmen baru",
@@ -391,7 +393,11 @@
       "ACTION_INVALID": "Periksa isian tindakan: nama tindakan, penanggung jawab, jabatan, tenggat, dan indikator keberhasilan wajib diisi.",
       "REPORT_CLOSED": "Laporan dapat disusun setelah hasil ditetapkan, selama penyusunan rencana aksi, pelaporan, dan pemantauan.",
       "REPORT_FINAL": "Versi laporan ini sudah final dan tidak dapat diubah.",
-      "POSITION_REQUIRED": "Isi jabatan penanda tangan."
+      "POSITION_REQUIRED": "Isi jabatan penanda tangan.",
+      "DESTRUCTION_STATUS": "Pemusnahan hanya untuk asesmen berstatus Diarsipkan.",
+      "ALREADY_DESTROYED": "Data mentah asesmen ini sudah dimusnahkan.",
+      "RETENTION_NOT_EXPIRED": "Masa simpan data mentah asesmen ini belum berakhir.",
+      "DESTRUCTION_INVALID": "Lengkapi nomor dan tanggal surat konfirmasi klien, penanda tangannya, dan nama saksi."
     },
     "units": {
       "title": "Unit",
@@ -2094,5 +2100,294 @@
     },
     "draftsHidden": "Versi draf hanya terlihat oleh asesor Nusa Safety.",
     "pageOf": "Halaman {page} dari {total}"
+  },
+  "retentionDoc": {
+    "logoAlt": "Logo Nusa Safety",
+    "title": "Berita Acara Pemusnahan Data Mentah Asesmen",
+    "number": "Nomor catatan {id}",
+    "opening": "Pada {date} telah dilaksanakan pemusnahan data mentah asesmen {assessment} milik {organization}, dengan rincian sebagai berikut.",
+    "basis": {
+      "title": "Dasar pemusnahan",
+      "law": "Dasar hukum",
+      "lawValue": "Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi",
+      "finalReport": "Laporan final ditandatangani",
+      "months": "Masa simpan data mentah",
+      "monthsValue": "{months} bulan sejak laporan final",
+      "end": "Masa simpan berakhir"
+    },
+    "confirmation": {
+      "title": "Konfirmasi tertulis klien",
+      "ref": "Nomor surat",
+      "date": "Tanggal surat",
+      "by": "Ditandatangani oleh"
+    },
+    "destroyed": {
+      "title": "Data yang dimusnahkan",
+      "category": "Jenis data",
+      "count": "Jumlah"
+    },
+    "categories": {
+      "rosterEntries": "Daftar responden",
+      "accessTokens": "Token akses survei dan penilaian mandiri",
+      "surveyResponses": "Respons survei",
+      "characteristicAnswers": "Jawaban karakteristik",
+      "climateAnswers": "Jawaban skala iklim",
+      "selfAssessments": "Penilaian mandiri",
+      "selfAssessmentAnswers": "Jawaban penilaian mandiri",
+      "evidenceItems": "Catatan berkas bukti",
+      "evidenceLinks": "Pemetaan bukti ke karakteristik",
+      "observationCaptures": "Rekaman observasi digital",
+      "validationParticipants": "Daftar narasumber validasi",
+      "storageObjects": "Berkas di penyimpanan objek"
+    },
+    "retained": {
+      "title": "Data yang tetap disimpan",
+      "body": "Hasil agregat, hasil final rapat panel, laporan final, berita acara ini, dan jejak audit."
+    },
+    "notes": "Catatan",
+    "execution": {
+      "title": "Pelaksanaan",
+      "by": "Pelaksana",
+      "at": "Waktu pelaksanaan",
+      "witness": "Saksi"
+    }
+  },
+  "retention": {
+    "title": "Retensi data",
+    "intro": "Masa simpan data mentah dihitung sejak laporan final ditandatangani. Tugas mingguan menandai asesmen yang melewati masa simpan. Pemusnahan dijalankan SUPER_ADMIN setelah konfirmasi tertulis klien dan tidak dapat dibatalkan.",
+    "none": "Belum ada asesmen dengan laporan final.",
+    "columns": {
+      "assessment": "Asesmen",
+      "status": "Status",
+      "finalReport": "Laporan final",
+      "end": "Masa simpan berakhir",
+      "state": "Keadaan",
+      "organization": "Organisasi"
+    },
+    "states": {
+      "active": "Masih dalam masa simpan",
+      "expired": "Masa simpan habis",
+      "flagged": "Ditandai {date}",
+      "destroyed": "Dimusnahkan {date}"
+    },
+    "archiveFirst": "Ubah status asesmen menjadi Diarsipkan sebelum pemusnahan.",
+    "form": {
+      "title": "Pemusnahan data mentah",
+      "scope": "Yang dimusnahkan: daftar responden, token, respons survei beserta jawabannya, penilaian mandiri, berkas bukti, rekaman observasi, dan daftar narasumber validasi.",
+      "ref": "Nomor surat konfirmasi klien",
+      "date": "Tanggal surat",
+      "by": "Penanda tangan surat (nama dan jabatan)",
+      "witness": "Nama saksi",
+      "notes": "Catatan",
+      "confirm": "Saya memahami pemusnahan tidak dapat dibatalkan.",
+      "submit": "Musnahkan data mentah",
+      "done": "Data mentah dimusnahkan. Berita acara sedang disiapkan."
+    },
+    "minutes": "Unduh berita acara",
+    "minutesPending": "Berita acara sedang disiapkan",
+    "nav": "Retensi data"
+  },
+  "auditTrail": {
+    "title": "Jejak audit",
+    "intro": "Catatan perubahan data asesmen yang hanya dapat ditambah. Administrator klien melihat ringkasan tanpa isi perubahan.",
+    "export": "Unduh CSV",
+    "none": "Belum ada catatan.",
+    "showing": "Menampilkan {count} catatan terbaru dari {total}.",
+    "columns": {
+      "at": "Waktu",
+      "action": "Aksi",
+      "entity": "Entitas",
+      "actor": "Pelaku",
+      "role": "Peran",
+      "change": "Perubahan"
+    },
+    "system": "Sistem",
+    "csv": {
+      "at": "waktu_utc",
+      "atWib": "waktu_wib",
+      "action": "aksi",
+      "entityType": "jenis_entitas",
+      "entityId": "id_entitas",
+      "actor": "pelaku",
+      "actorEmail": "surel_pelaku",
+      "role": "peran",
+      "ipHash": "hash_ip",
+      "userAgent": "peramban",
+      "before": "sebelum",
+      "after": "sesudah"
+    },
+    "actions": {
+      "auth": {
+        "login": "Masuk",
+        "login_failed": "Gagal masuk",
+        "account_locked": "Akun terkunci",
+        "account_unlocked": "Akun dibuka kembali",
+        "logout": "Keluar",
+        "totp_enabled": "Verifikasi dua langkah diaktifkan",
+        "totp_reset": "Verifikasi dua langkah diatur ulang",
+        "backup_codes_regenerated": "Kode cadangan dibuat ulang",
+        "backup_code_used": "Kode cadangan dipakai",
+        "password_changed": "Kata sandi diganti",
+        "password_reset": "Kata sandi diatur ulang"
+      },
+      "membership": {
+        "role_grant": "Peran diberikan",
+        "role_revoke": "Peran dicabut"
+      },
+      "user": {
+        "create": "Pengguna dibuat",
+        "activate": "Pengguna diaktifkan",
+        "deactivate": "Pengguna dinonaktifkan"
+      },
+      "organization": {
+        "create": "Organisasi dibuat"
+      },
+      "assessment": {
+        "create": "Asesmen dibuat",
+        "update": "Rincian asesmen diubah",
+        "parameters_update": "Parameter diubah",
+        "sample_plan_saved": "Rencana sampel disimpan",
+        "status_change": "Status asesmen berubah",
+        "survey_window": "Jadwal survei diatur"
+      },
+      "unit": {
+        "create": "Unit ditambahkan",
+        "update": "Unit diubah",
+        "delete": "Unit dihapus"
+      },
+      "stratum": {
+        "create": "Strata ditambahkan",
+        "update": "Strata diubah",
+        "delete": "Strata dihapus"
+      },
+      "assignment": {
+        "create": "Anggota tim asesor ditambahkan",
+        "delete": "Anggota tim asesor dikeluarkan"
+      },
+      "roster": {
+        "import": "Daftar responden diimpor"
+      },
+      "token": {
+        "issue": "Tautan survei diterbitkan",
+        "revoke": "Tautan survei dicabut",
+        "reissue": "Tautan survei diterbitkan ulang"
+      },
+      "invitation": {
+        "queue": "Undangan dijadwalkan",
+        "sent": "Undangan terkirim"
+      },
+      "reminder": {
+        "sent": "Pengingat terkirim"
+      },
+      "qr": {
+        "create": "Kode QR unit dibuat",
+        "deactivate": "Kode QR unit dinonaktifkan"
+      },
+      "selfAssessment": {
+        "issue": "Tautan penilaian mandiri diterbitkan",
+        "revoke": "Tautan penilaian mandiri dicabut",
+        "reissue": "Tautan penilaian mandiri diterbitkan ulang",
+        "profile_update": "Identitas pengisi penilaian mandiri diubah",
+        "answer_save": "Jawaban penilaian mandiri disimpan",
+        "submit": "Penilaian mandiri dikirim"
+      },
+      "evidence": {
+        "upload": "Bukti diunggah",
+        "version": "Versi baru bukti",
+        "map": "Pemetaan bukti diubah",
+        "delete": "Bukti dihapus"
+      },
+      "observation": {
+        "window_create": "Jendela observasi dibuat",
+        "capture": "Rekaman observasi diunggah"
+      },
+      "validation": {
+        "guide_update": "Panduan validasi diubah",
+        "sessions_proposed": "Usulan sesi validasi dibuat",
+        "session_create": "Sesi validasi dibuat",
+        "session_update": "Sesi validasi diubah",
+        "participant_add": "Narasumber ditambahkan",
+        "participant_remove": "Narasumber dikeluarkan",
+        "rating_save": "Nilai validasi disimpan"
+      },
+      "rating": {
+        "evidence_save": "Nilai bukti disimpan",
+        "scl_save": "Jalur setara disimpan"
+      },
+      "score": {
+        "run": "Mesin penilaian dijalankan"
+      },
+      "panel": {
+        "adjust": "Penyesuaian panel",
+        "adjust_remove": "Penyesuaian panel dibatalkan",
+        "finalize": "Hasil panel difinalkan"
+      },
+      "survey": {
+        "exclude": "Respons dikeluarkan dari analisis",
+        "restore": "Respons dikembalikan ke analisis"
+      },
+      "dashboard": {
+        "export": "Dasbor diekspor"
+      },
+      "gap": {
+        "generate": "Daftar kesenjangan disusun",
+        "update": "Analisis kesenjangan diubah"
+      },
+      "action": {
+        "create": "Tindakan ditambahkan",
+        "update": "Tindakan diubah",
+        "progress": "Kemajuan tindakan dicatat",
+        "verify": "Tindakan diverifikasi",
+        "reminder_sent": "Pengingat tenggat tindakan terkirim"
+      },
+      "action_plan": {
+        "publish": "Rencana aksi diterbitkan",
+        "export": "Rencana aksi diekspor"
+      },
+      "report": {
+        "create": "Versi laporan disusun",
+        "finalize": "Laporan ditandatangani",
+        "render": "PDF laporan dibuat",
+        "download": "PDF laporan diunduh"
+      },
+      "retention": {
+        "flag": "Masa simpan habis ditandai",
+        "destroy": "Data mentah dimusnahkan",
+        "minutes": "Berita acara pemusnahan dibuat",
+        "minutes_download": "Berita acara pemusnahan diunduh"
+      },
+      "audit": {
+        "export": "Jejak audit diekspor"
+      }
+    },
+    "entities": {
+      "AccessToken": "Tautan akses",
+      "ActionItem": "Tindakan",
+      "Assessment": "Asesmen",
+      "AssessmentAssignment": "Tim asesor",
+      "DestructionRecord": "Berita acara pemusnahan",
+      "EvidenceItem": "Bukti",
+      "EvidenceRating": "Nilai bukti",
+      "GapItem": "Kesenjangan",
+      "Membership": "Peran pengguna",
+      "ObservationCapture": "Rekaman observasi",
+      "ObservationWindow": "Jendela observasi",
+      "Organization": "Organisasi",
+      "PanelAdjustment": "Penyesuaian panel",
+      "Report": "Laporan",
+      "RosterEntry": "Daftar responden",
+      "SclFulfillment": "Jalur setara",
+      "ScoreRun": "Eksekusi mesin penilaian",
+      "SelfAssessment": "Penilaian mandiri",
+      "Stratum": "Strata",
+      "SurveyResponse": "Respons survei",
+      "Unit": "Unit",
+      "UnitQrCode": "Kode QR unit",
+      "User": "Pengguna",
+      "ValidationGuideTemplate": "Panduan validasi",
+      "ValidationParticipant": "Narasumber validasi",
+      "ValidationRating": "Nilai validasi",
+      "ValidationSession": "Sesi validasi"
+    }
   }
 }

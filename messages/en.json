@@ -38,7 +38,8 @@
     "account": "My account",
     "logout": "Sign out",
     "signedInAs": "Signed in as {name}",
-    "mainNavigation": "Main navigation"
+    "mainNavigation": "Main navigation",
+    "retention": "Data retention"
   },
   "roles": {
     "SUPER_ADMIN": "System administrator",
@@ -279,7 +280,8 @@
       "panel": "Panel meeting",
       "dashboard": "Dashboard",
       "gaps": "Action plan",
-      "report": "Report"
+      "report": "Report",
+      "audit": "Audit trail"
     },
     "newTitle": "New assessment",
     "newButton": "Create new assessment",
@@ -391,7 +393,11 @@
       "ACTION_INVALID": "Check the action fields: action, owner, position, due date, and success indicator are required.",
       "REPORT_CLOSED": "Reports can be prepared after the result is confirmed, during action planning, reporting, and monitoring.",
       "REPORT_FINAL": "This report version is final and cannot be changed.",
-      "POSITION_REQUIRED": "Enter the signer position."
+      "POSITION_REQUIRED": "Enter the signer position.",
+      "DESTRUCTION_STATUS": "Destruction is only for assessments with Archived status.",
+      "ALREADY_DESTROYED": "This assessment's raw data has already been destroyed.",
+      "RETENTION_NOT_EXPIRED": "This assessment's raw data retention period has not ended.",
+      "DESTRUCTION_INVALID": "Complete the client confirmation letter number and date, its signatory, and the witness name."
     },
     "units": {
       "title": "Units",
@@ -2094,5 +2100,294 @@
     },
     "draftsHidden": "Draft versions are visible only to Nusa Safety assessors.",
     "pageOf": "Page {page} of {total}"
+  },
+  "retentionDoc": {
+    "logoAlt": "Nusa Safety logo",
+    "title": "Minutes of Assessment Raw Data Destruction",
+    "number": "Record number {id}",
+    "opening": "On {date}, the raw data of assessment {assessment} of {organization} was destroyed, as detailed below.",
+    "basis": {
+      "title": "Basis for destruction",
+      "law": "Legal basis",
+      "lawValue": "Law Number 27 of 2022 on Personal Data Protection",
+      "finalReport": "Final report signed",
+      "months": "Raw data retention period",
+      "monthsValue": "{months} months from the final report",
+      "end": "Retention period ended"
+    },
+    "confirmation": {
+      "title": "Client written confirmation",
+      "ref": "Letter number",
+      "date": "Letter date",
+      "by": "Signed by"
+    },
+    "destroyed": {
+      "title": "Data destroyed",
+      "category": "Data type",
+      "count": "Count"
+    },
+    "categories": {
+      "rosterEntries": "Respondent list",
+      "accessTokens": "Survey and self-assessment access tokens",
+      "surveyResponses": "Survey responses",
+      "characteristicAnswers": "Characteristic answers",
+      "climateAnswers": "Climate scale answers",
+      "selfAssessments": "Self-assessments",
+      "selfAssessmentAnswers": "Self-assessment answers",
+      "evidenceItems": "Evidence file records",
+      "evidenceLinks": "Evidence to characteristic mappings",
+      "observationCaptures": "Digital observation recordings",
+      "validationParticipants": "Validation participant list",
+      "storageObjects": "Files in object storage"
+    },
+    "retained": {
+      "title": "Data retained",
+      "body": "Aggregate results, the panel's final result, final reports, these minutes, and the audit trail."
+    },
+    "notes": "Notes",
+    "execution": {
+      "title": "Execution",
+      "by": "Executed by",
+      "at": "Time of execution",
+      "witness": "Witness"
+    }
+  },
+  "retention": {
+    "title": "Data retention",
+    "intro": "The raw data retention period starts when the final report is signed. A weekly job flags assessments past their retention period. Destruction is run by SUPER_ADMIN after the client's written confirmation and cannot be undone.",
+    "none": "No assessments with a final report yet.",
+    "columns": {
+      "assessment": "Assessment",
+      "status": "Status",
+      "finalReport": "Final report",
+      "end": "Retention ends",
+      "state": "State",
+      "organization": "Organization"
+    },
+    "states": {
+      "active": "Within retention period",
+      "expired": "Retention period ended",
+      "flagged": "Flagged {date}",
+      "destroyed": "Destroyed {date}"
+    },
+    "archiveFirst": "Change the assessment status to Archived before destruction.",
+    "form": {
+      "title": "Raw data destruction",
+      "scope": "Destroyed: respondent list, tokens, survey responses and their answers, self-assessments, evidence files, observation recordings, and the validation participant list.",
+      "ref": "Client confirmation letter number",
+      "date": "Letter date",
+      "by": "Letter signatory (name and position)",
+      "witness": "Witness name",
+      "notes": "Notes",
+      "confirm": "I understand destruction cannot be undone.",
+      "submit": "Destroy raw data",
+      "done": "Raw data destroyed. The minutes are being prepared."
+    },
+    "minutes": "Download minutes",
+    "minutesPending": "Minutes being prepared",
+    "nav": "Data retention"
+  },
+  "auditTrail": {
+    "title": "Audit trail",
+    "intro": "Append-only record of assessment data changes. Client administrators see a summary without change contents.",
+    "export": "Download CSV",
+    "none": "No entries yet.",
+    "showing": "Showing the latest {count} of {total} entries.",
+    "columns": {
+      "at": "Time",
+      "action": "Action",
+      "entity": "Entity",
+      "actor": "Actor",
+      "role": "Role",
+      "change": "Change"
+    },
+    "system": "System",
+    "csv": {
+      "at": "time_utc",
+      "atWib": "time_wib",
+      "action": "action",
+      "entityType": "entity_type",
+      "entityId": "entity_id",
+      "actor": "actor",
+      "actorEmail": "actor_email",
+      "role": "role",
+      "ipHash": "ip_hash",
+      "userAgent": "user_agent",
+      "before": "before",
+      "after": "after"
+    },
+    "actions": {
+      "auth": {
+        "login": "Sign in",
+        "login_failed": "Failed sign-in",
+        "account_locked": "Account locked",
+        "account_unlocked": "Account unlocked",
+        "logout": "Sign out",
+        "totp_enabled": "Two-step verification enabled",
+        "totp_reset": "Two-step verification reset",
+        "backup_codes_regenerated": "Backup codes regenerated",
+        "backup_code_used": "Backup code used",
+        "password_changed": "Password changed",
+        "password_reset": "Password reset"
+      },
+      "membership": {
+        "role_grant": "Role granted",
+        "role_revoke": "Role revoked"
+      },
+      "user": {
+        "create": "User created",
+        "activate": "User activated",
+        "deactivate": "User deactivated"
+      },
+      "organization": {
+        "create": "Organization created"
+      },
+      "assessment": {
+        "create": "Assessment created",
+        "update": "Assessment details changed",
+        "parameters_update": "Parameters changed",
+        "sample_plan_saved": "Sample plan saved",
+        "status_change": "Assessment status changed",
+        "survey_window": "Survey schedule set"
+      },
+      "unit": {
+        "create": "Unit added",
+        "update": "Unit changed",
+        "delete": "Unit deleted"
+      },
+      "stratum": {
+        "create": "Stratum added",
+        "update": "Stratum changed",
+        "delete": "Stratum deleted"
+      },
+      "assignment": {
+        "create": "Assessor team member added",
+        "delete": "Assessor team member removed"
+      },
+      "roster": {
+        "import": "Respondent list imported"
+      },
+      "token": {
+        "issue": "Survey links issued",
+        "revoke": "Survey link revoked",
+        "reissue": "Survey link reissued"
+      },
+      "invitation": {
+        "queue": "Invitations queued",
+        "sent": "Invitations sent"
+      },
+      "reminder": {
+        "sent": "Reminders sent"
+      },
+      "qr": {
+        "create": "Unit QR code created",
+        "deactivate": "Unit QR code deactivated"
+      },
+      "selfAssessment": {
+        "issue": "Self-assessment link issued",
+        "revoke": "Self-assessment link revoked",
+        "reissue": "Self-assessment link reissued",
+        "profile_update": "Self-assessment respondent details changed",
+        "answer_save": "Self-assessment answer saved",
+        "submit": "Self-assessment submitted"
+      },
+      "evidence": {
+        "upload": "Evidence uploaded",
+        "version": "New evidence version",
+        "map": "Evidence mapping changed",
+        "delete": "Evidence deleted"
+      },
+      "observation": {
+        "window_create": "Observation window created",
+        "capture": "Observation recording uploaded"
+      },
+      "validation": {
+        "guide_update": "Validation guide changed",
+        "sessions_proposed": "Validation sessions proposed",
+        "session_create": "Validation session created",
+        "session_update": "Validation session changed",
+        "participant_add": "Participant added",
+        "participant_remove": "Participant removed",
+        "rating_save": "Validation rating saved"
+      },
+      "rating": {
+        "evidence_save": "Evidence rating saved",
+        "scl_save": "Equivalent track saved"
+      },
+      "score": {
+        "run": "Scoring engine run"
+      },
+      "panel": {
+        "adjust": "Panel adjustment",
+        "adjust_remove": "Panel adjustment removed",
+        "finalize": "Panel result finalized"
+      },
+      "survey": {
+        "exclude": "Response excluded from analysis",
+        "restore": "Response restored to analysis"
+      },
+      "dashboard": {
+        "export": "Dashboard exported"
+      },
+      "gap": {
+        "generate": "Gap list generated",
+        "update": "Gap analysis changed"
+      },
+      "action": {
+        "create": "Action added",
+        "update": "Action changed",
+        "progress": "Action progress recorded",
+        "verify": "Action verified",
+        "reminder_sent": "Action due reminder sent"
+      },
+      "action_plan": {
+        "publish": "Action plan published",
+        "export": "Action plan exported"
+      },
+      "report": {
+        "create": "Report version created",
+        "finalize": "Report signed",
+        "render": "Report PDF rendered",
+        "download": "Report PDF downloaded"
+      },
+      "retention": {
+        "flag": "Retention period end flagged",
+        "destroy": "Raw data destroyed",
+        "minutes": "Destruction minutes created",
+        "minutes_download": "Destruction minutes downloaded"
+      },
+      "audit": {
+        "export": "Audit trail exported"
+      }
+    },
+    "entities": {
+      "AccessToken": "Access link",
+      "ActionItem": "Action",
+      "Assessment": "Assessment",
+      "AssessmentAssignment": "Assessor team",
+      "DestructionRecord": "Destruction minutes",
+      "EvidenceItem": "Evidence",
+      "EvidenceRating": "Evidence rating",
+      "GapItem": "Gap",
+      "Membership": "User role",
+      "ObservationCapture": "Observation recording",
+      "ObservationWindow": "Observation window",
+      "Organization": "Organization",
+      "PanelAdjustment": "Panel adjustment",
+      "Report": "Report",
+      "RosterEntry": "Respondent list",
+      "SclFulfillment": "Equivalent track",
+      "ScoreRun": "Scoring run",
+      "SelfAssessment": "Self-assessment",
+      "Stratum": "Stratum",
+      "SurveyResponse": "Survey response",
+      "Unit": "Unit",
+      "UnitQrCode": "Unit QR code",
+      "User": "User",
+      "ValidationGuideTemplate": "Validation guide",
+      "ValidationParticipant": "Validation participant",
+      "ValidationRating": "Validation rating",
+      "ValidationSession": "Validation session"
+    }
   }
 }

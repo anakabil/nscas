@@ -147,3 +147,13 @@ export const REPORT_ROLES = {
   drafts: ["LEAD_ASSESSOR", "ASSESSOR"],
   write: ["LEAD_ASSESSOR"],
 } as const satisfies Record<string, readonly Role[]>;
+
+/**
+ * Jejak audit (docs/04 bagian 2 dan 6): SUPER_ADMIN dan lead assessor membaca isi lengkap; administrator klien
+ * membaca ringkasan tanpa isi perubahan (tanpa data mentah). Ekspor CSV hanya untuk lead assessor.
+ */
+export const AUDIT_ROLES = {
+  read: ["SUPER_ADMIN", "LEAD_ASSESSOR", "CLIENT_ADMIN"],
+  full: ["SUPER_ADMIN", "LEAD_ASSESSOR"],
+  export: ["LEAD_ASSESSOR"],
+} as const satisfies Record<string, readonly Role[]>;

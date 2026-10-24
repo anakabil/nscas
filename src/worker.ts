@@ -6,10 +6,12 @@
 import type { Job } from "pg-boss";
 import { deliverActionReminder, scheduleActionReminders, type ActionReminderJob } from "@/lib/jobs/action-reminders";
 import { createWorkerBoss, QUEUES } from "@/lib/jobs/boss";
+import { processDestruction, type DestructionJob } from "@/lib/jobs/destruction";
 import { deliverInvitation, type InvitationJob } from "@/lib/jobs/invitations";
 import { deliverReminder, scheduleReminders, type ReminderJob } from "@/lib/jobs/reminders";
 import { renderReport, type ReportRenderJob } from "@/lib/jobs/report-render";
 import { takeParticipationSnapshots } from "@/lib/respondents/participation-data";
+import { scanRetention } from "@/lib/retention/service";
 
 const TZ = "Asia/Jakarta";
 
@@ -19,6 +21,8 @@ async function main() {
   await boss.schedule(QUEUES.remindersSend, "0 8 * * *", null, { tz: TZ });
   await boss.schedule(QUEUES.participationSnapshot, "0 23 * * *", null, { tz: TZ });
   await boss.schedule(QUEUES.actionRemindersSend, "0 7 * * *", null, { tz: TZ });
+  // Pemeriksaan masa simpan mingguan, Senin pukul 06.00 WIB (docs/04 bagian 7).
+  await boss.schedule(QUEUES.retentionScan, "0 6 * * 1", null, { tz: TZ });
 
   // Pengiriman surel dibatasi beberapa sekaligus agar tidak membebani server SMTP.
   await boss.work<InvitationJob>(QUEUES.invitationSend, { localConcurrency: 4 }, async ([job]: Job<InvitationJob>[]) => {
@@ -48,6 +52,15 @@ async function main() {
   await boss.work<ReportRenderJob>(QUEUES.reportRender, { localConcurrency: 1 }, async ([job]: Job<ReportRenderJob>[]) => {
     const outcome = await renderReport(job.data);
     console.info(`report.render ${job.data.reportId}: ${outcome}`);
+  });
+
+  await boss.work(QUEUES.retentionScan, async () => {
+    const flagged = await scanRetention();
+    console.info(`retention.scan: ${flagged} asesmen melewati masa simpan`);
+  });
+  await boss.work<DestructionJob>(QUEUES.destructionProcess, { localConcurrency: 1 }, async ([job]: Job<DestructionJob>[]) => {
+    const outcome = await processDestruction(job.data);
+    console.info(`destruction.process ${job.data.recordId}: ${outcome}`);
   });
 
   console.info("Worker NSCAS berjalan.");

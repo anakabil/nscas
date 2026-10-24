@@ -422,10 +422,26 @@ async function main(): Promise<void> {
   Object.assign(users, { leadReport });
   await prisma.assessmentAssignment.create({ data: { assessmentId: assessmentR.id, userId: leadReport.id, role: "LEAD_ASSESSOR" } });
 
+  // Fase 14: asesmen berstatus diarsipkan yang masa simpan data mentahnya (36 bulan sejak laporan final) sudah habis,
+  // untuk alur pemusnahan oleh SUPER_ADMIN, berita acara, dan jejak audit.
+  const assessmentArchive = await prisma.assessment.create({
+    data: { ...base, organizationId: orgC.id, name: "Asesmen Arsip Gamma 2022", status: "ARCHIVED", lockedAt: new Date("2022-08-01T03:00:00Z"), dpaSigned: true, periodStart: new Date("2022-08-01"), periodEnd: new Date("2022-10-31"), parameterSnapshot: { schemaVersion: 1, parameters, samplePlan: null, strata: [], consent: { id: "Persetujuan.", en: "Consent." }, dpaSigned: true } as never },
+  });
+  const unitArchive = await unit(assessmentArchive.id, "Proyek Arsip Barat");
+  const stratumArchive = await stratum(assessmentArchive.id);
+  await prisma.rosterEntry.create({ data: { assessmentId: assessmentArchive.id, unitId: unitArchive.id, stratumId: stratumArchive.id, fullName: "Responden Arsip Satu", employeeNo: "R-001" } });
+  await prisma.report.create({ data: { assessmentId: assessmentArchive.id, version: 1, kind: "FULL", status: "FINAL", signedAt: new Date("2022-11-15T03:00:00Z"), signerName: "Ir. Asesor Utama", signerPosition: "Lead Assessor Nusa Safety" } });
+  const superRetention = await user("superRetention", "super.retensi@e2e.test", operator.id, "SUPER_ADMIN", { totp: true });
+  const leadArchive = await user("leadArchive", "asesor.utama.arsip@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true });
+  const adminArchive = await user("adminArchive", "admin.arsip@e2e.test", orgC.id, "CLIENT_ADMIN", { totp: true });
+  Object.assign(users, { superRetention, leadArchive, adminArchive });
+  await prisma.assessmentAssignment.create({ data: { assessmentId: assessmentArchive.id, userId: leadArchive.id, role: "LEAD_ASSESSOR" } });
+  await prisma.auditLog.create({ data: { action: "assessment.status_change", entityType: "Assessment", entityId: assessmentArchive.id, assessmentId: assessmentArchive.id, organizationId: orgC.id, actorId: leadArchive.id, actorRole: "LEAD_ASSESSOR", before: { status: "MONITORING" }, after: { status: "ARCHIVED", note: "=1+1" } } });
+
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
-    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id, dashboard: assessmentD.id, plan: assessmentG.id, report: assessmentR.id },
+    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id, dashboard: assessmentD.id, plan: assessmentG.id, report: assessmentR.id, archive: assessmentArchive.id },
     flaggedResponses,
     surveyTokens,
     observationWindows: { open: observationOpen.id, closed: observationClosed.id, site },

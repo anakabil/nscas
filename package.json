@@ -32,7 +32,7 @@
     "next": "15.5.28",
     "next-auth": "5.0.0-beta.32",
     "next-intl": "^4.14.9",
-    "nodemailer": "^8.0.11",
+    "nodemailer": "^10.2.1",
     "otplib": "^13.5.0",
     "papaparse": "^5.7.0",
     "pg": "^8.23.1",
@@ -70,5 +70,14 @@
   },
   "engines": {
     "node": ">=22 <23"
+  },
+  "overrides": {
+    "nodemailer": "$nodemailer",
+    "next": {
+      "postcss": "^8.5.31"
+    },
+    "exceljs": {
+      "uuid": "^11.1.1"
+    }
   }
 }

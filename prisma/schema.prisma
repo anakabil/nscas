@@ -433,6 +433,8 @@ model Assessment {
   surveyClosesAt        DateTime?
   /// Rencana aksi diterbitkan ke klien (syarat REPORTED ke MONITORING, docs/01 bagian 3).
   actionPlanPublishedAt DateTime?
+  /// Ditandai retention.scan saat masa simpan data mentah habis (docs/04 bagian 7).
+  retentionFlaggedAt    DateTime?
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
 
@@ -1130,16 +1132,28 @@ model AuditLog {
 }
 
 model DestructionRecord {
-  id           String   @id @default(cuid())
-  assessmentId String
-  scope        String
-  executedAt   DateTime
-  executedById String
-  objectCount  Int
-  witnessName  String
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                    String          @id @default(cuid())
+  assessmentId          String
+  scope                 String
+  executedAt            DateTime
+  executedById          String
+  objectCount           Int
+  witnessName           String
+  notes                 String?
+  /// Konfirmasi tertulis klien (docs/04 bagian 7): nomor surat, tanggal, dan penanda tangannya.
+  clientConfirmationRef String          @default("")
+  clientConfirmedOn     DateTime?       @db.Date
+  clientConfirmedBy     String          @default("")
+  /// Jumlah baris per tabel dan kunci berkas yang dimusnahkan.
+  details               Json?
+  /// Berita acara pemusnahan dalam PDF.
+  storageKey            String?
+  pdfStatus             ReportPdfStatus @default(PENDING)
+  renderedAt            DateTime?
+  /// Waktu berkas di penyimpanan objek selesai dihapus.
+  objectsPurgedAt       DateTime?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 
   assessment Assessment @relation(fields: [assessmentId], references: [id])
   executedBy User       @relation("DestructionExecutedBy", fields: [executedById], references: [id])

@@ -72,7 +72,8 @@ function aspectChart(aspects: { code: string; index: number }[], target: number,
   return `<figure class="chart"><svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${esc(t("chart.title"))}">${grid}${bars}${targetLine}</svg><figcaption>${esc(t("chart.caption"))}</figcaption></figure>`;
 }
 
-function styles(assets: ReportAssets): string {
+/** Gaya dokumen cetak A4 bersama (laporan dan berita acara). */
+export function documentStyles(assets: ReportAssets): string {
   const font = assets.fontSrc ? `@font-face{font-family:"Plus Jakarta Sans";src:url("${assets.fontSrc}") format("woff2");font-weight:200 800;font-style:normal;}` : "";
   return `${font}
 @page{size:A4;margin:20mm 18mm 22mm 18mm;}
@@ -415,7 +416,7 @@ export function renderReportHtml(content: ReportContent, kind: ReportKind, sig: 
   const statement = createTranslator({ locale, messages, namespace: "common" })("resultDisclaimer");
   const title = t(kind === "FULL" ? "full.title" : kind === "EXECUTIVE_SUMMARY" ? "executive.title" : "statement.title");
   const body = kind === "FULL" ? fullReport(content, sig, assets, t, statement) : kind === "EXECUTIVE_SUMMARY" ? executiveSummary(content, sig, assets, t, statement) : statementDocument(content, sig, assets, t, statement);
-  return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(`${title} ${content.organization.name} v${content.version}`)}</title><style>${styles(assets)}</style></head><body data-kind="${kind}" data-status="${sig.status}">${sig.status === "DRAFT" ? `<div class="watermark" aria-hidden="true">${esc(t("draftWatermark"))}</div>` : ""}<main class="page">${body}</main></body></html>`;
+  return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(`${title} ${content.organization.name} v${content.version}`)}</title><style>${documentStyles(assets)}</style></head><body data-kind="${kind}" data-status="${sig.status}">${sig.status === "DRAFT" ? `<div class="watermark" aria-hidden="true">${esc(t("draftWatermark"))}</div>` : ""}<main class="page">${body}</main></body></html>`;
 }
 
 export const REPORT_FILE_NAMES: Record<ReportKind, string> = { FULL: "laporan-asesmen", EXECUTIVE_SUMMARY: "ringkasan-eksekutif", STATEMENT: "pernyataan-hasil" };

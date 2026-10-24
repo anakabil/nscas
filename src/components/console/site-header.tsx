@@ -26,6 +26,11 @@ export async function SiteHeader({ session, showNavigation }: { session: Session
                 {t("nav.organizations")}
               </Link>
             ) : null}
+            {session.principal.isSuperAdmin ? (
+              <Link href="/retention" className="hover:bg-tint rounded-md px-3 py-2">
+                {t("nav.retention")}
+              </Link>
+            ) : null}
             <Link href="/account" className="hover:bg-tint rounded-md px-3 py-2">
               {t("nav.account")}
             </Link>

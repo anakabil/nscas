@@ -97,7 +97,14 @@ export type AuditAction =
   // Fase 13: pelaporan
   | "report.create"
   | "report.finalize"
-  | "report.render";
+  | "report.render"
+  | "report.download"
+  // Fase 14: retensi, pemusnahan, dan jejak audit
+  | "retention.flag"
+  | "retention.destroy"
+  | "retention.minutes"
+  | "retention.minutes_download"
+  | "audit.export";
 
 export interface AuditActor {
   id: string | null;

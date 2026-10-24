@@ -14,6 +14,7 @@ export const QUEUES = {
   retentionScan: "retention.scan",
   actionRemindersSend: "actions.reminders.send",
   actionReminderDeliver: "actions.reminders.deliver",
+  destructionProcess: "destruction.process",
 } as const;
 
 export type QueueName = (typeof QUEUES)[keyof typeof QUEUES];

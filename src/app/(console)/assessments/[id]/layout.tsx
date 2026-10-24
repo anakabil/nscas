@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { loadAssessmentHeader } from "@/lib/assessments/load";
 import { configurationReadRoles } from "@/lib/assessments/permissions";
 import { guardPage, requireRole } from "@/lib/auth/guard";
-import { ACTION_PLAN_ROLES, ALL_ROLES, ASSESSMENT_TEAM_ROLES, DASHBOARD_ROLES, REPORT_ROLES, rolesFor, SCORING_ROLES, VALIDATION_ROLES } from "@/lib/auth/roles";
+import { ACTION_PLAN_ROLES, ALL_ROLES, AUDIT_ROLES, ASSESSMENT_TEAM_ROLES, DASHBOARD_ROLES, REPORT_ROLES, rolesFor, SCORING_ROLES, VALIDATION_ROLES } from "@/lib/auth/roles";
 
 const paramsSchema = z.object({ id: z.string().min(1).max(64) });
 
@@ -48,6 +48,7 @@ export default async function AssessmentLayout({ children, params }: { children:
     ...(has(DASHBOARD_ROLES.read) ? [{ href: `${base}/dashboard`, label: t("assessment.nav.dashboard") }] : []),
     ...(has(ACTION_PLAN_ROLES.read) ? [{ href: `${base}/gaps`, label: t("assessment.nav.gaps") }] : []),
     ...(has(REPORT_ROLES.read) ? [{ href: `${base}/report`, label: t("assessment.nav.report") }] : []),
+    ...(has(AUDIT_ROLES.read) ? [{ href: `${base}/audit`, label: t("assessment.nav.audit") }] : []),
   ];
 
   return (
