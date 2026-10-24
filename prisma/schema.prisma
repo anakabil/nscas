@@ -142,6 +142,12 @@ enum ReportStatus {
   FINAL
 }
 
+enum ReportPdfStatus {
+  PENDING
+  READY
+  FAILED
+}
+
 // ---------------------------------------------------------------------------
 // Organisasi dan pengguna
 // ---------------------------------------------------------------------------
@@ -202,6 +208,7 @@ model User {
   sclFulfillments          SclFulfillment[]       @relation("SclFulfillmentEnteredBy")
   scoreRuns                ScoreRun[]             @relation("ScoreRunRunBy")
   scoreRunsFinalized       ScoreRun[]             @relation("ScoreRunFinalizedBy")
+  createdReports           Report[]               @relation("ReportCreatedBy")
   panelAdjustments         PanelAdjustment[]      @relation("PanelAdjustmentDecidedBy")
   verifiedActions          ActionItem[]           @relation("ActionItemVerifiedBy")
   actionUpdates            ActionUpdate[]         @relation("ActionUpdateCreatedBy")
@@ -1072,19 +1079,30 @@ model ActionUpdate {
 // ---------------------------------------------------------------------------
 
 model Report {
-  id           String       @id @default(cuid())
-  assessmentId String
-  version      Int
-  kind         ReportKind
-  status       ReportStatus @default(DRAFT)
-  storageKey   String?
-  signedById   String?
-  signedAt     DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id             String          @id @default(cuid())
+  assessmentId   String
+  version        Int
+  kind           ReportKind
+  status         ReportStatus    @default(DRAFT)
+  /// Snapshot isi laporan saat versi dibuat; tidak pernah berubah (pemicu basis data).
+  content        Json?
+  /// PDF hasil report.render.
+  storageKey     String?
+  pdfStatus      ReportPdfStatus @default(PENDING)
+  renderedAt     DateTime?
+  renderError    String?
+  signedById     String?
+  signedAt       DateTime?
+  /// Nama dan jabatan penanda tangan seperti tercetak di laporan final.
+  signerName     String?
+  signerPosition String?
+  createdById    String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   assessment Assessment @relation(fields: [assessmentId], references: [id])
   signedBy   User?      @relation("ReportSignedBy", fields: [signedById], references: [id])
+  createdBy  User?      @relation("ReportCreatedBy", fields: [createdById], references: [id])
 
   @@unique([assessmentId, kind, version])
 }

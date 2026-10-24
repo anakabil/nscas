@@ -278,7 +278,8 @@
       "scoring": "Assessor scoring",
       "panel": "Panel meeting",
       "dashboard": "Dashboard",
-      "gaps": "Action plan"
+      "gaps": "Action plan",
+      "report": "Report"
     },
     "newTitle": "New assessment",
     "newButton": "Create new assessment",
@@ -387,7 +388,10 @@
       "GAP_LIST_MISSING": "Build the gap list first.",
       "ACTION_PLAN_INCOMPLETE": "The action plan is incomplete. Every gap item requires a root cause analysis and at least one action.",
       "NOTE_TOO_SHORT": "A note of at least 10 characters is required.",
-      "ACTION_INVALID": "Check the action fields: action, owner, position, due date, and success indicator are required."
+      "ACTION_INVALID": "Check the action fields: action, owner, position, due date, and success indicator are required.",
+      "REPORT_CLOSED": "Reports can be prepared after the result is confirmed, during action planning, reporting, and monitoring.",
+      "REPORT_FINAL": "This report version is final and cannot be changed.",
+      "POSITION_REQUIRED": "Enter the signer position."
     },
     "units": {
       "title": "Units",
@@ -1785,5 +1789,310 @@
     "button": "Open the action plan",
     "closing": "Thank you.",
     "signature": "Nusa Safety"
+  },
+  "reportDoc": {
+    "logoAlt": "Nusa Safety logo",
+    "period": "{start} to {end}",
+    "finalBadge": "Version {version}, final",
+    "draftBadge": "Version {version}, draft",
+    "standingTitle": "Standing of the result",
+    "draftWatermark": "DRAFT",
+    "generated": "Prepared {time}",
+    "owner": "Prepared by PT Nusa Rendra Jayatama (Nusa Safety)",
+    "toc": "Contents",
+    "hidden": "Hidden",
+    "hiddenLong": "Hidden, fewer than 5 respondents",
+    "empty": "No data",
+    "respondents": "{n} respondents",
+    "chart": {
+      "target": "Target level {level}",
+      "title": "Index per aspect",
+      "caption": "Index per aspect against the target level. Yellow bars are below target."
+    },
+    "signature": {
+      "signed": "Signed electronically",
+      "by": "{name}, {position}, {time}",
+      "locked": "This final version is locked and cannot be changed.",
+      "unsigned": "Not yet signed",
+      "draftNote": "This document is a draft and may change before the lead assessor signs it."
+    },
+    "levels": {
+      "1": "1, Pathological",
+      "2": "2, Reactive",
+      "3": "3, Calculative",
+      "4": "4, Proactive",
+      "5": "5, Generative"
+    },
+    "sections": {
+      "1": "Scope, organisational boundary, and data period",
+      "2": "Method, instrument, sampling frame, weights, and thresholds",
+      "3": "Participation by stratum and unit, and representativeness",
+      "4": "Instrument reliability and within-group agreement",
+      "5": "Indices per characteristic, aspect, and organisation, with the triangulation matrix",
+      "6": "Characteristics subject to the perception and evidence gap rule",
+      "7": "Perception gap between management and field workers",
+      "8": "Indicative maturity level, consolidation, and panel meeting notes",
+      "9": "Results of the two national contextual dimensions",
+      "10": "Gap list and priority recommendations",
+      "11": "Statement of limitations",
+      "12": "Appendices: interviewees, evidence, and locked parameters"
+    },
+    "columns": {
+      "item": "Item",
+      "value": "Value",
+      "unit": "Unit",
+      "unitType": "Unit type",
+      "parent": "Parent",
+      "aspect": "Aspect",
+      "weight": "Weight",
+      "stratum": "Stratum",
+      "population": "Population",
+      "target": "Sample target",
+      "completed": "Completed respondents",
+      "rate": "Participation rate",
+      "note": "Note",
+      "dimension": "Dimension",
+      "respondents": "Respondents",
+      "engine": "Engine value",
+      "final": "Final value",
+      "gap": "Gap",
+      "characteristic": "Characteristic",
+      "perception": "Perception",
+      "evidence": "Evidence",
+      "validation": "Validation",
+      "combined": "Combined",
+      "panel": "Panel value",
+      "flags": "Flags",
+      "management": "Management",
+      "field": "Field",
+      "difference": "Difference",
+      "rationale": "Rationale",
+      "step": "Step",
+      "weightedAverage": "Weighted average",
+      "minimum": "Minimum",
+      "threshold": "Threshold",
+      "result": "Result",
+      "action": "Action",
+      "owner": "Owner",
+      "dueDate": "Due date",
+      "indicator": "Success indicator",
+      "status": "Status",
+      "session": "Session",
+      "date": "Date",
+      "people": "Interviewees",
+      "evidenceTitle": "Evidence title",
+      "version": "Version",
+      "characteristics": "Characteristics",
+      "hash": "File fingerprint",
+      "uploaded": "Uploaded",
+      "parameter": "Parameter",
+      "rank": "Rank",
+      "rootCause": "Root cause analysis"
+    },
+    "scope": {
+      "organization": "Organisation",
+      "sector": "Sector",
+      "scopeType": "Assessment scope",
+      "period": "Data period",
+      "survey": "Survey window",
+      "target": "Target level",
+      "units": "Units in scope"
+    },
+    "scopes": {
+      "CORPORATE": "Corporate",
+      "DIVISION": "Division",
+      "PROJECT": "Project"
+    },
+    "unitTypes": {
+      "HEAD_OFFICE": "Head office",
+      "DIVISION": "Division",
+      "PROJECT": "Project",
+      "BRANCH": "Branch"
+    },
+    "method": {
+      "intro": "The assessment combines three data layers: perception (respondent survey weighted by stratum population and management self-assessment), objective evidence (documents and digital observations rated by assessors), and validation (interviews, focus group discussions, and virtual site visits). All weights and thresholds are read from parameters locked before data collection.",
+      "instrument": "Instrument version",
+      "layerWeights": "Layer weights",
+      "layerWeightsValue": "Perception {p}, evidence {e}, validation {v}",
+      "selfAssessment": "Self-assessment weight in perception",
+      "divergence": "Perception and evidence gap threshold",
+      "disagreement": "Assessor disagreement threshold",
+      "consolidation": "Level consolidation conditions",
+      "consolidationValue": "Lowest aspect index not below the level minus {aspect}; lowest characteristic index not below the level minus {characteristic}",
+      "gapAttention": "Perception gap attention threshold",
+      "minCell": "Minimum respondents per report cell",
+      "counts": "Data counted",
+      "countsValue": "{responses} survey responses, {selfAssessments} self-assessments, {evidence} evidence ratings, {validation} validation ratings",
+      "aspectWeights": "Aspect weights",
+      "sample": "Sampling frame",
+      "sampleSummary": "{workers} workers; recommended survey of {recommended} respondents with stratum targets totalling {total}; minimum interviews of {interviewsM} management and staff and {interviewsO} operational workers; {projects} projects visited virtually."
+    },
+    "participation": {
+      "belowMinimum": "Below minimum participation",
+      "units": "Participation by unit",
+      "representativeLow": "{count} strata are below the minimum participation of {min} ({strata}); read their results with caution.",
+      "representativeOk": "All strata reached the minimum participation of {min}."
+    },
+    "reliability": {
+      "intro": "Climate dimension reliability is tested with Cronbach's alpha (threshold {alpha}); within-unit agreement is tested with rwg (threshold {rwg}).",
+      "alpha": "Cronbach's alpha per climate dimension",
+      "rwg": "Within-unit agreement (rwg)",
+      "below": "Below threshold"
+    },
+    "result": {
+      "index": "Organisation index",
+      "gap": "Gap to target",
+      "target": "Target level {level}",
+      "priority": "Priority aspect",
+      "matrix": "Triangulation matrix",
+      "matrixNote": "The final value is the engine value after the perception and evidence gap rule; the panel value is set by the assessor panel meeting and used for aggregation where present.",
+      "level": "Indicative maturity level",
+      "consolidated": "Level consolidation",
+      "consolidatedYes": "Consolidated",
+      "consolidatedNo": "Not consolidated",
+      "consolidationBasis": "Consolidation basis",
+      "consolidationValue": "Lowest aspect index {aspect}; lowest characteristic index {characteristic}",
+      "engineIndex": "Engine organisation index",
+      "finalIndex": "Organisation index after the panel meeting",
+      "finalizedBy": "Confirmed by the panel meeting",
+      "finalizedValue": "{name}, {time}"
+    },
+    "flags": {
+      "SELISIH_PERSEPSI_BUKTI": "Perception and evidence gap",
+      "LAPISAN_TIDAK_LENGKAP": "Incomplete layers",
+      "SEMUA_LAPISAN_KOSONG": "All layers empty",
+      "PENILAI_TUNGGAL": "Single rater",
+      "PERLU_REKONSILIASI": "Needs reconciliation"
+    },
+    "divergence": {
+      "intro": "The perception and evidence gap rule applies when the gap reaches {threshold}. When evidence is lower, the final value uses the evidence value so that perception not supported by evidence does not raise the level.",
+      "itemHidden": "perception hidden because there are fewer than 5 respondents; evidence {evidence}; final value {final}.",
+      "itemLower": "perception {perception} is higher than evidence {evidence} by {gap}; the final value uses the evidence value {final}.",
+      "itemHigher": "evidence {evidence} is higher than perception {perception} by {gap}; the final value {final} is unchanged, but it should be discussed because workers do not yet perceive the practice.",
+      "none": "No characteristic is subject to this rule."
+    },
+    "gap": {
+      "intro": "Difference between the mean survey scores of the management and field groups per aspect. A difference of {attention} or more needs attention. Shown when both groups have at least {min} respondents.",
+      "attention": "Needs attention",
+      "heatmap": "Heat map of aspects by stratum",
+      "heatmapNote": "Cells with fewer than 5 respondents are hidden, together with cells that could be used to back-calculate them."
+    },
+    "panel": {
+      "title": "Assessor panel meeting notes",
+      "decided": "{name}, {time}",
+      "none": "The assessor panel meeting did not adjust any characteristic value."
+    },
+    "scl": {
+      "title": "Safety Culture Ladder equivalent track",
+      "level": "Safety Culture Ladder equivalent track: indicative level {level}",
+      "thresholdValue": "average {average}, minimum {minimum}",
+      "passed": "Passed",
+      "failed": "Not passed",
+      "missing": "The equivalent track is not included because it is incomplete."
+    },
+    "contextual": {
+      "intro": "The two national contextual dimensions are reported separately and are not part of the organisation index or level determination.",
+      "index": "Contextual index {value}."
+    },
+    "gaps": {
+      "intro": "Characteristics with a final index below the target level, ordered by aspect weight times gap size.",
+      "item": "{rank}. {code} {name}",
+      "metrics": "Final index {current}; gap {gap}; priority score {score}; priority {priority}",
+      "noPriority": "not set",
+      "rootCause": "Root cause analysis:",
+      "noActions": "No actions yet.",
+      "none": "No characteristic is below the target level."
+    },
+    "priorities": {
+      "HIGH": "high",
+      "MEDIUM": "medium",
+      "LOW": "low"
+    },
+    "statuses": {
+      "PLANNED": "Planned",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done, awaiting verification",
+      "VERIFIED": "Verified",
+      "CANCELLED": "Cancelled"
+    },
+    "limitations": {
+      "SELF_REPORT": "The perception layer comes from respondents' own answers and may be influenced by socially desirable responding; this is reduced by triangulation with evidence and validation.",
+      "CROSS_SECTIONAL": "The result describes the situation in the data period and does not show the direction of change without repeated measurement with the same instrument.",
+      "ONLINE_VALIDATION": "Validation was conducted online, so direct observation is limited to digital observations and virtual site visits.",
+      "EVIDENCE_PROVIDED": "Evidence rating depends on the documents and recordings provided by the organisation.",
+      "LOW_PARTICIPATION": "Strata below minimum participation:",
+      "LOW_ALPHA": "Climate dimensions with Cronbach's alpha below threshold:",
+      "LOW_RWG": "Units with agreement below threshold:",
+      "INCOMPLETE_LAYERS": "Characteristics with incomplete layers:",
+      "SINGLE_RATER": "Characteristics rated by a single assessor:",
+      "SUPPRESSED_CELLS": "Some survey values are hidden because there are fewer than 5 respondents, to protect respondent confidentiality.",
+      "SCL_INCOMPLETE": "The Safety Culture Ladder equivalent track is not presented because it is incomplete."
+    },
+    "appendix": {
+      "participants": "Appendix A. Interviewees",
+      "participantsNote": "This list is stored separately from session notes. Statements in the report are not linked to interviewee names.",
+      "none": "None.",
+      "evidence": "Appendix B. Evidence",
+      "organizationLevel": "Organisation level",
+      "parameters": "Appendix C. Locked parameters",
+      "parametersNote": "Parameters copied from the assessment snapshot locked on {locked}."
+    },
+    "sessionTypes": {
+      "INTERVIEW": "Interview",
+      "FOCUS_GROUP": "Focus group discussion",
+      "VIRTUAL_SITE_VISIT": "Virtual site visit"
+    },
+    "full": {
+      "kicker": "Internal measurement and diagnosis report",
+      "title": "Occupational Safety and Health Culture Assessment Report"
+    },
+    "executive": {
+      "title": "Executive Summary of the Occupational Safety and Health Culture Assessment",
+      "findings": "Key findings",
+      "priority": "Priority aspect: {code} {name}.",
+      "divergence": "{count} characteristics are subject to the perception and evidence gap rule: {codes}.",
+      "perceptionGap": "The perception gap between management and field workers needs attention in aspects {codes}.",
+      "participation": "Completed survey respondents: {completed}, participation rate {rate}.",
+      "priorities": "Five priority gaps"
+    },
+    "statement": {
+      "title": "Statement of Occupational Safety and Health Culture Measurement Results",
+      "opening": "Based on {assessment} of {organization} with {scope} scope for the period {start} to {end}, Nusa Safety states the occupational safety and health (OSH) culture measurement results as follows.",
+      "basis": "The result was determined by triangulating perception, objective evidence, and validation, and confirmed in the assessor panel meeting."
+    }
+  },
+  "report": {
+    "intro": "The assessment report, executive summary, and result statement are prepared from the result confirmed by the panel meeting. Each version stores its content when created; the final version is signed by the lead assessor and cannot be changed.",
+    "noFinal": "Reports can be prepared after the panel meeting confirms the result.",
+    "create": "Prepare a new report version",
+    "created": "Version {version} prepared. The PDF is being generated.",
+    "versions": "Report versions",
+    "none": "No report versions yet.",
+    "version": "Version {version}",
+    "createdBy": "Prepared {time} by {name}",
+    "kinds": {
+      "FULL": "Assessment report",
+      "EXECUTIVE_SUMMARY": "Executive summary",
+      "STATEMENT": "Result statement"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "FINAL": "Final"
+    },
+    "preview": "HTML preview",
+    "pdf": "Download PDF",
+    "pdfPending": "PDF being generated",
+    "pdfFailed": "PDF generation failed",
+    "signed": "Signed by {name}, {position}, {time}",
+    "finalize": {
+      "title": "Finalise and sign",
+      "intro": "Finalising locks all three documents of this version. Your name and the time come from your account; enter your position as it will be printed.",
+      "position": "Signer position",
+      "confirm": "I have reviewed the report content and approve it as the final version.",
+      "button": "Finalise and sign version {version}",
+      "done": "Version {version} finalised and signed."
+    },
+    "draftsHidden": "Draft versions are visible only to Nusa Safety assessors.",
+    "pageOf": "Page {page} of {total}"
   }
 }

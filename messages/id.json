@@ -278,7 +278,8 @@
       "scoring": "Penilaian asesor",
       "panel": "Rapat panel",
       "dashboard": "Dasbor",
-      "gaps": "Rencana aksi"
+      "gaps": "Rencana aksi",
+      "report": "Laporan"
     },
     "newTitle": "Asesmen baru",
     "newButton": "Buat asesmen baru",
@@ -387,7 +388,10 @@
       "GAP_LIST_MISSING": "Bentuk daftar kesenjangan lebih dulu.",
       "ACTION_PLAN_INCOMPLETE": "Rencana aksi belum lengkap. Setiap butir kesenjangan wajib memiliki analisis penyebab dan paling sedikit satu tindakan.",
       "NOTE_TOO_SHORT": "Catatan wajib diisi, paling sedikit 10 karakter.",
-      "ACTION_INVALID": "Periksa isian tindakan: nama tindakan, penanggung jawab, jabatan, tenggat, dan indikator keberhasilan wajib diisi."
+      "ACTION_INVALID": "Periksa isian tindakan: nama tindakan, penanggung jawab, jabatan, tenggat, dan indikator keberhasilan wajib diisi.",
+      "REPORT_CLOSED": "Laporan dapat disusun setelah hasil ditetapkan, selama penyusunan rencana aksi, pelaporan, dan pemantauan.",
+      "REPORT_FINAL": "Versi laporan ini sudah final dan tidak dapat diubah.",
+      "POSITION_REQUIRED": "Isi jabatan penanda tangan."
     },
     "units": {
       "title": "Unit",
@@ -1785,5 +1789,310 @@
     "button": "Buka rencana aksi",
     "closing": "Terima kasih.",
     "signature": "Nusa Safety"
+  },
+  "reportDoc": {
+    "logoAlt": "Logo Nusa Safety",
+    "period": "{start} sampai {end}",
+    "finalBadge": "Versi {version}, final",
+    "draftBadge": "Versi {version}, draf",
+    "standingTitle": "Kedudukan hasil",
+    "draftWatermark": "DRAF",
+    "generated": "Disusun {time}",
+    "owner": "Disusun oleh PT Nusa Rendra Jayatama (Nusa Safety)",
+    "toc": "Daftar isi",
+    "hidden": "Disembunyikan",
+    "hiddenLong": "Disembunyikan, kurang dari 5 responden",
+    "empty": "Tidak ada data",
+    "respondents": "{n} responden",
+    "chart": {
+      "target": "Sasaran tingkat {level}",
+      "title": "Indeks per aspek",
+      "caption": "Indeks per aspek terhadap tingkat sasaran. Batang kuning berada di bawah sasaran."
+    },
+    "signature": {
+      "signed": "Ditandatangani secara elektronik",
+      "by": "{name}, {position}, {time}",
+      "locked": "Versi final ini terkunci dan tidak dapat diubah.",
+      "unsigned": "Belum ditandatangani",
+      "draftNote": "Dokumen ini adalah draf dan dapat berubah sebelum ditandatangani lead assessor."
+    },
+    "levels": {
+      "1": "1, Patologis",
+      "2": "2, Reaktif",
+      "3": "3, Kalkulatif",
+      "4": "4, Proaktif",
+      "5": "5, Progresif"
+    },
+    "sections": {
+      "1": "Lingkup, batas organisasi, dan periode data",
+      "2": "Metode, instrumen, kerangka sampel, bobot, dan ambang",
+      "3": "Partisipasi per strata dan unit, serta penilaian keterwakilan",
+      "4": "Uji keandalan instrumen dan kesepakatan dalam kelompok",
+      "5": "Indeks per karakteristik, per aspek, dan organisasi, beserta matriks triangulasi",
+      "6": "Karakteristik yang terkena aturan selisih persepsi dan bukti",
+      "7": "Kesenjangan persepsi manajemen dan pelaksana",
+      "8": "Tingkat kematangan indikatif, kemantapan tingkat, dan catatan rapat panel asesor",
+      "9": "Hasil dua dimensi kontekstual nasional",
+      "10": "Daftar kesenjangan dan rekomendasi prioritas",
+      "11": "Pernyataan keterbatasan",
+      "12": "Lampiran: daftar narasumber, daftar bukti, dan parameter terkunci"
+    },
+    "columns": {
+      "item": "Butir",
+      "value": "Nilai",
+      "unit": "Unit",
+      "unitType": "Jenis unit",
+      "parent": "Induk",
+      "aspect": "Aspek",
+      "weight": "Bobot",
+      "stratum": "Strata",
+      "population": "Populasi",
+      "target": "Sasaran sampel",
+      "completed": "Responden selesai",
+      "rate": "Tingkat partisipasi",
+      "note": "Keterangan",
+      "dimension": "Dimensi",
+      "respondents": "Responden",
+      "engine": "Nilai mesin",
+      "final": "Nilai akhir",
+      "gap": "Kesenjangan",
+      "characteristic": "Karakteristik",
+      "perception": "Persepsi",
+      "evidence": "Bukti",
+      "validation": "Validasi",
+      "combined": "Gabungan",
+      "panel": "Nilai panel",
+      "flags": "Tanda",
+      "management": "Manajemen",
+      "field": "Lapangan",
+      "difference": "Selisih",
+      "rationale": "Alasan",
+      "step": "Tingkat",
+      "weightedAverage": "Rata-rata tertimbang",
+      "minimum": "Minimum",
+      "threshold": "Ambang",
+      "result": "Hasil",
+      "action": "Tindakan",
+      "owner": "Penanggung jawab",
+      "dueDate": "Tenggat",
+      "indicator": "Indikator keberhasilan",
+      "status": "Status",
+      "session": "Sesi",
+      "date": "Tanggal",
+      "people": "Narasumber",
+      "evidenceTitle": "Judul bukti",
+      "version": "Versi",
+      "characteristics": "Karakteristik",
+      "hash": "Sidik berkas",
+      "uploaded": "Diunggah",
+      "parameter": "Parameter",
+      "rank": "Peringkat",
+      "rootCause": "Analisis penyebab"
+    },
+    "scope": {
+      "organization": "Organisasi",
+      "sector": "Sektor",
+      "scopeType": "Lingkup asesmen",
+      "period": "Periode data",
+      "survey": "Jendela survei",
+      "target": "Tingkat sasaran",
+      "units": "Unit dalam lingkup"
+    },
+    "scopes": {
+      "CORPORATE": "Korporat",
+      "DIVISION": "Divisi",
+      "PROJECT": "Proyek"
+    },
+    "unitTypes": {
+      "HEAD_OFFICE": "Kantor pusat",
+      "DIVISION": "Divisi",
+      "PROJECT": "Proyek",
+      "BRANCH": "Cabang"
+    },
+    "method": {
+      "intro": "Asesmen menggabungkan tiga lapisan data: persepsi (survei responden berbobot populasi strata dan penilaian mandiri manajemen), bukti objektif (dokumen dan observasi digital yang dinilai asesor), dan validasi (wawancara, diskusi kelompok terarah, dan kunjungan lapangan virtual). Seluruh bobot dan ambang dibaca dari parameter yang dikunci sebelum pengumpulan data.",
+      "instrument": "Versi instrumen",
+      "layerWeights": "Bobot lapisan",
+      "layerWeightsValue": "Persepsi {p}, bukti {e}, validasi {v}",
+      "selfAssessment": "Bobot penilaian mandiri dalam persepsi",
+      "divergence": "Ambang selisih persepsi dan bukti",
+      "disagreement": "Ambang perbedaan nilai antarasesor",
+      "consolidation": "Syarat kemantapan tingkat",
+      "consolidationValue": "Indeks aspek terendah tidak kurang dari tingkat dikurangi {aspect}; indeks karakteristik terendah tidak kurang dari tingkat dikurangi {characteristic}",
+      "gapAttention": "Ambang perhatian kesenjangan persepsi",
+      "minCell": "Jumlah responden minimum per sel laporan",
+      "counts": "Data yang dihitung",
+      "countsValue": "{responses} respons survei, {selfAssessments} penilaian mandiri, {evidence} nilai bukti, {validation} nilai validasi",
+      "aspectWeights": "Bobot aspek",
+      "sample": "Kerangka sampel",
+      "sampleSummary": "Jumlah pekerja {workers}; rekomendasi survei {recommended} responden dengan sasaran per strata berjumlah {total}; wawancara minimum {interviewsM} manajemen dan staf serta {interviewsO} pekerja operasional; {projects} proyek dikunjungi secara virtual."
+    },
+    "participation": {
+      "belowMinimum": "Di bawah partisipasi minimum",
+      "units": "Partisipasi per unit",
+      "representativeLow": "{count} strata berada di bawah partisipasi minimum {min} ({strata}); hasil untuk strata tersebut dibaca dengan hati-hati.",
+      "representativeOk": "Seluruh strata mencapai partisipasi minimum {min}."
+    },
+    "reliability": {
+      "intro": "Keandalan dimensi iklim diuji dengan alfa Cronbach (ambang {alpha}); kesepakatan dalam unit diuji dengan rwg (ambang {rwg}).",
+      "alpha": "Alfa Cronbach per dimensi iklim",
+      "rwg": "Kesepakatan dalam unit (rwg)",
+      "below": "Di bawah ambang"
+    },
+    "result": {
+      "index": "Indeks organisasi",
+      "gap": "Kesenjangan terhadap sasaran",
+      "target": "Sasaran tingkat {level}",
+      "priority": "Aspek prioritas",
+      "matrix": "Matriks triangulasi",
+      "matrixNote": "Nilai akhir adalah nilai mesin setelah aturan selisih persepsi dan bukti; nilai panel ditetapkan rapat panel asesor dan dipakai untuk agregasi bila ada.",
+      "level": "Tingkat kematangan indikatif",
+      "consolidated": "Kemantapan tingkat",
+      "consolidatedYes": "Mantap",
+      "consolidatedNo": "Belum mantap",
+      "consolidationBasis": "Dasar kemantapan",
+      "consolidationValue": "Indeks aspek terendah {aspect}; indeks karakteristik terendah {characteristic}",
+      "engineIndex": "Indeks organisasi hasil mesin",
+      "finalIndex": "Indeks organisasi setelah rapat panel",
+      "finalizedBy": "Ditetapkan rapat panel",
+      "finalizedValue": "{name}, {time}"
+    },
+    "flags": {
+      "SELISIH_PERSEPSI_BUKTI": "Selisih persepsi dan bukti",
+      "LAPISAN_TIDAK_LENGKAP": "Lapisan tidak lengkap",
+      "SEMUA_LAPISAN_KOSONG": "Semua lapisan kosong",
+      "PENILAI_TUNGGAL": "Penilai tunggal",
+      "PERLU_REKONSILIASI": "Perlu rekonsiliasi"
+    },
+    "divergence": {
+      "intro": "Aturan selisih persepsi dan bukti berlaku bila selisih keduanya mencapai {threshold}. Bila bukti lebih rendah, nilai akhir memakai nilai bukti agar persepsi yang tidak didukung bukti tidak menaikkan tingkat.",
+      "itemHidden": "persepsi disembunyikan karena kurang dari 5 responden; bukti {evidence}; nilai akhir {final}.",
+      "itemLower": "persepsi {perception} lebih tinggi daripada bukti {evidence} dengan selisih {gap}; nilai akhir memakai nilai bukti {final}.",
+      "itemHigher": "bukti {evidence} lebih tinggi daripada persepsi {perception} dengan selisih {gap}; nilai akhir {final} tidak berubah, tetapi perlu dibahas karena praktik belum dirasakan pekerja.",
+      "none": "Tidak ada karakteristik yang terkena aturan ini."
+    },
+    "gap": {
+      "intro": "Selisih rata-rata skor survei kelompok manajemen dan kelompok lapangan per aspek. Selisih {attention} atau lebih memerlukan perhatian. Ditampilkan bila kedua kelompok memiliki paling sedikit {min} responden.",
+      "attention": "Perlu perhatian",
+      "heatmap": "Peta warna aspek terhadap strata",
+      "heatmapNote": "Sel dengan kurang dari 5 responden disembunyikan, beserta sel yang dapat dipakai untuk menghitung baliknya."
+    },
+    "panel": {
+      "title": "Catatan rapat panel asesor",
+      "decided": "{name}, {time}",
+      "none": "Rapat panel asesor tidak menyesuaikan nilai karakteristik."
+    },
+    "scl": {
+      "title": "Jalur setara Safety Culture Ladder",
+      "level": "Jalur setara Safety Culture Ladder: tingkat indikatif {level}",
+      "thresholdValue": "rata-rata {average}, minimum {minimum}",
+      "passed": "Lulus",
+      "failed": "Tidak lulus",
+      "missing": "Jalur setara tidak disertakan karena isiannya belum lengkap."
+    },
+    "contextual": {
+      "intro": "Dua dimensi kontekstual nasional dilaporkan terpisah dan tidak masuk indeks organisasi maupun penetapan tingkat.",
+      "index": "Indeks kontekstual {value}."
+    },
+    "gaps": {
+      "intro": "Karakteristik dengan indeks akhir di bawah tingkat sasaran, diurutkan menurut bobot aspek dikali besar kesenjangan.",
+      "item": "{rank}. {code} {name}",
+      "metrics": "Indeks akhir {current}; kesenjangan {gap}; skor prioritas {score}; prioritas {priority}",
+      "noPriority": "belum ditetapkan",
+      "rootCause": "Analisis penyebab:",
+      "noActions": "Belum ada tindakan.",
+      "none": "Tidak ada karakteristik di bawah tingkat sasaran."
+    },
+    "priorities": {
+      "HIGH": "tinggi",
+      "MEDIUM": "sedang",
+      "LOW": "rendah"
+    },
+    "statuses": {
+      "PLANNED": "Direncanakan",
+      "IN_PROGRESS": "Berjalan",
+      "DONE": "Selesai, menunggu verifikasi",
+      "VERIFIED": "Terverifikasi",
+      "CANCELLED": "Dibatalkan"
+    },
+    "limitations": {
+      "SELF_REPORT": "Lapisan persepsi berasal dari jawaban responden sendiri dan dapat dipengaruhi kecenderungan menjawab yang dianggap baik; pengaruh ini dikurangi dengan triangulasi bukti dan validasi.",
+      "CROSS_SECTIONAL": "Hasil menggambarkan keadaan pada periode data dan tidak menunjukkan arah perubahan tanpa pengukuran ulang dengan instrumen yang sama.",
+      "ONLINE_VALIDATION": "Validasi dilakukan secara daring sehingga pengamatan langsung terbatas pada observasi digital dan kunjungan lapangan virtual.",
+      "EVIDENCE_PROVIDED": "Penilaian bukti bergantung pada dokumen dan rekaman yang disediakan organisasi.",
+      "LOW_PARTICIPATION": "Strata di bawah partisipasi minimum:",
+      "LOW_ALPHA": "Dimensi iklim dengan alfa Cronbach di bawah ambang:",
+      "LOW_RWG": "Unit dengan kesepakatan di bawah ambang:",
+      "INCOMPLETE_LAYERS": "Karakteristik dengan lapisan tidak lengkap:",
+      "SINGLE_RATER": "Karakteristik yang dinilai satu asesor:",
+      "SUPPRESSED_CELLS": "Sebagian nilai survei disembunyikan karena kurang dari 5 responden, untuk melindungi kerahasiaan responden.",
+      "SCL_INCOMPLETE": "Jalur setara Safety Culture Ladder tidak disajikan karena isiannya belum lengkap."
+    },
+    "appendix": {
+      "participants": "Lampiran A. Daftar narasumber",
+      "participantsNote": "Daftar ini disimpan terpisah dari catatan sesi. Pernyataan dalam laporan tidak dikaitkan dengan nama narasumber.",
+      "none": "Tidak ada.",
+      "evidence": "Lampiran B. Daftar bukti",
+      "organizationLevel": "Tingkat organisasi",
+      "parameters": "Lampiran C. Parameter terkunci",
+      "parametersNote": "Parameter disalin dari snapshot asesmen yang dikunci pada {locked}."
+    },
+    "sessionTypes": {
+      "INTERVIEW": "Wawancara",
+      "FOCUS_GROUP": "Diskusi kelompok terarah",
+      "VIRTUAL_SITE_VISIT": "Kunjungan lapangan virtual"
+    },
+    "full": {
+      "kicker": "Laporan pengukuran dan diagnosis internal",
+      "title": "Laporan Asesmen Budaya Keselamatan dan Kesehatan Kerja"
+    },
+    "executive": {
+      "title": "Ringkasan Eksekutif Asesmen Budaya Keselamatan dan Kesehatan Kerja",
+      "findings": "Temuan utama",
+      "priority": "Aspek prioritas: {code} {name}.",
+      "divergence": "{count} karakteristik terkena aturan selisih persepsi dan bukti: {codes}.",
+      "perceptionGap": "Kesenjangan persepsi manajemen dan pelaksana perlu perhatian pada aspek {codes}.",
+      "participation": "Responden survei selesai: {completed}, tingkat partisipasi {rate}.",
+      "priorities": "Lima kesenjangan prioritas"
+    },
+    "statement": {
+      "title": "Pernyataan Hasil Pengukuran Budaya Keselamatan dan Kesehatan Kerja",
+      "opening": "Berdasarkan {assessment} terhadap {organization} dengan lingkup {scope} untuk periode {start} sampai {end}, Nusa Safety menyatakan hasil pengukuran budaya keselamatan dan kesehatan kerja (K3) sebagai berikut.",
+      "basis": "Hasil ditetapkan melalui triangulasi persepsi, bukti objektif, dan validasi, lalu ditetapkan dalam rapat panel asesor."
+    }
+  },
+  "report": {
+    "intro": "Laporan asesmen, ringkasan eksekutif, dan pernyataan hasil disusun dari hasil yang ditetapkan rapat panel. Setiap versi menyimpan isi pada saat dibuat; versi final ditandatangani lead assessor dan tidak dapat diubah.",
+    "noFinal": "Laporan dapat disusun setelah hasil ditetapkan rapat panel.",
+    "create": "Susun versi laporan baru",
+    "created": "Versi {version} disusun. PDF sedang disiapkan.",
+    "versions": "Versi laporan",
+    "none": "Belum ada versi laporan.",
+    "version": "Versi {version}",
+    "createdBy": "Disusun {time} oleh {name}",
+    "kinds": {
+      "FULL": "Laporan asesmen",
+      "EXECUTIVE_SUMMARY": "Ringkasan eksekutif",
+      "STATEMENT": "Pernyataan hasil"
+    },
+    "statuses": {
+      "DRAFT": "Draf",
+      "FINAL": "Final"
+    },
+    "preview": "Pratinjau HTML",
+    "pdf": "Unduh PDF",
+    "pdfPending": "PDF sedang disiapkan",
+    "pdfFailed": "PDF gagal dibuat",
+    "signed": "Ditandatangani {name}, {position}, {time}",
+    "finalize": {
+      "title": "Finalisasi dan tanda tangan",
+      "intro": "Finalisasi mengunci ketiga dokumen versi ini. Nama dan waktu diambil dari akun Anda; isi jabatan seperti yang akan tercetak.",
+      "position": "Jabatan penanda tangan",
+      "confirm": "Saya telah memeriksa isi laporan dan menyetujuinya sebagai versi final.",
+      "button": "Finalisasi dan tandatangani versi {version}",
+      "done": "Versi {version} difinalisasi dan ditandatangani."
+    },
+    "draftsHidden": "Versi draf hanya terlihat oleh asesor Nusa Safety.",
+    "pageOf": "Halaman {page} dari {total}"
   }
 }

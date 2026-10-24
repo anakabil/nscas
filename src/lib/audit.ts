@@ -93,7 +93,11 @@ export type AuditAction =
   | "action.verify"
   | "action.reminder_sent"
   | "action_plan.publish"
-  | "action_plan.export";
+  | "action_plan.export"
+  // Fase 13: pelaporan
+  | "report.create"
+  | "report.finalize"
+  | "report.render";
 
 export interface AuditActor {
   id: string | null;

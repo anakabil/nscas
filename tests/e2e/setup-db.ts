@@ -395,10 +395,37 @@ async function main(): Promise<void> {
   Object.assign(users, { leadPlan, coordinatorPlan });
   await prisma.assessmentAssignment.create({ data: { assessmentId: assessmentG.id, userId: leadPlan.id, role: "LEAD_ASSESSOR" } });
 
+  // Fase 13: asesmen dengan hasil final lengkap untuk pelaporan, beserta narasumber validasi dan bukti.
+  const reportR = await dashboardAssessment("Asesmen Laporan Gamma 2026", "2026-11-01");
+  const assessmentR = reportR.assessment;
+  const unitR = await unit(assessmentR.id, "Proyek Laporan Timur");
+  await prisma.scoreRun.create({
+    data: {
+      assessmentId: assessmentR.id,
+      engineVersion: "1.0.0",
+      inputSnapshot: { engineInput: {}, sources: sourcesD, counts: { responses: 0, selfAssessments: 0, evidenceRatings: 36, validationRatings: 18 }, strata: [], sclComplete: false } as never,
+      parameterSnapshot: { engine: engineParams } as never,
+      result: resultFrom(0) as never,
+      runById: users.leadAssessor.id,
+      isFinal: true,
+      finalResult: resultFrom(0) as never,
+      finalizedAt: new Date(),
+      finalizedById: users.leadAssessor.id,
+    },
+  });
+  const sessionR = await prisma.validationSession.create({ data: { assessmentId: assessmentR.id, type: "INTERVIEW", label: "Wawancara S2 nomor 1", status: "COMPLETED", scheduledAt: new Date("2026-12-01T02:00:00Z") } });
+  await prisma.validationParticipant.create({ data: { sessionId: sessionR.id, fullName: "Hendra Gunawan", position: "Manajer Proyek" } });
+  await prisma.evidenceItem.create({
+    data: { assessmentId: assessmentR.id, unitId: unitR.id, title: "Prosedur pelaporan hampir celaka", storageKey: `${orgC.id}/${assessmentR.id}/evidence/fixture.pdf`, sha256: "b".repeat(64), mimeType: "application/pdf", sizeBytes: 2048, uploadedById: users.leadAssessor.id },
+  });
+  const leadReport = await user("leadReport", "asesor.utama.laporan@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true });
+  Object.assign(users, { leadReport });
+  await prisma.assessmentAssignment.create({ data: { assessmentId: assessmentR.id, userId: leadReport.id, role: "LEAD_ASSESSOR" } });
+
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
-    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id, dashboard: assessmentD.id, plan: assessmentG.id },
+    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id, dashboard: assessmentD.id, plan: assessmentG.id, report: assessmentR.id },
     flaggedResponses,
     surveyTokens,
     observationWindows: { open: observationOpen.id, closed: observationClosed.id, site },

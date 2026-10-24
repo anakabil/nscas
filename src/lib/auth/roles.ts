@@ -141,3 +141,9 @@ export const ACTION_PLAN_ROLES = {
   verify: ["LEAD_ASSESSOR", "ASSESSOR"],
   publish: ["LEAD_ASSESSOR"],
 } as const satisfies Record<string, readonly Role[]>;
+/** Laporan (docs/04 baris "Laporan"): versi draf hanya untuk asesor Nusa Safety; klien dan eksekutif membaca versi final. */
+export const REPORT_ROLES = {
+  read: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN", "EXECUTIVE_VIEWER"],
+  drafts: ["LEAD_ASSESSOR", "ASSESSOR"],
+  write: ["LEAD_ASSESSOR"],
+} as const satisfies Record<string, readonly Role[]>;

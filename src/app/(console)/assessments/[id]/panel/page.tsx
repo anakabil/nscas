@@ -28,6 +28,7 @@ export default async function PanelPage({ params }: { params: Promise<{ id: stri
   const access = await guardPage(() => requireRole(id, SCORING_ROLES.panelRead));
   const t = await getTranslations("panel");
   const tLevels = await getTranslations("assessment.levels");
+  const tCommon = await getTranslations("common");
   const panel = await loadPanel(access.assessmentId);
   if (!panel) {
     return (
@@ -79,6 +80,9 @@ export default async function PanelPage({ params }: { params: Promise<{ id: stri
         </div>
       )}
       <p className="text-muted-foreground">{t("intro")}</p>
+      <div className="border-brand-navy bg-tint rounded-xl border px-4 py-3 text-sm" data-testid="standing-statement">
+        {tCommon("resultDisclaimer")}
+      </div>
       <p className="text-sm">{t("runInfo", { time: formatDateTime(panel.run.createdAt, tz), name: panel.run.runByName, responses: formatNumber(panel.counts.responses) })}</p>
 
       <Card>

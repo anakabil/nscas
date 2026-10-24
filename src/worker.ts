@@ -8,6 +8,7 @@ import { deliverActionReminder, scheduleActionReminders, type ActionReminderJob 
 import { createWorkerBoss, QUEUES } from "@/lib/jobs/boss";
 import { deliverInvitation, type InvitationJob } from "@/lib/jobs/invitations";
 import { deliverReminder, scheduleReminders, type ReminderJob } from "@/lib/jobs/reminders";
+import { renderReport, type ReportRenderJob } from "@/lib/jobs/report-render";
 import { takeParticipationSnapshots } from "@/lib/respondents/participation-data";
 
 const TZ = "Asia/Jakarta";
@@ -41,6 +42,12 @@ async function main() {
   await boss.work(QUEUES.actionRemindersSend, async () => {
     const queued = await scheduleActionReminders();
     console.info(`actions.reminders.send: ${queued} pengingat tenggat diantre`);
+  });
+
+  // Satu render sekaligus: Chromium memerlukan memori yang cukup besar.
+  await boss.work<ReportRenderJob>(QUEUES.reportRender, { localConcurrency: 1 }, async ([job]: Job<ReportRenderJob>[]) => {
+    const outcome = await renderReport(job.data);
+    console.info(`report.render ${job.data.reportId}: ${outcome}`);
   });
 
   console.info("Worker NSCAS berjalan.");

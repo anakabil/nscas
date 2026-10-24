@@ -113,3 +113,11 @@ export async function inspectObject(key: string, maxBytes: number): Promise<Obje
 export async function deleteObject(key: string): Promise<void> {
   await getStorage().send(new DeleteObjectCommand({ Bucket: getBucket(), Key: key }));
 }
+
+/** Unggah dari server (misalnya PDF laporan hasil render). */
+export async function putObject(key: string, body: Uint8Array, contentType: string): Promise<void> {
+  const sse = getStorageEnv().S3_SSE;
+  await getStorage().send(
+    new PutObjectCommand({ Bucket: getBucket(), Key: key, Body: body, ContentType: contentType, ContentLength: body.byteLength, ...(sse ? { ServerSideEncryption: sse } : {}) }),
+  );
+}

@@ -63,6 +63,7 @@ describe("seed instrumen NS-SCML-1.0", () => {
 
   it("setiap karakteristik memiliki tepat lima pernyataan, tingkat 1 sampai 5", async () => {
     const characteristics = await prisma.characteristic.findMany({
+      where: { instrumentVersion: { code: INSTRUMENT_CODE } },
       include: { levelStatements: { select: { level: true }, orderBy: { level: "asc" } } },
     });
     for (const c of characteristics) {

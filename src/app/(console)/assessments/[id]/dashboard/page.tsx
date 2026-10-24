@@ -28,6 +28,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ id: 
   const access = await guardPage(() => requireRole(id, DASHBOARD_ROLES.read));
   const t = await getTranslations("dashboard");
   const tLevels = await getTranslations("assessment.levels");
+  const tCommon = await getTranslations("common");
   const model = await loadDashboard(access.assessmentId, { roles: access.roles, unitScope: access.unitScope });
   if (!model.available) {
     return (
@@ -52,6 +53,9 @@ export default async function DashboardPage({ params }: { params: Promise<{ id: 
           {t("draftRibbon")}
         </div>
       )}
+      <div className="border-brand-navy bg-tint rounded-xl border px-4 py-3 text-sm" data-testid="standing-statement">
+        {tCommon("resultDisclaimer")}
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-muted-foreground">{t("intro")}</p>
         {showTools ? (
