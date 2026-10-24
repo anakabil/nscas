@@ -12,6 +12,8 @@ export const QUEUES = {
   participationSnapshot: "participation.snapshot",
   reportRender: "report.render",
   retentionScan: "retention.scan",
+  actionRemindersSend: "actions.reminders.send",
+  actionReminderDeliver: "actions.reminders.deliver",
 } as const;
 
 export type QueueName = (typeof QUEUES)[keyof typeof QUEUES];

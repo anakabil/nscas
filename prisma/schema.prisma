@@ -117,6 +117,12 @@ enum ValidationSessionStatus {
   CANCELLED
 }
 
+enum GapPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
 enum ActionStatus {
   PLANNED
   IN_PROGRESS
@@ -199,6 +205,7 @@ model User {
   panelAdjustments         PanelAdjustment[]      @relation("PanelAdjustmentDecidedBy")
   verifiedActions          ActionItem[]           @relation("ActionItemVerifiedBy")
   actionUpdates            ActionUpdate[]         @relation("ActionUpdateCreatedBy")
+  createdActions           ActionItem[]           @relation("ActionItemCreatedBy")
   signedReports            Report[]               @relation("ReportSignedBy")
   destructionRecords       DestructionRecord[]    @relation("DestructionExecutedBy")
 }
@@ -485,6 +492,7 @@ model Unit {
   evidenceItems      EvidenceItem[]
   observationWindows ObservationWindow[]
   validationSessions ValidationSession[]
+  actionItems        ActionItem[]
 
   @@index([assessmentId])
   @@index([parentId])
@@ -984,16 +992,25 @@ model PanelAdjustment {
 // ---------------------------------------------------------------------------
 
 model GapItem {
-  id               String   @id @default(cuid())
+  id               String       @id @default(cuid())
   assessmentId     String
   characteristicId String
   currentIndex     Float
   targetLevel      Int
   gap              Float
+  /// Bobot aspek dikali kesenjangan; dasar urutan (rank).
   priorityScore    Float
+  /// Urutan dalam daftar kesenjangan, mulai dari 1.
+  rank             Int          @default(0)
+  /// Karakteristik kontekstual (aspek KT) tidak berbobot aspek, sehingga berada di akhir daftar.
+  isContextual     Boolean      @default(false)
+  /// ScoreRun final sumber daftar.
+  scoreRunId       String?
   rootCause        String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  /// Prioritas yang ditetapkan tim, terpisah dari skor prioritas hitungan.
+  priority         GapPriority?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
   assessment     Assessment     @relation(fields: [assessmentId], references: [id])
   characteristic Characteristic @relation(fields: [characteristicId], references: [id])
@@ -1009,29 +1026,40 @@ model ActionItem {
   description      String?
   ownerName        String
   ownerPosition    String
+  /// Opsional; penerima pengingat tenggat selain administrator klien dan koordinator unit.
+  ownerEmail       String?
+  /// Unit pelaksana; koordinator unit hanya mengelola tindakan unitnya.
+  unitId           String?
   dueDate          DateTime     @db.Date
   successIndicator String
   status           ActionStatus @default(PLANNED)
   verifiedById     String?
   verifiedAt       DateTime?
+  lastReminderAt   DateTime?
+  createdById      String?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
   gapItem    GapItem        @relation(fields: [gapItemId], references: [id])
+  unit       Unit?          @relation(fields: [unitId], references: [id])
+  createdBy  User?          @relation("ActionItemCreatedBy", fields: [createdById], references: [id])
   verifiedBy User?          @relation("ActionItemVerifiedBy", fields: [verifiedById], references: [id])
   updates    ActionUpdate[]
 
   @@index([gapItemId])
+  @@index([unitId])
 }
 
 model ActionUpdate {
-  id              String   @id @default(cuid())
+  id              String        @id @default(cuid())
   actionItemId    String
   note            String
   progressPercent Int
+  /// Status tindakan setelah pembaruan ini.
+  status          ActionStatus?
   createdById     String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   actionItem ActionItem @relation(fields: [actionItemId], references: [id], onDelete: Cascade)
   createdBy  User       @relation("ActionUpdateCreatedBy", fields: [createdById], references: [id])

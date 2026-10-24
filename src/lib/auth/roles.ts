@@ -128,3 +128,16 @@ export const DASHBOARD_ROLES = {
   exclude: ["LEAD_ASSESSOR", "ASSESSOR"],
   export: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN"],
 } as const satisfies Record<string, readonly Role[]>;
+/**
+ * Daftar kesenjangan dan rencana aksi (docs/01 M10, baris "Rencana aksi"): asesor utama membentuk daftar dan
+ * menerbitkan rencana aksi; asesor dan administrator klien mengisi analisis penyebab dan prioritas; koordinator
+ * unit mengelola tindakan unitnya; verifikasi tindakan oleh asesor; pimpinan eksekutif membaca.
+ */
+export const ACTION_PLAN_ROLES = {
+  read: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN", "UNIT_COORDINATOR", "EXECUTIVE_VIEWER"],
+  generate: ["LEAD_ASSESSOR"],
+  analyse: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN"],
+  act: ["LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN", "UNIT_COORDINATOR"],
+  verify: ["LEAD_ASSESSOR", "ASSESSOR"],
+  publish: ["LEAD_ASSESSOR"],
+} as const satisfies Record<string, readonly Role[]>;

@@ -83,7 +83,17 @@ export type AuditAction =
   // Fase 11: dasbor dan mutu data
   | "survey.exclude"
   | "survey.restore"
-  | "dashboard.export";
+  | "dashboard.export"
+  // Fase 12: daftar kesenjangan dan rencana aksi
+  | "gap.generate"
+  | "gap.update"
+  | "action.create"
+  | "action.update"
+  | "action.progress"
+  | "action.verify"
+  | "action.reminder_sent"
+  | "action_plan.publish"
+  | "action_plan.export";
 
 export interface AuditActor {
   id: string | null;

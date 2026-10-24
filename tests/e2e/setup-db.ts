@@ -321,7 +321,7 @@ async function main(): Promise<void> {
   };
   const previousD = await dashboardAssessment("Asesmen Dasbor Gamma 2025", "2025-11-01");
   await prisma.scoreRun.create({
-    data: { assessmentId: previousD.assessment.id, engineVersion: "1.0.0", inputSnapshot: { sources: {} }, parameterSnapshot: {}, result: resultFrom(-0.3) as never, runById: users.leadAssessor.id, isFinal: true, finalResult: resultFrom(-0.3) as never, finalizedAt: new Date(), finalizedById: users.leadAssessor.id },
+    data: { assessmentId: previousD.assessment.id, engineVersion: "1.0.0", inputSnapshot: { sources: {} }, parameterSnapshot: { engine: engineParams } as never, result: resultFrom(-0.3) as never, runById: users.leadAssessor.id, isFinal: true, finalResult: resultFrom(-0.3) as never, finalizedAt: new Date(), finalizedById: users.leadAssessor.id },
   });
   const currentD = await dashboardAssessment("Asesmen Dasbor Gamma 2026", "2026-11-01");
   const assessmentD = currentD.assessment;
@@ -350,7 +350,7 @@ async function main(): Promise<void> {
   }
   const sourcesD = Object.fromEntries(characteristics.map((c) => [c.code, { surveyAnswers: 17, dontKnow: 0 }]));
   await prisma.scoreRun.create({
-    data: { assessmentId: assessmentD.id, engineVersion: "1.0.0", inputSnapshot: { sources: sourcesD }, parameterSnapshot: {}, result: resultFrom(0) as never, runById: users.leadAssessor.id, isFinal: true, finalResult: resultFrom(0) as never, finalizedAt: new Date(), finalizedById: users.leadAssessor.id },
+    data: { assessmentId: assessmentD.id, engineVersion: "1.0.0", inputSnapshot: { sources: sourcesD }, parameterSnapshot: { engine: engineParams } as never, result: resultFrom(0) as never, runById: users.leadAssessor.id, isFinal: true, finalResult: resultFrom(0) as never, finalizedAt: new Date(), finalizedById: users.leadAssessor.id },
   });
   // Respons bertanda pada asesmen survei untuk panel mutu data (keluarkan dan pulihkan).
   const stratumS4 = await prisma.stratum.findFirstOrThrow({ where: { assessmentId: assessmentS.id, code: "S4" } });
@@ -383,10 +383,22 @@ async function main(): Promise<void> {
     ],
   });
 
+  // Fase 12: asesmen berstatus penyusunan rencana aksi dengan hasil final, untuk daftar kesenjangan dan tindakan.
+  const planG = await dashboardAssessment("Asesmen Rencana Aksi Gamma 2026", "2026-11-01");
+  const assessmentG = planG.assessment;
+  const [unitG1] = [await unit(assessmentG.id, "Proyek Rencana Utara"), await unit(assessmentG.id, "Proyek Rencana Selatan")];
+  await prisma.scoreRun.create({
+    data: { assessmentId: assessmentG.id, engineVersion: "1.0.0", inputSnapshot: { sources: sourcesD }, parameterSnapshot: { engine: engineParams } as never, result: resultFrom(0) as never, runById: users.leadAssessor.id, isFinal: true, finalResult: resultFrom(0) as never, finalizedAt: new Date(), finalizedById: users.leadAssessor.id },
+  });
+  const leadPlan = await user("leadPlan", "asesor.utama.rencana@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true });
+  const coordinatorPlan = await user("coordinatorPlan", "koordinator.rencana@e2e.test", orgC.id, "UNIT_COORDINATOR", { unitScope: [unitG1.id] });
+  Object.assign(users, { leadPlan, coordinatorPlan });
+  await prisma.assessmentAssignment.create({ data: { assessmentId: assessmentG.id, userId: leadPlan.id, role: "LEAD_ASSESSOR" } });
+
   const fixtures = {
     password: E2E_PASSWORD,
     organizations: { a: orgA.id, b: orgB.id, operator: operator.id },
-    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id, dashboard: assessmentD.id },
+    assessments: { a: assessmentA.id, b: assessmentB.id, c: assessmentC.id, survey: assessmentS.id, panel: assessmentP.id, dashboard: assessmentD.id, plan: assessmentG.id },
     flaggedResponses,
     surveyTokens,
     observationWindows: { open: observationOpen.id, closed: observationClosed.id, site },

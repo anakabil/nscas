@@ -4,6 +4,7 @@
 // sebagai satu proses Node (loader tsx), sehingga SIGTERM dari Docker langsung menghentikannya dengan rapi.
 
 import type { Job } from "pg-boss";
+import { deliverActionReminder, scheduleActionReminders, type ActionReminderJob } from "@/lib/jobs/action-reminders";
 import { createWorkerBoss, QUEUES } from "@/lib/jobs/boss";
 import { deliverInvitation, type InvitationJob } from "@/lib/jobs/invitations";
 import { deliverReminder, scheduleReminders, type ReminderJob } from "@/lib/jobs/reminders";
@@ -16,6 +17,7 @@ async function main() {
 
   await boss.schedule(QUEUES.remindersSend, "0 8 * * *", null, { tz: TZ });
   await boss.schedule(QUEUES.participationSnapshot, "0 23 * * *", null, { tz: TZ });
+  await boss.schedule(QUEUES.actionRemindersSend, "0 7 * * *", null, { tz: TZ });
 
   // Pengiriman surel dibatasi beberapa sekaligus agar tidak membebani server SMTP.
   await boss.work<InvitationJob>(QUEUES.invitationSend, { localConcurrency: 4 }, async ([job]: Job<InvitationJob>[]) => {
@@ -31,6 +33,14 @@ async function main() {
   await boss.work(QUEUES.participationSnapshot, async () => {
     const count = await takeParticipationSnapshots();
     console.info(`participation.snapshot: ${count} asesmen`);
+  });
+
+  await boss.work<ActionReminderJob>(QUEUES.actionReminderDeliver, { localConcurrency: 2 }, async ([job]: Job<ActionReminderJob>[]) => {
+    await deliverActionReminder(job.data);
+  });
+  await boss.work(QUEUES.actionRemindersSend, async () => {
+    const queued = await scheduleActionReminders();
+    console.info(`actions.reminders.send: ${queued} pengingat tenggat diantre`);
   });
 
   console.info("Worker NSCAS berjalan.");

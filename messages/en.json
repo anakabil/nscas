@@ -277,7 +277,8 @@
       "validation": "Validation",
       "scoring": "Assessor scoring",
       "panel": "Panel meeting",
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "gaps": "Action plan"
     },
     "newTitle": "New assessment",
     "newButton": "Create new assessment",
@@ -378,7 +379,15 @@
       "INVALID_PANEL_VALUE": "The panel value must be 1.00 to 5.00 with at most two decimals.",
       "EXCLUSION_CLOSED": "Responses can only be excluded or restored during data collection and scoring.",
       "NO_CHANGE": "No change; the response is already in that state.",
-      "REASON_TOO_SHORT": "A reason of at least 10 characters is required."
+      "REASON_TOO_SHORT": "A reason of at least 10 characters is required.",
+      "PLAN_CLOSED": "The action plan can be changed during action planning, reporting, and monitoring.",
+      "RESULT_NOT_FINAL": "The result has not been confirmed by the panel meeting.",
+      "ACTION_VERIFIED": "A verified action cannot be changed.",
+      "ACTION_NOT_DONE": "Only actions marked done can be verified.",
+      "GAP_LIST_MISSING": "Build the gap list first.",
+      "ACTION_PLAN_INCOMPLETE": "The action plan is incomplete. Every gap item requires a root cause analysis and at least one action.",
+      "NOTE_TOO_SHORT": "A note of at least 10 characters is required.",
+      "ACTION_INVALID": "Check the action fields: action, owner, position, due date, and success indicator are required."
     },
     "units": {
       "title": "Units",
@@ -1622,5 +1631,159 @@
         "no": "No"
       }
     }
+  },
+  "gaps": {
+    "intro": "The gap list is built from the result confirmed by the panel meeting: characteristics with a final index below the target level, ordered by aspect weight times gap size.",
+    "noFinal": "The gap list is available after the panel meeting confirms the result.",
+    "generate": "Build the gap list",
+    "regenerate": "Refresh the list from the final result",
+    "generated": "{count} gap items built.",
+    "empty": "No gap list yet.",
+    "published": "Action plan published to the client on {time}.",
+    "publish": "Publish the action plan to the client",
+    "publishIntro": "Requirement: every gap item has a root cause analysis and at least one action that is not cancelled.",
+    "publishedDone": "Action plan published.",
+    "incomplete": "Incomplete: {codes}.",
+    "export": "Download Excel",
+    "monitoringLink": "Quarterly monitoring",
+    "closed": "The action plan can be changed during action planning, reporting, and monitoring.",
+    "item": {
+      "rank": "Rank {rank}",
+      "aspect": "Aspect {code}, {name}",
+      "current": "Final index",
+      "target": "Target",
+      "gap": "Gap",
+      "score": "Priority score",
+      "contextual": "Contextual"
+    },
+    "analysis": {
+      "title": "Root cause and priority",
+      "rootCause": "Root cause analysis",
+      "priority": "Priority",
+      "none": "Not set",
+      "save": "Save analysis",
+      "saved": "Analysis saved."
+    },
+    "priorities": {
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    },
+    "actions": {
+      "title": "Actions",
+      "none": "No actions yet.",
+      "add": "Add action",
+      "edit": "Edit action",
+      "create": "Save action",
+      "created": "Action added.",
+      "saved": "Action saved.",
+      "owner": "{name}, {position}",
+      "verifiedBy": "Verified by {name}, {time}"
+    },
+    "fields": {
+      "title": "Action",
+      "description": "Description",
+      "ownerName": "Owner name",
+      "ownerPosition": "Owner position",
+      "ownerEmail": "Owner email (for deadline reminders)",
+      "unit": "Implementing unit",
+      "noUnit": "Organisation level",
+      "dueDate": "Due date",
+      "successIndicator": "Success indicator",
+      "status": "Status",
+      "progress": "Progress"
+    },
+    "statuses": {
+      "PLANNED": "Planned",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done, awaiting verification",
+      "VERIFIED": "Verified",
+      "CANCELLED": "Cancelled"
+    },
+    "due": {
+      "overdue": "Overdue",
+      "dueSoon": "Due within 7 days"
+    },
+    "progress": {
+      "title": "Progress update",
+      "note": "Progress note",
+      "percent": "Progress (percent)",
+      "status": "Status after update",
+      "save": "Save update",
+      "saved": "Update saved.",
+      "history": "Update history",
+      "noHistory": "No updates yet.",
+      "entry": "{time}, {name}: {percent}%, {status}"
+    },
+    "verify": {
+      "title": "Assessor verification",
+      "note": "Verification note",
+      "approve": "Approve",
+      "reject": "Return",
+      "done": "Verification saved."
+    },
+    "monitoring": {
+      "title": "Quarterly monitoring",
+      "intro": "Actions grouped by the quarter of their due date, with status, latest progress, and overdue actions.",
+      "quarter": "Quarter {quarter} of {year}",
+      "counts": "{total} actions: {verified} verified, {done} done, {inProgress} in progress, {planned} planned, {overdue} overdue",
+      "average": "Average progress {percent}%",
+      "none": "No actions yet.",
+      "back": "Back to the action plan",
+      "characteristic": "Characteristic"
+    },
+    "exportLabels": {
+      "sheets": {
+        "gaps": "Gap list",
+        "actions": "Action plan",
+        "updates": "Update history"
+      },
+      "columns": {
+        "rank": "Rank",
+        "code": "Code",
+        "characteristic": "Characteristic",
+        "aspect": "Aspect",
+        "current": "Final index",
+        "target": "Target level",
+        "gap": "Gap",
+        "weight": "Aspect weight",
+        "score": "Priority score",
+        "priority": "Priority",
+        "rootCause": "Root cause analysis",
+        "actions": "Number of actions",
+        "action": "Action",
+        "description": "Description",
+        "owner": "Owner",
+        "position": "Position",
+        "unit": "Implementing unit",
+        "dueDate": "Due date",
+        "indicator": "Success indicator",
+        "status": "Status",
+        "progress": "Progress (percent)",
+        "dueState": "Due note",
+        "verifiedBy": "Verified by",
+        "verifiedAt": "Verification date",
+        "date": "Date",
+        "by": "By",
+        "note": "Note"
+      }
+    }
+  },
+  "actionReminder": {
+    "subject": "Occupational safety and health action deadline reminder: {title}",
+    "greeting": "Dear Sir or Madam,",
+    "dueSoon": "The following occupational safety and health (OSH) action plan item for {organization} is due on {date}.",
+    "overdue": "The following occupational safety and health (OSH) action plan item for {organization} passed its due date on {date}. Please update its progress.",
+    "fields": {
+      "action": "Action",
+      "characteristic": "Characteristic",
+      "owner": "Owner",
+      "indicator": "Success indicator",
+      "progress": "Latest progress"
+    },
+    "linkIntro": "Open the action plan at the following link:",
+    "button": "Open the action plan",
+    "closing": "Thank you.",
+    "signature": "Nusa Safety"
   }
 }

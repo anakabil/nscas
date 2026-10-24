@@ -277,7 +277,8 @@
       "validation": "Validasi",
       "scoring": "Penilaian asesor",
       "panel": "Rapat panel",
-      "dashboard": "Dasbor"
+      "dashboard": "Dasbor",
+      "gaps": "Rencana aksi"
     },
     "newTitle": "Asesmen baru",
     "newButton": "Buat asesmen baru",
@@ -378,7 +379,15 @@
       "INVALID_PANEL_VALUE": "Nilai panel harus 1,00 sampai 5,00 dengan paling banyak dua desimal.",
       "EXCLUSION_CLOSED": "Respons hanya dapat dikeluarkan atau dipulihkan selama pengumpulan data dan penilaian.",
       "NO_CHANGE": "Tidak ada perubahan; keadaan respons sudah seperti itu.",
-      "REASON_TOO_SHORT": "Alasan wajib diisi, paling sedikit 10 karakter."
+      "REASON_TOO_SHORT": "Alasan wajib diisi, paling sedikit 10 karakter.",
+      "PLAN_CLOSED": "Rencana aksi dapat diubah selama penyusunan rencana aksi, pelaporan, dan pemantauan.",
+      "RESULT_NOT_FINAL": "Hasil belum ditetapkan rapat panel.",
+      "ACTION_VERIFIED": "Tindakan yang sudah diverifikasi tidak dapat diubah.",
+      "ACTION_NOT_DONE": "Hanya tindakan berstatus selesai yang dapat diverifikasi.",
+      "GAP_LIST_MISSING": "Bentuk daftar kesenjangan lebih dulu.",
+      "ACTION_PLAN_INCOMPLETE": "Rencana aksi belum lengkap. Setiap butir kesenjangan wajib memiliki analisis penyebab dan paling sedikit satu tindakan.",
+      "NOTE_TOO_SHORT": "Catatan wajib diisi, paling sedikit 10 karakter.",
+      "ACTION_INVALID": "Periksa isian tindakan: nama tindakan, penanggung jawab, jabatan, tenggat, dan indikator keberhasilan wajib diisi."
     },
     "units": {
       "title": "Unit",
@@ -1622,5 +1631,159 @@
         "no": "Tidak"
       }
     }
+  },
+  "gaps": {
+    "intro": "Daftar kesenjangan dibentuk dari hasil yang ditetapkan rapat panel: karakteristik dengan indeks akhir di bawah tingkat sasaran, diurutkan menurut bobot aspek dikali besar kesenjangan.",
+    "noFinal": "Daftar kesenjangan tersedia setelah hasil ditetapkan rapat panel.",
+    "generate": "Bentuk daftar kesenjangan",
+    "regenerate": "Perbarui daftar dari hasil final",
+    "generated": "{count} butir kesenjangan dibentuk.",
+    "empty": "Belum ada daftar kesenjangan.",
+    "published": "Rencana aksi diterbitkan ke klien pada {time}.",
+    "publish": "Terbitkan rencana aksi ke klien",
+    "publishIntro": "Syarat: setiap butir kesenjangan memiliki analisis penyebab dan paling sedikit satu tindakan yang tidak dibatalkan.",
+    "publishedDone": "Rencana aksi diterbitkan.",
+    "incomplete": "Belum lengkap: {codes}.",
+    "export": "Unduh Excel",
+    "monitoringLink": "Pemantauan triwulanan",
+    "closed": "Rencana aksi dapat diubah selama penyusunan rencana aksi, pelaporan, dan pemantauan.",
+    "item": {
+      "rank": "Peringkat {rank}",
+      "aspect": "Aspek {code}, {name}",
+      "current": "Indeks akhir",
+      "target": "Sasaran",
+      "gap": "Kesenjangan",
+      "score": "Skor prioritas",
+      "contextual": "Kontekstual"
+    },
+    "analysis": {
+      "title": "Analisis penyebab dan prioritas",
+      "rootCause": "Analisis penyebab",
+      "priority": "Prioritas",
+      "none": "Belum ditetapkan",
+      "save": "Simpan analisis",
+      "saved": "Analisis tersimpan."
+    },
+    "priorities": {
+      "HIGH": "Tinggi",
+      "MEDIUM": "Sedang",
+      "LOW": "Rendah"
+    },
+    "actions": {
+      "title": "Tindakan",
+      "none": "Belum ada tindakan.",
+      "add": "Tambah tindakan",
+      "edit": "Ubah tindakan",
+      "create": "Simpan tindakan",
+      "created": "Tindakan ditambahkan.",
+      "saved": "Tindakan tersimpan.",
+      "owner": "{name}, {position}",
+      "verifiedBy": "Diverifikasi {name}, {time}"
+    },
+    "fields": {
+      "title": "Tindakan",
+      "description": "Uraian",
+      "ownerName": "Nama penanggung jawab",
+      "ownerPosition": "Jabatan penanggung jawab",
+      "ownerEmail": "Surel penanggung jawab (untuk pengingat tenggat)",
+      "unit": "Unit pelaksana",
+      "noUnit": "Tingkat organisasi",
+      "dueDate": "Tenggat",
+      "successIndicator": "Indikator keberhasilan",
+      "status": "Status",
+      "progress": "Kemajuan"
+    },
+    "statuses": {
+      "PLANNED": "Direncanakan",
+      "IN_PROGRESS": "Berjalan",
+      "DONE": "Selesai, menunggu verifikasi",
+      "VERIFIED": "Terverifikasi",
+      "CANCELLED": "Dibatalkan"
+    },
+    "due": {
+      "overdue": "Lewat tenggat",
+      "dueSoon": "Tenggat dalam 7 hari"
+    },
+    "progress": {
+      "title": "Pembaruan kemajuan",
+      "note": "Catatan kemajuan",
+      "percent": "Kemajuan (persen)",
+      "status": "Status setelah pembaruan",
+      "save": "Simpan pembaruan",
+      "saved": "Pembaruan tersimpan.",
+      "history": "Riwayat pembaruan",
+      "noHistory": "Belum ada pembaruan.",
+      "entry": "{time}, {name}: {percent}%, {status}"
+    },
+    "verify": {
+      "title": "Verifikasi asesor",
+      "note": "Catatan verifikasi",
+      "approve": "Setujui",
+      "reject": "Kembalikan",
+      "done": "Verifikasi tersimpan."
+    },
+    "monitoring": {
+      "title": "Pemantauan triwulanan",
+      "intro": "Tindakan dikelompokkan menurut triwulan tenggat, dengan status, kemajuan terakhir, dan tindakan yang melewati tenggat.",
+      "quarter": "Triwulan {quarter} tahun {year}",
+      "counts": "{total} tindakan: {verified} terverifikasi, {done} selesai, {inProgress} berjalan, {planned} direncanakan, {overdue} lewat tenggat",
+      "average": "Rata-rata kemajuan {percent}%",
+      "none": "Belum ada tindakan.",
+      "back": "Kembali ke rencana aksi",
+      "characteristic": "Karakteristik"
+    },
+    "exportLabels": {
+      "sheets": {
+        "gaps": "Daftar kesenjangan",
+        "actions": "Rencana aksi",
+        "updates": "Riwayat pembaruan"
+      },
+      "columns": {
+        "rank": "Peringkat",
+        "code": "Kode",
+        "characteristic": "Karakteristik",
+        "aspect": "Aspek",
+        "current": "Indeks akhir",
+        "target": "Tingkat sasaran",
+        "gap": "Kesenjangan",
+        "weight": "Bobot aspek",
+        "score": "Skor prioritas",
+        "priority": "Prioritas",
+        "rootCause": "Analisis penyebab",
+        "actions": "Jumlah tindakan",
+        "action": "Tindakan",
+        "description": "Uraian",
+        "owner": "Penanggung jawab",
+        "position": "Jabatan",
+        "unit": "Unit pelaksana",
+        "dueDate": "Tenggat",
+        "indicator": "Indikator keberhasilan",
+        "status": "Status",
+        "progress": "Kemajuan (persen)",
+        "dueState": "Keterangan tenggat",
+        "verifiedBy": "Diverifikasi oleh",
+        "verifiedAt": "Tanggal verifikasi",
+        "date": "Tanggal",
+        "by": "Oleh",
+        "note": "Catatan"
+      }
+    }
+  },
+  "actionReminder": {
+    "subject": "Pengingat tenggat tindakan keselamatan dan kesehatan kerja: {title}",
+    "greeting": "Yth. Bapak/Ibu,",
+    "dueSoon": "Tenggat tindakan rencana aksi keselamatan dan kesehatan kerja (K3) {organization} berikut jatuh pada {date}.",
+    "overdue": "Tindakan rencana aksi keselamatan dan kesehatan kerja (K3) {organization} berikut sudah melewati tenggat {date}. Mohon perbarui kemajuannya.",
+    "fields": {
+      "action": "Tindakan",
+      "characteristic": "Karakteristik",
+      "owner": "Penanggung jawab",
+      "indicator": "Indikator keberhasilan",
+      "progress": "Kemajuan terakhir"
+    },
+    "linkIntro": "Buka rencana aksi melalui tautan berikut:",
+    "button": "Buka rencana aksi",
+    "closing": "Terima kasih.",
+    "signature": "Nusa Safety"
   }
 }
