@@ -170,7 +170,7 @@ Pengguna -> Caddy (TLS, header keamanan) -> Next.js (container) -> PostgreSQL (c
 Cadangan: pg_dump harian terenkripsi ke penyimpanan objek kedua, simpan 30 hari
 ```
 
-- **Lokasi server wajib di pusat data Indonesia** sesuai komitmen proposal. VPS Hostinger yang dipakai situs nusasafety.co.id tidak menyediakan lokasi Indonesia (pilihan terdekat Kuala Lumpur), sehingga NSCAS memakai penyedia lain, misalnya Biznet Gio, IDCloudHost, AWS wilayah Jakarta (`ap-southeast-3`), atau Google Cloud wilayah Jakarta (`asia-southeast2`).
+- **Lokasi server wajib di pusat data Indonesia** sesuai komitmen proposal. NSCAS ditempatkan di VPS Hostinger KVM 4 di pusat data Jakarta (kode `dci` pada daftar pusat data API Hostinger, diperiksa 24 Oktober 2026). VPS ini terpisah dari paket web hosting situs nusasafety.co.id, yang tidak dapat menjalankan PostgreSQL, Docker, worker, maupun Chromium. Penyedia lain yang setara bila diperlukan: Biznet Gio, IDCloudHost, AWS wilayah Jakarta (`ap-southeast-3`), atau Google Cloud wilayah Jakarta (`asia-southeast2`).
 - Spesifikasi awal yang memadai untuk satu asesmen 3.000 responden: 4 vCPU, 8 GB RAM, 160 GB SSD.
 - Subdomain yang disarankan: `nscas.nusasafety.co.id` (rekaman DNS di Hostinger diarahkan ke VPS baru).
 
