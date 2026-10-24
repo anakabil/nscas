@@ -1,12 +1,15 @@
 #!/bin/bash
-# Skrip pasca-pemasangan VPS Hostinger untuk NSCAS (docs/08 bagian 17). Isinya diunggah ke Hostinger sebagai
-# post-install script setelah __NSCAS_REF__ dan __ADMIN_EMAIL__ diganti; Hostinger menjalankannya sekali sebagai
-# root setelah sistem operasi terpasang. Tidak memuat rahasia: semuanya dibuat di server oleh bootstrap.sh.
+# Skrip pasca-pemasangan VPS Hostinger untuk NSCAS (docs/08 bagian 17). Dijalankan sekali sebagai root, dengan
+# salah satu cara berikut:
+#   1. diunggah sebagai post-install script Hostinger setelah __NSCAS_REF__ dan __ADMIN_EMAIL__ diganti;
+#   2. dari terminal hPanel atau Docker Manager dengan variabel NSCAS_REF dan NSCAS_ADMIN_EMAIL.
+# Tidak memuat rahasia: semuanya dibuat di server oleh bootstrap.sh.
 set -euo pipefail
 export HOME=${HOME:-/root}
 
-NSCAS_REF="__NSCAS_REF__"
-export NSCAS_ADMIN_EMAIL="__ADMIN_EMAIL__"
+NSCAS_REF="${NSCAS_REF:-__NSCAS_REF__}"
+export NSCAS_ADMIN_EMAIL="${NSCAS_ADMIN_EMAIL:-__ADMIN_EMAIL__}"
+case "$NSCAS_REF$NSCAS_ADMIN_EMAIL" in *__*) echo "NSCAS_REF dan NSCAS_ADMIN_EMAIL wajib diisi." >&2; exit 1 ;; esac
 REPO_URL=https://github.com/anakabil/nscas.git
 APP_DIR=/opt/nscas
 
