@@ -13,10 +13,11 @@ test("halaman /health menampilkan status basis data dan penyimpanan objek", asyn
   }
 });
 
-test("beranda memuat logo Nusa Safety dan tautan ke status sistem", async ({ page }) => {
+test("beranda memuat logo Nusa Safety, tautan masuk, dan tautan ke status sistem", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByRole("img", { name: "Logo Nusa Safety" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Masuk" })).toBeVisible();
   await page.getByRole("link", { name: "Periksa status sistem" }).click();
   await expect(page).toHaveURL(/\/health$/);
 });

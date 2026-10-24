@@ -12,7 +12,8 @@
   },
   "home": {
     "intro": "This application is under construction. The assessment console, respondent survey, and reports will be available in later phases.",
-    "healthLink": "Check system status"
+    "healthLink": "Check system status",
+    "login": "Sign in"
   },
   "health": {
     "title": "System status",
@@ -30,5 +31,228 @@
     },
     "hint": "If a component fails, make sure the development services are running with docker compose up -d and that the .env file has been filled in according to .env.example.",
     "back": "Back to home"
+  },
+  "nav": {
+    "assessments": "Assessments",
+    "organizations": "Organisations and users",
+    "account": "My account",
+    "logout": "Sign out",
+    "signedInAs": "Signed in as {name}",
+    "mainNavigation": "Main navigation"
+  },
+  "roles": {
+    "SUPER_ADMIN": "System administrator",
+    "LEAD_ASSESSOR": "Lead assessor",
+    "ASSESSOR": "Assessor",
+    "CLIENT_ADMIN": "Client administrator",
+    "UNIT_COORDINATOR": "Unit coordinator",
+    "EXECUTIVE_VIEWER": "Executive, view only"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to NSCAS",
+      "description": "Use your account email and password.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "pending": "Checking",
+      "sessionEnded": "Your session has ended. Please sign in again.",
+      "errors": {
+        "INVALID_INPUT": "Enter both your email and password.",
+        "INVALID_CREDENTIALS": "The email or password is incorrect. Check them and try again. The account is locked for 15 minutes after 5 failed attempts within 15 minutes.",
+        "LOCKED": "The account is temporarily locked after too many failed sign-in attempts. Try again in 15 minutes, or ask an administrator to unlock it.",
+        "INACTIVE": "Your account has been deactivated. Contact your organisation's administrator.",
+        "RATE_LIMITED": "Too many sign-in attempts in one minute. Wait a moment and try again.",
+        "EXPIRED": "Sign-in could not be completed. Sign in again with your email and password."
+      }
+    },
+    "verify": {
+      "title": "Two-step verification",
+      "description": "Enter the six-digit code from the authenticator app on your phone.",
+      "code": "Verification code",
+      "codeHint": "If your phone is not available, enter one of your backup codes.",
+      "submit": "Verify",
+      "pending": "Checking",
+      "back": "Back to sign in",
+      "errors": {
+        "INVALID_INPUT": "Enter a six-digit code or a backup code.",
+        "INVALID_CODE": "The code is incorrect or has already been used. Wait for the next code in your authenticator app and try again.",
+        "LOCKED": "The account is temporarily locked after too many failed attempts. Try again in 15 minutes, or ask an administrator to unlock it.",
+        "EXPIRED": "Verification timed out. Sign in again with your email and password.",
+        "RATE_LIMITED": "Too many attempts in one minute. Wait a moment and try again."
+      }
+    }
+  },
+  "account": {
+    "title": "My account",
+    "profile": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "roles": "Roles",
+    "noRoles": "No roles yet. Contact your organisation's administrator.",
+    "mustChangePassword": "You signed in with a temporary password. Change your password before continuing.",
+    "totpRequired": "Your role requires two-step verification. Turn it on before continuing.",
+    "securityLink": "Set up two-step verification",
+    "continue": "Continue to the console",
+    "password": {
+      "title": "Change password",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Repeat new password",
+      "hint": "At least 12 characters. Use a phrase you can remember but others cannot guess.",
+      "submit": "Save password",
+      "pending": "Saving",
+      "success": "Your password has been changed. Sessions on other devices have been ended.",
+      "errors": {
+        "INVALID_INPUT": "Fill in all three password fields.",
+        "MISMATCH": "The repeated new password does not match. Type both fields again.",
+        "WEAK_PASSWORD": "The new password must be at least 12 characters.",
+        "SAME_PASSWORD": "The new password must differ from the current password.",
+        "WRONG_PASSWORD": "The current password is incorrect.",
+        "EXPIRED": "Your session has ended. Reload the page and sign in again."
+      }
+    }
+  },
+  "security": {
+    "title": "Two-step verification",
+    "intro": "Two-step verification protects your account. In addition to your password, you enter a code from an authenticator app on your phone each time you sign in.",
+    "enabled": "Two-step verification has been on since {date}.",
+    "backupRemaining": "Backup codes remaining: {count} of 10.",
+    "setupTitle": "Turn on two-step verification",
+    "step1": "Install an authenticator app on your phone, such as Google Authenticator or Microsoft Authenticator.",
+    "step2": "Scan the QR code below with that app.",
+    "manualKey": "If you cannot scan it, enter this key manually:",
+    "step3": "Enter the six-digit code shown in the app.",
+    "qrAlt": "QR code for the authenticator app",
+    "code": "Verification code",
+    "submit": "Turn on",
+    "pending": "Checking",
+    "successEnabled": "Two-step verification is now on.",
+    "backupTitle": "Backup codes",
+    "backupIntro": "Store these ten codes somewhere safe. Each code can be used once to sign in when your phone is not available. They will not be shown again.",
+    "regenerateTitle": "Create new backup codes",
+    "regenerateIntro": "Once new codes are created, all old backup codes stop working. Enter a code from your authenticator app to continue.",
+    "regenerate": "Create new codes",
+    "successRegenerated": "New backup codes have been created.",
+    "continue": "Continue to the console",
+    "errors": {
+      "INVALID_INPUT": "Enter the six-digit code from your authenticator app.",
+      "INVALID_CODE": "The code is incorrect. Make sure your phone's clock is accurate, then enter the code currently shown.",
+      "ALREADY_ENABLED": "Two-step verification is already on.",
+      "NOT_STARTED": "Reload the page to start setup.",
+      "NOT_ENABLED": "Turn on two-step verification first.",
+      "EXPIRED": "Your session has ended. Reload the page and sign in again."
+    }
+  },
+  "assessments": {
+    "title": "Assessments",
+    "empty": "There are no assessments you can access yet.",
+    "name": "Assessment name",
+    "organization": "Organisation",
+    "status": "Status",
+    "period": "Period",
+    "targetLevel": "Target level",
+    "open": "Open",
+    "detailIntro": "Assessment details, configuration, and data collection will be added in later phases.",
+    "yourRoles": "Your roles in this assessment",
+    "unitScope": "Units you can access",
+    "allUnits": "All units",
+    "back": "Back to assessments",
+    "statuses": {
+      "DRAFT": "Draft",
+      "CONFIGURED": "Configured",
+      "LOCKED": "Parameters locked",
+      "DATA_COLLECTION": "Data collection",
+      "SCORING": "Scoring",
+      "PANEL_REVIEW": "Assessor panel meeting",
+      "ACTION_PLANNING": "Action planning",
+      "REPORTED": "Reported",
+      "MONITORING": "Monitoring",
+      "ARCHIVED": "Archived",
+      "PURGED": "Raw data destroyed"
+    },
+    "periodRange": "{start} to {end}"
+  },
+  "orgs": {
+    "title": "Organisations and users",
+    "name": "Name",
+    "legalName": "Legal name",
+    "sector": "Sector",
+    "kind": "Type",
+    "operator": "System operator",
+    "client": "Client",
+    "members": "Users",
+    "open": "Manage",
+    "empty": "There are no organisations yet.",
+    "createTitle": "Add client organisation",
+    "createSubmit": "Save organisation",
+    "pending": "Saving",
+    "created": "The organisation has been added.",
+    "readOnly": "You can only view this list.",
+    "errors": {
+      "INVALID_INPUT": "Enter the organisation's name and legal name, each at least 2 characters.",
+      "EXPIRED": "Your session has ended. Reload the page and sign in again."
+    }
+  },
+  "users": {
+    "title": "Users of {organization}",
+    "back": "Back to organisations",
+    "email": "Email",
+    "name": "Name",
+    "roles": "Roles",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "locked": "Locked",
+    "twoStep": "Two-step verification",
+    "twoStepOn": "On",
+    "twoStepOff": "Not yet on",
+    "manage": "Manage",
+    "empty": "There are no users in this organisation yet.",
+    "addTitle": "Add user",
+    "addIntro": "New users receive a temporary password that must be changed at first sign-in. Give the password to the user directly.",
+    "role": "Role",
+    "unitScope": "Units handled",
+    "unitScopeHint": "Required for unit coordinators. Units become available once an assessment is created.",
+    "noUnits": "There are no units in this organisation yet.",
+    "addSubmit": "Add user",
+    "pending": "Saving",
+    "added": "The user has been added.",
+    "addedExisting": "The role has been added to the existing account.",
+    "tempPassword": "Temporary password, shown only this once:",
+    "readOnly": "You can only view the user list.",
+    "errors": {
+      "INVALID_INPUT": "Check the email, name, and role.",
+      "ROLE_NOT_ALLOWED": "You cannot grant or revoke that role in this organisation.",
+      "EMAIL_IN_OTHER_ORGANIZATION": "This email is already registered in another organisation. Contact Nusa Safety to add it.",
+      "ALREADY_MEMBER": "This user already has that role.",
+      "UNIT_OUT_OF_SCOPE": "The selected unit does not belong to this organisation.",
+      "UNIT_SCOPE_REQUIRED": "Select at least one unit for a unit coordinator.",
+      "CANNOT_MANAGE_SELF": "This action cannot be performed on your own account.",
+      "LAST_ROLE": "This is the user's last role. Deactivate the account if the user no longer needs access.",
+      "FORBIDDEN": "You are not authorised to manage this account because it is also registered in another organisation.",
+      "EXPIRED": "Your session has ended. Reload the page and sign in again."
+    },
+    "detail": {
+      "title": "Manage user",
+      "lastLogin": "Last sign-in",
+      "never": "Never",
+      "lockedUntil": "Locked until {time}",
+      "mustChangePassword": "Must change password",
+      "actions": "Actions",
+      "deactivate": "Deactivate account",
+      "activate": "Activate account",
+      "resetTotp": "Reset two-step verification",
+      "resetTotpHint": "The user must set it up again at next sign-in, and all of their sessions are ended.",
+      "resetPassword": "Create new temporary password",
+      "unlock": "Unlock",
+      "revokeRole": "Revoke role",
+      "done": "Changes saved."
+    }
+  },
+  "forbidden": {
+    "title": "Access denied",
+    "description": "You do not have permission to open this page. If you need access, contact your organisation's administrator.",
+    "back": "Back to assessments"
   }
 }

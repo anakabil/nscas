@@ -50,3 +50,6 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# data uji e2e (memuat rahasia TOTP uji)
+/tests/e2e/.fixtures.json

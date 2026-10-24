@@ -5,7 +5,11 @@ import { defineConfig } from "vitest/config";
 // pada setiap eksekusi (lihat tests/integration/global-setup.ts).
 export default defineConfig({
   resolve: {
-    alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // Modul server memakai "server-only"; di Vitest diganti modul kosong agar dapat diuji.
+      "server-only": fileURLToPath(new URL("./src/test/server-only-stub.ts", import.meta.url)),
+    },
   },
   test: {
     environment: "node",

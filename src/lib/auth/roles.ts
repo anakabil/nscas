@@ -1,0 +1,80 @@
+// Peran dan matriks hak akses (docs/04 bagian 2). Matriks ditulis sebagai data agar dapat diuji
+// dan dipakai langsung oleh requireRole. Catatan dalam kurung di docs/04 (misalnya "unitnya",
+// "miliknya", "tanpa identitas") ditegakkan oleh guard (cakupan unit) dan oleh kueri tiap fitur.
+
+import type { Role } from "@/generated/prisma/enums";
+
+export const ALL_ROLES = [
+  "SUPER_ADMIN",
+  "LEAD_ASSESSOR",
+  "ASSESSOR",
+  "CLIENT_ADMIN",
+  "UNIT_COORDINATOR",
+  "EXECUTIVE_VIEWER",
+] as const satisfies readonly Role[];
+
+/** Peran milik Nusa Safety; hanya sah sebagai keanggotaan di organisasi operator. */
+export const OPERATOR_ROLES = ["SUPER_ADMIN", "LEAD_ASSESSOR", "ASSESSOR"] as const satisfies readonly Role[];
+
+/** Peran milik klien; hanya sah sebagai keanggotaan di organisasi klien. */
+export const CLIENT_ROLES = ["CLIENT_ADMIN", "UNIT_COORDINATOR", "EXECUTIVE_VIEWER"] as const satisfies readonly Role[];
+
+/** TOTP wajib (docs/04 bagian 3). */
+export const TOTP_REQUIRED_ROLES = ["SUPER_ADMIN", "LEAD_ASSESSOR", "ASSESSOR", "CLIENT_ADMIN"] as const satisfies readonly Role[];
+
+/** Batas 30 menit tidak aktif berlaku untuk peran Nusa Safety (docs/04 bagian 3). */
+export const IDLE_TIMEOUT_ROLES = OPERATOR_ROLES;
+
+export function isOperatorRole(role: Role): boolean {
+  return (OPERATOR_ROLES as readonly Role[]).includes(role);
+}
+
+export function isClientRole(role: Role): boolean {
+  return (CLIENT_ROLES as readonly Role[]).includes(role);
+}
+
+/** Keanggotaan sah bila peran operator berada di organisasi operator dan peran klien di organisasi klien. */
+export function isValidMembership(role: Role, organizationIsOperator: boolean): boolean {
+  return organizationIsOperator ? isOperatorRole(role) : isClientRole(role);
+}
+
+const SA = "SUPER_ADMIN";
+const LA = "LEAD_ASSESSOR";
+const AS = "ASSESSOR";
+const CA = "CLIENT_ADMIN";
+const UC = "UNIT_COORDINATOR";
+const EV = "EXECUTIVE_VIEWER";
+
+/**
+ * Matriks docs/04 bagian 2. "read" berisi peran dengan hak B atau U; "write" berisi peran dengan hak U.
+ * UNIT_COORDINATOR selalu dibatasi ke unitnya oleh guard.
+ */
+export const PERMISSIONS = {
+  organizationsAndUsers: { read: [SA, LA, CA], write: [SA, CA] }, // CA: pengguna klien di organisasinya
+  parametersBeforeLock: { read: [SA, LA, AS, CA], write: [LA] },
+  parametersAfterLock: { read: [SA, LA, AS, CA, EV], write: [] },
+  roster: { read: [LA, CA, UC], write: [CA, UC] },
+  tokensAndParticipation: { read: [SA, LA, AS, CA, UC, EV], write: [CA] }, // EV: agregat saja
+  rawSurveyAnswers: { read: [LA, AS], write: [] }, // tanpa identitas
+  selfAssessments: { read: [LA, AS, CA], write: [] },
+  evidenceAndObservations: { read: [LA, AS, CA, UC], write: [CA, UC] },
+  assessorRatings: { read: [LA, AS], write: [LA, AS] }, // AS: miliknya
+  panelAndFinalization: { read: [LA, AS], write: [LA] },
+  resultsDashboard: { read: [LA, AS, CA, UC, EV], write: [] }, // UC: unitnya, setelah final
+  actionPlans: { read: [LA, AS, CA, UC, EV], write: [LA, AS, CA, UC] },
+  reports: { read: [LA, AS, CA, EV], write: [LA] },
+  auditTrail: { read: [SA, LA, CA], write: [] }, // LA dan CA: asesmennya; CA tanpa data mentah
+} as const satisfies Record<string, { read: readonly Role[]; write: readonly Role[] }>;
+
+export type Resource = keyof typeof PERMISSIONS;
+
+export function rolesFor(resource: Resource, mode: "read" | "write"): readonly Role[] {
+  return PERMISSIONS[resource][mode];
+}
+
+/** Peran yang boleh diberikan oleh pelaku, sesuai jenis organisasi tujuan. */
+export function grantableRoles(actor: { isSuperAdmin: boolean; isClientAdminOfTarget: boolean }, targetIsOperator: boolean): Role[] {
+  if (actor.isSuperAdmin) return targetIsOperator ? [...OPERATOR_ROLES] : [...CLIENT_ROLES];
+  if (actor.isClientAdminOfTarget && !targetIsOperator) return [...CLIENT_ROLES];
+  return [];
+}

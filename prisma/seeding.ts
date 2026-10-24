@@ -266,20 +266,22 @@ export type AdminSeedInput = z.input<typeof adminSchema>;
 async function ensureOrganization(
   prisma: PrismaClient,
   org: { name: string; legalName: string; sector: string },
+  isOperator = false,
 ): Promise<{ id: string; created: boolean }> {
+  // Organisasi operator dikenali dari penandanya; organisasi lain dari nama dan nama resmi.
   const existing = await prisma.organization.findFirst({
-    where: { name: org.name, legalName: org.legalName },
+    where: isOperator ? { isOperator: true } : { name: org.name, legalName: org.legalName, isOperator: false },
     select: { id: true },
   });
   if (existing) return { id: existing.id, created: false };
-  const created = await prisma.organization.create({ data: org, select: { id: true } });
+  const created = await prisma.organization.create({ data: { ...org, isOperator }, select: { id: true } });
   await prisma.auditLog.create({
     data: {
       organizationId: created.id,
       action: "organization.create",
       entityType: "Organization",
       entityId: created.id,
-      after: { ...org, source: "seed" },
+      after: { ...org, isOperator, source: "seed" },
     },
   });
   return { id: created.id, created: true };
@@ -296,7 +298,7 @@ export interface AdminSeedResult {
  */
 export async function seedSuperAdmin(prisma: PrismaClient, input: AdminSeedInput): Promise<AdminSeedResult> {
   const admin = adminSchema.parse(input);
-  const operator = await ensureOrganization(prisma, OPERATOR_ORGANIZATION);
+  const operator = await ensureOrganization(prisma, OPERATOR_ORGANIZATION, true);
 
   let user = await prisma.user.findUnique({ where: { email: admin.email }, select: { id: true } });
   const created = !user;

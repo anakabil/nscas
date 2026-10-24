@@ -12,7 +12,8 @@
   },
   "home": {
     "intro": "Aplikasi ini sedang dalam tahap pembangunan. Konsol asesmen, survei responden, dan laporan akan tersedia pada fase berikutnya.",
-    "healthLink": "Periksa status sistem"
+    "healthLink": "Periksa status sistem",
+    "login": "Masuk"
   },
   "health": {
     "title": "Status sistem",
@@ -30,5 +31,228 @@
     },
     "hint": "Bila ada komponen yang gagal, pastikan layanan pengembangan sudah berjalan dengan perintah docker compose up -d dan berkas .env sudah diisi sesuai .env.example.",
     "back": "Kembali ke beranda"
+  },
+  "nav": {
+    "assessments": "Asesmen",
+    "organizations": "Organisasi dan pengguna",
+    "account": "Akun saya",
+    "logout": "Keluar",
+    "signedInAs": "Masuk sebagai {name}",
+    "mainNavigation": "Navigasi utama"
+  },
+  "roles": {
+    "SUPER_ADMIN": "Administrator sistem",
+    "LEAD_ASSESSOR": "Asesor utama",
+    "ASSESSOR": "Asesor",
+    "CLIENT_ADMIN": "Administrator klien",
+    "UNIT_COORDINATOR": "Koordinator unit",
+    "EXECUTIVE_VIEWER": "Pimpinan, hanya melihat"
+  },
+  "auth": {
+    "login": {
+      "title": "Masuk ke NSCAS",
+      "description": "Gunakan surel dan kata sandi akun Anda.",
+      "email": "Surel",
+      "password": "Kata sandi",
+      "submit": "Masuk",
+      "pending": "Memeriksa",
+      "sessionEnded": "Sesi Anda telah berakhir. Silakan masuk kembali.",
+      "errors": {
+        "INVALID_INPUT": "Isi surel dan kata sandi dengan lengkap.",
+        "INVALID_CREDENTIALS": "Surel atau kata sandi tidak sesuai. Periksa kembali, lalu coba lagi. Akun dikunci selama 15 menit setelah 5 kali gagal dalam 15 menit.",
+        "LOCKED": "Akun dikunci sementara karena terlalu banyak percobaan masuk yang gagal. Coba lagi setelah 15 menit, atau minta administrator membuka penguncian.",
+        "INACTIVE": "Akun Anda dinonaktifkan. Hubungi administrator organisasi Anda.",
+        "RATE_LIMITED": "Terlalu banyak percobaan masuk dalam satu menit. Tunggu sebentar, lalu coba lagi.",
+        "EXPIRED": "Proses masuk tidak dapat diselesaikan. Masuk kembali dengan surel dan kata sandi."
+      }
+    },
+    "verify": {
+      "title": "Verifikasi dua langkah",
+      "description": "Masukkan kode enam digit dari aplikasi autentikator di telepon Anda.",
+      "code": "Kode verifikasi",
+      "codeHint": "Bila telepon tidak tersedia, masukkan salah satu kode cadangan Anda.",
+      "submit": "Verifikasi",
+      "pending": "Memeriksa",
+      "back": "Kembali ke halaman masuk",
+      "errors": {
+        "INVALID_INPUT": "Masukkan kode enam digit atau kode cadangan.",
+        "INVALID_CODE": "Kode tidak sesuai atau sudah dipakai. Tunggu kode berikutnya di aplikasi autentikator, lalu coba lagi.",
+        "LOCKED": "Akun dikunci sementara karena terlalu banyak percobaan yang gagal. Coba lagi setelah 15 menit, atau minta administrator membuka penguncian.",
+        "EXPIRED": "Waktu verifikasi habis. Masuk kembali dengan surel dan kata sandi.",
+        "RATE_LIMITED": "Terlalu banyak percobaan dalam satu menit. Tunggu sebentar, lalu coba lagi."
+      }
+    }
+  },
+  "account": {
+    "title": "Akun saya",
+    "profile": "Profil",
+    "name": "Nama",
+    "email": "Surel",
+    "roles": "Peran",
+    "noRoles": "Belum ada peran. Hubungi administrator organisasi Anda.",
+    "mustChangePassword": "Anda masuk dengan kata sandi sementara. Ganti kata sandi sebelum melanjutkan.",
+    "totpRequired": "Peran Anda mewajibkan verifikasi dua langkah. Aktifkan sebelum melanjutkan.",
+    "securityLink": "Atur verifikasi dua langkah",
+    "continue": "Lanjut ke konsol",
+    "password": {
+      "title": "Ganti kata sandi",
+      "current": "Kata sandi saat ini",
+      "new": "Kata sandi baru",
+      "confirm": "Ulangi kata sandi baru",
+      "hint": "Minimal 12 karakter. Gunakan kalimat yang mudah Anda ingat tetapi sulit ditebak orang lain.",
+      "submit": "Simpan kata sandi",
+      "pending": "Menyimpan",
+      "success": "Kata sandi berhasil diganti. Sesi di perangkat lain telah diakhiri.",
+      "errors": {
+        "INVALID_INPUT": "Isi ketiga kolom kata sandi.",
+        "MISMATCH": "Ulangan kata sandi baru tidak sama. Ketik ulang kedua kolom.",
+        "WEAK_PASSWORD": "Kata sandi baru minimal 12 karakter.",
+        "SAME_PASSWORD": "Kata sandi baru harus berbeda dari kata sandi saat ini.",
+        "WRONG_PASSWORD": "Kata sandi saat ini tidak sesuai.",
+        "EXPIRED": "Sesi Anda telah berakhir. Muat ulang halaman, lalu masuk kembali."
+      }
+    }
+  },
+  "security": {
+    "title": "Verifikasi dua langkah",
+    "intro": "Verifikasi dua langkah melindungi akun Anda. Selain kata sandi, setiap kali masuk Anda memasukkan kode dari aplikasi autentikator di telepon.",
+    "enabled": "Verifikasi dua langkah aktif sejak {date}.",
+    "backupRemaining": "Sisa kode cadangan: {count} dari 10.",
+    "setupTitle": "Aktifkan verifikasi dua langkah",
+    "step1": "Pasang aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator.",
+    "step2": "Pindai kode QR berikut dengan aplikasi tersebut.",
+    "manualKey": "Bila tidak dapat memindai, masukkan kunci berikut secara manual:",
+    "step3": "Masukkan kode enam digit yang tampil di aplikasi.",
+    "qrAlt": "Kode QR untuk aplikasi autentikator",
+    "code": "Kode verifikasi",
+    "submit": "Aktifkan",
+    "pending": "Memeriksa",
+    "successEnabled": "Verifikasi dua langkah berhasil diaktifkan.",
+    "backupTitle": "Kode cadangan",
+    "backupIntro": "Simpan kesepuluh kode berikut di tempat yang aman. Setiap kode hanya dapat dipakai sekali untuk masuk bila telepon tidak tersedia. Kode ini tidak akan ditampilkan lagi.",
+    "regenerateTitle": "Buat kode cadangan baru",
+    "regenerateIntro": "Setelah kode baru dibuat, seluruh kode cadangan lama tidak berlaku. Masukkan kode dari aplikasi autentikator untuk melanjutkan.",
+    "regenerate": "Buat kode baru",
+    "successRegenerated": "Kode cadangan baru berhasil dibuat.",
+    "continue": "Lanjut ke konsol",
+    "errors": {
+      "INVALID_INPUT": "Masukkan kode enam digit dari aplikasi autentikator.",
+      "INVALID_CODE": "Kode tidak sesuai. Pastikan jam di telepon tepat, lalu masukkan kode yang sedang tampil.",
+      "ALREADY_ENABLED": "Verifikasi dua langkah sudah aktif.",
+      "NOT_STARTED": "Muat ulang halaman untuk memulai aktivasi.",
+      "NOT_ENABLED": "Aktifkan verifikasi dua langkah lebih dulu.",
+      "EXPIRED": "Sesi Anda telah berakhir. Muat ulang halaman, lalu masuk kembali."
+    }
+  },
+  "assessments": {
+    "title": "Asesmen",
+    "empty": "Belum ada asesmen yang dapat Anda akses.",
+    "name": "Nama asesmen",
+    "organization": "Organisasi",
+    "status": "Status",
+    "period": "Periode",
+    "targetLevel": "Tingkat sasaran",
+    "open": "Buka",
+    "detailIntro": "Rincian asesmen, konfigurasi, dan pengumpulan data dilengkapi pada fase berikutnya.",
+    "yourRoles": "Peran Anda pada asesmen ini",
+    "unitScope": "Unit yang dapat Anda akses",
+    "allUnits": "Semua unit",
+    "back": "Kembali ke daftar asesmen",
+    "statuses": {
+      "DRAFT": "Draf",
+      "CONFIGURED": "Terkonfigurasi",
+      "LOCKED": "Parameter dikunci",
+      "DATA_COLLECTION": "Pengumpulan data",
+      "SCORING": "Penilaian",
+      "PANEL_REVIEW": "Rapat panel asesor",
+      "ACTION_PLANNING": "Penyusunan rencana aksi",
+      "REPORTED": "Dilaporkan",
+      "MONITORING": "Pemantauan",
+      "ARCHIVED": "Diarsipkan",
+      "PURGED": "Data mentah dimusnahkan"
+    },
+    "periodRange": "{start} sampai {end}"
+  },
+  "orgs": {
+    "title": "Organisasi dan pengguna",
+    "name": "Nama",
+    "legalName": "Nama resmi",
+    "sector": "Sektor",
+    "kind": "Jenis",
+    "operator": "Operator sistem",
+    "client": "Klien",
+    "members": "Jumlah pengguna",
+    "open": "Kelola",
+    "empty": "Belum ada organisasi.",
+    "createTitle": "Tambah organisasi klien",
+    "createSubmit": "Simpan organisasi",
+    "pending": "Menyimpan",
+    "created": "Organisasi berhasil ditambahkan.",
+    "readOnly": "Anda hanya dapat melihat daftar ini.",
+    "errors": {
+      "INVALID_INPUT": "Isi nama dan nama resmi organisasi, masing-masing minimal 2 karakter.",
+      "EXPIRED": "Sesi Anda telah berakhir. Muat ulang halaman, lalu masuk kembali."
+    }
+  },
+  "users": {
+    "title": "Pengguna {organization}",
+    "back": "Kembali ke daftar organisasi",
+    "email": "Surel",
+    "name": "Nama",
+    "roles": "Peran",
+    "status": "Status",
+    "active": "Aktif",
+    "inactive": "Nonaktif",
+    "locked": "Dikunci",
+    "twoStep": "Verifikasi dua langkah",
+    "twoStepOn": "Aktif",
+    "twoStepOff": "Belum aktif",
+    "manage": "Kelola",
+    "empty": "Belum ada pengguna di organisasi ini.",
+    "addTitle": "Tambah pengguna",
+    "addIntro": "Pengguna baru menerima kata sandi sementara yang wajib diganti saat masuk pertama. Sampaikan kata sandi itu secara langsung kepada pengguna.",
+    "role": "Peran",
+    "unitScope": "Unit yang ditangani",
+    "unitScopeHint": "Wajib untuk koordinator unit. Unit tersedia setelah asesmen dibuat.",
+    "noUnits": "Belum ada unit di organisasi ini.",
+    "addSubmit": "Tambah pengguna",
+    "pending": "Menyimpan",
+    "added": "Pengguna berhasil ditambahkan.",
+    "addedExisting": "Peran berhasil ditambahkan ke akun yang sudah ada.",
+    "tempPassword": "Kata sandi sementara, ditampilkan sekali ini saja:",
+    "readOnly": "Anda hanya dapat melihat daftar pengguna.",
+    "errors": {
+      "INVALID_INPUT": "Periksa kembali surel, nama, dan peran.",
+      "ROLE_NOT_ALLOWED": "Anda tidak dapat memberikan atau mencabut peran tersebut di organisasi ini.",
+      "EMAIL_IN_OTHER_ORGANIZATION": "Surel ini sudah terdaftar di organisasi lain. Hubungi Nusa Safety untuk menambahkannya.",
+      "ALREADY_MEMBER": "Pengguna ini sudah memiliki peran tersebut.",
+      "UNIT_OUT_OF_SCOPE": "Unit yang dipilih bukan milik organisasi ini.",
+      "UNIT_SCOPE_REQUIRED": "Pilih minimal satu unit untuk koordinator unit.",
+      "CANNOT_MANAGE_SELF": "Tindakan ini tidak dapat dilakukan pada akun Anda sendiri.",
+      "LAST_ROLE": "Ini peran terakhir pengguna. Nonaktifkan akun bila pengguna tidak lagi memerlukan akses.",
+      "FORBIDDEN": "Anda tidak berwenang mengelola akun ini karena akun tersebut juga terdaftar di organisasi lain.",
+      "EXPIRED": "Sesi Anda telah berakhir. Muat ulang halaman, lalu masuk kembali."
+    },
+    "detail": {
+      "title": "Kelola pengguna",
+      "lastLogin": "Terakhir masuk",
+      "never": "Belum pernah",
+      "lockedUntil": "Dikunci sampai {time}",
+      "mustChangePassword": "Wajib mengganti kata sandi",
+      "actions": "Tindakan",
+      "deactivate": "Nonaktifkan akun",
+      "activate": "Aktifkan akun",
+      "resetTotp": "Atur ulang verifikasi dua langkah",
+      "resetTotpHint": "Pengguna wajib mengaktifkan ulang saat masuk berikutnya, dan semua sesinya diakhiri.",
+      "resetPassword": "Buat kata sandi sementara baru",
+      "unlock": "Buka penguncian",
+      "revokeRole": "Cabut peran",
+      "done": "Perubahan berhasil disimpan."
+    }
+  },
+  "forbidden": {
+    "title": "Akses ditolak",
+    "description": "Anda tidak memiliki hak untuk membuka halaman ini. Bila Anda memerlukan akses, hubungi administrator organisasi Anda.",
+    "back": "Kembali ke daftar asesmen"
   }
 }

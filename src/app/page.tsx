@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Activity } from "lucide-react";
+import { Activity, LogIn } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 
@@ -22,8 +22,14 @@ export default async function HomePage() {
         <p className="text-lg font-medium">{t("app.tagline")}</p>
         <p className="text-muted-foreground">{t("home.intro")}</p>
       </div>
-      <div>
+      <div className="flex flex-wrap gap-3">
         <Button asChild>
+          <Link href="/login">
+            <LogIn aria-hidden />
+            {t("home.login")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
           <Link href="/health">
             <Activity aria-hidden />
             {t("home.healthLink")}

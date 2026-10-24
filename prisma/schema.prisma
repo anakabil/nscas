@@ -141,12 +141,14 @@ enum ReportStatus {
 // ---------------------------------------------------------------------------
 
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  legalName String
-  sector    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  name       String
+  legalName  String
+  sector     String?
+  /// true hanya untuk Nusa Safety (operator sistem); paling banyak satu (indeks parsial di migrasi).
+  isOperator Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   memberships Membership[]
   assessments Assessment[]
@@ -166,6 +168,21 @@ model User {
   lastLoginAt   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  /// Waktu aktivasi TOTP.
+  totpEnabledAt          DateTime?
+  /// Langkah waktu TOTP terakhir yang diterima, untuk menolak pemakaian ulang kode yang sama.
+  totpLastUsedStep       Int?
+  /// Penguncian akun: 5 kali gagal masuk dalam 15 menit (docs/04 bagian 3).
+  failedLoginCount       Int       @default(0)
+  failedLoginWindowStart DateTime?
+  lockedUntil            DateTime?
+  /// Wajib mengganti kata sandi sementara pada saat masuk berikutnya.
+  mustChangePassword     Boolean   @default(false)
+  passwordChangedAt      DateTime?
+
+  backupCodes BackupCode[]
+  sessions    UserSession[]
 
   memberships              Membership[]
   assignments              AssessmentAssignment[]
@@ -200,6 +217,41 @@ model Membership {
 
   @@unique([userId, organizationId, role])
   @@index([organizationId])
+}
+
+/// Kode cadangan TOTP sekali pakai (10 kode per pengguna), disimpan sebagai hash argon2id.
+model BackupCode {
+  id        String    @id @default(cuid())
+  userId    String
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// Sesi di sisi server. Cookie Auth.js hanya membawa id sesi ini, sehingga batas 8 jam,
+/// batas 30 menit tidak aktif untuk peran Nusa Safety, dan pencabutan sesi ditegakkan di server.
+model UserSession {
+  id             String    @id @default(uuid(4))
+  userId         String
+  /// Faktor kedua sudah diverifikasi pada sesi ini.
+  totpVerified   Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  lastActivityAt DateTime  @default(now())
+  expiresAt      DateTime
+  /// Diisi saat sesi ditukar menjadi cookie Auth.js; izin sesi hanya dapat dipakai sekali.
+  boundAt        DateTime?
+  revokedAt      DateTime?
+  revokedReason  String?
+  ipHash         String?
+  userAgent      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
 }
 
 // ---------------------------------------------------------------------------
