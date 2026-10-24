@@ -1,0 +1,29 @@
+{
+  "_catatan": "Panduan pertanyaan validasi bawaan per lapisan jabatan (docs/01 M7). Pertanyaan disusun Nusa Safety dari nama karakteristik instrumen dan tidak menyalin kriteria skema sertifikasi NEN. Lead assessor dapat mengubah salinan per asesmen. Pertanyaan bersifat perilaku: menggali contoh nyata dan tindak lanjutnya, bukan pendapat umum.",
+  "opening": "Sebelum mulai, jelaskan tujuan sesi, mintakan persetujuan perekaman, dan tegaskan bahwa nama narasumber tidak dicantumkan pada catatan maupun laporan per orang.",
+  "layers": {
+    "MANAGEMENT": "Panduan wawancara individual untuk direksi dan manajemen. Gali keputusan dan tindakan yang sudah diambil beserta buktinya, bukan kebijakan tertulis.",
+    "SUPERVISORY": "Panduan untuk penyelia dan pengawas lapangan, dipakai pada wawancara maupun diskusi kelompok terarah. Gali praktik harian dan cara penyelia menindaklanjuti masukan pekerja.",
+    "FIELD": "Panduan diskusi kelompok terarah untuk pelaksana dan pekerja penyedia jasa. Gunakan bahasa sehari-hari, mulai dari pengalaman peserta, dan pastikan setiap peserta mendapat kesempatan berbicara."
+  },
+  "questions": {
+    "K1.1": "Kapan terakhir kali Anda melihat pimpinan membahas atau menegakkan keselamatan di lapangan? Apa yang mereka lakukan, dan bagaimana tanggapan pekerja?",
+    "K1.2": "Ceritakan contoh terakhir usulan pekerja tentang keselamatan yang dipakai dalam perencanaan pekerjaan. Siapa yang mengusulkan, dan apa hasilnya?",
+    "K1.3": "Ceritakan kejadian terakhir ketika perilaku selamat diapresiasi, atau pelanggaran diberi konsekuensi. Apakah perlakuannya sama untuk semua jabatan dan penyedia jasa?",
+    "K2.1": "Ambil satu kecelakaan atau kejadian hampir celaka yang terakhir diselidiki. Apa penyebab yang ditemukan, dan perubahan apa yang terjadi setelahnya?",
+    "K2.2": "Ceritakan keputusan bisnis atau anggaran terakhir yang berubah karena pertimbangan keselamatan. Siapa yang memutuskan, dan apa dampaknya bagi proyek?",
+    "K3.1": "Bagaimana kinerja keselamatan penyedia jasa dinilai sebelum, selama, dan sesudah pekerjaan? Berikan contoh penyedia jasa yang mendapat tindakan karena kinerja keselamatannya.",
+    "K3.2": "Pelatihan keselamatan apa yang terakhir Anda ikuti? Bagaimana pelatihan itu dipilih, dan bagaimana dipastikan materinya diterapkan di pekerjaan?",
+    "K3.3": "Ceritakan saat terakhir saran atau keberatan petugas K3 mengubah rencana kerja. Kepada siapa petugas K3 melapor, dan seberapa cepat tanggapannya?",
+    "K4.1": "Untuk pekerjaan berisiko tinggi terakhir di proyek Anda, bagaimana bahayanya diidentifikasi dan dikendalikan sebelum pekerjaan dimulai? Siapa saja yang terlibat?",
+    "K4.2": "Kondisi tidak aman apa yang paling sering Anda temui di area kerja? Bagaimana dan berapa lama kondisi itu biasanya diperbaiki?",
+    "K4.3": "Ceritakan saat prosedur keselamatan sulit dijalankan di lapangan. Apa yang dilakukan pekerja, dan apakah prosedurnya kemudian diperbaiki?",
+    "K5.1": "Ceritakan laporan terakhir yang Anda buat atau terima. Apa tindak lanjutnya, dan berapa lama?",
+    "K5.2": "Ambil satu investigasi terakhir. Siapa yang terlibat, berapa lama sampai tindakan perbaikan selesai, dan bagaimana hasilnya disampaikan kepada pekerja?",
+    "K5.3": "Bagaimana informasi keselamatan disampaikan setiap hari, misalnya dalam pertemuan pagi? Ceritakan informasi terakhir yang mengubah cara Anda bekerja.",
+    "K6.1": "Temuan audit atau inspeksi keselamatan apa yang terakhir Anda ketahui? Bagaimana temuan itu ditindaklanjuti, dan siapa yang memeriksa penyelesaiannya?",
+    "K6.2": "Data keselamatan apa yang dipantau secara rutin, dan keputusan apa yang terakhir diambil berdasarkan tren data tersebut?",
+    "KT.1": "Bagaimana rencana keselamatan konstruksi proyek ini dipakai dalam pekerjaan sehari-hari? Berikan contoh perubahan rencana tersebut selama proyek berjalan dan siapa yang menyetujuinya.",
+    "KT.2": "Ceritakan saat Anda atau rekan menghentikan pekerjaan atau menyampaikan keberatan karena merasa tidak aman. Bagaimana tanggapan atasan, dan apakah Anda akan melakukannya lagi?"
+  }
+}

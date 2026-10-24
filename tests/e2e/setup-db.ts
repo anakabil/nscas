@@ -12,6 +12,7 @@ import { Client } from "pg";
 import { PrismaClient, type Role } from "../../src/generated/prisma/client";
 import { encryptField, fieldContext } from "../../src/lib/privacy/crypto";
 import { generateToken, hashToken } from "../../src/lib/privacy/tokens";
+import { samplePlan } from "../../src/lib/scoring/sampling";
 import { seedDatabase } from "../../prisma/seeding";
 import { e2eDatabaseUrl } from "./database-url";
 
@@ -90,7 +91,15 @@ async function main(): Promise<void> {
 
   // Fase 6: asesmen yang sedang mengumpulkan data, dengan token survei mentah untuk tiap proyek uji
   // (tidak ada token yang dipakai dua proyek sekaligus).
-  const parameters = version.defaultParameters as { quality?: Record<string, number> };
+  // Fase 9: snapshot memuat parameter bawaan lengkap dan hasil kalkulator sampel agar usulan sesi validasi tersedia.
+  const parameters = Object.fromEntries(Object.entries(version.defaultParameters as Record<string, unknown>).filter(([key]) => !key.startsWith("_")));
+  const strataS = [
+    { code: "S2", name: "Manajemen menengah dan manajer proyek", group: "MANAGEMENT" as const, population: 20, isContractor: false },
+    { code: "S3", name: "Penyelia dan pengawas lapangan", group: "SUPERVISORY" as const, population: 60, isContractor: false },
+    { code: "S4", name: "Pelaksana dan pekerja sendiri", group: "FIELD" as const, population: 200, isContractor: false },
+    { code: "S5", name: "Pekerja penyedia jasa dan subkontraktor", group: "FIELD" as const, population: 300, isContractor: true },
+  ];
+  const planS = samplePlan({ workers: strataS.reduce((sum, s) => sum + s.population, 0), projects: 2, locations: 1, strata: strataS });
   const assessmentS = await prisma.assessment.create({
     data: {
       ...base,
@@ -106,13 +115,14 @@ async function main(): Promise<void> {
           id: "PT Gamma Karya bersama Nusa Safety mengukur budaya keselamatan dan kesehatan kerja. Jawaban Anda anonim.",
           en: "PT Gamma Karya and Nusa Safety are measuring occupational safety and health culture. Your answers are anonymous.",
         },
-        parameters: { quality: parameters.quality ?? {} },
-      },
+        parameters,
+        samplePlan: { projects: 2, locations: 1, computedAt: new Date().toISOString(), result: planS },
+      } as never,
     },
   });
   const unitS = await unit(assessmentS.id, "Proyek Survei Timur");
-  const stratumS = await prisma.stratum.create({ data: { assessmentId: assessmentS.id, code: "S4", name: "Pelaksana dan pekerja sendiri", group: "FIELD", population: 200 } });
-  await prisma.stratum.create({ data: { assessmentId: assessmentS.id, code: "S5", name: "Pekerja penyedia jasa dan subkontraktor", group: "FIELD", population: 300, isContractor: true } });
+  await prisma.stratum.createMany({ data: strataS.map((s) => ({ ...s, assessmentId: assessmentS.id })) });
+  const stratumS = await prisma.stratum.findFirstOrThrow({ where: { assessmentId: assessmentS.id, code: "S4" } });
   const surveyTokens: Record<string, string> = {};
   for (const project of ["desktop-chromium", "mobile-chromium"]) {
     for (const purpose of ["main", "payload", "decline", "qr"]) {
@@ -167,7 +177,16 @@ async function main(): Promise<void> {
     adminSurvey: await user("adminSurvey", "admin.survei@e2e.test", orgC.id, "CLIENT_ADMIN", { totp: true }),
     // Fase 8: koordinator unit asesmen survei (tanpa TOTP) untuk bukti dan observasi digital.
     coordinatorSurvey: await user("coordinatorSurvey", "koordinator.survei@e2e.test", orgC.id, "UNIT_COORDINATOR", { unitScope: [unitS.id] }),
+    // Fase 9: lead assessor dan asesor yang ditugaskan pada asesmen survei untuk validasi daring.
+    leadValidation: await user("leadValidation", "asesor.utama.validasi@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true }),
+    assessorValidation: await user("assessorValidation", "asesor.validasi@e2e.test", operator.id, "ASSESSOR", { totp: true }),
   };
+  await prisma.assessmentAssignment.createMany({
+    data: [
+      { assessmentId: assessmentS.id, userId: users.leadValidation.id, role: "LEAD_ASSESSOR" },
+      { assessmentId: assessmentS.id, userId: users.assessorValidation.id, role: "ASSESSOR" },
+    ],
+  });
 
   // Fase 8: jendela observasi yang sedang terbuka dan yang sudah ditutup, di titik Jakarta dengan radius 500 meter.
   const site = { latitude: -6.2088, longitude: 106.8456, radiusMeters: 500 };

@@ -94,3 +94,12 @@ export const ASSESSMENT_TEAM_ROLES = {
 export const SURVEY_WINDOW_WRITE_ROLES = ["LEAD_ASSESSOR", "CLIENT_ADMIN"] as const satisfies readonly Role[];
 /** Jendela observasi dibuat asesor Nusa Safety yang ditugaskan (docs/01 M6). */
 export const OBSERVATION_WINDOW_WRITE_ROLES = ["LEAD_ASSESSOR", "ASSESSOR"] as const satisfies readonly Role[];
+/**
+ * Validasi daring (docs/01 M7): dijalankan asesor Nusa Safety. Asesor utama menjadwalkan sesi dan mengubah
+ * templat panduan; asesor yang ditugaskan mengisi nilai miliknya sendiri (sejalan dengan baris "Nilai asesor").
+ */
+export const VALIDATION_ROLES = {
+  read: ["LEAD_ASSESSOR", "ASSESSOR"],
+  schedule: ["LEAD_ASSESSOR"],
+  rate: ["LEAD_ASSESSOR", "ASSESSOR"],
+} as const satisfies Record<string, readonly Role[]>;

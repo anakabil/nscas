@@ -36,14 +36,14 @@ export async function loadEffectiveParameters(assessmentId: string) {
     },
   });
   const snapshot = row.parameterSnapshot as unknown as
-    | { parameters: Omit<DraftParameters, "samplePlan">; samplePlan: DraftParameters["samplePlan"]; consent: { id: string; en: string }; dpaSigned: boolean }
+    | { parameters: Omit<DraftParameters, "samplePlan">; samplePlan: DraftParameters["samplePlan"]; consent?: { id: string; en: string }; dpaSigned: boolean }
     | null;
   if (snapshot) {
     return {
       locked: true,
       parameters: { ...snapshot.parameters, samplePlan: snapshot.samplePlan } as DraftParameters,
-      consentTextId: snapshot.consent.id ?? "",
-      consentTextEn: snapshot.consent.en ?? "",
+      consentTextId: snapshot.consent?.id ?? "",
+      consentTextEn: snapshot.consent?.en ?? "",
       dpaSigned: snapshot.dpaSigned,
     };
   }

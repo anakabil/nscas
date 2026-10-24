@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { loadAssessmentHeader } from "@/lib/assessments/load";
 import { configurationReadRoles } from "@/lib/assessments/permissions";
 import { guardPage, requireRole } from "@/lib/auth/guard";
-import { ALL_ROLES, ASSESSMENT_TEAM_ROLES, rolesFor } from "@/lib/auth/roles";
+import { ALL_ROLES, ASSESSMENT_TEAM_ROLES, rolesFor, VALIDATION_ROLES } from "@/lib/auth/roles";
 
 const paramsSchema = z.object({ id: z.string().min(1).max(64) });
 
@@ -42,6 +42,7 @@ export default async function AssessmentLayout({ children, params }: { children:
           { href: `${base}/observations`, label: t("assessment.nav.observations") },
         ]
       : []),
+    ...(has(VALIDATION_ROLES.read) ? [{ href: `${base}/validation`, label: t("assessment.nav.validation") }] : []),
   ];
 
   return (

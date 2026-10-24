@@ -273,7 +273,8 @@
       "participation": "Partisipasi",
       "selfAssessments": "Penilaian mandiri",
       "evidence": "Bukti",
-      "observations": "Observasi"
+      "observations": "Observasi",
+      "validation": "Validasi"
     },
     "newTitle": "Asesmen baru",
     "newButton": "Buat asesmen baru",
@@ -353,7 +354,12 @@
       "UNKNOWN_ITEM": "Pilihan tidak dikenali. Muat ulang halaman.",
       "OUTSIDE_WINDOW": "Jendela observasi sedang tidak terbuka.",
       "CHECKLIST_REQUIRED": "Isi minimal satu butir daftar periksa observasi.",
-      "EVIDENCE_FILE_TYPE": "Jenis berkas tidak diizinkan atau isinya tidak sesuai dengan ekstensinya. Gunakan PDF, gambar, Excel, atau Word."
+      "EVIDENCE_FILE_TYPE": "Jenis berkas tidak diizinkan atau isinya tidak sesuai dengan ekstensinya. Gunakan PDF, gambar, Excel, atau Word.",
+      "VALIDATION_CLOSED": "Sesi validasi tidak dapat diubah pada status asesmen ini.",
+      "RATINGS_CLOSED": "Nilai validasi hanya dapat diisi selama pengumpulan data dan penilaian.",
+      "SAMPLE_PLAN_MISSING": "Simpan hasil kalkulator sampel lebih dulu.",
+      "SESSIONS_EXIST": "Sesi sudah dibuat sehingga usulan tidak dapat dibuat ulang.",
+      "INVALID_RATING": "Nilai harus 1,0 sampai 5,0 dengan kelipatan 0,5."
     },
     "units": {
       "title": "Unit",
@@ -1151,5 +1157,109 @@
       "description": "Pengambilan foto dan video observasi budaya keselamatan dan kesehatan kerja (K3) dari lokasi proyek."
     },
     "period": "{opens} sampai {closes}"
+  },
+  "validation": {
+    "intro": "Validasi daring melalui wawancara, diskusi kelompok terarah, dan kunjungan virtual. Aplikasi tidak menyediakan layanan konferensi video; gunakan tautan rapat Zoom, Google Meet, atau Microsoft Teams.",
+    "types": {
+      "INTERVIEW": "Wawancara",
+      "FOCUS_GROUP": "Diskusi kelompok terarah",
+      "VIRTUAL_SITE_VISIT": "Kunjungan virtual"
+    },
+    "typeShort": {
+      "INTERVIEW": "Wawancara",
+      "FOCUS_GROUP": "Diskusi kelompok",
+      "VIRTUAL_SITE_VISIT": "Kunjungan virtual"
+    },
+    "sessionLabel": "{type} {stratum} nomor {sequence}",
+    "sessionLabelNoStratum": "{type} nomor {sequence}",
+    "statuses": {
+      "SCHEDULED": "Terjadwal",
+      "COMPLETED": "Selesai",
+      "CANCELLED": "Dibatalkan"
+    },
+    "layers": {
+      "MANAGEMENT": "Manajemen",
+      "SUPERVISORY": "Penyelia",
+      "FIELD": "Lapangan"
+    },
+    "proposal": {
+      "title": "Usulan pembagian sesi",
+      "intro": "Dihitung dari kalkulator sampel: wawancara individual untuk strata manajemen dan penyelia, diskusi kelompok terarah untuk strata penyelia dan lapangan dengan paling banyak {max} peserta per sesi, serta kunjungan virtual sebanyak proyek yang dikunjungi.",
+      "missing": "Simpan hasil kalkulator sampel lebih dulu di halaman Kalkulator sampel.",
+      "stratum": "Strata",
+      "interviews": "Wawancara",
+      "fgParticipants": "Peserta diskusi kelompok",
+      "fgSessions": "Sesi diskusi kelompok",
+      "virtual": "Kunjungan virtual: {count} sesi",
+      "total": "Jumlah sesi: {count}",
+      "unallocated": "Kuota yang belum terbagi karena strata yang sesuai tidak ada: {interviews} wawancara dan {participants} peserta diskusi kelompok.",
+      "create": "Buat sesi dari usulan",
+      "creating": "Membuat sesi...",
+      "created": "{count} sesi dibuat. Atur jadwal dan tautan rapat pada masing-masing sesi.",
+      "exists": "Sesi sudah dibuat. Usulan tidak dapat dibuat ulang agar sesi tidak terduplikasi."
+    },
+    "create": {
+      "title": "Tambah sesi",
+      "submit": "Tambah sesi",
+      "created": "Sesi ditambahkan."
+    },
+    "fields": {
+      "type": "Jenis sesi",
+      "label": "Nama sesi",
+      "unit": "Unit",
+      "stratum": "Strata",
+      "none": "Tidak ditentukan",
+      "scheduledAt": "Waktu (WIB)",
+      "meetingUrl": "Tautan rapat",
+      "meetingUrlHint": "Tautan HTTPS Zoom, Google Meet, atau Microsoft Teams.",
+      "participantCount": "Jumlah peserta",
+      "guideLayer": "Panduan pertanyaan",
+      "status": "Status"
+    },
+    "list": {
+      "title": "Daftar sesi",
+      "empty": "Belum ada sesi validasi.",
+      "notScheduled": "Belum dijadwalkan",
+      "join": "Buka rapat",
+      "participants": "{count} narasumber",
+      "ratings": "{count} nilai",
+      "open": "Buka sesi"
+    },
+    "guides": {
+      "title": "Panduan pertanyaan",
+      "link": "Panduan pertanyaan per lapisan jabatan",
+      "intro": "Satu contoh pertanyaan validasi per karakteristik untuk setiap lapisan jabatan. Lead assessor dapat mengubahnya untuk asesmen ini.",
+      "introField": "Pengantar",
+      "save": "Simpan panduan {layer}",
+      "saved": "Panduan tersimpan.",
+      "readOnly": "Hanya lead assessor yang dapat mengubah panduan."
+    },
+    "session": {
+      "back": "Kembali ke daftar sesi",
+      "schedule": "Jadwal sesi",
+      "saveSchedule": "Simpan jadwal",
+      "scheduleSaved": "Jadwal tersimpan.",
+      "guide": "Panduan pertanyaan ({layer})",
+      "noGuide": "Sesi ini belum memiliki panduan.",
+      "form": "Formulir asesor",
+      "formIntro": "Beri nilai 1,0 sampai 5,0 (kelipatan 0,5) hanya untuk karakteristik yang dibahas dalam sesi. Kosongkan karakteristik yang tidak dibahas. Nilai Anda tidak terlihat oleh asesor lain di formulir ini.",
+      "recordingConsent": "Narasumber menyetujui sesi direkam",
+      "notes": "Catatan sesi",
+      "notesHint": "Jangan menulis nama narasumber di catatan. Daftar narasumber disimpan terpisah.",
+      "level": "Nilai",
+      "notDiscussed": "Tidak dibahas",
+      "ratingNote": "Catatan",
+      "saveForm": "Simpan formulir",
+      "formSaved": "Formulir tersimpan.",
+      "ratingsClosed": "Nilai validasi hanya dapat diisi selama pengumpulan data dan penilaian.",
+      "ratedBy": "{count} nilai tersimpan dari semua asesor",
+      "participants": "Daftar narasumber",
+      "participantsIntro": "Disimpan terpisah dari catatan dan nilai, untuk lampiran laporan. Pernyataan dalam catatan tidak dikaitkan ke nama.",
+      "fullName": "Nama",
+      "position": "Jabatan",
+      "addParticipant": "Tambah narasumber",
+      "remove": "Hapus",
+      "noParticipants": "Belum ada narasumber."
+    }
   }
 }

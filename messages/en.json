@@ -273,7 +273,8 @@
       "participation": "Participation",
       "selfAssessments": "Self-assessments",
       "evidence": "Evidence",
-      "observations": "Observations"
+      "observations": "Observations",
+      "validation": "Validation"
     },
     "newTitle": "New assessment",
     "newButton": "Create new assessment",
@@ -353,7 +354,12 @@
       "UNKNOWN_ITEM": "Choice not recognised. Reload the page.",
       "OUTSIDE_WINDOW": "The observation window is not open.",
       "CHECKLIST_REQUIRED": "Enter at least one observation checklist item.",
-      "EVIDENCE_FILE_TYPE": "The file type is not allowed or its content does not match its extension. Use PDF, images, Excel, or Word."
+      "EVIDENCE_FILE_TYPE": "The file type is not allowed or its content does not match its extension. Use PDF, images, Excel, or Word.",
+      "VALIDATION_CLOSED": "Validation sessions cannot be changed in this assessment status.",
+      "RATINGS_CLOSED": "Validation ratings can only be entered during data collection and scoring.",
+      "SAMPLE_PLAN_MISSING": "Save the sample calculator result first.",
+      "SESSIONS_EXIST": "Sessions already exist, so the proposal cannot be created again.",
+      "INVALID_RATING": "Ratings must be 1.0 to 5.0 in steps of 0.5."
     },
     "units": {
       "title": "Units",
@@ -1151,5 +1157,109 @@
       "description": "Photo and video capture for occupational safety and health (K3) culture observations at project sites."
     },
     "period": "{opens} to {closes}"
+  },
+  "validation": {
+    "intro": "Online validation through interviews, focus group discussions, and virtual site visits. The application does not provide video conferencing; use a Zoom, Google Meet, or Microsoft Teams link.",
+    "types": {
+      "INTERVIEW": "Interview",
+      "FOCUS_GROUP": "Focus group discussion",
+      "VIRTUAL_SITE_VISIT": "Virtual site visit"
+    },
+    "typeShort": {
+      "INTERVIEW": "Interview",
+      "FOCUS_GROUP": "Focus group",
+      "VIRTUAL_SITE_VISIT": "Virtual visit"
+    },
+    "sessionLabel": "{type} {stratum} number {sequence}",
+    "sessionLabelNoStratum": "{type} number {sequence}",
+    "statuses": {
+      "SCHEDULED": "Scheduled",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "layers": {
+      "MANAGEMENT": "Management",
+      "SUPERVISORY": "Supervisory",
+      "FIELD": "Field"
+    },
+    "proposal": {
+      "title": "Proposed sessions",
+      "intro": "Calculated from the sample calculator: individual interviews for management and supervisory strata, focus group discussions for supervisory and field strata with at most {max} participants per session, and virtual visits for the projects to visit.",
+      "missing": "Save the sample calculator result first on the Sample calculator page.",
+      "stratum": "Stratum",
+      "interviews": "Interviews",
+      "fgParticipants": "Focus group participants",
+      "fgSessions": "Focus group sessions",
+      "virtual": "Virtual visits: {count} sessions",
+      "total": "Total sessions: {count}",
+      "unallocated": "Quota not allocated because no matching stratum exists: {interviews} interviews and {participants} focus group participants.",
+      "create": "Create sessions from proposal",
+      "creating": "Creating sessions...",
+      "created": "{count} sessions created. Set the schedule and meeting link for each session.",
+      "exists": "Sessions already exist. The proposal cannot be created again, to avoid duplicates."
+    },
+    "create": {
+      "title": "Add a session",
+      "submit": "Add session",
+      "created": "Session added."
+    },
+    "fields": {
+      "type": "Session type",
+      "label": "Session name",
+      "unit": "Unit",
+      "stratum": "Stratum",
+      "none": "Not specified",
+      "scheduledAt": "Time (WIB)",
+      "meetingUrl": "Meeting link",
+      "meetingUrlHint": "HTTPS link from Zoom, Google Meet, or Microsoft Teams.",
+      "participantCount": "Number of participants",
+      "guideLayer": "Question guide",
+      "status": "Status"
+    },
+    "list": {
+      "title": "Sessions",
+      "empty": "No validation sessions yet.",
+      "notScheduled": "Not scheduled",
+      "join": "Open meeting",
+      "participants": "{count} interviewees",
+      "ratings": "{count} ratings",
+      "open": "Open session"
+    },
+    "guides": {
+      "title": "Question guides",
+      "link": "Question guides per job layer",
+      "intro": "One example validation question per characteristic for each job layer. The lead assessor can edit them for this assessment.",
+      "introField": "Introduction",
+      "save": "Save {layer} guide",
+      "saved": "Guide saved.",
+      "readOnly": "Only the lead assessor can edit the guides."
+    },
+    "session": {
+      "back": "Back to sessions",
+      "schedule": "Session schedule",
+      "saveSchedule": "Save schedule",
+      "scheduleSaved": "Schedule saved.",
+      "guide": "Question guide ({layer})",
+      "noGuide": "This session has no guide yet.",
+      "form": "Assessor form",
+      "formIntro": "Rate 1.0 to 5.0 (in steps of 0.5) only the characteristics discussed in the session. Leave the others empty. Your ratings are not visible to other assessors on this form.",
+      "recordingConsent": "Interviewees agreed to the session being recorded",
+      "notes": "Session notes",
+      "notesHint": "Do not write interviewee names in the notes. The interviewee list is stored separately.",
+      "level": "Rating",
+      "notDiscussed": "Not discussed",
+      "ratingNote": "Note",
+      "saveForm": "Save form",
+      "formSaved": "Form saved.",
+      "ratingsClosed": "Validation ratings can only be entered during data collection and scoring.",
+      "ratedBy": "{count} ratings saved by all assessors",
+      "participants": "Interviewees",
+      "participantsIntro": "Stored separately from notes and ratings, for the report appendix. Statements in the notes are not linked to names.",
+      "fullName": "Name",
+      "position": "Position",
+      "addParticipant": "Add interviewee",
+      "remove": "Remove",
+      "noParticipants": "No interviewees yet."
+    }
   }
 }

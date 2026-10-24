@@ -64,7 +64,15 @@ export type AuditAction =
   | "evidence.map"
   | "evidence.delete"
   | "observation.window_create"
-  | "observation.capture";
+  | "observation.capture"
+  // Validasi daring (docs/01 M7)
+  | "validation.guide_update"
+  | "validation.sessions_proposed"
+  | "validation.session_create"
+  | "validation.session_update"
+  | "validation.participant_add"
+  | "validation.participant_remove"
+  | "validation.rating_save";
 
 export interface AuditActor {
   id: string | null;

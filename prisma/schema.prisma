@@ -421,9 +421,9 @@ model Assessment {
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
 
-  organization           Organization            @relation(fields: [organizationId], references: [id])
-  instrumentVersion      InstrumentVersion       @relation(fields: [instrumentVersionId], references: [id])
-  lockedBy               User?                   @relation("AssessmentLockedBy", fields: [lockedById], references: [id])
+  organization           Organization              @relation(fields: [organizationId], references: [id])
+  instrumentVersion      InstrumentVersion         @relation(fields: [instrumentVersionId], references: [id])
+  lockedBy               User?                     @relation("AssessmentLockedBy", fields: [lockedById], references: [id])
   assignments            AssessmentAssignment[]
   units                  Unit[]
   strata                 Stratum[]
@@ -434,6 +434,7 @@ model Assessment {
   selfAssessments        SelfAssessment[]
   evidenceItems          EvidenceItem[]
   observationWindows     ObservationWindow[]
+  validationGuides       ValidationGuideTemplate[]
   validationSessions     ValidationSession[]
   evidenceRatings        EvidenceRating[]
   sclFulfillments        SclFulfillment[]
@@ -811,25 +812,48 @@ model ValidationSession {
   id               String                  @id @default(cuid())
   assessmentId     String
   type             ValidationSessionType
+  /// Nama sesi, misalnya "Diskusi kelompok S4 nomor 2".
+  label            String                  @default("")
   unitId           String?
   stratumId        String?
-  scheduledAt      DateTime
+  /// Kosong bila sesi dari usulan otomatis belum dijadwalkan.
+  scheduledAt      DateTime?
   meetingUrl       String?
-  /// Templat panduan pertanyaan (M7); modelnya dibuat pada fase validasi.
   guideTemplateId  String?
   participantCount Int?
   recordingConsent Boolean                 @default(false)
+  /// Catatan umum sesi; tidak memuat nama narasumber (daftar narasumber terpisah).
+  notes            String?
   status           ValidationSessionStatus @default(SCHEDULED)
   createdAt        DateTime                @default(now())
   updatedAt        DateTime                @updatedAt
 
-  assessment   Assessment              @relation(fields: [assessmentId], references: [id])
-  unit         Unit?                   @relation(fields: [unitId], references: [id])
-  stratum      Stratum?                @relation(fields: [stratumId], references: [id])
-  participants ValidationParticipant[]
-  ratings      ValidationRating[]
+  assessment    Assessment               @relation(fields: [assessmentId], references: [id])
+  unit          Unit?                    @relation(fields: [unitId], references: [id])
+  stratum       Stratum?                 @relation(fields: [stratumId], references: [id])
+  guideTemplate ValidationGuideTemplate? @relation(fields: [guideTemplateId], references: [id])
+  participants  ValidationParticipant[]
+  ratings       ValidationRating[]
 
   @@index([assessmentId, scheduledAt])
+}
+
+/// Templat panduan pertanyaan per lapisan jabatan (docs/01 M7), dapat diubah lead assessor.
+model ValidationGuideTemplate {
+  id           String       @id @default(cuid())
+  assessmentId String
+  layer        StratumGroup
+  intro        String
+  /// Larik { characteristicCode, question }: satu contoh pertanyaan validasi per karakteristik.
+  questions    Json
+  updatedById  String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  assessment Assessment          @relation(fields: [assessmentId], references: [id])
+  sessions   ValidationSession[]
+
+  @@unique([assessmentId, layer])
 }
 
 /// Untuk lampiran laporan; tidak dikaitkan ke catatan atau nilai sesi.
