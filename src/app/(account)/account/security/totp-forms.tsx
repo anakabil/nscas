@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { initialActionState, type ActionState } from "@/components/forms/action-state";
@@ -59,7 +58,10 @@ export function EnableTotpForm() {
         <Alert variant="success">{t("successEnabled")}</Alert>
         <BackupCodes codes={state.secrets} />
         <Button asChild>
-          <Link href="/assessments">{t("continue")}</Link>
+          {/* Navigasi halaman penuh: cache rute di peramban dapat masih menyimpan pengalihan ke /account
+              dari saat penyiapan belum selesai (hanya terlihat di build produksi). */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/assessments">{t("continue")}</a>
         </Button>
       </div>
     );

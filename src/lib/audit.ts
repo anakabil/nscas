@@ -25,7 +25,21 @@ export type AuditAction =
   | "user.create"
   | "user.activate"
   | "user.deactivate"
-  | "organization.create";
+  | "organization.create"
+  // Konfigurasi asesmen (docs/01 M1) dan transisi status
+  | "assessment.create"
+  | "assessment.update"
+  | "assessment.parameters_update"
+  | "assessment.sample_plan_saved"
+  | "assessment.status_change"
+  | "unit.create"
+  | "unit.update"
+  | "unit.delete"
+  | "stratum.create"
+  | "stratum.update"
+  | "stratum.delete"
+  | "assignment.create"
+  | "assignment.delete";
 
 export interface AuditActor {
   id: string | null;

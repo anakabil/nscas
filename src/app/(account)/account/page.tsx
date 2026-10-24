@@ -73,7 +73,9 @@ export default async function AccountPage() {
         </Button>
         {ready ? (
           <Button asChild>
-            <Link href="/assessments">{t("account.continue")}</Link>
+            {/* Navigasi halaman penuh agar pengalihan basi dari cache rute tidak terpakai. */}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/assessments">{t("account.continue")}</a>
           </Button>
         ) : null}
       </div>

@@ -92,6 +92,8 @@ async function main(): Promise<void> {
     newAdminA: await user("newAdminA", "admin.baru@e2e.test", orgA.id, "CLIENT_ADMIN"),
     lockoutUser: await user("lockoutUser", "terkunci@e2e.test", orgA.id, "EXECUTIVE_VIEWER"),
     tempPasswordUser: await user("tempPasswordUser", "sementara@e2e.test", orgA.id, "EXECUTIVE_VIEWER", { mustChangePassword: true }),
+    leadAssessor: await user("leadAssessor", "asesor.utama@e2e.test", operator.id, "LEAD_ASSESSOR", { totp: true }),
+    assessorStaff: await user("assessorStaff", "asesor@e2e.test", operator.id, "ASSESSOR"),
   };
 
   const fixtures = {

@@ -26,6 +26,14 @@ export default async function OrganizationUsersPage({ params }: { params: Promis
   const db = getDb();
 
   const organization = await db.organization.findUniqueOrThrow({ where: { id: access.organizationId }, select: { name: true } });
+  // Daftar asesmen organisasi; membuka rinciannya tetap melalui requireRole di halaman asesmen.
+  const assessments = access.isOperator
+    ? []
+    : await db.assessment.findMany({
+        where: { organizationId: access.organizationId },
+        select: { id: true, name: true, status: true, periodStart: true },
+        orderBy: { periodStart: "desc" },
+      });
   const members = await db.user.findMany({
     where: { memberships: { some: { organizationId: access.organizationId } } },
     select: {
@@ -97,6 +105,25 @@ export default async function OrganizationUsersPage({ params }: { params: Promis
           </tbody>
         </Table>
       )}
+      {!access.isOperator ? (
+        <section className="space-y-3" data-testid="organization-assessments">
+          <h2 className="text-lg font-bold">{t("orgs.assessmentsTitle", { organization: organization.name })}</h2>
+          {assessments.length === 0 ? (
+            <p className="text-muted-foreground text-sm">{t("orgs.noAssessments")}</p>
+          ) : (
+            <ul className="space-y-2">
+              {assessments.map((a) => (
+                <li key={a.id} className="flex flex-wrap items-center gap-3">
+                  <Link href={`/assessments/${a.id}`} className="text-brand-navy font-semibold hover:underline">
+                    {a.name}
+                  </Link>
+                  <Badge variant="secondary">{t(`assessments.statuses.${a.status}`)}</Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : null}
       {grantable.length > 0 ? (
         <Card>
           <CardHeader>

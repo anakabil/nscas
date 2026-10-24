@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 import { Activity, LogIn } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
@@ -9,14 +9,7 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-8 px-6 py-16">
-      <Image
-        src="/brand/logo-long-color.png"
-        alt={t("app.logoAlt")}
-        width={914}
-        height={137}
-        priority
-        className="h-auto w-64"
-      />
+      <BrandLogo alt={t("app.logoAlt")} priority className="h-14 self-start" />
       <div className="space-y-3">
         <h1 className="text-brand-navy text-3xl font-bold">{t("app.name")}</h1>
         <p className="text-lg font-medium">{t("app.tagline")}</p>

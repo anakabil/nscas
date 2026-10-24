@@ -78,3 +78,12 @@ export function grantableRoles(actor: { isSuperAdmin: boolean; isClientAdminOfTa
   if (actor.isClientAdminOfTarget && !targetIsOperator) return [...CLIENT_ROLES];
   return [];
 }
+
+// Di luar matriks docs/04 bagian 2 (matriks itu tidak memuat pembuatan asesmen dan tim asesor):
+/** Membuat asesmen: lead assessor Nusa Safety, yang otomatis menjadi asesor utama asesmen tersebut. */
+export const ASSESSMENT_CREATE_ROLES = ["LEAD_ASSESSOR"] as const satisfies readonly Role[];
+/** Tim asesor: dilihat staf Nusa Safety yang terkait, diubah SUPER_ADMIN atau asesor utama yang ditugaskan. */
+export const ASSESSMENT_TEAM_ROLES = {
+  read: ["SUPER_ADMIN", "LEAD_ASSESSOR", "ASSESSOR"],
+  write: ["SUPER_ADMIN", "LEAD_ASSESSOR"],
+} as const satisfies { read: readonly Role[]; write: readonly Role[] };

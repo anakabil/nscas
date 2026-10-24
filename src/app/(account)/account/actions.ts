@@ -55,6 +55,8 @@ export async function confirmTotpAction(_prev: ActionState, formData: FormData):
 
   const result = await confirmTotpEnrollment(session, parsed.data.code, await getRequestMeta());
   if (!result.ok) return { error: result.error };
+  // Sengaja tanpa revalidatePath: halaman akan dirender ulang dalam keadaan "sudah aktif" dan kode cadangan,
+  // yang hanya ditampilkan sekali, hilang sebelum terbaca. Tombol lanjut memakai navigasi halaman penuh.
   return { success: "TOTP_ENABLED", secrets: result.data.backupCodes };
 }
 
@@ -66,6 +68,7 @@ export async function regenerateBackupCodesAction(_prev: ActionState, formData: 
 
   const result = await regenerateBackupCodes(session, parsed.data.code, await getRequestMeta());
   if (!result.ok) return { error: result.error };
+  revalidatePath("/account", "layout");
   return { success: "BACKUP_CODES_REGENERATED", secrets: result.data.backupCodes };
 }
 

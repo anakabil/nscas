@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 import { getTranslations } from "next-intl/server";
 import type { SessionContext } from "@/lib/auth/session";
 import { LogoutForm } from "./logout-form";
@@ -14,7 +14,7 @@ export async function SiteHeader({ session, showNavigation }: { session: Session
     <header className="border-border bg-card border-b">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3 sm:px-6">
         <Link href={showNavigation ? "/assessments" : "/account"} className="shrink-0">
-          <Image src="/brand/logo-long-color.png" alt={t("app.logoAlt")} width={914} height={137} className="h-8 w-auto" />
+          <BrandLogo alt={t("app.logoAlt")} className="h-10" />
         </Link>
         {showNavigation ? (
           <nav aria-label={t("nav.mainNavigation")} className="flex flex-wrap items-center gap-1 text-sm font-semibold">

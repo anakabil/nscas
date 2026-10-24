@@ -29,7 +29,7 @@ export default async function OrganizationsPage() {
 
   const organizations = await getDb().organization.findMany({
     where: global ? {} : { id: { in: clientAdminOrgs } },
-    select: { id: true, name: true, legalName: true, isOperator: true, _count: { select: { memberships: true } } },
+    select: { id: true, name: true, legalName: true, isOperator: true, _count: { select: { memberships: true, assessments: true } } },
     orderBy: [{ isOperator: "desc" }, { name: "asc" }],
   });
 
@@ -47,6 +47,7 @@ export default async function OrganizationsPage() {
               <TableHeaderCell>{t("legalName")}</TableHeaderCell>
               <TableHeaderCell>{t("kind")}</TableHeaderCell>
               <TableHeaderCell className="text-right">{t("members")}</TableHeaderCell>
+              <TableHeaderCell className="text-right">{t("assessments")}</TableHeaderCell>
               <TableHeaderCell />
             </TableRow>
           </TableHead>
@@ -59,6 +60,7 @@ export default async function OrganizationsPage() {
                   <Badge variant={o.isOperator ? "default" : "secondary"}>{o.isOperator ? t("operator") : t("client")}</Badge>
                 </TableCell>
                 <TableCell className="text-right tabular-nums">{o._count.memberships}</TableCell>
+                <TableCell className="text-right tabular-nums">{o.isOperator ? "" : o._count.assessments}</TableCell>
                 <TableCell className="text-right">
                   <Link href={`/orgs/${o.id}`} className="text-brand-navy font-semibold hover:underline">
                     {t("open")}

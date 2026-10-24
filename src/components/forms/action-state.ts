@@ -4,6 +4,8 @@ export interface ActionState {
   success?: string;
   /** Nilai yang hanya ditampilkan sekali, misalnya kata sandi sementara atau kode cadangan. */
   secrets?: string[];
+  /** Rincian galat, misalnya kode syarat transisi yang belum terpenuhi. */
+  details?: string[];
 }
 
 export const initialActionState: ActionState = {};

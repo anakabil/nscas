@@ -395,26 +395,31 @@ model ClimateItem {
 // ---------------------------------------------------------------------------
 
 model Assessment {
-  id                  String           @id @default(cuid())
-  organizationId      String
-  name                String
-  scopeType           AssessmentScope
-  periodStart         DateTime         @db.Date
-  periodEnd           DateTime         @db.Date
-  targetLevel         Int
-  status              AssessmentStatus @default(DRAFT)
-  instrumentVersionId String
+  id                    String           @id @default(cuid())
+  organizationId        String
+  name                  String
+  scopeType             AssessmentScope
+  periodStart           DateTime         @db.Date
+  periodEnd             DateTime         @db.Date
+  targetLevel           Int
+  status                AssessmentStatus @default(DRAFT)
+  instrumentVersionId   String
+  /// Parameter yang masih dapat diubah sebelum dikunci; diisi dari InstrumentVersion.defaultParameters
+  /// saat asesmen dibuat, termasuk hasil kalkulator sampel terakhir (samplePlan).
+  parameterDraft        Json?
   /// Diisi saat LOCKED; sumber satu-satunya bobot, ambang, dan strata untuk penilaian.
-  parameterSnapshot   Json?
-  lockedAt            DateTime?
-  lockedById          String?
-  consentTextId       String?
-  consentTextEn       String?
-  dpaSigned           Boolean          @default(false)
-  surveyOpensAt       DateTime?
-  surveyClosesAt      DateTime?
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
+  parameterSnapshot     Json?
+  lockedAt              DateTime?
+  lockedById            String?
+  consentTextId         String?
+  consentTextEn         String?
+  dpaSigned             Boolean          @default(false)
+  surveyOpensAt         DateTime?
+  surveyClosesAt        DateTime?
+  /// Rencana aksi diterbitkan ke klien (syarat REPORTED ke MONITORING, docs/01 bagian 3).
+  actionPlanPublishedAt DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
 
   organization       Organization           @relation(fields: [organizationId], references: [id])
   instrumentVersion  InstrumentVersion      @relation(fields: [instrumentVersionId], references: [id])
