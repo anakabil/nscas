@@ -43,6 +43,7 @@ Dokumen ini menjelaskan lingkungan uji coba NSCAS di GitHub Codespaces. Lingkung
 
 | Gejala | Tindakan |
 |---|---|
+| Halaman masuk menampilkan "Application error: a server-side exception has occurred" dengan Digest berakhiran `@E80` | Alamat codespace di `.env` tidak sesuai, sehingga formulir ditolak. Jalankan `git pull` lalu `bash .devcontainer/start.sh` di terminal codespace. Skrip menyelaraskan alamat dan menyalakan ulang aplikasi. |
 | Alamat aplikasi menampilkan galat 502 | Penyiapan atau aplikasi belum selesai menyala. Periksa `.codespace/logs/setup.log` dan `.codespace/logs/app.log`. Untuk menyalakan ulang, jalankan `bash .devcontainer/start.sh` di terminal. |
 | Peramban meminta masuk ke GitHub saat membuka alamat aplikasi | Port 3000 masih Private. Ubah menjadi Public (bagian 3 langkah 2). |
 | Unggah bukti gagal atau unduhan bukti tidak terbuka | Port 9100 masih Private. Ubah menjadi Public. |

@@ -5,7 +5,7 @@
 set -uo pipefail
 source "$(dirname "$0")/common.sh"
 
-[ -n "${CODESPACE_NAME:-}" ] || exit 0
+[ -n "$CODESPACE_NAME" ] || exit 0
 
 opened=""
 for _ in $(seq 1 12); do
