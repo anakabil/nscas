@@ -62,8 +62,8 @@ Dokumen ini menjelaskan lingkungan uji coba NSCAS di GitHub Codespaces. Lingkung
 
 Penerus port Codespaces dapat mengganti header Host menjadi `localhost`. Tiga penyesuaian menjaga aplikasi tetap benar di balik penerus tersebut, tanpa mengubah perilaku produksi:
 
-1. `SERVER_ACTIONS_ALLOWED_ORIGINS` di `next.config.ts` mengizinkan asal `*-3000.app.github.dev` memanggil Server Actions. Tanpa ini, Next.js menolak formulir karena asal permintaan berbeda dari Host. Di produksi variabel ini kosong.
-2. Proksi MinIO mengembalikan Host ke alamat publik sebelum meneruskan permintaan, karena URL unggah dan unduh bukti ditandatangani untuk alamat publik.
+1. `SERVER_ACTIONS_ALLOWED_ORIGINS` di `next.config.ts` mengizinkan alamat publik codespace dan `localhost:3000` memanggil Server Actions. Penerus port dapat mengganti header Origin menjadi `localhost:3000` sambil mengirim alamat publik lewat X-Forwarded-Host, atau mengganti Host sambil membiarkan Origin. Tanpa variabel ini, Next.js menolak formulir karena kedua header berbeda (galat E80). Di produksi variabel ini kosong. `start.sh` menyelaraskan nilainya dengan nama codespace setiap kali menyala.
+2. Proksi MinIO mengembalikan Host ke alamat publik sebelum meneruskan permintaan, karena URL unggah dan unduh bukti ditandatangani untuk alamat publik. Proksi ini juga menetapkan header CORS ke asal aplikasi, karena Origin yang diterima MinIO dapat sudah diganti penerus port.
 3. Rute kode QR (`src/app/q/[code]/route.ts`) mengalihkan dengan alamat relatif, sehingga peramban tetap berada di alamat publik.
 
 `AUTH_URL` dan `APP_URL` diisi alamat publik codespace, sehingga Auth.js dan tautan di surel memakai alamat yang benar.
@@ -89,6 +89,8 @@ Uji pembanding membuktikan kedua penyesuaian memang diperlukan:
 2. URL bertanda tangan yang dikirim langsung ke MinIO tanpa proksi ditolak dengan `SignatureDoesNotMatch`.
 
 Variabel itu dibaca saat aplikasi dinyalakan, jadi perubahannya tidak memerlukan build ulang.
+
+Pembaruan 26 Oktober 2026. Di codespace sungguhan, masuk ditolak dengan galat E80 walaupun alamat di `.env` sudah benar. Galat yang sama dapat direproduksi dengan penerus tiruan yang mengirim alamat publik lewat X-Forwarded-Host dan mengganti Origin menjadi `localhost:3000`. Setelah `localhost:3000` ditambahkan ke daftar asal, seluruh pemeriksaan di atas lulus pada varian penerus ini dan pada varian sebelumnya. Jalur pembaruan juga sudah diuji: `git pull` lalu `bash .devcontainer/start.sh`. Skrip mendeteksi nilai lama, memperbaruinya, lalu menyalakan ulang aplikasi, worker, dan proksi berkas.
 
 Yang belum dapat diverifikasi karena memerlukan codespace sungguhan:
 

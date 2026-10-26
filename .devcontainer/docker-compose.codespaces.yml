@@ -13,6 +13,7 @@ services:
         condition: service_healthy
     environment:
       STORAGE_PUBLIC_HOST: ${STORAGE_PUBLIC_HOST:?STORAGE_PUBLIC_HOST wajib diisi di .env}
+      APP_PUBLIC_ORIGIN: ${APP_URL:?APP_URL wajib diisi di .env}
     ports:
       - "9100:9100"
     volumes:

@@ -42,7 +42,7 @@ DATABASE_URL=postgresql://nscas:$pg_password@localhost:5432/nscas
 AUTH_SECRET=$(random_base64)
 AUTH_URL=$APP_URL_PUBLIC
 APP_URL=$APP_URL_PUBLIC
-SERVER_ACTIONS_ALLOWED_ORIGINS=$APP_HOST
+SERVER_ACTIONS_ALLOWED_ORIGINS=$SERVER_ACTION_ORIGINS
 DATA_ENCRYPTION_KEY=$(random_base64)
 APP_TIMEZONE=Asia/Jakarta
 # Peserta demo mengisi survei dari jaringan yang sama; batas bawaan 60 per menit terlalu ketat.

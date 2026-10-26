@@ -32,12 +32,16 @@ APP_URL_PUBLIC=$PUBLIC_SCHEME://$APP_HOST
 # Alamat publik hanya dapat dipastikan bila nama codespace diketahui (atau ditetapkan untuk pengujian lokal).
 if [ -n "${NSCAS_APP_HOST:-}" ] || [ -n "$CODESPACE_NAME" ]; then PUBLIC_HOST_KNOWN=yes; else PUBLIC_HOST_KNOWN=""; fi
 
+# Asal yang boleh memanggil Server Actions. Penerus port Codespaces dapat mengganti header Origin menjadi
+# localhost:3000 dan mengirim alamat publik lewat X-Forwarded-Host, atau sebaliknya; keduanya diizinkan.
+SERVER_ACTION_ORIGINS="$APP_HOST,localhost:3000"
+
 # Menyelaraskan variabel beralamat publik di .env dengan nama codespace saat ini. Mencetak "berubah" bila ada
 # yang diperbarui, agar aplikasi dinyalakan ulang dengan alamat yang benar.
 sync_public_env() {
   NSCAS_ENV_UPDATES="AUTH_URL=$APP_URL_PUBLIC
 APP_URL=$APP_URL_PUBLIC
-SERVER_ACTIONS_ALLOWED_ORIGINS=$APP_HOST
+SERVER_ACTIONS_ALLOWED_ORIGINS=$SERVER_ACTION_ORIGINS
 S3_PUBLIC_ENDPOINT=$PUBLIC_SCHEME://$STORAGE_HOST
 STORAGE_PUBLIC_HOST=$STORAGE_HOST" node -e '
 const fs = require("node:fs");

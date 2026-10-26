@@ -1,5 +1,6 @@
 # Proksi MinIO untuk Codespaces (docker-compose.codespaces.yml): Host dikembalikan ke alamat publik agar tanda
-# tangan URL unggah dan unduh tetap sah.
+# tangan URL unggah dan unduh tetap sah. Header CORS ditetapkan ke asal aplikasi, karena penerus port dapat
+# mengganti header Origin sehingga balasan MinIO menyebut asal yang salah.
 {
 	admin off
 	auto_https off
@@ -9,5 +10,7 @@
 	reverse_proxy minio:9000 {
 		header_up Host {$STORAGE_PUBLIC_HOST}
 		header_up X-Forwarded-Host {$STORAGE_PUBLIC_HOST}
+		header_down Access-Control-Allow-Origin {$APP_PUBLIC_ORIGIN}
+		header_down Vary Origin
 	}
 }

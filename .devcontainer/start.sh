@@ -10,8 +10,10 @@ if [ ! -f .env ] || [ ! -f .next/BUILD_ID ]; then
   exit 0
 fi
 
+env_changed=""
 if [ -n "$PUBLIC_HOST_KNOWN" ]; then
   if [ "$(sync_public_env)" = "berubah" ]; then
+    env_changed=yes
     echo "Alamat publik di .env diperbarui ke $APP_URL_PUBLIC; aplikasi dan worker dinyalakan ulang."
     pkill -f "next-server|next start" || true
     pkill -f "src/worker.ts" || true
@@ -22,8 +24,11 @@ else
 fi
 
 wait_for_docker
-# up -d juga membuat ulang proksi berkas bila STORAGE_PUBLIC_HOST berubah.
 "${COMPOSE[@]}" up -d --wait postgres minio mailpit storage-proxy
+# Proksi berkas membaca alamat publik dan Caddyfile hanya saat mulai.
+if [ -n "$env_changed" ]; then
+  "${COMPOSE[@]}" up -d --wait --force-recreate storage-proxy
+fi
 
 # setsid melepas proses dari sesi perintah siklus hidup codespace agar tetap berjalan setelah skrip ini selesai.
 if app_ready || pgrep -f "next-server|next start" >/dev/null; then
