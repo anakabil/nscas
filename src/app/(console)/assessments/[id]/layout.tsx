@@ -3,10 +3,10 @@ import { z } from "zod";
 import { AssessmentNav, type AssessmentNavGroup } from "@/components/assessment/assessment-nav";
 import { Badge } from "@/components/ui/badge";
 import { loadAssessmentHeader } from "@/lib/assessments/load";
-import { configurationReadRoles } from "@/lib/assessments/permissions";
-import { PHASES, phaseOf, phaseState, type WorkflowPhase } from "@/lib/assessments/workflow";
+import { assessmentNavGroups } from "@/lib/assessments/nav";
+import { PHASES, phaseOf } from "@/lib/assessments/workflow";
 import { guardPage, requireRole } from "@/lib/auth/guard";
-import { ACTION_PLAN_ROLES, ALL_ROLES, AUDIT_ROLES, ASSESSMENT_TEAM_ROLES, DASHBOARD_ROLES, REPORT_ROLES, rolesFor, SCORING_ROLES, VALIDATION_ROLES } from "@/lib/auth/roles";
+import { ALL_ROLES } from "@/lib/auth/roles";
 
 const paramsSchema = z.object({ id: z.string().min(1).max(64) });
 
@@ -18,72 +18,13 @@ export default async function AssessmentLayout({ children, params }: { children:
   const assessment = await loadAssessmentHeader(access.assessmentId, access.organizationId);
   const t = await getTranslations();
 
-  const base = `/assessments/${assessment.id}`;
-  const canReadConfiguration = access.roles.some((r) => configurationReadRoles(assessment.status).includes(r));
-  const has = (roles: readonly string[]) => access.roles.some((r) => roles.includes(r));
-  const canReadTeam = has(ASSESSMENT_TEAM_ROLES.read);
-  const item = (href: string, key: string, exact = false) => ({ href, label: t(`assessment.nav.${key}`), exact });
-  const sections: { key: WorkflowPhase | "OTHER"; items: { href: string; label: string; exact: boolean }[] }[] = [
-    {
-      key: "PREPARATION",
-      items: [
-        ...(canReadConfiguration
-          ? [
-              item(`${base}/setup`, "details", true),
-              item(`${base}/setup/units`, "units"),
-              item(`${base}/setup/strata`, "strata"),
-              item(`${base}/setup/parameters`, "parameters"),
-              item(`${base}/setup/sampling`, "sampling"),
-            ]
-          : []),
-        ...(canReadTeam ? [item(`${base}/setup/team`, "team")] : []),
-      ],
-    },
-    {
-      key: "DATA_COLLECTION",
-      items: [
-        ...(has(rolesFor("roster", "read")) ? [item(`${base}/respondents`, "respondents", true)] : []),
-        ...(has(["LEAD_ASSESSOR", "CLIENT_ADMIN"]) ? [item(`${base}/respondents/qr`, "qr")] : []),
-        ...(has(rolesFor("tokensAndParticipation", "read")) ? [item(`${base}/participation`, "participation")] : []),
-        ...(has(rolesFor("selfAssessments", "read")) ? [item(`${base}/self-assessments`, "selfAssessments")] : []),
-        ...(has(rolesFor("evidenceAndObservations", "read")) ? [item(`${base}/evidence`, "evidence"), item(`${base}/observations`, "observations")] : []),
-        ...(has(VALIDATION_ROLES.read) ? [item(`${base}/validation`, "validation")] : []),
-      ],
-    },
-    {
-      key: "SCORING",
-      items: [
-        ...(has(SCORING_ROLES.read) ? [item(`${base}/scoring`, "scoring")] : []),
-        ...(has(SCORING_ROLES.panelRead) ? [item(`${base}/panel`, "panel")] : []),
-      ],
-    },
-    {
-      key: "RESULTS",
-      items: [
-        ...(has(DASHBOARD_ROLES.read) ? [item(`${base}/dashboard`, "dashboard")] : []),
-        ...(has(ACTION_PLAN_ROLES.read) ? [item(`${base}/gaps`, "gaps")] : []),
-        ...(has(REPORT_ROLES.read) ? [item(`${base}/report`, "report")] : []),
-      ],
-    },
-    { key: "OTHER", items: has(AUDIT_ROLES.read) ? [item(`${base}/audit`, "audit")] : [] },
-  ];
-  const groups: AssessmentNavGroup[] = [
-    { key: "overview", items: [item(base, "overview", true)] },
-    ...sections
-      .filter((section) => section.items.length > 0)
-      .map((section) => {
-        if (section.key === "OTHER") return { key: section.key, title: t("assessment.phases.OTHER"), items: section.items };
-        const state = phaseState(section.key, assessment.status);
-        const number = PHASES.indexOf(section.key) + 1;
-        return {
-          key: section.key,
-          title: `${number}. ${t(`assessment.phases.${section.key}`)}`,
-          state,
-          stateLabel: t(`assessment.phaseStates.${state}`),
-          items: section.items,
-        };
-      }),
-  ];
+  const groups: AssessmentNavGroup[] = assessmentNavGroups(assessment.id, assessment.status, access.roles).map((group) => ({
+    key: group.key,
+    title: group.key === "overview" ? undefined : group.key === "OTHER" ? t("assessment.phases.OTHER") : `${PHASES.indexOf(group.key) + 1}. ${t(`assessment.phases.${group.key}`)}`,
+    state: group.state,
+    stateLabel: group.state ? t(`assessment.phaseStates.${group.state}`) : undefined,
+    items: group.items.map((item) => ({ ...item, label: t(`assessment.nav.${item.page}`) })),
+  }));
   const phase = phaseOf(assessment.status);
 
   return (
@@ -104,7 +45,7 @@ export default async function AssessmentLayout({ children, params }: { children:
             : t("assessment.phaseLine", { number: PHASES.indexOf(phase) + 1, total: PHASES.length, phase: t(`assessment.phases.${phase}`) })}
         </p>
       </header>
-      <div className="space-y-6 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 lg:space-y-0">
+      <div className="space-y-6 lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-8 lg:space-y-0">
         <AssessmentNav groups={groups} label={t("assessment.nav.label")} menuLabel={t("assessment.nav.menu")} />
         <div className="min-w-0 space-y-6">{children}</div>
       </div>

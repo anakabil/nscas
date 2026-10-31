@@ -590,7 +590,8 @@
       "progressTitle": "Assessment progress",
       "detailsTitle": "Assessment details",
       "currentStatus": "Current status: {status}",
-      "openPage": "Open {page}"
+      "openPage": "Open {page}",
+      "quickAccess": "Quick access: {phase}"
     },
     "conditions": {
       "HAS_UNITS": "At least one unit has been created",
@@ -639,6 +640,28 @@
       "MONITORING": "Monitor the action plan. Archive the assessment when monitoring is complete.",
       "ARCHIVED": "The assessment has been archived. Raw data is destroyed after the retention period through the Data retention menu.",
       "PURGED": "The raw data of this assessment has been destroyed. Aggregated results remain stored."
+    },
+    "navHints": {
+      "overview": "Progress, next steps, and assessment details",
+      "details": "Name, period, scope, and instrument version",
+      "units": "Offices, sites, and projects being measured",
+      "strata": "Job groups and their worker counts",
+      "parameters": "Weights, thresholds, and respondent consent text",
+      "sampling": "Minimum number of respondents per stratum",
+      "team": "Lead assessor and assessor team members",
+      "respondents": "Respondent list, survey window, and survey links",
+      "qr": "QR codes for workers without email",
+      "participation": "Participation rate by unit and stratum",
+      "selfAssessments": "Self-assessment by management",
+      "evidence": "Evidence documents for each characteristic",
+      "observations": "Photos and videos from site visits",
+      "validation": "Focus group discussions and interviews",
+      "scoring": "Evidence ratings per characteristic by each assessor",
+      "panel": "Score adjustments and final result",
+      "dashboard": "Index, heat maps, and gaps",
+      "gaps": "Gap list and action plan",
+      "report": "Report preparation, finalisation, and signature",
+      "audit": "History of every change to assessment data"
     }
   },
   "email": {

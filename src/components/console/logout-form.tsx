@@ -1,3 +1,4 @@
+import { LogOut } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { logoutAction } from "@/app/(account)/account/actions";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -12,6 +13,7 @@ export async function LogoutForm({ tone = "light" }: { tone?: "light" | "dark" }
         pendingLabel={t("logout")}
         className={tone === "dark" ? "h-9 border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white" : "w-full"}
       >
+        <LogOut aria-hidden strokeWidth={1.75} />
         {t("logout")}
       </SubmitButton>
     </form>

@@ -12,10 +12,10 @@ export async function SiteHeader({ session, showNavigation }: { session: Session
     session.principal.memberships.some((m) => m.role === "LEAD_ASSESSOR" || m.role === "CLIENT_ADMIN");
 
   const items: ConsoleNavItem[] = [
-    { href: "/assessments", label: t("nav.assessments") },
-    ...(canSeeOrganizations ? [{ href: "/orgs", label: t("nav.organizations") }] : []),
-    ...(session.principal.isSuperAdmin ? [{ href: "/retention", label: t("nav.retention") }] : []),
-    { href: "/account", label: t("nav.account") },
+    { section: "assessments", href: "/assessments", label: t("nav.assessments") },
+    ...(canSeeOrganizations ? [{ section: "organizations" as const, href: "/orgs", label: t("nav.organizations") }] : []),
+    ...(session.principal.isSuperAdmin ? [{ section: "retention" as const, href: "/retention", label: t("nav.retention") }] : []),
+    { section: "account", href: "/account", label: t("nav.account") },
   ];
   const signedInAs = t("nav.signedInAs", { name: session.user.name });
 
@@ -27,7 +27,7 @@ export async function SiteHeader({ session, showNavigation }: { session: Session
         </Link>
         {showNavigation ? <ConsoleNav items={items} label={t("nav.mainNavigation")} /> : null}
         <div className={showNavigation ? "ml-auto hidden items-center gap-3 md:flex" : "ml-auto flex items-center gap-3"}>
-          <span className="hidden text-sm text-white/70 lg:inline">{signedInAs}</span>
+          <span className="hidden text-sm text-white/70 xl:inline">{signedInAs}</span>
           <LogoutForm tone="dark" />
         </div>
         {showNavigation ? (

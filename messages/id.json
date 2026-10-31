@@ -590,7 +590,8 @@
       "progressTitle": "Kemajuan asesmen",
       "detailsTitle": "Rincian asesmen",
       "currentStatus": "Status saat ini: {status}",
-      "openPage": "Buka {page}"
+      "openPage": "Buka {page}",
+      "quickAccess": "Akses cepat: {phase}"
     },
     "conditions": {
       "HAS_UNITS": "Minimal satu unit sudah dibuat",
@@ -639,6 +640,28 @@
       "MONITORING": "Pantau pelaksanaan rencana aksi. Arsipkan asesmen setelah pemantauan selesai.",
       "ARCHIVED": "Asesmen sudah diarsipkan. Data mentah dimusnahkan setelah masa retensi berakhir, melalui menu Retensi data.",
       "PURGED": "Data mentah asesmen ini sudah dimusnahkan. Hasil agregat tetap tersimpan."
+    },
+    "navHints": {
+      "overview": "Kemajuan, langkah berikutnya, dan rincian asesmen",
+      "details": "Nama, periode, lingkup, dan versi instrumen",
+      "units": "Kantor, lokasi, dan proyek yang diukur",
+      "strata": "Kelompok jabatan dan jumlah pekerjanya",
+      "parameters": "Bobot, ambang, dan teks persetujuan responden",
+      "sampling": "Jumlah responden minimal setiap strata",
+      "team": "Asesor utama dan anggota tim asesor",
+      "respondents": "Daftar responden, jendela survei, dan tautan survei",
+      "qr": "Kode QR untuk pekerja tanpa surel",
+      "participation": "Tingkat partisipasi per unit dan strata",
+      "selfAssessments": "Penilaian mandiri oleh manajemen",
+      "evidence": "Dokumen bukti untuk setiap karakteristik",
+      "observations": "Foto dan video kunjungan lapangan",
+      "validation": "Diskusi kelompok terarah dan wawancara",
+      "scoring": "Nilai bukti per karakteristik oleh setiap asesor",
+      "panel": "Penyesuaian nilai dan penetapan hasil final",
+      "dashboard": "Indeks, peta warna, dan kesenjangan",
+      "gaps": "Daftar kesenjangan dan rencana aksi",
+      "report": "Penyusunan, finalisasi, dan tanda tangan laporan",
+      "audit": "Riwayat seluruh perubahan data asesmen"
     }
   },
   "email": {

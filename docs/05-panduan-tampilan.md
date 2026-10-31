@@ -39,6 +39,25 @@ Logo: `public/brand/logo-long-color.png` untuk kepala konsol dan laporan. Tulisa
 - Halaman Ringkasan asesmen memuat penanda kemajuan empat tahap, panduan singkat untuk status saat ini, dan daftar syarat menuju status berikutnya. Setiap syarat yang belum terpenuhi menautkan ke halaman tempat syarat itu dikerjakan.
 - Daftar asesmen yang masih kosong menampilkan panduan "Mulai pengukuran" tiga langkah sesuai peran pengguna: organisasi klien, asesor utama, lalu asesmen.
 - Pilihan yang memberi hak tinggi, misalnya peran pengguna, tidak boleh terisi otomatis. Pengguna wajib memilih sendiri.
+- Simbol menu memakai satu set ikon garis Lucide (lisensi ISC) dengan ketebalan garis 1,75 dan ukuran 16 piksel di menu, 20 piksel di ubin. Simbol selalu didampingi nama halaman, kecuali di kepala halaman pada layar menengah (nama tetap dibacakan pembaca layar dan tampil saat disorot). Pemetaan simbol ada di `src/components/assessment/nav-icons.ts`:
+
+| Halaman | Simbol | Halaman | Simbol |
+|---|---|---|---|
+| Ringkasan | `LayoutGrid` | Bukti | `FolderOpen` |
+| Rincian | `FileText` | Observasi | `Camera` |
+| Unit | `Building2` | Validasi | `MessagesSquare` |
+| Strata | `Layers` | Penilaian asesor | `ListChecks` |
+| Parameter | `SlidersHorizontal` | Rapat panel | `Gavel` |
+| Kalkulator sampel | `Calculator` | Dasbor | `ChartColumn` |
+| Tim asesor | `UsersRound` | Rencana aksi | `ListTodo` |
+| Responden | `Users` | Laporan | `FileChartColumn` |
+| Kode QR | `QrCode` | Jejak audit | `History` |
+| Partisipasi | `TrendingUp` | | |
+| Penilaian mandiri | `UserCheck` | | |
+
+  Tahap: Persiapan `Settings2`, Pengumpulan data `Inbox`, Penilaian `Scale`, Hasil dan tindak lanjut `Target`. Menu utama: Asesmen `ClipboardList`, Organisasi dan pengguna `Building2`, Retensi data `Archive`, Akun saya `UserRound`, Keluar `LogOut`.
+- Di kolom samping, hanya tahap yang sedang berjalan dan tahap yang memuat halaman terbuka yang terbuka. Tahap lain dilipat menjadi satu baris bersimbol yang dapat dibuka dengan satu klik.
+- Ringkasan asesmen memuat ubin "Akses cepat" bersimbol untuk halaman tahap yang sedang berjalan, masing-masing dengan keterangan satu baris.
 - Hasil yang belum final diberi pita "Draf, belum ditetapkan rapat panel".
 
 ## 3. Halaman survei (prioritas tertinggi)

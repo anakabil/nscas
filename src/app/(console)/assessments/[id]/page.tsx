@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 import { PhaseStepper } from "@/components/assessment/phase-stepper";
+import { QuickAccess } from "@/components/assessment/quick-access";
 import { TransitionPanel, type TransitionView } from "@/components/assessment/transition-panel";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadAssessmentHeader, loadEffectiveParameters } from "@/lib/assessments/load";
 import { gatherTransitionFacts } from "@/lib/assessments/service";
 import { evaluateTransition, nextTransitions } from "@/lib/assessments/state-machine";
+import { assessmentNavGroups, quickAccessItems } from "@/lib/assessments/nav";
 import { CONDITION_PAGE, conditionHref, PHASES, phaseOf, phaseState } from "@/lib/assessments/workflow";
 import { guardPage, requireRole } from "@/lib/auth/guard";
 import { ALL_ROLES } from "@/lib/auth/roles";
@@ -81,6 +83,11 @@ export default async function AssessmentOverviewPage({ params }: { params: Promi
     };
   });
 
+  const quick = quickAccessItems(assessmentNavGroups(access.assessmentId, assessment.status, access.roles), assessment.status);
+  const quickTiles = (quick?.items ?? [])
+    .filter((item) => item.page !== "overview")
+    .map((item) => ({ page: item.page, href: item.href, label: t(`assessment.nav.${item.page}`), hint: t(`assessment.navHints.${item.page}`) }));
+
   return (
     <>
       <Card>
@@ -106,6 +113,17 @@ export default async function AssessmentOverviewPage({ params }: { params: Promi
           ))}
         </CardContent>
       </Card>
+
+      {quick && quickTiles.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("assessment.overview.quickAccess", { phase: t(`assessment.phases.${quick.phase}`) })}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <QuickAccess tiles={quickTiles} label={t("assessment.overview.quickAccess", { phase: t(`assessment.phases.${quick.phase}`) })} />
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Card>
         <CardHeader>

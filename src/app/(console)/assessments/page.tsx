@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -63,7 +63,10 @@ export default async function AssessmentsPage() {
         <h1 className="text-brand-navy-deep text-2xl font-bold">{t("title")}</h1>
         {canCreate && !showStart ? (
           <Button asChild>
-            <Link href="/assessments/new">{tAssessment("newButton")}</Link>
+            <Link href="/assessments/new">
+              <Plus aria-hidden />
+              {tAssessment("newButton")}
+            </Link>
           </Button>
         ) : null}
       </div>
