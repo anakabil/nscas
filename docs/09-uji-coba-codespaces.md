@@ -1,37 +1,43 @@
 # 09. Uji Coba di GitHub Codespaces
 
-Dokumen ini menjelaskan lingkungan uji coba NSCAS di GitHub Codespaces. Lingkungan ini dipakai selama klien belum memberi kepastian, untuk latihan tim Nusa Safety dan demonstrasi kepada calon klien. Lingkungan ini bukan produksi. Penempatan produksi tetap mengikuti docs/08.
+Dokumen ini menjelaskan lingkungan uji coba NSCAS di GitHub Codespaces. Lingkungan ini dipakai selama klien belum memberi kepastian, untuk latihan tim Nusa Safety menjalankan alur pengukuran dari awal sampai akhir. Sejak 31 Oktober 2026 penyiapan tidak lagi memuat akun dan data demo. Sistem dimulai kosong dengan satu akun administrator, sama seperti sistem produksi. Lingkungan ini bukan produksi. Pengukuran dengan responden sungguhan wajib memakai server di Indonesia sesuai docs/08.
 
 ## 1. Batasan yang wajib dipatuhi
 
-1. Hanya data demo fiktif. Server Codespaces berada di luar Indonesia (wilayah terdekat Asia Tenggara, Singapura). Data pekerja sungguhan tidak boleh dimasukkan, sesuai CLAUDE.md aturan 7 dan komitmen lokasi data dalam proposal. UU Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi, Pasal 56, juga mensyaratkan pelindungan setara bila data pribadi dikirim ke luar wilayah hukum Indonesia.
-2. Hasil di lingkungan ini adalah contoh tampilan, bukan hasil pengukuran, dan bukan sertifikat Safety Culture Ladder.
-3. Codespace mati otomatis setelah 30 menit tidak dipakai. Batas ini dapat diubah sampai 240 menit di github.com, Settings, Codespaces, Default idle timeout. Data tetap tersimpan sampai codespace dihapus. Codespace yang berhenti lama dihapus otomatis oleh GitHub sesuai pengaturan Default retention period.
-4. Kuota gratis akun GitHub pribadi saat dokumen ini ditulis adalah 120 jam inti dan 15 GB penyimpanan per bulan. Mesin 2 inti setara sekitar 60 jam pemakaian per bulan. Periksa sisa kuota di github.com, Settings, Billing and plans.
-5. Surel undangan dan pengingat tidak terkirim ke luar. Semuanya ditampung di kotak surat uji (Mailpit).
-6. Alamat aplikasi berbentuk `https://<nama-codespace>-3000.app.github.dev` dan berubah bila codespace baru dibuat.
+1. Tanpa data pekerja sungguhan. Server Codespaces berada di luar Indonesia (wilayah terdekat Asia Tenggara, Singapura). Daftar responden, kontak, dan jawaban pekerja sungguhan tidak boleh dimasukkan, sesuai CLAUDE.md aturan 7 dan komitmen lokasi data dalam proposal. UU Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi, Pasal 56, juga mensyaratkan pelindungan setara bila data pribadi dikirim ke luar wilayah hukum Indonesia. Untuk latihan, gunakan nama dan surel rekaan.
+2. Codespaces tidak cocok untuk survei lapangan sungguhan, karena codespace mati saat tidak dipakai (butir 3). Tautan survei pekerja ikut tidak dapat dibuka selama codespace mati.
+3. Hasil di lingkungan ini adalah hasil latihan, bukan hasil pengukuran resmi, dan bukan sertifikat Safety Culture Ladder.
+4. Codespace mati otomatis setelah 30 menit tidak dipakai. Batas ini dapat diubah sampai 240 menit di github.com, Settings, Codespaces, Default idle timeout. Data tetap tersimpan sampai codespace dihapus. Codespace yang berhenti lama dihapus otomatis oleh GitHub sesuai pengaturan Default retention period.
+5. Kuota gratis akun GitHub pribadi saat dokumen ini ditulis adalah 120 jam inti dan 15 GB penyimpanan per bulan. Mesin 2 inti setara sekitar 60 jam pemakaian per bulan. Periksa sisa kuota di github.com, Settings, Billing and plans.
+6. Surel undangan dan pengingat tidak terkirim ke luar. Semuanya ditampung di kotak surat uji (Mailpit).
+7. Alamat aplikasi berbentuk `https://<nama-codespace>-3000.app.github.dev` dan berubah bila codespace baru dibuat.
 
 ## 2. Membuat codespace (sekali)
 
 1. Buka `https://github.com/anakabil/nscas` dan masuk dengan akun GitHub.
 2. Klik tombol hijau Code, pilih tab Codespaces, klik tanda tiga titik, lalu New with options.
 3. Pilih cabang `claude/great-pasteur-31n82q`, Region Southeast Asia, dan Machine type 2-core. Klik Create codespace.
-4. Editor VS Code terbuka di peramban. Penyiapan berjalan otomatis sekitar 15 menit: memasang dependensi dan Chromium untuk PDF, membuat rahasia acak, menyiapkan basis data, mengisi data demo PT Contoh Konstruksi, lalu membangun dan menyalakan aplikasi. Kemajuannya dapat dilihat di berkas `.codespace/logs/setup.log`.
+4. Editor VS Code terbuka di peramban. Penyiapan berjalan otomatis sekitar 15 menit: memasang dependensi dan Chromium untuk PDF, membuat rahasia acak, menyiapkan basis data dengan instrumen dan satu akun administrator, lalu membangun dan menyalakan aplikasi. Kemajuannya dapat dilihat di berkas `.codespace/logs/setup.log`.
 5. Penyiapan selesai bila log menampilkan "Penyiapan selesai".
 
 ## 3. Membuka aplikasi
 
-1. Buka berkas `.codespace/akun-uji-coba.txt` dari panel Explorer di kiri. Berkas ini berisi alamat aplikasi, akun administrator, dan lima akun demo beserta kata sandinya. Berkas ini tidak pernah dikomit ke repositori.
+1. Buka berkas `.codespace/akun-uji-coba.txt` dari panel Explorer di kiri. Berkas ini berisi alamat aplikasi serta surel dan kata sandi administrator. Berkas ini tidak pernah dikomit ke repositori.
 2. Buka tab Ports di bagian bawah editor. Port 3000 (NSCAS) dan 9100 (Berkas NSCAS) harus berstatus Public. Bila masih Private, klik kanan port tersebut, pilih Port Visibility, lalu Public. Port 9100 wajib Public agar unggah dan unduh berkas bukti berjalan.
-3. Buka alamat aplikasi. Saat masuk pertama, setiap akun diminta mengaktifkan verifikasi dua langkah. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator, lalu pindai kode QR yang tampil. Simpan kode cadangan yang diberikan.
+3. Buka alamat aplikasi. Saat masuk pertama, Anda diminta mengaktifkan verifikasi dua langkah. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator, lalu pindai kode QR yang tampil. Simpan kode cadangan yang diberikan.
 4. Surel undangan dan pengingat dapat dilihat dengan membuka port 8025 (Kotak surat uji) dari tab Ports. Port ini tetap Private, hanya untuk pemilik codespace.
 
-## 4. Demonstrasi kepada klien
+## 4. Memulai pengukuran pertama
 
-1. Data demo berisi satu asesmen PT Contoh Konstruksi pada tahap rencana aksi: 12 lokasi, 40 proyek, 3.000 responden fiktif, 900 respons survei, penilaian mandiri, bukti contoh, penilaian dua asesor, sesi validasi, dan hasil mesin penilaian.
-2. Akun yang paling sesuai untuk demonstrasi adalah `asesor.utama@demo.nusasafety.test` untuk alur kerja asesor, dan `direksi@contoh-konstruksi.test` untuk tampilan pimpinan klien.
-3. Bila klien akan mencoba sendiri, aktifkan dulu verifikasi dua langkah akun yang akan dipinjamkan, atau lakukan demonstrasi melalui berbagi layar.
-4. Bagikan alamat aplikasi hanya kepada peserta demonstrasi. Walaupun datanya fiktif, alamat ini terbuka untuk siapa pun yang mengetahuinya selama codespace menyala.
+Halaman Asesmen pada sistem yang masih kosong menampilkan panduan "Mulai pengukuran" tiga langkah. Langkah yang sudah selesai ditandai centang.
+
+1. Tambahkan organisasi klien di menu Organisasi dan pengguna.
+2. Tetapkan asesor utama: buka organisasi Nusa Safety, lalu tambahkan pengguna dengan peran Asesor utama. Anda boleh memakai surel akun administrator sendiri; peran langsung berlaku tanpa masuk ulang. Tambahkan juga asesor lain bila diperlukan. Setiap pengguna baru menerima kata sandi sementara yang tampil sekali di layar.
+3. Buat asesmen. Setelah itu halaman Ringkasan asesmen menampilkan tahap saat ini (1 dari 4: Persiapan) dan daftar syarat menuju status berikutnya. Setiap syarat yang belum terpenuhi memiliki tautan ke halaman tempat syarat itu dikerjakan.
+
+Menu asesmen di kiri dikelompokkan sesuai empat tahap pengukuran: Persiapan, Pengumpulan data, Penilaian, serta Hasil dan tindak lanjut.
+
+Codespace yang dibuat sebelum 31 Oktober 2026 masih berisi data dan akun demo. Untuk memulai dari sistem kosong, hapus codespace tersebut, lalu buat codespace baru (bagian 2).
 
 ## 5. Menghentikan, menyalakan kembali, dan menghapus
 
@@ -55,7 +61,7 @@ Dokumen ini menjelaskan lingkungan uji coba NSCAS di GitHub Codespaces. Lingkung
 | Berkas | Fungsi |
 |---|---|
 | `.devcontainer/devcontainer.json` | Image Node.js 22, Docker di dalam codespace, GitHub CLI, port yang diteruskan, dan urutan skrip |
-| `.devcontainer/setup.sh` | Penyiapan sekali: dependensi, Chromium, `.env` dengan rahasia acak, layanan pendukung, migrasi, seed, data demo, build produksi |
+| `.devcontainer/setup.sh` | Penyiapan sekali: dependensi, Chromium, `.env` dengan rahasia acak, layanan pendukung, migrasi, seed (instrumen dan satu administrator), build produksi |
 | `.devcontainer/start.sh` | Setiap codespace menyala: layanan pendukung, `next start`, dan worker pg-boss |
 | `.devcontainer/ports.sh` | Membuka port 3000 dan 9100 untuk umum dengan GitHub CLI |
 | `.devcontainer/docker-compose.codespaces.yml` dan `storage-proxy.Caddyfile` | Proksi MinIO di port 9100 |

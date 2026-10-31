@@ -35,7 +35,7 @@ async function counts() {
 }
 
 beforeAll(async () => {
-  await seedDatabase(prisma, { seedDir: SEED_DIR, admin });
+  await seedDatabase(prisma, { seedDir: SEED_DIR, admin, demoOrganization: true });
 });
 
 afterAll(async () => {
@@ -137,7 +137,7 @@ describe("idempotensi", () => {
     const userBefore = await prisma.user.findUniqueOrThrow({ where: { email: "admin@nusasafety.test" } });
 
     await seedDatabase(prisma, { seedDir: SEED_DIR, admin: { ...admin, password: "kata-sandi-lain-456" } });
-    await seedDatabase(prisma, { seedDir: SEED_DIR, admin });
+    await seedDatabase(prisma, { seedDir: SEED_DIR, admin, demoOrganization: true });
 
     expect(await counts()).toEqual(before);
     const userAfter = await prisma.user.findUniqueOrThrow({ where: { email: "admin@nusasafety.test" } });

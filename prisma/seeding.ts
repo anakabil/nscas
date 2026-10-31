@@ -355,6 +355,8 @@ export async function seedDemoOrganization(prisma: PrismaClient): Promise<{ id: 
 export interface SeedOptions {
   seedDir: string;
   admin: AdminSeedInput;
+  /** Organisasi demo kosong untuk pengembangan dan pengujian; tidak dibuat untuk pengukuran sungguhan. */
+  demoOrganization?: boolean;
   log?: (message: string) => void;
 }
 
@@ -376,6 +378,8 @@ export async function seedDatabase(prisma: PrismaClient, options: SeedOptions): 
       : "Pengguna SUPER_ADMIN sudah ada; kata sandi tidak diubah.",
   );
 
-  const demo = await seedDemoOrganization(prisma);
-  log(demo.created ? `Organisasi demo ${DEMO_ORGANIZATION.name} dibuat.` : `Organisasi demo ${DEMO_ORGANIZATION.name} sudah ada.`);
+  if (options.demoOrganization) {
+    const demo = await seedDemoOrganization(prisma);
+    log(demo.created ? `Organisasi demo ${DEMO_ORGANIZATION.name} dibuat.` : `Organisasi demo ${DEMO_ORGANIZATION.name} sudah ada.`);
+  }
 }

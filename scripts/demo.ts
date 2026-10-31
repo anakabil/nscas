@@ -20,7 +20,7 @@ import { dirname } from "node:path";
 import { parseArgs } from "node:util";
 import { createTranslator } from "use-intl/core";
 import messages from "../messages/id.json";
-import { DEMO_ORGANIZATION, INSTRUMENT_CODE, OPERATOR_ORGANIZATION } from "../prisma/seeding";
+import { INSTRUMENT_CODE, OPERATOR_ORGANIZATION, seedDemoOrganization } from "../prisma/seeding";
 import type { AssessmentStatus, Role, StratumGroup } from "@/generated/prisma/enums";
 import { generateGapList } from "@/lib/action-plan/service";
 import type { DraftParameters } from "@/lib/assessments/parameters";
@@ -153,8 +153,9 @@ const round2half = (v: number) => Math.min(5, Math.max(1, Math.round(v * 2) / 2)
 
 async function main() {
   const operator = await db.organization.findFirstOrThrow({ where: { legalName: OPERATOR_ORGANIZATION.legalName, isOperator: true } });
-  const organization = await db.organization.findFirst({ where: { name: DEMO_ORGANIZATION.name, isOperator: false } });
-  if (!organization) throw new Error(`Organization "${DEMO_ORGANIZATION.name}" not found. Run npm run db:seed first.`);
+  // Seed tidak lagi membuat organisasi demo secara bawaan; skrip ini membuatnya bila belum ada.
+  const { id: organizationId } = await seedDemoOrganization(db);
+  const organization = await db.organization.findUniqueOrThrow({ where: { id: organizationId } });
   if (await db.assessment.findFirst({ where: { organizationId: organization.id, name: args.name } })) {
     throw new Error(`Assessment "${args.name}" already exists. Reset the database (npx prisma migrate reset) or pass --name.`);
   }

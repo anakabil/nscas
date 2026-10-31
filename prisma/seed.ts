@@ -1,5 +1,6 @@
 // Penjalan seed: npm run db:seed (prisma db seed).
-// Membaca DATABASE_URL, SEED_ADMIN_EMAIL, dan SEED_ADMIN_PASSWORD dari .env.
+// Membaca DATABASE_URL, SEED_ADMIN_EMAIL, dan SEED_ADMIN_PASSWORD dari .env. SEED_DEMO_ORGANIZATION=true menambahkan
+// organisasi demo kosong untuk pengembangan; bawaannya tidak, agar sistem pengukuran sungguhan tetap bersih.
 
 import "dotenv/config";
 import { join } from "node:path";
@@ -19,6 +20,7 @@ async function main(): Promise<void> {
     await seedDatabase(prisma, {
       seedDir: join(__dirname, "..", "seed"),
       admin: { email: SEED_ADMIN_EMAIL, password: SEED_ADMIN_PASSWORD, name: SEED_ADMIN_NAME || undefined },
+      demoOrganization: process.env.SEED_DEMO_ORGANIZATION === "true",
       log: (message) => console.info(message),
     });
   } finally {

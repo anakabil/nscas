@@ -33,7 +33,7 @@ async function main(): Promise<void> {
   execFileSync("npx", ["prisma", "migrate", "deploy"], { env: { ...process.env, DATABASE_URL: url.toString() }, stdio: "pipe" });
 
   const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: url.toString() }) });
-  await seedDatabase(prisma, { seedDir: join(__dirname, "..", "..", "seed"), admin: { email: "super@e2e.test", password: E2E_PASSWORD } });
+  await seedDatabase(prisma, { seedDir: join(__dirname, "..", "..", "seed"), admin: { email: "super@e2e.test", password: E2E_PASSWORD }, demoOrganization: true });
 
   const passwordHash = await argon2.hash(E2E_PASSWORD, { type: argon2.argon2id });
   const operator = await prisma.organization.findFirstOrThrow({ where: { isOperator: true } });

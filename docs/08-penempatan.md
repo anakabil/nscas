@@ -173,7 +173,7 @@ $COMPOSE run --rm migrate
 $COMPOSE run --rm migrate prisma db seed
 ```
 
-Seed membuat pengguna SUPER_ADMIN pertama, instrumen NS-SCML-1.0, dan organisasi demo kosong. Setelah seed selesai, hapus nilai `SEED_ADMIN_PASSWORD` dari `.env.production`.
+Seed membuat pengguna SUPER_ADMIN pertama dan instrumen NS-SCML-1.0, tanpa organisasi atau data demo. Setelah seed selesai, hapus nilai `SEED_ADMIN_PASSWORD` dari `.env.production`. Saat administrator pertama kali masuk, halaman Asesmen menampilkan panduan "Mulai pengukuran": organisasi klien, asesor utama, lalu asesmen.
 
 Jangan menjalankan `npm run demo` di produksi. Skrip demo memang tidak dimasukkan ke image.
 
