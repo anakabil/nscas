@@ -1,6 +1,7 @@
 "use client";
 
-import { CheckCircle2, Circle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import Link from "next/link";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { transitionAction } from "@/app/(console)/assessments/[id]/setup/actions";
@@ -11,7 +12,8 @@ import { Alert } from "@/components/ui/alert";
 export interface TransitionView {
   to: string;
   label: string;
-  conditions: { code: string; label: string; met: boolean }[];
+  /** href dan linkLabel menunjuk halaman tempat syarat yang belum terpenuhi dikerjakan. */
+  conditions: { code: string; label: string; met: boolean; href?: string; linkLabel?: string }[];
   allowed: boolean;
   canAct: boolean;
   actorLabel: string;
@@ -33,7 +35,15 @@ export function TransitionPanel({ assessmentId, transition }: { assessmentId: st
               ) : (
                 <Circle aria-hidden className="text-muted-foreground mt-0.5 size-4 shrink-0" />
               )}
-              <span className={c.met ? "" : "text-muted-foreground"}>{c.label}</span>
+              <span className="space-x-2">
+                <span className={c.met ? "" : "text-muted-foreground"}>{c.label}</span>
+                {!c.met && c.href ? (
+                  <Link href={c.href} className="text-brand-navy inline-flex items-center gap-1 font-semibold whitespace-nowrap hover:underline">
+                    {c.linkLabel}
+                    <ArrowRight aria-hidden className="size-3.5" />
+                  </Link>
+                ) : null}
+              </span>
             </li>
           ))}
         </ul>

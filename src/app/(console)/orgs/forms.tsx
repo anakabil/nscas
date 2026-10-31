@@ -73,7 +73,11 @@ export function AddUserForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="user-role">{t("role")}</Label>
-          <Select id="user-role" name="role" defaultValue={roles[0]?.value}>
+          {/* Tanpa pilihan bawaan agar peran berhak tinggi, misalnya Administrator sistem, tidak terpilih tanpa sengaja. */}
+          <Select id="user-role" name="role" defaultValue="" required>
+            <option value="" disabled>
+              {t("chooseRole")}
+            </option>
             {roles.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}

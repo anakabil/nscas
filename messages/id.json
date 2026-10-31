@@ -39,7 +39,8 @@
     "logout": "Keluar",
     "signedInAs": "Masuk sebagai {name}",
     "mainNavigation": "Navigasi utama",
-    "retention": "Retensi data"
+    "retention": "Retensi data",
+    "menu": "Menu"
   },
   "roles": {
     "SUPER_ADMIN": "Administrator sistem",
@@ -172,7 +173,30 @@
       "ARCHIVED": "Diarsipkan",
       "PURGED": "Data mentah dimusnahkan"
     },
-    "periodRange": "{start} sampai {end}"
+    "periodRange": "{start} sampai {end}",
+    "phase": "Tahap",
+    "start": {
+      "title": "Mulai pengukuran",
+      "intro": "Tiga langkah berikut menyiapkan asesmen pertama. Langkah yang sudah selesai ditandai.",
+      "done": "Selesai",
+      "organization": {
+        "title": "Tambahkan organisasi klien",
+        "description": "Organisasi yang akan diukur budaya keselamatan dan kesehatan kerjanya (K3), misalnya PT Adhi Karya (Persero) Tbk.",
+        "action": "Buka Organisasi dan pengguna"
+      },
+      "lead": {
+        "title": "Tetapkan asesor utama",
+        "description": "Asesmen dibuat dan dikelola oleh asesor utama di organisasi Nusa Safety. Tambahkan pengguna dengan peran Asesor utama; Anda boleh memakai surel akun Anda sendiri.",
+        "action": "Buka organisasi Nusa Safety"
+      },
+      "assessment": {
+        "title": "Buat asesmen",
+        "description": "Asesor utama membuat asesmen untuk organisasi klien. Setelah itu halaman Ringkasan asesmen memandu setiap langkah berikutnya.",
+        "action": "Buat asesmen baru",
+        "needsLead": "Tombol ini muncul setelah akun Anda mendapat peran Asesor utama di organisasi Nusa Safety."
+      },
+      "notAllowed": "Dilakukan oleh administrator sistem."
+    }
   },
   "orgs": {
     "title": "Organisasi dan pengguna",
@@ -252,7 +276,8 @@
       "unlock": "Buka penguncian",
       "revokeRole": "Cabut peran",
       "done": "Perubahan berhasil disimpan."
-    }
+    },
+    "chooseRole": "Pilih peran"
   },
   "forbidden": {
     "title": "Akses ditolak",
@@ -281,7 +306,8 @@
       "dashboard": "Dasbor",
       "gaps": "Rencana aksi",
       "report": "Laporan",
-      "audit": "Jejak audit"
+      "audit": "Jejak audit",
+      "menu": "Menu asesmen"
     },
     "newTitle": "Asesmen baru",
     "newButton": "Buat asesmen baru",
@@ -560,7 +586,11 @@
       "lockedAt": "Dikunci pada",
       "notLocked": "Belum dikunci",
       "lockButton": "Kunci konfigurasi",
-      "notSet": "Belum ada"
+      "notSet": "Belum ada",
+      "progressTitle": "Kemajuan asesmen",
+      "detailsTitle": "Rincian asesmen",
+      "currentStatus": "Status saat ini: {status}",
+      "openPage": "Buka {page}"
     },
     "conditions": {
       "HAS_UNITS": "Minimal satu unit sudah dibuat",
@@ -582,6 +612,33 @@
       "ACTION_PLAN_PUBLISHED": "Rencana aksi sudah diterbitkan ke klien",
       "RETENTION_EXPIRED": "Masa simpan data mentah sudah habis",
       "DESTRUCTION_RECORDED": "Berita acara pemusnahan sudah dibuat"
+    },
+    "phases": {
+      "PREPARATION": "Persiapan",
+      "DATA_COLLECTION": "Pengumpulan data",
+      "SCORING": "Penilaian",
+      "RESULTS": "Hasil dan tindak lanjut",
+      "OTHER": "Lainnya"
+    },
+    "phaseStates": {
+      "done": "Selesai",
+      "current": "Tahap saat ini",
+      "upcoming": "Belum dimulai"
+    },
+    "phaseLine": "Tahap {number} dari {total}: {phase}",
+    "phaseClosed": "Seluruh tahap selesai",
+    "guide": {
+      "DRAFT": "Lengkapi persiapan: daftar unit, strata beserta jumlah pekerjanya, tim asesor, dan versi instrumen. Setelah semua syarat di bawah terpenuhi, klik Ubah status menjadi Terkonfigurasi.",
+      "CONFIGURED": "Isi parameter, teks persetujuan responden, dan kalkulator sampel, lalu klik Kunci konfigurasi. Setelah dikunci, bobot, ambang, versi instrumen, dan strata tidak dapat diubah.",
+      "LOCKED": "Unggah daftar responden dan terbitkan tautan survei, lalu klik Ubah status menjadi Pengumpulan data.",
+      "DATA_COLLECTION": "Pantau partisipasi survei, lalu kumpulkan penilaian mandiri, bukti, observasi, dan validasi. Sebelum lanjut, tutup survei dan pastikan setiap karakteristik sudah dinilai dua asesor.",
+      "SCORING": "Jalankan mesin penilaian dan simpan hasilnya, lalu lanjutkan ke rapat panel asesor.",
+      "PANEL_REVIEW": "Bahas hasil dalam rapat panel asesor, beri alasan untuk setiap penyesuaian, lalu tetapkan hasil final.",
+      "ACTION_PLANNING": "Susun daftar kesenjangan dan rencana aksi, lalu finalisasi dan tandatangani laporan.",
+      "REPORTED": "Terbitkan rencana aksi untuk memulai pemantauan tindak lanjut.",
+      "MONITORING": "Pantau pelaksanaan rencana aksi. Arsipkan asesmen setelah pemantauan selesai.",
+      "ARCHIVED": "Asesmen sudah diarsipkan. Data mentah dimusnahkan setelah masa retensi berakhir, melalui menu Retensi data.",
+      "PURGED": "Data mentah asesmen ini sudah dimusnahkan. Hasil agregat tetap tersimpan."
     }
   },
   "email": {

@@ -7,6 +7,7 @@ import { PLAN_STATUSES } from "@/lib/action-plan/service";
 import { logAudit } from "@/lib/audit";
 import { getDb } from "@/lib/db";
 import type { MailMessage } from "@/lib/mail";
+import { PALETTE } from "@/lib/theme";
 import { enqueue, QUEUES } from "./boss";
 import { defaultMailDeps, type DeliveryOutcome, type MailDeps } from "./invitations";
 
@@ -71,8 +72,8 @@ export function buildActionReminderEmail(input: ActionReminderEmailInput): MailM
       html: [
         `<p>${escapeHtml(t("greeting"))}</p>`,
         `<p>${escapeHtml(intro)}</p>`,
-        `<table style="border-collapse:collapse">${fields.map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:#5E6075">${escapeHtml(k)}</td><td style="padding:4px 0">${escapeHtml(v)}</td></tr>`).join("")}</table>`,
-        `<p><a href="${escapeHtml(input.link)}" style="display:inline-block;background:#000B9D;color:#ffffff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">${escapeHtml(t("button"))}</a></p>`,
+        `<table style="border-collapse:collapse">${fields.map(([k, v]) => `<tr><td style="padding:4px 12px 4px 0;color:${PALETTE.textMuted}">${escapeHtml(k)}</td><td style="padding:4px 0">${escapeHtml(v)}</td></tr>`).join("")}</table>`,
+        `<p><a href="${escapeHtml(input.link)}" style="display:inline-block;background:${PALETTE.navy};color:#ffffff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">${escapeHtml(t("button"))}</a></p>`,
         `<p>${escapeHtml(t("closing"))}<br>${escapeHtml(t("signature"))}</p>`,
       ].join(""),
     };
@@ -82,7 +83,7 @@ export function buildActionReminderEmail(input: ActionReminderEmailInput): MailM
     to: input.to,
     subject: idPart.subject,
     text: `${idPart.text}\n\n---\n\n${enPart.text}`,
-    html: `${idPart.html}<hr style="border:none;border-top:1px solid #D3D6E8;margin:24px 0">${enPart.html}`,
+    html: `${idPart.html}<hr style="border:none;border-top:1px solid ${PALETTE.border};margin:24px 0">${enPart.html}`,
   };
 }
 

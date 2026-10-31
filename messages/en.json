@@ -39,7 +39,8 @@
     "logout": "Sign out",
     "signedInAs": "Signed in as {name}",
     "mainNavigation": "Main navigation",
-    "retention": "Data retention"
+    "retention": "Data retention",
+    "menu": "Menu"
   },
   "roles": {
     "SUPER_ADMIN": "System administrator",
@@ -172,7 +173,30 @@
       "ARCHIVED": "Archived",
       "PURGED": "Raw data destroyed"
     },
-    "periodRange": "{start} to {end}"
+    "periodRange": "{start} to {end}",
+    "phase": "Stage",
+    "start": {
+      "title": "Start measuring",
+      "intro": "The three steps below prepare the first assessment. Completed steps are marked.",
+      "done": "Done",
+      "organization": {
+        "title": "Add the client organisation",
+        "description": "The organisation whose occupational safety and health (K3) culture will be measured, for example PT Adhi Karya (Persero) Tbk.",
+        "action": "Open Organisations and users"
+      },
+      "lead": {
+        "title": "Appoint a lead assessor",
+        "description": "Assessments are created and managed by a lead assessor in the Nusa Safety organisation. Add a user with the Lead assessor role; you may use your own account email.",
+        "action": "Open the Nusa Safety organisation"
+      },
+      "assessment": {
+        "title": "Create the assessment",
+        "description": "The lead assessor creates the assessment for the client organisation. From then on, the assessment Overview page guides every next step.",
+        "action": "Create a new assessment",
+        "needsLead": "This button appears once your account has the Lead assessor role in the Nusa Safety organisation."
+      },
+      "notAllowed": "Done by the system administrator."
+    }
   },
   "orgs": {
     "title": "Organisations and users",
@@ -252,7 +276,8 @@
       "unlock": "Unlock",
       "revokeRole": "Revoke role",
       "done": "Changes saved."
-    }
+    },
+    "chooseRole": "Choose a role"
   },
   "forbidden": {
     "title": "Access denied",
@@ -281,7 +306,8 @@
       "dashboard": "Dashboard",
       "gaps": "Action plan",
       "report": "Report",
-      "audit": "Audit trail"
+      "audit": "Audit trail",
+      "menu": "Assessment menu"
     },
     "newTitle": "New assessment",
     "newButton": "Create new assessment",
@@ -560,7 +586,11 @@
       "lockedAt": "Locked at",
       "notLocked": "Not yet locked",
       "lockButton": "Lock configuration",
-      "notSet": "Not set"
+      "notSet": "Not set",
+      "progressTitle": "Assessment progress",
+      "detailsTitle": "Assessment details",
+      "currentStatus": "Current status: {status}",
+      "openPage": "Open {page}"
     },
     "conditions": {
       "HAS_UNITS": "At least one unit has been created",
@@ -582,6 +612,33 @@
       "ACTION_PLAN_PUBLISHED": "The action plan has been published to the client",
       "RETENTION_EXPIRED": "The raw data retention period has ended",
       "DESTRUCTION_RECORDED": "The destruction record has been created"
+    },
+    "phases": {
+      "PREPARATION": "Preparation",
+      "DATA_COLLECTION": "Data collection",
+      "SCORING": "Scoring",
+      "RESULTS": "Results and follow-up",
+      "OTHER": "Other"
+    },
+    "phaseStates": {
+      "done": "Completed",
+      "current": "Current stage",
+      "upcoming": "Not started"
+    },
+    "phaseLine": "Stage {number} of {total}: {phase}",
+    "phaseClosed": "All stages completed",
+    "guide": {
+      "DRAFT": "Complete the preparation: the list of units, strata with their worker counts, the assessor team, and the instrument version. Once every condition below is met, click Change status to Configured.",
+      "CONFIGURED": "Fill in the parameters, the respondent consent text, and the sample calculator, then click Lock configuration. After locking, weights, thresholds, the instrument version, and strata can no longer be changed.",
+      "LOCKED": "Upload the respondent list and issue survey links, then click Change status to Data collection.",
+      "DATA_COLLECTION": "Monitor survey participation, then collect self-assessments, evidence, observations, and validation. Before moving on, close the survey and make sure every characteristic has been rated by two assessors.",
+      "SCORING": "Run the scoring engine and save the result, then move on to the assessor panel meeting.",
+      "PANEL_REVIEW": "Discuss the results in the assessor panel meeting, justify every adjustment, then set the final result.",
+      "ACTION_PLANNING": "Prepare the gap list and action plan, then finalise and sign the report.",
+      "REPORTED": "Publish the action plan to start follow-up monitoring.",
+      "MONITORING": "Monitor the action plan. Archive the assessment when monitoring is complete.",
+      "ARCHIVED": "The assessment has been archived. Raw data is destroyed after the retention period through the Data retention menu.",
+      "PURGED": "The raw data of this assessment has been destroyed. Aggregated results remain stored."
     }
   },
   "email": {

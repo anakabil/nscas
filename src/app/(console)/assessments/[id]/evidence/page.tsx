@@ -102,7 +102,9 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
         <CardContent className="space-y-4">
           {items.length === 0 ? <p className="text-muted-foreground">{t("list.empty")}</p> : null}
           {items.map((item) => (
-            <article key={item.id} className="border-border space-y-2 rounded-lg border p-4" data-testid="evidence-item" data-title={item.title}>
+            // Kunci memakai versi pertama agar kartu tidak dipasang ulang saat versi baru tersimpan, sehingga pesan
+            // "Bukti tersimpan" tetap terlihat setelah halaman disegarkan.
+            <article key={item.previousVersions.at(-1)?.id ?? item.id} className="border-border space-y-2 rounded-lg border p-4" data-testid="evidence-item" data-title={item.title}>
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="font-semibold">{item.title}</h3>
                 <Badge variant="secondary">{t("list.version", { version: item.version })}</Badge>

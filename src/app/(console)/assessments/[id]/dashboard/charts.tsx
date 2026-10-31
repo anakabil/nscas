@@ -3,12 +3,13 @@
 import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-// Grafik dasbor (docs/05): batang biru tua untuk nilai yang mencapai sasaran, kuning untuk di bawah sasaran,
-// ungu untuk karakteristik kontekstual. Angka memakai format Indonesia.
+// Grafik dasbor (docs/05): batang biru batu untuk nilai yang mencapai sasaran, oker lembut untuk di bawah sasaran,
+// hijau toska redup untuk karakteristik kontekstual. Angka memakai format Indonesia.
 
-const NAVY = "var(--brand-navy, #000B9D)";
-const YELLOW = "var(--brand-yellow, #FDC830)";
-const PURPLE = "var(--brand-purple, #5B4BD6)";
+const MET = "var(--level-4)";
+const BELOW = "var(--highlight)";
+const CONTEXTUAL = "var(--series-2)";
+const TARGET = "var(--danger)";
 const decimal = (v: number) => new Intl.NumberFormat("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
 const tick = (v: number) => new Intl.NumberFormat("id-ID").format(v);
 
@@ -22,10 +23,10 @@ export function AspectChart({ data, target }: { data: { code: string; name: stri
           <XAxis dataKey="code" fontSize={12} />
           <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tickFormatter={tick} fontSize={12} width={32} />
           <Tooltip formatter={(v) => [decimal(Number(v)), t("index")]} labelFormatter={(code) => `${code} ${data.find((d) => d.code === code)?.name ?? ""}`} />
-          <ReferenceLine y={target} stroke="var(--danger, #C2410C)" strokeDasharray="4 4" label={{ value: t("target"), position: "insideTopRight", fontSize: 12 }} />
+          <ReferenceLine y={target} stroke={TARGET} strokeDasharray="4 4" label={{ value: t("target"), position: "insideTopRight", fontSize: 12 }} />
           <Bar dataKey="index" radius={[4, 4, 0, 0]} isAnimationActive={false}>
             {data.map((d) => (
-              <Cell key={d.code} fill={d.index !== null && d.index < target ? YELLOW : NAVY} />
+              <Cell key={d.code} fill={d.index !== null && d.index < target ? BELOW : MET} />
             ))}
           </Bar>
         </BarChart>
@@ -45,10 +46,10 @@ export function CharacteristicChart({ data, target }: { data: { code: string; na
           <XAxis type="number" domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tickFormatter={tick} fontSize={12} />
           <YAxis type="category" dataKey="label" fontSize={12} width={48} />
           <Tooltip formatter={(v) => [decimal(Number(v)), t("index")]} labelFormatter={(label) => rows.find((r) => r.label === label)?.name ?? String(label)} />
-          <ReferenceLine x={target} stroke="var(--danger, #C2410C)" strokeDasharray="4 4" />
+          <ReferenceLine x={target} stroke={TARGET} strokeDasharray="4 4" />
           <Bar dataKey="value" radius={[0, 4, 4, 0]} isAnimationActive={false}>
             {rows.map((d) => (
-              <Cell key={d.code} fill={d.isContextual ? PURPLE : d.value !== null && d.value < target ? YELLOW : NAVY} />
+              <Cell key={d.code} fill={d.isContextual ? CONTEXTUAL : d.value !== null && d.value < target ? BELOW : MET} />
             ))}
           </Bar>
         </BarChart>
@@ -68,8 +69,8 @@ export function ComparisonChart({ data, labels }: { data: { code: string; previo
           <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tickFormatter={tick} fontSize={12} width={32} />
           <Tooltip formatter={(v, name) => [decimal(Number(v)), String(name)]} />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Bar dataKey="previous" name={labels.previous} fill={PURPLE} radius={[4, 4, 0, 0]} isAnimationActive={false} />
-          <Bar dataKey="current" name={labels.current} fill={NAVY} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+          <Bar dataKey="previous" name={labels.previous} fill={CONTEXTUAL} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+          <Bar dataKey="current" name={labels.current} fill={MET} radius={[4, 4, 0, 0]} isAnimationActive={false} />
         </BarChart>
       </ResponsiveContainer>
     </div>

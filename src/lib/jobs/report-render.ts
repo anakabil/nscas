@@ -8,6 +8,7 @@ import { logAudit } from "@/lib/audit";
 import { getDb } from "@/lib/db";
 import { REPORT_FILE_NAMES, renderReportHtml, type ReportAssets } from "@/lib/report/html";
 import type { ReportContent } from "@/lib/report/types";
+import { PALETTE } from "@/lib/theme";
 import { putObject } from "@/lib/storage";
 
 // Render PDF laporan (docs/01 M11) di worker: HTML laporan disajikan ke Chromium headless (Playwright) dan
@@ -75,7 +76,7 @@ export async function renderReport(job: ReportRenderJob, deps: RenderDeps = defa
     await inlineAssets(),
   );
   const t = createTranslator({ locale: "id", messages: id, namespace: "report" });
-  const footer = `<div style="font-family:sans-serif;font-size:8px;width:100%;padding:0 16mm;color:#5E6075;display:flex;justify-content:space-between"><span>${escapeHtml(`${content.organization.name} · ${t(`kinds.${report.kind}`)} · ${t("version", { version: report.version })} · ${t(`statuses.${report.status}`)}`)}</span><span>${escapeHtml(t("pageOf", { page: "\u0000", total: "\u0001" })).replace("\u0000", '<span class="pageNumber"></span>').replace("\u0001", '<span class="totalPages"></span>')}</span></div>`;
+  const footer = `<div style="font-family:sans-serif;font-size:8px;width:100%;padding:0 16mm;color:${PALETTE.textMuted};display:flex;justify-content:space-between"><span>${escapeHtml(`${content.organization.name} · ${t(`kinds.${report.kind}`)} · ${t("version", { version: report.version })} · ${t(`statuses.${report.status}`)}`)}</span><span>${escapeHtml(t("pageOf", { page: "\u0000", total: "\u0001" })).replace("\u0000", '<span class="pageNumber"></span>').replace("\u0001", '<span class="totalPages"></span>')}</span></div>`;
   try {
     const pdf = await deps.toPdf(html, footer);
     const key = `${report.assessment.organizationId}/${report.assessmentId}/reports/${REPORT_FILE_NAMES[report.kind]}-v${report.version}-${report.status.toLowerCase()}-${report.id}.pdf`;

@@ -17,7 +17,7 @@ export default async function LoginPage() {
   return (
     <section className="space-y-6">
       <header className="space-y-2">
-        <h1 className="text-brand-navy text-2xl font-bold">{t("title")}</h1>
+        <h1 className="text-brand-navy-deep text-2xl font-bold">{t("title")}</h1>
         <p className="text-muted-foreground">{t("description")}</p>
       </header>
       <LoginForm />

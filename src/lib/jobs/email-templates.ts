@@ -4,6 +4,7 @@ import { createTranslator } from "use-intl/core";
 import en from "../../../messages/en.json";
 import id from "../../../messages/id.json";
 import type { MailMessage } from "@/lib/mail";
+import { PALETTE } from "@/lib/theme";
 
 export type SurveyEmailKind = "invitation" | "reminder" | "continue";
 
@@ -52,9 +53,9 @@ function section(locale: "id" | "en", input: SurveyEmailInput) {
     `<p>${escapeHtml(t(`${input.kind}.intro`, { organization: input.organization }))}</p>`,
     `<p>${escapeHtml(t("anonymity"))}${input.kind === "continue" ? "" : ` ${escapeHtml(t("duration"))}`}</p>`,
     input.link
-      ? `<p><a href="${escapeHtml(input.link)}" style="display:inline-block;background:#000B9D;color:#ffffff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">${escapeHtml(t("button"))}</a></p>` +
-        `<p style="font-size:13px;color:#5E6075">${escapeHtml(t("linkIntro"))}<br>${escapeHtml(input.link)}</p>` +
-        `<p style="font-size:13px;color:#5E6075">${escapeHtml(t("personal"))}</p>`
+      ? `<p><a href="${escapeHtml(input.link)}" style="display:inline-block;background:${PALETTE.navy};color:#ffffff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">${escapeHtml(t("button"))}</a></p>` +
+        `<p style="font-size:13px;color:${PALETTE.textMuted}">${escapeHtml(t("linkIntro"))}<br>${escapeHtml(input.link)}</p>` +
+        `<p style="font-size:13px;color:${PALETTE.textMuted}">${escapeHtml(t("personal"))}</p>`
       : "",
     input.closesAt ? `<p>${escapeHtml(t("deadline", { date: formatDeadline(input.closesAt, locale) }))}</p>` : "",
     `<p>${escapeHtml(t("closing"))}<br>${escapeHtml(t("signature"))}</p>`,
@@ -70,8 +71,8 @@ export function buildSurveyEmail(input: SurveyEmailInput): MailMessage {
     subject: idPart.subject,
     text: `${idPart.text}\n\n${idPart.other}\n\n----------\n\n${enPart.text}`,
     html:
-      `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#1B1B33;max-width:560px">` +
-      `${idPart.html}<p style="font-size:13px;color:#5E6075">${escapeHtml(idPart.other)}</p>` +
-      `<hr style="border:none;border-top:1px solid #D3D6E8;margin:24px 0">${enPart.html}</div>`,
+      `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:${PALETTE.text};max-width:560px">` +
+      `${idPart.html}<p style="font-size:13px;color:${PALETTE.textMuted}">${escapeHtml(idPart.other)}</p>` +
+      `<hr style="border:none;border-top:1px solid ${PALETTE.border};margin:24px 0">${enPart.html}</div>`,
   };
 }

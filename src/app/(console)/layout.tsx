@@ -8,7 +8,7 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
   return (
     <>
       <SiteHeader session={session} showNavigation />
-      <main className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6">{children}</main>
+      <main className="mx-auto w-full max-w-7xl space-y-8 px-4 py-8 sm:px-6">{children}</main>
     </>
   );
 }

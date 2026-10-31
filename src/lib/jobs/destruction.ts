@@ -5,6 +5,7 @@ import { logAudit } from "@/lib/audit";
 import { getDb } from "@/lib/db";
 import { renderDestructionHtml } from "@/lib/retention/html";
 import { deleteObject, putObject } from "@/lib/storage";
+import { PALETTE } from "@/lib/theme";
 import { chromiumPdf } from "./report-render";
 
 // destruction.process (docs/04 bagian 7): menghapus berkas bukti dan rekaman observasi dari penyimpanan objek,
@@ -73,7 +74,7 @@ export async function processDestruction(job: DestructionJob, deps: DestructionD
     },
     { logoSrc: `data:image/png;base64,${logo.toString("base64")}`, fontSrc: font ? `data:font/woff2;base64,${font.toString("base64")}` : null },
   );
-  const pdf = await deps.toPdf(html, `<div style="font-family:sans-serif;font-size:8px;width:100%;padding:0 16mm;color:#5E6075;text-align:right"><span class="pageNumber"></span> / <span class="totalPages"></span></div>`);
+  const pdf = await deps.toPdf(html, `<div style="font-family:sans-serif;font-size:8px;width:100%;padding:0 16mm;color:${PALETTE.textMuted};text-align:right"><span class="pageNumber"></span> / <span class="totalPages"></span></div>`);
   const key = `${record.assessment.organizationId}/${record.assessmentId}/destruction/berita-acara-${record.id}.pdf`;
   await deps.put(key, pdf, "application/pdf");
   await db.$transaction(async (tx) => {

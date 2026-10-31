@@ -17,8 +17,8 @@ export function TrendChart({ points, minParticipation }: { points: { date: strin
           <XAxis dataKey="date" tickFormatter={day} fontSize={12} />
           <YAxis domain={[0, 100]} tickFormatter={percent} fontSize={12} width={48} />
           <Tooltip formatter={(v) => [percent(Number(v)), t("rate")]} labelFormatter={(label) => day(String(label))} />
-          <ReferenceLine y={minParticipation} stroke="var(--warning, #B45309)" strokeDasharray="4 4" />
-          <Line type="monotone" dataKey="rate" stroke="var(--brand-navy, #000B9D)" strokeWidth={2} dot={{ r: 3 }} connectNulls={false} />
+          <ReferenceLine y={minParticipation} stroke="var(--warning)" strokeDasharray="4 4" />
+          <Line type="monotone" dataKey="rate" stroke="var(--brand-navy)" strokeWidth={2} dot={{ r: 3 }} connectNulls={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>

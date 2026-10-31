@@ -4,37 +4,38 @@
 /*
  * Konfigurasi Tailwind CSS v4 NSCAS.
  * Token warna mengikuti docs/05 bagian 1 dan dipakai sebagai kelas utilitas,
- * misalnya bg-brand-navy, text-text-muted, bg-surface-alt, bg-heat-good, bg-level-3.
+ * misalnya bg-brand-navy, bg-brand-navy-deep, text-text-muted, bg-surface-alt, bg-heat-good, bg-level-3.
  * Variabel semantik shadcn/ui (primary, muted, border, dan lainnya) dipetakan ke token yang sama.
  */
 
 :root {
-  /* Identitas visual Nusa Safety */
-  --brand-navy: #000b9d;
-  --brand-yellow: #fdc830;
-  --brand-purple: #5b4bd6;
-  --text: #1b1b33;
-  --text-muted: #5e6075;
+  /* Palet tenang NSCAS (docs/05 bagian 1). Nilai yang sama ada di src/lib/theme.ts untuk laporan PDF dan surel. */
+  --brand-navy: #2b4a6f;
+  --brand-navy-deep: #1e2f45;
+  --highlight: #c29b52;
+  --series-2: #6e9a94;
+  --text: #1f2933;
+  --text-muted: #5c6773;
   --surface: #ffffff;
-  --surface-alt: #f6f7fc;
-  --tint: #ebedfa;
-  --border: #d3d6e8;
-  --success: #1e9e6a;
-  --warning: #b45309;
-  --danger: #c2410c;
+  --surface-alt: #f4f5f7;
+  --tint: #e8edf2;
+  --border: #d9dee4;
+  --success: #2e7458;
+  --warning: #8a5a12;
+  --danger: #a3433a;
 
   /* Peta warna hasil: >= 3,3 baik; 2,8 sampai 3,2 sedang; < 2,8 rendah; sel disembunyikan */
-  --heat-good: #d7f0e3;
-  --heat-mid: #fff1c7;
-  --heat-low: #f8d7d5;
-  --heat-suppressed: #e5e7ef;
+  --heat-good: #ddebe3;
+  --heat-mid: #f2ead4;
+  --heat-low: #f2deda;
+  --heat-suppressed: #e7e9ec;
 
   /* Gradasi lima tingkat kematangan, 1 sampai 5 */
-  --level-1: #b8bbcf;
-  --level-2: #9a9ec4;
-  --level-3: #6f74c2;
-  --level-4: #3b40b8;
-  --level-5: #000b9d;
+  --level-1: #cbd3dc;
+  --level-2: #a9b8c8;
+  --level-3: #8399b1;
+  --level-4: #5a7797;
+  --level-5: #2b4a6f;
 
   /* Variabel semantik shadcn/ui */
   --radius: 0.75rem; /* 12 piksel untuk kartu */
@@ -47,17 +48,17 @@
   --primary: var(--brand-navy);
   --primary-foreground: #ffffff;
   --secondary: var(--tint);
-  --secondary-foreground: var(--brand-navy);
+  --secondary-foreground: var(--brand-navy-deep);
   --muted: var(--surface-alt);
   --muted-foreground: var(--text-muted);
   --accent: var(--tint);
-  --accent-foreground: var(--brand-navy);
+  --accent-foreground: var(--brand-navy-deep);
   --destructive: var(--danger);
   --input: var(--border);
   --ring: var(--brand-navy);
-  --chart-1: var(--brand-navy);
-  --chart-2: var(--brand-purple);
-  --chart-3: var(--brand-yellow);
+  --chart-1: var(--level-4);
+  --chart-2: var(--series-2);
+  --chart-3: var(--highlight);
   --chart-4: var(--level-3);
   --chart-5: var(--level-1);
 }
@@ -66,8 +67,9 @@
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 
   --color-brand-navy: var(--brand-navy);
-  --color-brand-yellow: var(--brand-yellow);
-  --color-brand-purple: var(--brand-purple);
+  --color-brand-navy-deep: var(--brand-navy-deep);
+  --color-highlight: var(--highlight);
+  --color-series-2: var(--series-2);
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
   --color-surface: var(--surface);

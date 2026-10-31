@@ -2,6 +2,7 @@
 // Tidak memuat data apa pun selain nama dan ikon aplikasi.
 
 import { getLocale, getTranslations } from "next-intl/server";
+import { PALETTE } from "@/lib/theme";
 
 export async function GET() {
   const t = await getTranslations("observeApp.manifest");
@@ -15,8 +16,8 @@ export async function GET() {
       scope: "/o",
       display: "standalone",
       orientation: "portrait",
-      background_color: "#f5f6fb",
-      theme_color: "#000b9d",
+      background_color: PALETTE.surfaceAlt,
+      theme_color: PALETTE.navyDeep,
       icons: [
         { src: "/brand/pwa-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
         { src: "/brand/pwa-512.png", sizes: "512x512", type: "image/png", purpose: "any" },

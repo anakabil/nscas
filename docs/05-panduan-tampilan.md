@@ -2,30 +2,31 @@
 
 ## 1. Identitas visual
 
-Mengikuti templat paparan Nusa Safety yang dipakai pada penawaran ke PT Adhi Karya.
+Palet tenang dan tidak jenuh (diperbarui 31 Oktober 2026 atas permintaan pemilik produk). Tujuannya agar konsol nyaman dibaca lama dan angka hasil menjadi pusat perhatian. Warna merek yang jenuh hanya tampil pada logo. Nilai yang sama dipakai di `src/app/globals.css` dan `src/lib/theme.ts` (laporan PDF, surel, manifes aplikasi observasi), dan keselarasannya diperiksa `src/lib/__tests__/theme.test.ts` beserta kontras WCAG AA.
 
 | Token | Nilai | Pemakaian |
 |---|---|---|
-| `--brand-navy` | `#000B9D` | Warna utama, judul, tombol utama, batang grafik |
-| `--brand-yellow` | `#FDC830` | Aksen, sorotan, nilai di bawah sasaran pada grafik |
-| `--brand-purple` | `#5B4BD6` | Warna pendukung, kategori kedua |
-| `--text` | `#1B1B33` | Teks utama |
-| `--text-muted` | `#5E6075` | Teks sekunder |
+| `--brand-navy` | `#2B4A6F` | Biru batu tua: tombol utama, tautan, penanda aktif |
+| `--brand-navy-deep` | `#1E2F45` | Biru batu gelap: bidang kepala halaman tempat logo, judul |
+| `--highlight` | `#C29B52` | Oker lembut: nilai di bawah sasaran pada grafik |
+| `--series-2` | `#6E9A94` | Hijau toska redup: seri kedua grafik, karakteristik kontekstual |
+| `--text` | `#1F2933` | Teks utama |
+| `--text-muted` | `#5C6773` | Teks sekunder |
 | `--surface` | `#FFFFFF` | Latar kartu |
-| `--surface-alt` | `#F6F7FC` | Latar halaman |
-| `--tint` | `#EBEDFA` | Latar sorotan lembut |
-| `--border` | `#D3D6E8` | Garis tepi |
-| `--success` | `#1E9E6A` | Status baik |
-| `--warning` | `#B45309` | Peringatan |
-| `--danger` | `#C2410C` | Galat, kesenjangan besar |
+| `--surface-alt` | `#F4F5F7` | Latar halaman |
+| `--tint` | `#E8EDF2` | Latar sorotan lembut |
+| `--border` | `#D9DEE4` | Garis tepi, lintasan bilah kemajuan |
+| `--success` | `#2E7458` | Status baik |
+| `--warning` | `#8A5A12` | Peringatan |
+| `--danger` | `#A3433A` | Galat, kesenjangan besar, garis sasaran |
 
-Peta warna hasil: hijau muda `#D7F0E3` untuk 3,3 ke atas, kuning muda `#FFF1C7` untuk 2,8 sampai 3,2, merah muda `#F8D7D5` untuk di bawah 2,8. Sel yang disembunyikan karena kurang dari 5 responden diberi arsir abu-abu dengan keterangan.
+Peta warna hasil: hijau lembut `#DDEBE3` untuk 3,3 ke atas, krem `#F2EAD4` untuk 2,8 sampai 3,2, merah muda redup `#F2DEDA` untuk di bawah 2,8. Sel yang disembunyikan karena kurang dari 5 responden diberi arsir abu-abu (`#E7E9EC`) dengan keterangan.
 
-Gradasi lima tingkat kematangan (1 ke 5): `#B8BBCF`, `#9A9EC4`, `#6F74C2`, `#3B40B8`, `#000B9D`.
+Gradasi lima tingkat kematangan (1 ke 5): `#CBD3DC`, `#A9B8C8`, `#8399B1`, `#5A7797`, `#2B4A6F`. Batang grafik yang mencapai sasaran memakai tingkat 4 (`#5A7797`).
 
 Huruf: Plus Jakarta Sans (next/font, dimuat lokal) untuk seluruh antarmuka. Angka besar memakai `font-variant-numeric: tabular-nums`.
 
-Logo: `public/brand/logo-long-color.png` untuk kepala konsol dan laporan, `logo-short-color.png` untuk ikon aplikasi, `logo-short-white.png` untuk latar gelap. Berkas asal tersedia di folder `aset-logo/`.
+Logo: `public/brand/logo-long-color.png` untuk kepala konsol dan laporan. Tulisan "nusa" pada berkas ini berwarna putih, sehingga logo selalu ditempatkan di atas biru batu gelap: langsung di bidang kepala konsol dan panel halaman masuk, atau di kotaknya sendiri di latar terang. `logo-short-color.png` untuk ikon aplikasi, `logo-short-white.png` untuk latar gelap. Berkas asal tersedia di folder `aset-logo/`.
 
 ## 2. Pola komponen
 
@@ -33,7 +34,11 @@ Logo: `public/brand/logo-long-color.png` untuk kepala konsol dan laporan, `logo-
 - Ikon di dalam lingkaran berwarna sebagai penanda bagian, sama seperti paparan.
 - Kartu indeks: angka besar dua desimal, nama tingkat di bawahnya, status kemantapan sebagai lencana.
 - Tabel padat untuk konsol asesor; kartu bertumpuk untuk tampilan telepon genggam.
-- Setiap halaman konsol menampilkan nama organisasi, nama asesmen, dan status asesmen di bagian atas.
+- Setiap halaman konsol menampilkan nama organisasi, nama asesmen, status asesmen, dan tahap ("Tahap 2 dari 4: Pengumpulan data") di bagian atas.
+- Navigasi asesmen dikelompokkan per tahap alur kerja (`src/lib/assessments/workflow.ts`): 1. Persiapan, 2. Pengumpulan data, 3. Penilaian, 4. Hasil dan tindak lanjut, lalu Lainnya. Di layar lebar tampil sebagai kolom samping. Di telepon tampil sebagai menu lipat yang menyebut halaman saat ini. Tahap yang selesai diberi tanda centang, tahap berjalan diberi titik biru.
+- Halaman Ringkasan asesmen memuat penanda kemajuan empat tahap, panduan singkat untuk status saat ini, dan daftar syarat menuju status berikutnya. Setiap syarat yang belum terpenuhi menautkan ke halaman tempat syarat itu dikerjakan.
+- Daftar asesmen yang masih kosong menampilkan panduan "Mulai pengukuran" tiga langkah sesuai peran pengguna: organisasi klien, asesor utama, lalu asesmen.
+- Pilihan yang memberi hak tinggi, misalnya peran pengguna, tidak boleh terisi otomatis. Pengguna wajib memilih sendiri.
 - Hasil yang belum final diberi pita "Draf, belum ditetapkan rapat panel".
 
 ## 3. Halaman survei (prioritas tertinggi)

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { getTranslations } from "next-intl/server";
 import { ServiceWorker } from "./service-worker";
+import { PALETTE } from "@/lib/theme";
 
 // Aplikasi observasi digital (docs/01 M6): dapat dipasang sebagai PWA dengan cakupan /o.
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport: Viewport = { themeColor: "#000b9d", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: PALETTE.navyDeep, width: "device-width", initialScale: 1 };
 
 export default function ObserveLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
+import { PhaseStepper } from "@/components/assessment/phase-stepper";
 import { TransitionPanel, type TransitionView } from "@/components/assessment/transition-panel";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadAssessmentHeader, loadEffectiveParameters } from "@/lib/assessments/load";
 import { gatherTransitionFacts } from "@/lib/assessments/service";
 import { evaluateTransition, nextTransitions } from "@/lib/assessments/state-machine";
+import { CONDITION_PAGE, conditionHref, PHASES, phaseOf, phaseState } from "@/lib/assessments/workflow";
 import { guardPage, requireRole } from "@/lib/auth/guard";
 import { ALL_ROLES } from "@/lib/auth/roles";
 import { getDb } from "@/lib/db";
@@ -48,7 +50,17 @@ export default async function AssessmentOverviewPage({ params }: { params: Promi
     return {
       to: definition.to,
       label: definition.to === "LOCKED" ? t("assessment.overview.lockButton") : t("assessment.overview.moveTo", { status: t(`assessments.statuses.${definition.to}`) }),
-      conditions: evaluation.conditions.map((c) => ({ code: c.code, label: t(`assessment.conditions.${c.code}`), met: c.met })),
+      conditions: evaluation.conditions.map((c) => {
+        const page = CONDITION_PAGE[c.code];
+        const pageLabel = page === "retention" ? t("nav.retention") : t(`assessment.nav.${page}`);
+        return {
+          code: c.code,
+          label: t(`assessment.conditions.${c.code}`),
+          met: c.met,
+          href: conditionHref(access.assessmentId, c.code),
+          linkLabel: t("assessment.overview.openPage", { page: pageLabel }),
+        };
+      }),
       allowed: evaluation.allowed,
       canAct: definition.actorRoles.some((r) => access.roles.includes(r)),
       actorLabel: definition.actorRoles.map((r) => t(`roles.${r}`)).join(", "),
@@ -57,10 +69,48 @@ export default async function AssessmentOverviewPage({ params }: { params: Promi
   });
 
   const sampleTarget = effective.parameters?.samplePlan?.result.surveyTargetTotal;
+  const currentPhase = phaseOf(assessment.status);
+  const phases = PHASES.map((phase) => {
+    const state = phaseState(phase, assessment.status);
+    return {
+      key: phase,
+      label: t(`assessment.phases.${phase}`),
+      state,
+      stateLabel: t(`assessment.phaseStates.${state}`),
+      detail: phase === currentPhase ? t("assessment.overview.currentStatus", { status: t(`assessments.statuses.${assessment.status}`) }) : undefined,
+    };
+  });
 
   return (
     <>
       <Card>
+        <CardHeader>
+          <CardTitle>{t("assessment.overview.progressTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PhaseStepper phases={phases} label={t("assessment.overview.progressTitle")} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("assessment.overview.nextSteps")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <p className="text-sm" data-testid="assessment-guide">
+            {t(`assessment.guide.${assessment.status}`)}
+          </p>
+          {transitions.length === 0 ? <p className="text-muted-foreground text-sm">{t("assessment.overview.noTransition")}</p> : null}
+          {transitions.map((transition) => (
+            <TransitionPanel key={transition.to} assessmentId={access.assessmentId} transition={transition} />
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("assessment.overview.detailsTitle")}</CardTitle>
+        </CardHeader>
         <CardContent>
           <dl className="grid gap-4 sm:grid-cols-[14rem_1fr]">
             <dt className="text-muted-foreground text-sm">{t("assessment.overview.period")}</dt>
@@ -92,18 +142,6 @@ export default async function AssessmentOverviewPage({ params }: { params: Promi
             <dt className="text-muted-foreground text-sm">{t("assessments.unitScope")}</dt>
             <dd>{units === null ? t("assessments.allUnits") : units.map((u) => u.name).join(", ")}</dd>
           </dl>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("assessment.overview.nextSteps")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {transitions.length === 0 ? <p className="text-muted-foreground text-sm">{t("assessment.overview.noTransition")}</p> : null}
-          {transitions.map((transition) => (
-            <TransitionPanel key={transition.to} assessmentId={access.assessmentId} transition={transition} />
-          ))}
         </CardContent>
       </Card>
     </>

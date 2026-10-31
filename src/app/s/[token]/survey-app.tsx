@@ -389,7 +389,7 @@ function Progress({ position, total, remainingMinutes }: { position: number; tot
   const percent = Math.round((position / total) * 100);
   return (
     <div className="space-y-1 px-4 pt-3">
-      <div className="bg-muted h-2 overflow-hidden rounded-full" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-label={t("progress", { percent })}>
+      <div className="bg-border h-2 overflow-hidden rounded-full" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-label={t("progress", { percent })}>
         <div className="bg-brand-navy h-full" style={{ width: `${percent}%` }} />
       </div>
       <p className="text-muted-foreground text-sm" data-testid="survey-remaining">

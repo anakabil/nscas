@@ -5,6 +5,7 @@
 import { createTranslator } from "use-intl/core";
 import en from "../../../messages/en.json";
 import id from "../../../messages/id.json";
+import { LEVEL_COLORS, PALETTE as C } from "@/lib/theme";
 import type { ReportContent, ReportKind } from "./types";
 
 export interface ReportAssets {
@@ -46,7 +47,7 @@ function table(headers: string[], rows: string[][], options: { numeric?: number[
   return `<table class="${options.className ?? ""}"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table>`;
 }
 
-const HEAT: Record<string, string> = { good: "#D7F0E3", mid: "#FFF1C7", low: "#F8D7D5" };
+const HEAT: Record<string, string> = { good: C.heatGood, mid: C.heatMid, low: C.heatLow };
 const heat = (v: number) => (v >= 3.3 - 1e-9 ? HEAT.good : v >= 2.8 - 1e-9 ? HEAT.mid : HEAT.low);
 
 /** Grafik batang SVG indeks per aspek terhadap sasaran (tanpa skrip). */
@@ -59,16 +60,16 @@ function aspectChart(aspects: { code: string; index: number }[], target: number,
   const plotH = h - top - bottom;
   const band = (w - left - 8) / Math.max(1, aspects.length);
   const y = (v: number) => top + plotH - (v / 5) * plotH;
-  const grid = [0, 1, 2, 3, 4, 5].map((v) => `<line x1="${left}" x2="${w - 8}" y1="${y(v)}" y2="${y(v)}" stroke="#D3D6E8" stroke-dasharray="3 3"/><text x="${left - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="#5E6075">${v}</text>`).join("");
+  const grid = [0, 1, 2, 3, 4, 5].map((v) => `<line x1="${left}" x2="${w - 8}" y1="${y(v)}" y2="${y(v)}" stroke="${C.border}" stroke-dasharray="3 3"/><text x="${left - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="${C.textMuted}">${v}</text>`).join("");
   const bars = aspects
     .map((a, i) => {
       const x = left + i * band + band * 0.2;
       const bw = band * 0.6;
-      const color = a.index < target ? "#FDC830" : "#000B9D";
-      return `<rect x="${x}" y="${y(a.index)}" width="${bw}" height="${y(0) - y(a.index)}" fill="${color}" rx="3"/><text x="${x + bw / 2}" y="${y(a.index) - 4}" font-size="11" text-anchor="middle" fill="#1B1B33">${num(a.index)}</text><text x="${x + bw / 2}" y="${h - 10}" font-size="11" text-anchor="middle" fill="#1B1B33">${esc(a.code)}</text>`;
+      const color = a.index < target ? C.highlight : LEVEL_COLORS[3];
+      return `<rect x="${x}" y="${y(a.index)}" width="${bw}" height="${y(0) - y(a.index)}" fill="${color}" rx="3"/><text x="${x + bw / 2}" y="${y(a.index) - 4}" font-size="11" text-anchor="middle" fill="${C.text}">${num(a.index)}</text><text x="${x + bw / 2}" y="${h - 10}" font-size="11" text-anchor="middle" fill="${C.text}">${esc(a.code)}</text>`;
     })
     .join("");
-  const targetLine = `<line x1="${left}" x2="${w - 8}" y1="${y(target)}" y2="${y(target)}" stroke="#C2410C" stroke-dasharray="6 4" stroke-width="1.5"/><text x="${w - 10}" y="${y(target) - 4}" font-size="11" text-anchor="end" fill="#C2410C">${esc(t("chart.target", { level: target }))}</text>`;
+  const targetLine = `<line x1="${left}" x2="${w - 8}" y1="${y(target)}" y2="${y(target)}" stroke="${C.danger}" stroke-dasharray="6 4" stroke-width="1.5"/><text x="${w - 10}" y="${y(target) - 4}" font-size="11" text-anchor="end" fill="${C.danger}">${esc(t("chart.target", { level: target }))}</text>`;
   return `<figure class="chart"><svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${esc(t("chart.title"))}">${grid}${bars}${targetLine}</svg><figcaption>${esc(t("chart.caption"))}</figcaption></figure>`;
 }
 
@@ -79,45 +80,45 @@ export function documentStyles(assets: ReportAssets): string {
 @page{size:A4;margin:20mm 18mm 22mm 18mm;}
 *{box-sizing:border-box;}
 html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#1B1B33;font-size:10.5pt;line-height:1.5;margin:0;background:#fff;}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:${C.text};font-size:10.5pt;line-height:1.5;margin:0;background:#fff;}
 .page{max-width:174mm;margin:0 auto;}
-h1{color:#000B9D;font-size:22pt;line-height:1.2;margin:0 0 6mm;}
-h2{color:#000B9D;font-size:14pt;margin:8mm 0 3mm;break-after:avoid;break-inside:avoid;}
+h1{color:${C.navyDeep};font-size:22pt;line-height:1.2;margin:0 0 6mm;}
+h2{color:${C.navyDeep};font-size:14pt;margin:8mm 0 3mm;break-after:avoid;break-inside:avoid;}
 h3{font-size:11.5pt;margin:5mm 0 2mm;break-after:avoid;}
 p{margin:0 0 3mm;}
-.muted{color:#5E6075;}
+.muted{color:${C.textMuted};}
 .section{margin-top:6mm;}
 .page-start{break-before:page;}
 .cover{min-height:240mm;display:flex;flex-direction:column;justify-content:space-between;}
-.logo-wrap{display:inline-block;background:#000B9D;border-radius:2mm;padding:2.5mm 3.5mm;}
+.logo-wrap{display:inline-block;background:${C.navyDeep};border-radius:2mm;padding:2.5mm 3.5mm;}
 .logo{height:9mm;display:block;}
-.badge{display:inline-block;border-radius:999px;padding:1mm 3mm;font-size:9pt;font-weight:600;background:#EBEDFA;color:#000B9D;}
-.badge.final{background:#D7F0E3;color:#1E9E6A;}
-.badge.draft{background:#FFF1C7;color:#B45309;}
-.standing{border:1.5px solid #000B9D;border-radius:3mm;padding:4mm;background:#EBEDFA;margin:5mm 0;break-inside:avoid;}
-.standing strong{display:block;color:#000B9D;margin-bottom:1mm;}
+.badge{display:inline-block;border-radius:999px;padding:1mm 3mm;font-size:9pt;font-weight:600;background:${C.tint};color:${C.navyDeep};}
+.badge.final{background:${C.heatGood};color:${C.success};}
+.badge.draft{background:${C.heatMid};color:${C.warning};}
+.standing{border:1.5px solid ${C.navy};border-radius:3mm;padding:4mm;background:${C.tint};margin:5mm 0;break-inside:avoid;}
+.standing strong{display:block;color:${C.navyDeep};margin-bottom:1mm;}
 table{width:100%;border-collapse:collapse;margin:2mm 0 4mm;font-size:9pt;}
-th{background:#000B9D;color:#fff;text-align:left;font-weight:600;padding:1.5mm 2mm;}
-td{border-bottom:0.3mm solid #D3D6E8;padding:1.4mm 2mm;vertical-align:top;}
+th{background:${C.navyDeep};color:#fff;text-align:left;font-weight:600;padding:1.5mm 2mm;}
+td{border-bottom:0.3mm solid ${C.border};padding:1.4mm 2mm;vertical-align:top;}
 tr{break-inside:avoid;}
 .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
-.kv td:first-child{color:#5E6075;width:38%;}
+.kv td:first-child{color:${C.textMuted};width:38%;}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:3mm 0 5mm;}
-.card{border:0.3mm solid #D3D6E8;border-radius:3mm;padding:3mm;break-inside:avoid;}
-.card .label{color:#5E6075;font-size:8.5pt;}
-.card .value{font-size:20pt;font-weight:700;color:#000B9D;font-variant-numeric:tabular-nums;}
+.card{border:0.3mm solid ${C.border};border-radius:3mm;padding:3mm;break-inside:avoid;}
+.card .label{color:${C.textMuted};font-size:8.5pt;}
+.card .value{font-size:20pt;font-weight:700;color:${C.navy};font-variant-numeric:tabular-nums;}
 .chart{margin:2mm 0 5mm;break-inside:avoid;}
-.chart figcaption{color:#5E6075;font-size:8.5pt;}
-.flag{display:inline-block;background:#FFF1C7;color:#B45309;border-radius:1mm;padding:0 1.5mm;font-size:8pt;margin:0 1mm 1mm 0;}
-.hidden-cell{background:repeating-linear-gradient(135deg,#E5E7EF 0 6px,#d5d8e4 6px 8px);color:#5E6075;text-align:center;font-size:8pt;}
+.chart figcaption{color:${C.textMuted};font-size:8.5pt;}
+.flag{display:inline-block;background:${C.heatMid};color:${C.warning};border-radius:1mm;padding:0 1.5mm;font-size:8pt;margin:0 1mm 1mm 0;}
+.hidden-cell{background:repeating-linear-gradient(135deg,${C.heatSuppressed} 0 6px,${C.border} 6px 8px);color:${C.textMuted};text-align:center;font-size:8pt;}
 .heat td.cell{text-align:center;font-variant-numeric:tabular-nums;}
-.signature{border-top:0.4mm solid #000B9D;margin-top:8mm;padding-top:3mm;break-inside:avoid;}
-.watermark{position:fixed;top:45%;left:0;right:0;text-align:center;font-size:72pt;font-weight:800;color:rgba(180,83,9,0.08);transform:rotate(-30deg);pointer-events:none;}
+.signature{border-top:0.4mm solid ${C.navy};margin-top:8mm;padding-top:3mm;break-inside:avoid;}
+.watermark{position:fixed;top:45%;left:0;right:0;text-align:center;font-size:72pt;font-weight:800;color:rgba(138,90,18,0.08);transform:rotate(-30deg);pointer-events:none;}
 ul{margin:0 0 3mm 5mm;padding:0;}
 li{margin-bottom:1mm;}
 .toc li{list-style:decimal;margin-left:4mm;}
 code{font-size:8pt;word-break:break-all;}
-@media screen{body{background:#F6F7FC;}.page{background:#fff;padding:16mm 18mm;margin:8mm auto;box-shadow:0 1px 3px rgba(0,0,0,0.08);}}`;
+@media screen{body{background:${C.surfaceAlt};}.page{background:#fff;padding:16mm 18mm;margin:8mm auto;box-shadow:0 1px 3px rgba(0,0,0,0.08);}}`;
 }
 
 function signature(sig: ReportSignature, t: Translate): string {
