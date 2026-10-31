@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 // Ilustrasi rute bertoken: survei, penilaian mandiri, dan kode QR (docs/11 V07 sampai V09 dan V18). Halaman ini
-// dibuka pekerja dengan sinyal lemah, sehingga berkas yang sudah kecil (4 sampai 8 KB) dikirim apa adanya
-// (unoptimized) dan muatan tetap terukur oleh tes anggaran 350 KB. Semuanya hiasan dengan alt kosong.
+// dibuka pekerja dengan sinyal lemah. Berkasnya sudah kecil (4 sampai 8 KB) dan dikirim apa adanya, sehingga
+// elemen img biasa dipakai: komponen next/image menambah sekitar 5 KB JavaScript tanpa manfaat di sini.
+// Semuanya hiasan dengan alt kosong; lebar dan tinggi tetap mencegah tata letak bergeser saat gambar dimuat.
 
 const ART = {
   welcome: { src: "/illustrations/survey-welcome.webp", width: 720, height: 480 },
@@ -17,13 +17,15 @@ export type TokenArtName = keyof typeof ART;
 export function TokenArt({ name, className, priority }: { name: TokenArtName; className?: string; priority?: boolean }) {
   const art = ART[name];
   return (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element -- lihat catatan di atas: muatan halaman survei.
+    <img
       src={art.src}
       alt=""
       width={art.width}
       height={art.height}
-      unoptimized
-      priority={priority}
+      decoding="async"
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : undefined}
       className={cn("pointer-events-none mx-auto h-auto w-full max-w-xs select-none", className)}
       data-illustration={name}
     />

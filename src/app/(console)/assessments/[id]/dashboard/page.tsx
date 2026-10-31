@@ -107,12 +107,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ id: 
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="flex flex-row items-start justify-between gap-3">
-            <div className="space-y-1.5">
+          <CardHeader>
+            <div className="flex items-center justify-between gap-3">
               <CardDescription>{t("cards.level")}</CardDescription>
-              <CardTitle className="text-2xl">{tLevels(String(model.summary.level))}</CardTitle>
+              <LevelBadge level={model.summary.level} size="sm" className="-my-2" />
             </div>
-            <LevelBadge level={model.summary.level} />
+            <CardTitle className="text-2xl">{tLevels(String(model.summary.level))}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-1 text-sm">
             {model.summary.sclLevel ? <p>{t("cards.scl", { level: tLevels(String(model.summary.sclLevel)) })}</p> : null}

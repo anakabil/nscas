@@ -101,7 +101,7 @@ Prioritas 1 paling berdampak dan dikerjakan lebih dulu. Ukuran adalah ukuran ber
 | L01 sampai L05 | Lihat bagian 5 | Ikon tab peramban, ikon aplikasi observasi, halaman masuk, sampul laporan, kepala surel | 1024 x 1024 (1:1) | Putih | Tidak dibatasi | 1 |
 | S01 sampai S41 | Lihat bagian 6 | Menu konsol, menu asesmen, akses cepat, dan penanda status | 1024 x 1024 (1:1) | Putih | Tidak dibatasi | 2 |
 
-Batas berkas survei (V07 sampai V09) ketat karena halaman survei dibuka pekerja dengan sinyal lemah. Muatan halaman survei saat ini 178 KB dari batas 350 KB yang diuji otomatis (docs/07).
+Batas berkas survei (V07 sampai V09) ketat karena halaman survei dibuka pekerja dengan sinyal lemah. Muatan halaman survei 178 KB sebelum aset dipasang dan 187 KB sesudahnya, dari batas 350 KB yang diuji otomatis (docs/07).
 
 ### 4.2 Prompt per aset
 
@@ -448,6 +448,7 @@ Paket `NSCAS_ALL_Assets_72_plus_Batch07.zip` berisi 72 aset inti (26 ilustrasi, 
 | Keseragaman teknis simbol | 41 simbol memakai viewBox 24 x 24, garis 2, dan `currentColor` |
 | Daftar periksa K3 bagian 3 | Terpenuhi: helm dengan tali dagu, rompi bergaris pemantul, sepatu keselamatan, sarung tangan, pekerja perempuan berhijab, tidak ada pekerjaan di ketinggian tanpa pengaman, tanpa teks, tanpa bentuk tangga atau segel |
 | Ukuran berkas | Semua di bawah batas tabel 4.1; aset survei 4 sampai 8 KB |
+| Muatan halaman survei | 187 KB setelah pemasangan (sebelumnya 178 KB; batas 350 KB). Ilustrasi survei dan halaman keadaan memakai elemen img biasa, dan halaman tidak ditemukan tidak memakai next/link, karena keduanya menarik sekitar 22 KB JavaScript konsol ke setiap halaman survei |
 | Catatan mutu (bukan pelanggaran) | Pose duduk pada V04 dan V07 agak kaku; S13 Unit agak mirip tanda jeda; S26 Rapat panel agak mirip serangga pada 16 piksel |
 
 ### 8.3 Perbaikan sebelum pemasangan
