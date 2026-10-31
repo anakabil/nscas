@@ -64,6 +64,19 @@ describe("penyaji HTML laporan", () => {
     expect(f).toContain("Rina, Lead Assessor, 11 Februari 2027, 09.30 WIB");
   });
 
+  it("sampul memakai pita gelap dan kartu indeks memakai lencana tingkat bila asetnya tersedia", () => {
+    const withArt = { ...assets, coverSrc: "/illustrations/report-cover.jpg", levelBadgeSrcs: [1, 2, 3, 4, 5].map((l) => `/illustrations/level-${l}.png`) };
+    const full = renderReportHtml(content, "FULL", draft, withArt);
+    expect(full).toContain('class="cover-band"><img class="cover-img" src="/illustrations/report-cover.jpg" alt="">');
+    expect(full).toMatch(/class="level-badge" aria-hidden="true"><img src="\/illustrations\/level-\d\.png" alt=""><span>\d<\/span>/);
+    expect(renderReportHtml(content, "EXECUTIVE_SUMMARY", draft, withArt)).toContain('class="level-badge"');
+    // Tanpa aset: sampul kembali ke kotak logo, dan nama tingkat tetap tertulis tanpa lencana.
+    const plain = renderReportHtml(content, "FULL", draft, assets);
+    expect(plain).not.toContain('class="cover-band"');
+    expect(plain).not.toContain('class="level-badge"');
+    expect(plain).toContain('class="logo-wrap"');
+  });
+
   it("persepsi yang disembunyikan tidak menampilkan angka", () => {
     const html = renderReportHtml(content, "FULL", draft, assets);
     expect(html).toMatch(/K1\.1<\/strong>.*?<td class="num"><span class="muted">Disembunyikan<\/span><\/td>/s);

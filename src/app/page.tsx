@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
-import { Activity, LogIn } from "lucide-react";
+import { UiActivity, UiLogin } from "@/components/icons/nscas-icons";
+import { NscasMark } from "@/components/nscas-mark";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 
@@ -11,20 +12,23 @@ export default async function HomePage() {
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-8 px-6 py-16">
       <BrandLogo alt={t("app.logoAlt")} priority className="h-14 self-start" />
       <div className="space-y-3">
-        <h1 className="text-brand-navy text-3xl font-bold">{t("app.name")}</h1>
+        <h1 className="text-brand-navy-deep flex items-center gap-3 text-3xl font-extrabold tracking-tight">
+          <NscasMark className="w-11" />
+          {t("app.name")}
+        </h1>
         <p className="text-lg font-medium">{t("app.tagline")}</p>
         <p className="text-muted-foreground">{t("home.intro")}</p>
       </div>
       <div className="flex flex-wrap gap-3">
         <Button asChild>
           <Link href="/login">
-            <LogIn aria-hidden />
+            <UiLogin aria-hidden />
             {t("home.login")}
           </Link>
         </Button>
         <Button asChild variant="outline">
           <Link href="/health">
-            <Activity aria-hidden />
+            <UiActivity aria-hidden />
             {t("home.healthLink")}
           </Link>
         </Button>

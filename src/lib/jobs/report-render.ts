@@ -10,6 +10,7 @@ import { REPORT_FILE_NAMES, renderReportHtml, type ReportAssets } from "@/lib/re
 import type { ReportContent } from "@/lib/report/types";
 import { PALETTE } from "@/lib/theme";
 import { putObject } from "@/lib/storage";
+import { REPORT_ASSET_FILES } from "@/lib/report/assets";
 
 // Render PDF laporan (docs/01 M11) di worker: HTML laporan disajikan ke Chromium headless (Playwright) dan
 // dicetak A4 dengan nomor halaman, lalu disimpan ke penyimpanan objek. Aset disematkan sebagai data URI sehingga
@@ -26,12 +27,23 @@ export interface RenderDeps {
 }
 
 async function inlineAssets(): Promise<ReportAssets> {
-  const root = process.cwd();
-  const [logo, font] = await Promise.all([
-    readFile(join(root, "public/brand/logo-long-color.png")),
-    readFile(join(root, "public/fonts/PlusJakartaSans-latin-wght-normal.woff2")).catch(() => null),
+  const root = join(process.cwd(), "public");
+  const read = (file: string) => readFile(join(root, file));
+  // Huruf, sampul, dan lencana bersifat pelengkap: bila berkasnya tidak ada, laporan tetap dibuat tanpa itu.
+  const optional = (file: string) => read(file).catch(() => null);
+  const [logo, font, cover, ...levels] = await Promise.all([
+    read(REPORT_ASSET_FILES.logo),
+    optional(REPORT_ASSET_FILES.font),
+    optional(REPORT_ASSET_FILES.cover),
+    ...REPORT_ASSET_FILES.levelBadges.map(optional),
   ]);
-  return { logoSrc: `data:image/png;base64,${logo.toString("base64")}`, fontSrc: font ? `data:font/woff2;base64,${font.toString("base64")}` : null };
+  const dataUri = (type: string, body: Buffer) => `data:${type};base64,${body.toString("base64")}`;
+  return {
+    logoSrc: dataUri("image/png", logo),
+    fontSrc: font ? dataUri("font/woff2", font) : null,
+    coverSrc: cover ? dataUri("image/jpeg", cover) : null,
+    levelBadgeSrcs: levels.every((level) => level !== null) ? levels.map((level) => dataUri("image/png", level)) : null,
+  };
 }
 
 /** Chromium dari PDF_CHROMIUM_EXECUTABLE, atau peramban Playwright yang terpasang (PLAYWRIGHT_BROWSERS_PATH). */

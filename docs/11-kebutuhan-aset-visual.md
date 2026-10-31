@@ -434,6 +434,67 @@ Simbol-simbol ini sudah menjadi kebiasaan umum di semua aplikasi. Bentuknya cuku
 3. Kirimkan berkasnya melalui percakapan ini atau satu folder bersama. Ilustrasi dan gambar saya periksa dengan daftar periksa K3, saya ubah ke WebP, saya kompres sesuai batas berkas, lalu saya simpan di `public/illustrations/`. Simbol saya ubah ke SVG dengan warna `currentColor` dan saya simpan di `public/icons/nav/`. Logo saya simpan di `public/brand/`. Setelah itu semuanya saya pasang di letak masing-masing.
 4. Ilustrasi diperlakukan sebagai hiasan: bila berkas gagal dimuat, halaman tetap utuh karena seluruh informasi ada di teks.
 
+## 8. Status pemasangan (31 Oktober 2026)
+
+### 8.1 Paket yang diterima
+
+Paket `NSCAS_ALL_Assets_72_plus_Batch07.zip` berisi 72 aset inti (26 ilustrasi, 5 berkas logo, 41 simbol) dan 10 berkas pelengkap responsif (Batch 7). Menurut catatan asal-usul paket, gambar disusun sebagai jalur vektor SVG dengan Python lalu diekspor ke PNG, WebP, dan JPEG. Arah visualnya dijajaki lebih dulu dengan generator gambar OpenAI. Gambar ini bukan foto. Catatan tersebut memenuhi butir 2 bagian 7.
+
+### 8.2 Hasil pemeriksaan
+
+| Pemeriksaan | Hasil |
+|---|---|
+| Keamanan SVG (skrip, atribut peristiwa, tautan keluar, entitas, `foreignObject`) | Bersih pada 73 berkas SVG |
+| Keseragaman teknis simbol | 41 simbol memakai viewBox 24 x 24, garis 2, dan `currentColor` |
+| Daftar periksa K3 bagian 3 | Terpenuhi: helm dengan tali dagu, rompi bergaris pemantul, sepatu keselamatan, sarung tangan, pekerja perempuan berhijab, tidak ada pekerjaan di ketinggian tanpa pengaman, tanpa teks, tanpa bentuk tangga atau segel |
+| Ukuran berkas | Semua di bawah batas tabel 4.1; aset survei 4 sampai 8 KB |
+| Catatan mutu (bukan pelanggaran) | Pose duduk pada V04 dan V07 agak kaku; S13 Unit agak mirip tanda jeda; S26 Rapat panel agak mirip serangga pada 16 piksel |
+
+### 8.3 Perbaikan sebelum pemasangan
+
+| Simbol | Masalah pada ukuran sebenarnya | Perbaikan |
+|---|---|---|
+| S15 Parameter | Kenop berisi putih menjadi gumpalan di latar gelap | Lintasan diputus di sekitar kenop, tanpa isian |
+| S17 Tim asesor | Lencana centang berisi putih | Isian dihapus, garis bahu dipendekkan agar tidak menembus lencana |
+| S16 Kalkulator sampel | Sepuluh titik berjari-jari 0,6 tidak terbaca pada 16 piksel | Enam titik lebih besar: tiga terisi (sampel), tiga kosong (populasi) |
+
+### 8.4 Letak pemasangan
+
+| Aset | Letak |
+|---|---|
+| S01 sampai S41 | Seluruh simbol antarmuka, menggantikan Lucide (`public/icons/nav/`, `npm run icons`) |
+| Logo NSCAS | Kepala konsol, halaman masuk, beranda (komponen SVG dan teks HTML) |
+| L04 favicon, Batch 7 `favicon.ico` dan `apple-touch-icon.png` | `src/app/icon.svg`, `favicon.ico`, `apple-icon.png` |
+| Batch 7 ikon aplikasi 192 dan 512 | Manifest aplikasi observasi `/o`, termasuk ikon bertopeng (maskable) |
+| V01 | Panel kiri halaman masuk |
+| V02 | Panduan "Mulai pengukuran" di daftar asesmen |
+| V03 sampai V06 | Kartu "Langkah berikutnya" di Ringkasan, sesuai tahap yang berjalan |
+| V07, V09, V08 | Layar pembuka, persetujuan, dan terima kasih survei |
+| V10 | Pita sampul laporan PDF, dengan logo Nusa Safety di atasnya |
+| V11 | Gambar pratinjau tautan (Open Graph) |
+| V12 sampai V16 | Keadaan kosong: responden, bukti, observasi, laporan, rencana aksi |
+| V17, V19 | Halaman akses ditolak dan halaman tidak ditemukan (baru) |
+| V18 | Tautan survei, penilaian mandiri, atau kode QR yang tidak berlaku. Tautan yang sudah dipakai memakai V08 karena survei sudah diisi |
+| V20 sampai V24 | Kartu tingkat kematangan di dasbor, serta kartu indeks laporan lengkap dan ringkasan eksekutif |
+| V25 | Kepala surel undangan, pengingat, dan pengingat rencana aksi. Disisipkan sebagai gambar inline (CID), bukan dimuat dari server, agar pembukaan surel tidak tercatat di server |
+| V26 | Pola latar kepala konsol |
+
+### 8.5 Berkas yang tidak dipasang
+
+| Berkas | Alasan |
+|---|---|
+| `nscas-lockup.svg` | Tulisan berupa elemen teks yang tidak dapat memakai huruf halaman bila dimuat sebagai gambar; diganti komponen `NscasLockup` |
+| `nscas-mark-color.png`, `nscas-mark-mono*.svg`, `nscas-app-icon.png` | Sudah terwakili oleh komponen SVG dan ikon aplikasi Batch 7 |
+| `concept-alternatives/`, `sources/`, `previews/` | Bahan kerja, bukan aset tayang |
+| Batch 7 D01 sampai D05 | Tata letak yang ada memakai V01, V10, V11, dan V25; versi responsif belum diperlukan |
+| Batch 7 `favicon-16.png`, `favicon-32.png` | Sudah dicakup `icon.svg` dan `favicon.ico` |
+
+### 8.6 Keputusan yang masih menunggu
+
+1. Persetujuan akhir logo konsep A oleh pemilik merek. Logo sudah tayang di aplikasi dan dapat diganti dengan mengubah satu komponen dan tiga berkas ikon.
+2. Keseragaman titik merah: di logo berwarna titik ada di ujung busur kelima, di favicon di tengah busur kelima, dan ikon aplikasi tanpa titik.
+3. Pendaftaran merek "NSCAS" ke Direktorat Jenderal Kekayaan Intelektual. Repositori kode bersifat publik, sehingga logo sudah dapat dilihat umum.
+
 ## Rujukan
 
 Kementerian Ketenagakerjaan Republik Indonesia. (2016). *Peraturan Menteri Ketenagakerjaan Nomor 9 Tahun 2016 tentang Keselamatan dan Kesehatan Kerja dalam Pekerjaan pada Ketinggian*.

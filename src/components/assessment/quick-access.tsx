@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { UiArrowRight } from "@/components/icons/nscas-icons";
 import Link from "next/link";
 import type { NavPage } from "@/lib/assessments/nav";
 import { PAGE_ICONS } from "./nav-icons";
@@ -29,7 +29,7 @@ export function QuickAccess({ tiles, label }: { tiles: QuickAccessTile[]; label:
                 <span className="min-w-0 flex-1 space-y-0.5">
                   <span className="flex items-center gap-1 text-sm font-semibold">
                     {tile.label}
-                    <ArrowRight aria-hidden className="text-muted-foreground size-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
+                    <UiArrowRight aria-hidden className="text-muted-foreground size-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
                   </span>
                   <span className="text-muted-foreground block text-xs leading-relaxed">{tile.hint}</span>
                 </span>

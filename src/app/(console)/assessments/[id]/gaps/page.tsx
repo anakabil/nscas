@@ -11,6 +11,7 @@ import { ACTION_PLAN_ROLES } from "@/lib/auth/roles";
 import { getAppTimeZone } from "@/lib/env";
 import { formatDate, formatDateTime, formatNumber } from "@/lib/format";
 import { ActionForm, EMPTY_ACTION, GapAnalysisForm, GenerateButton, ProgressForm, PublishButton, VerifyForm } from "./plan-forms";
+import { EmptyState } from "@/components/illustration";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +62,11 @@ export default async function GapsPage({ params }: { params: Promise<{ id: strin
       ) : null}
       {!open ? <Alert variant="info">{t("closed")}</Alert> : null}
       {can.generate ? <GenerateButton assessmentId={access.assessmentId} regenerate={plan.gaps.length > 0} /> : null}
-      {plan.gaps.length === 0 ? <p className="text-muted-foreground">{t("empty")}</p> : null}
+      {plan.gaps.length === 0 ? (
+        <EmptyState illustration="empty-action-plan">
+          <p>{t("empty")}</p>
+        </EmptyState>
+      ) : null}
 
       {plan.gaps.map((g) => (
         <Card key={g.id} data-testid="gap-item" data-code={g.characteristic.code}>

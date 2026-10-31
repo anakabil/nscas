@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { appUrl } from "@/lib/app-url";
 import { plusJakartaSans } from "./fonts";
 import "./globals.css";
 
@@ -10,6 +11,17 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { default: t("name"), template: `%s | ${t("name")}` },
     description: t("tagline"),
+    metadataBase: new URL(appUrl()),
+    // Gambar pratinjau saat tautan dibagikan, misalnya undangan survei di WhatsApp (docs/11 V11). Gambar tidak
+    // memuat data asesmen apa pun.
+    openGraph: {
+      type: "website",
+      siteName: t("name"),
+      title: t("name"),
+      description: t("tagline"),
+      images: [{ url: "/brand/og-image.png", width: 1200, height: 630, alt: t("ogImageAlt") }],
+    },
+    twitter: { card: "summary_large_image" },
   };
 }
 

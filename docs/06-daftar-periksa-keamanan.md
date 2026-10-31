@@ -68,6 +68,8 @@ Perintah pemeriksaan yang dijalankan: `npm run lint`, `npm run typecheck`, `npm 
 | 5.4 | Rute survei 60 per menit per hash IP | Terpenuhi sebagian | `src/middleware.ts`, dapat diatur dengan `SURVEY_RATE_LIMIT_PER_MINUTE` | Lihat R3 dan R4. |
 | 5.5 | Unggah 30 per menit per pengguna | Terpenuhi sebagian | `uploadRateLimiter` di layanan bukti dan observasi | Lihat R4. |
 | 5.6 | Validasi jenis berkas dengan magic bytes | Terpenuhi | `src/lib/files/content-type.ts`, `inspectObject` setelah unggah; tes `tests/integration/evidence.test.ts` | |
+| 5.7 | Simbol SVG dari luar hanya berisi gambar dasar | Terpenuhi | `src/lib/icons/svg-to-jsx.ts` menolak skrip, atribut peristiwa, tautan, teks, dan warna selain `currentColor`; tes `src/lib/icons/__tests__/svg-to-jsx.test.ts` | Berlaku untuk `public/icons/nav/*.svg` yang dipasang sebagai komponen. |
+| 5.8 | Membuka surel tidak memanggil server | Terpenuhi | Kepala surel disisipkan sebagai gambar inline (CID) oleh `src/lib/mail.ts`; tes `src/lib/jobs/__tests__/email-templates.test.ts` | Tidak ada gambar jarak jauh di surel, sehingga waktu dan alamat IP pembukaan undangan tidak tercatat. |
 
 ## 6. Jejak audit
 

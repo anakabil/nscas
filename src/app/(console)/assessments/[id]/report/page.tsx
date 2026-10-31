@@ -12,6 +12,7 @@ import { getAppTimeZone } from "@/lib/env";
 import { formatDateTime } from "@/lib/format";
 import { REPORT_STATUSES, listReports } from "@/lib/report/service";
 import { CreateVersionButton, FinalizeForm } from "./report-forms";
+import { EmptyState } from "@/components/illustration";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,11 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
           <CardTitle>{t("versions")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {versions.length === 0 ? <p className="text-muted-foreground">{t("none")}</p> : null}
+          {versions.length === 0 ? (
+            <EmptyState illustration="empty-report">
+              <p>{t("none")}</p>
+            </EmptyState>
+          ) : null}
           {versions.map((v) => (
             <section key={v.version} className="border-border space-y-3 rounded-lg border p-4" data-testid="report-version" data-version={v.version} data-status={v.status}>
               <div className="flex flex-wrap items-center gap-2">

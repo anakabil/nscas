@@ -7,6 +7,7 @@ import { loadSelfAssessmentForm, resolveSelfAssessmentToken } from "@/lib/self-a
 import en from "../../../../messages/en.json";
 import id from "../../../../messages/id.json";
 import { SelfAssessmentForm } from "./self-assessment-form";
+import { TokenArt } from "@/components/token-art";
 
 // Penilaian mandiri manajemen (docs/01 M4). Hak akses adalah token di tautan; pengisi tidak memiliki akun.
 
@@ -28,6 +29,7 @@ export default async function SelfAssessmentPage({ params }: { params: Promise<{
   if (access.state === "INVALID" || access.state === "CLOSED") {
     return (
       <main className="mx-auto flex min-h-dvh max-w-2xl flex-col gap-4 px-4 py-10" data-testid="sa-status" data-state={access.state}>
+        <TokenArt name="unavailable" className="max-w-sm" />
         <h1 className="text-brand-navy text-2xl font-bold">{t(`status.${access.state}.title`)}</h1>
         <p>{t(`status.${access.state}.body`)}</p>
       </main>

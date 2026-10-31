@@ -10,6 +10,7 @@ import type { MailMessage } from "@/lib/mail";
 import { PALETTE } from "@/lib/theme";
 import { enqueue, QUEUES } from "./boss";
 import { defaultMailDeps, type DeliveryOutcome, type MailDeps } from "./invitations";
+import { emailHeaderHtml } from "@/lib/email-header";
 
 // Pengingat tenggat tindakan rencana aksi (docs/01 M10). actions.reminders.send berjalan harian pukul 07.00 WIB
 // dan mengantre satu pekerjaan per tindakan terbuka yang tenggatnya tinggal 7 hari atau sudah lewat, paling sering
@@ -83,7 +84,9 @@ export function buildActionReminderEmail(input: ActionReminderEmailInput): MailM
     to: input.to,
     subject: idPart.subject,
     text: `${idPart.text}\n\n---\n\n${enPart.text}`,
-    html: `${idPart.html}<hr style="border:none;border-top:1px solid ${PALETTE.border};margin:24px 0">${enPart.html}`,
+    html:
+      `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:${PALETTE.text};max-width:560px">` +
+      `${emailHeaderHtml()}${idPart.html}<hr style="border:none;border-top:1px solid ${PALETTE.border};margin:24px 0">${enPart.html}</div>`,
   };
 }
 

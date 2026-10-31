@@ -22,6 +22,12 @@ describe("surel undangan dan pengingat", () => {
     expect(mail.html).toContain(`href="${input.link}"`);
   });
 
+  it("kepala surel berupa gambar inline (cid), tidak dimuat dari server", () => {
+    const mail = buildSurveyEmail({ kind: "invitation", ...input });
+    expect(mail.html).toContain('<img src="cid:header@nscas" alt=""');
+    expect(mail.html).not.toMatch(/<img src="https?:/);
+  });
+
   it("meloloskan HTML dari nama dan organisasi", () => {
     const mail = buildSurveyEmail({ kind: "invitation", ...input });
     expect(mail.html).toContain("Siti &lt;Aminah&gt;");

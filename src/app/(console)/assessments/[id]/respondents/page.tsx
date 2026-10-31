@@ -15,6 +15,7 @@ import { getAppTimeZone } from "@/lib/env";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { listRoster } from "@/lib/respondents/service";
 import { DistributionPanel, ImportPanel, RowActions, SurveyWindowForm } from "./respondent-forms";
+import { EmptyState } from "@/components/illustration";
 
 export const dynamic = "force-dynamic";
 
@@ -157,7 +158,9 @@ export default async function RespondentsPage({
             {t("table.total", { count: formatNumber(roster.total) })}
           </p>
           {roster.rows.length === 0 ? (
-            <p className="text-muted-foreground">{t("table.empty")}</p>
+            <EmptyState illustration="empty-respondents">
+              <p>{t("table.empty")}</p>
+            </EmptyState>
           ) : (
             <Table className="whitespace-nowrap">
               <TableHead>

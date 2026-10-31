@@ -71,7 +71,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Semua rute kecuali aset statis Next.js dan berkas di public/.
-    { source: "/((?!_next/static|_next/image|brand/|icon.png|favicon.ico).*)" },
+    // Semua rute kecuali aset statis Next.js, berkas di public/, dan ikon aplikasi (src/app/icon.svg, apple-icon.png).
+    { source: "/((?!_next/static|_next/image|brand/|illustrations/|icons/|fonts/|icon.svg|apple-icon.png|favicon.ico).*)" },
   ],
 };

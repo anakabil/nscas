@@ -5,6 +5,7 @@ import en from "../../../messages/en.json";
 import id from "../../../messages/id.json";
 import type { MailMessage } from "@/lib/mail";
 import { PALETTE } from "@/lib/theme";
+import { emailHeaderHtml } from "@/lib/email-header";
 
 export type SurveyEmailKind = "invitation" | "reminder" | "continue";
 
@@ -72,6 +73,7 @@ export function buildSurveyEmail(input: SurveyEmailInput): MailMessage {
     text: `${idPart.text}\n\n${idPart.other}\n\n----------\n\n${enPart.text}`,
     html:
       `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:${PALETTE.text};max-width:560px">` +
+      emailHeaderHtml() +
       `${idPart.html}<p style="font-size:13px;color:${PALETTE.textMuted}">${escapeHtml(idPart.other)}</p>` +
       `<hr style="border:none;border-top:1px solid ${PALETTE.border};margin:24px 0">${enPart.html}</div>`,
   };

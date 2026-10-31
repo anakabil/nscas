@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, Plus } from "lucide-react";
+import { UiArrowRight, UiCheckCircle, UiPlus } from "@/components/icons/nscas-icons";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -13,6 +13,7 @@ import { getDb } from "@/lib/db";
 import { getAppTimeZone } from "@/lib/env";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { Illustration } from "@/components/illustration";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +65,7 @@ export default async function AssessmentsPage() {
         {canCreate && !showStart ? (
           <Button asChild>
             <Link href="/assessments/new">
-              <Plus aria-hidden />
+              <UiPlus aria-hidden />
               {tAssessment("newButton")}
             </Link>
           </Button>
@@ -72,9 +73,12 @@ export default async function AssessmentsPage() {
       </div>
       {showStart ? (
         <Card data-testid="start-guide">
-          <CardHeader>
-            <CardTitle>{t("start.title")}</CardTitle>
-            <CardDescription>{t("start.intro")}</CardDescription>
+          <CardHeader className="flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1.5">
+              <CardTitle>{t("start.title")}</CardTitle>
+              <CardDescription>{t("start.intro")}</CardDescription>
+            </div>
+            <Illustration name="empty-start" priority className="w-40 shrink-0 self-center sm:w-52" />
           </CardHeader>
           <CardContent>
             <ol className="space-y-4">
@@ -87,7 +91,7 @@ export default async function AssessmentsPage() {
                       step.done ? "border-success bg-success text-white" : "border-brand-navy text-brand-navy",
                     )}
                   >
-                    {step.done ? <CheckCircle2 className="size-4" /> : index + 1}
+                    {step.done ? <UiCheckCircle className="size-4" /> : index + 1}
                   </span>
                   <div className="min-w-0 flex-1 space-y-1.5">
                     <p className="font-semibold">
@@ -103,7 +107,7 @@ export default async function AssessmentsPage() {
                       <Button asChild size="sm" variant={step.done ? "outline" : "default"}>
                         <Link href={step.href}>
                           {t(`start.${step.key}.action`)}
-                          <ArrowRight aria-hidden />
+                          <UiArrowRight aria-hidden />
                         </Link>
                       </Button>
                     ) : step.hint ? (

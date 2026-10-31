@@ -6,6 +6,7 @@ import { loadSurveyContent, resolveSurveyToken } from "@/lib/survey/service";
 import en from "../../../../messages/en.json";
 import id from "../../../../messages/id.json";
 import { SurveyApp } from "./survey-app";
+import { TokenArt } from "@/components/token-art";
 
 // Halaman survei bertoken (docs/01 M3). Tidak memeriksa sesi: hak akses adalah token itu sendiri. Halaman ini
 // tidak membaca alamat IP dan tidak mencatat apa pun saat dibuka; penandaan "pernah dibuka" dilakukan dari
@@ -34,6 +35,8 @@ export default async function SurveyPage({ params }: { params: Promise<{ token: 
   if (status.state !== "READY") {
     return (
       <main className="survey mx-auto flex min-h-dvh max-w-xl flex-col gap-4 px-4 py-10" data-testid="survey-status" data-state={status.state}>
+        {/* Tautan yang sudah dipakai berarti survei sudah diisi: ilustrasi terima kasih, bukan tautan rusak. */}
+        <TokenArt name={status.state === "USED" ? "thanks" : "unavailable"} className="max-w-sm" />
         <h1 className="text-brand-navy text-2xl leading-tight font-bold">{t(`status.${status.state}.title`)}</h1>
         <p>{t(`status.${status.state}.body`)}</p>
         {status.state === "NOT_OPEN" && status.opensAt ? <p>{t("status.NOT_OPEN.opensAt", { date: formatDateTime(status.opensAt) })}</p> : null}

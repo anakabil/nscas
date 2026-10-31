@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
+import { NscasLockup } from "@/components/nscas-mark";
 import { getTranslations } from "next-intl/server";
 import type { SessionContext } from "@/lib/auth/session";
 import { ConsoleMenu, ConsoleNav, type ConsoleNavItem } from "./console-nav";
@@ -20,10 +21,13 @@ export async function SiteHeader({ session, showNavigation }: { session: Session
   const signedInAs = t("nav.signedInAs", { name: session.user.name });
 
   return (
-    <header className="bg-brand-navy-deep text-white">
+    <header className="bg-brand-pattern text-white">
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3 sm:px-6">
-        <Link href={showNavigation ? "/assessments" : "/account"} className="shrink-0">
-          <BrandLogo alt={t("app.logoAlt")} framed={false} className="h-8" />
+        {/* Identitas: logo aplikasi NSCAS, lalu logo perusahaan pemiliknya di layar lebar. */}
+        <Link href={showNavigation ? "/assessments" : "/account"} className="flex shrink-0 items-center gap-4">
+          <NscasLockup name={t("app.name")} tone="white" size="sm" />
+          <span aria-hidden className="hidden h-6 w-px bg-white/20 xl:block" />
+          <BrandLogo alt={t("app.logoAlt")} framed={false} className="hidden h-6 xl:inline-flex" />
         </Link>
         {showNavigation ? <ConsoleNav items={items} label={t("nav.mainNavigation")} /> : null}
         <div className={showNavigation ? "ml-auto hidden items-center gap-3 md:flex" : "ml-auto flex items-center gap-3"}>

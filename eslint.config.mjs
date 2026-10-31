@@ -12,6 +12,15 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    // Simbol antarmuka memakai set NSCAS (public/icons/nav, docs/11 bagian 6) agar bentuk dan ketebalannya seragam.
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        { paths: [{ name: "lucide-react", message: "Pakai simbol NSCAS dari @/components/icons/nscas-icons." }] },
+      ],
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",

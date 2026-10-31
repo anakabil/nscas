@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Menu } from "lucide-react";
+import { NavMenu, UiChevronDown } from "@/components/icons/nscas-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CONSOLE_ICONS, type ConsoleSection } from "@/components/assessment/nav-icons";
@@ -54,9 +54,9 @@ export function ConsoleMenu({ items, label, menuLabel, signedInAs, logout }: { i
   return (
     <details className="group relative ml-auto md:hidden">
       <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/30 px-3 py-2 text-sm font-semibold text-white [&::-webkit-details-marker]:hidden">
-        <Menu aria-hidden className="size-4" strokeWidth={1.75} />
+        <NavMenu aria-hidden className="size-4" strokeWidth={1.75} />
         {menuLabel}
-        <ChevronDown aria-hidden className="size-4 transition-transform group-open:rotate-180" />
+        <UiChevronDown aria-hidden className="size-4 transition-transform group-open:rotate-180" />
       </summary>
       <div className="bg-card text-card-foreground border-border absolute right-0 z-20 mt-2 w-64 space-y-1 rounded-xl border p-2 shadow-lg">
         <nav aria-label={label} className="flex flex-col">

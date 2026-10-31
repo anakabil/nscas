@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import { UiArrowRight, UiCheckCircle, UiCircle } from "@/components/icons/nscas-icons";
 import Link from "next/link";
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
@@ -31,16 +31,16 @@ export function TransitionPanel({ assessmentId, transition }: { assessmentId: st
           {transition.conditions.map((c) => (
             <li key={c.code} className="flex items-start gap-2 text-sm" data-met={c.met}>
               {c.met ? (
-                <CheckCircle2 aria-hidden className="text-success mt-0.5 size-4 shrink-0" />
+                <UiCheckCircle aria-hidden className="text-success mt-0.5 size-4 shrink-0" />
               ) : (
-                <Circle aria-hidden className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                <UiCircle aria-hidden className="text-muted-foreground mt-0.5 size-4 shrink-0" />
               )}
               <span className="space-x-2">
                 <span className={c.met ? "" : "text-muted-foreground"}>{c.label}</span>
                 {!c.met && c.href ? (
                   <Link href={c.href} className="text-brand-navy inline-flex items-center gap-1 font-semibold whitespace-nowrap hover:underline">
                     {c.linkLabel}
-                    <ArrowRight aria-hidden className="size-3.5" />
+                    <UiArrowRight aria-hidden className="size-3.5" />
                   </Link>
                 ) : null}
               </span>

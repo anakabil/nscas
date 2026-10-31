@@ -12,6 +12,10 @@ export interface ReportAssets {
   logoSrc: string;
   /** Plus Jakarta Sans; null memakai huruf sistem. */
   fontSrc: string | null;
+  /** Pita sampul (docs/11 V10, latar gelap); bila kosong, sampul hanya memuat logo di kotak gelapnya. */
+  coverSrc?: string | null;
+  /** Lencana tingkat 1 sampai 5 (docs/11 V20 sampai V24), urut dari tingkat 1; bila kosong, lencana tidak ditampilkan. */
+  levelBadgeSrcs?: readonly string[] | null;
 }
 
 export interface ReportSignature {
@@ -92,6 +96,13 @@ p{margin:0 0 3mm;}
 .cover{min-height:240mm;display:flex;flex-direction:column;justify-content:space-between;}
 .logo-wrap{display:inline-block;background:${C.navyDeep};border-radius:2mm;padding:2.5mm 3.5mm;}
 .logo{height:9mm;display:block;}
+.cover-band{position:relative;border-radius:3mm;overflow:hidden;background:${C.navyDeep};}
+.cover-band .cover-img{display:block;width:100%;height:auto;}
+.cover-band .logo{position:absolute;left:8mm;top:8mm;height:10mm;}
+.level-row{display:flex;align-items:center;gap:2mm;}
+.level-badge{position:relative;display:inline-block;width:11mm;height:11mm;flex:none;}
+.level-badge img{width:100%;height:100%;display:block;}
+.level-badge span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10pt;color:${C.navyDeep};}
 .badge{display:inline-block;border-radius:999px;padding:1mm 3mm;font-size:9pt;font-weight:600;background:${C.tint};color:${C.navyDeep};}
 .badge.final{background:${C.heatGood};color:${C.success};}
 .badge.draft{background:${C.heatMid};color:${C.warning};}
@@ -130,6 +141,13 @@ function signature(sig: ReportSignature, t: Translate): string {
 
 function standing(t: Translate, statement: string): string {
   return `<div class="standing" data-testid="standing-statement"><strong>${esc(t("standingTitle"))}</strong>${esc(statement)}</div>`;
+}
+
+/** Nama tingkat, didahului lencana tingkat bila asetnya tersedia. Lencana hanya hiasan: nama tetap tertulis. */
+function levelWithBadge(level: number, t: Translate, assets: ReportAssets): string {
+  const src = assets.levelBadgeSrcs?.[Math.min(5, Math.max(1, Math.round(level))) - 1];
+  if (!src) return `<div>${esc(levelName(level, t))}</div>`;
+  return `<div class="level-row"><span class="level-badge" aria-hidden="true"><img src="${esc(src)}" alt=""><span>${esc(level)}</span></span><span>${esc(levelName(level, t))}</span></div>`;
 }
 
 function levelName(level: number, t: Translate): string {
@@ -205,7 +223,7 @@ function fullReport(c: ReportContent, sig: ReportSignature, assets: ReportAssets
   )}</section>`);
 
   const levelAspects = r.aspects.filter((a) => m.aspects.some((x) => x.code === a.code));
-  sections.push(`<section class="section" id="s5">${head(5)}<div class="cards"><div class="card"><div class="label">${esc(t("result.index"))}</div><div class="value" data-testid="report-index">${esc(num(r.organization.index))}</div><div>${esc(levelName(r.organization.indicativeLevel, t))}</div></div><div class="card"><div class="label">${esc(t("result.gap"))}</div><div class="value">${esc(num(r.organization.gapToTarget))}</div><div>${esc(t("result.target", { level: c.assessment.targetLevel }))}</div></div><div class="card"><div class="label">${esc(t("result.priority"))}</div><div class="value">${esc(r.organization.priorityAspect)}</div><div>${esc(m.aspects.find((a) => a.code === r.organization.priorityAspect)?.name ?? "")}</div></div></div>${aspectChart(levelAspects, c.assessment.targetLevel, t)}${table(
+  sections.push(`<section class="section" id="s5">${head(5)}<div class="cards"><div class="card"><div class="label">${esc(t("result.index"))}</div><div class="value" data-testid="report-index">${esc(num(r.organization.index))}</div>${levelWithBadge(r.organization.indicativeLevel, t, assets)}</div><div class="card"><div class="label">${esc(t("result.gap"))}</div><div class="value">${esc(num(r.organization.gapToTarget))}</div><div>${esc(t("result.target", { level: c.assessment.targetLevel }))}</div></div><div class="card"><div class="label">${esc(t("result.priority"))}</div><div class="value">${esc(r.organization.priorityAspect)}</div><div>${esc(m.aspects.find((a) => a.code === r.organization.priorityAspect)?.name ?? "")}</div></div></div>${aspectChart(levelAspects, c.assessment.targetLevel, t)}${table(
     [t("columns.aspect"), t("columns.weight"), t("columns.engine"), t("columns.final"), t("columns.gap")],
     levelAspects.map((a) => [`${esc(a.code)} ${esc(a.name)}`, esc(pct(a.weight, 2)), esc(num(a.engineIndex)), esc(num(a.index)), esc(num(a.gapToTarget))]),
     { numeric: [1, 2, 3, 4] },
@@ -350,7 +368,11 @@ function fullReport(c: ReportContent, sig: ReportSignature, assets: ReportAssets
       : `<p>${esc(t("appendix.none"))}</p>`
   }<h3>${esc(t("appendix.parameters"))}</h3><p class="muted">${esc(t("appendix.parametersNote", { locked: dateTime(c.assessment.lockedAt) }))}</p>${table([t("columns.parameter"), t("columns.value")], paramRows.map(([k, v]) => [`<code>${esc(k)}</code>`, esc(v)]), { className: "kv" })}</section>`);
 
-  const cover = `<section class="cover"><div><span class="logo-wrap"><img class="logo" src="${esc(assets.logoSrc)}" alt="${esc(t("logoAlt"))}"></span><p class="muted" style="margin-top:20mm">${esc(t("full.kicker"))}</p><h1>${esc(t("full.title"))}</h1><p style="font-size:13pt"><strong>${esc(c.organization.name)}</strong><br>${esc(c.assessment.name)}</p><p>${esc(t("period", { start: dateOnly(c.assessment.periodStart), end: dateOnly(c.assessment.periodEnd) }))}</p><p><span class="badge ${sig.status === "FINAL" ? "final" : "draft"}">${esc(t(sig.status === "FINAL" ? "finalBadge" : "draftBadge", { version: c.version }))}</span></p></div><div>${standing(t, statement)}<p class="muted">${esc(t("generated", { time: dateTime(c.generatedAt) }))}</p><p class="muted">${esc(t("owner"))}</p></div></section><section class="section page-start"><h2>${esc(t("toc"))}</h2><ol class="toc">${Array.from({ length: 12 }, (_, i) => `<li>${esc(t(`sections.${i + 1}`))}</li>`).join("")}</ol></section>`;
+  // Logo Nusa Safety bertulisan putih; di atas pita sampul yang gelap, atau di kotak gelapnya sendiri bila pita tidak ada.
+  const coverLogo = assets.coverSrc
+    ? `<div class="cover-band"><img class="cover-img" src="${esc(assets.coverSrc)}" alt=""><img class="logo" src="${esc(assets.logoSrc)}" alt="${esc(t("logoAlt"))}"></div>`
+    : `<span class="logo-wrap"><img class="logo" src="${esc(assets.logoSrc)}" alt="${esc(t("logoAlt"))}"></span>`;
+  const cover = `<section class="cover"><div>${coverLogo}<p class="muted" style="margin-top:${assets.coverSrc ? 12 : 20}mm">${esc(t("full.kicker"))}</p><h1>${esc(t("full.title"))}</h1><p style="font-size:13pt"><strong>${esc(c.organization.name)}</strong><br>${esc(c.assessment.name)}</p><p>${esc(t("period", { start: dateOnly(c.assessment.periodStart), end: dateOnly(c.assessment.periodEnd) }))}</p><p><span class="badge ${sig.status === "FINAL" ? "final" : "draft"}">${esc(t(sig.status === "FINAL" ? "finalBadge" : "draftBadge", { version: c.version }))}</span></p></div><div>${standing(t, statement)}<p class="muted">${esc(t("generated", { time: dateTime(c.generatedAt) }))}</p><p class="muted">${esc(t("owner"))}</p></div></section><section class="section page-start"><h2>${esc(t("toc"))}</h2><ol class="toc">${Array.from({ length: 12 }, (_, i) => `<li>${esc(t(`sections.${i + 1}`))}</li>`).join("")}</ol></section>`;
   return cover + sections.join("");
 }
 
@@ -377,7 +399,7 @@ function executiveSummary(c: ReportContent, sig: ReportSignature, assets: Report
   const divergent = r.characteristics.filter((x) => x.flags.includes("SELISIH_PERSEPSI_BUKTI"));
   const attention = c.perceptionGap.filter((g) => g.attention && !g.suppressed);
   const top = c.gaps.slice(0, 5);
-  return `${headerBlock(c, t("executive.title"), sig, assets, t)}<div class="cards"><div class="card"><div class="label">${esc(t("result.index"))}</div><div class="value" data-testid="report-index">${esc(num(r.organization.index))}</div><div>${esc(levelName(r.organization.indicativeLevel, t))}</div></div><div class="card"><div class="label">${esc(t("result.consolidated"))}</div><div class="value" style="font-size:14pt">${esc(r.organization.consolidated ? t("result.consolidatedYes") : t("result.consolidatedNo"))}</div></div><div class="card"><div class="label">${esc(t("result.gap"))}</div><div class="value">${esc(num(r.organization.gapToTarget))}</div><div>${esc(t("result.target", { level: c.assessment.targetLevel }))}</div></div></div>${aspectChart(levelAspects, c.assessment.targetLevel, t)}<h2>${esc(t("executive.findings"))}</h2><ul><li>${esc(t("executive.priority", { code: r.organization.priorityAspect, name: c.method.aspects.find((a) => a.code === r.organization.priorityAspect)?.name ?? "" }))}</li>${
+  return `${headerBlock(c, t("executive.title"), sig, assets, t)}<div class="cards"><div class="card"><div class="label">${esc(t("result.index"))}</div><div class="value" data-testid="report-index">${esc(num(r.organization.index))}</div>${levelWithBadge(r.organization.indicativeLevel, t, assets)}</div><div class="card"><div class="label">${esc(t("result.consolidated"))}</div><div class="value" style="font-size:14pt">${esc(r.organization.consolidated ? t("result.consolidatedYes") : t("result.consolidatedNo"))}</div></div><div class="card"><div class="label">${esc(t("result.gap"))}</div><div class="value">${esc(num(r.organization.gapToTarget))}</div><div>${esc(t("result.target", { level: c.assessment.targetLevel }))}</div></div></div>${aspectChart(levelAspects, c.assessment.targetLevel, t)}<h2>${esc(t("executive.findings"))}</h2><ul><li>${esc(t("executive.priority", { code: r.organization.priorityAspect, name: c.method.aspects.find((a) => a.code === r.organization.priorityAspect)?.name ?? "" }))}</li>${
     divergent.length ? `<li>${esc(t("executive.divergence", { count: divergent.length, codes: divergent.map((x) => x.code).join(", ") }))}</li>` : ""
   }${attention.length ? `<li>${esc(t("executive.perceptionGap", { codes: attention.map((g) => g.code).join(", ") }))}</li>` : ""}${
     r.sclTrack ? `<li>${esc(t("scl.level", { level: levelName(r.sclTrack.indicativeLevel, t) }))}</li>` : ""

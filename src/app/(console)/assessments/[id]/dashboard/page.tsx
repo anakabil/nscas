@@ -13,6 +13,7 @@ import { getAppTimeZone } from "@/lib/env";
 import { formatDate, formatDateTime, formatNumber } from "@/lib/format";
 import { AspectChart, CharacteristicChart, ComparisonChart } from "./charts";
 import { HeatmapTable } from "./heatmap";
+import { LevelBadge } from "@/components/illustration";
 
 export const dynamic = "force-dynamic";
 
@@ -106,9 +107,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ id: 
           </CardContent>
         </Card>
         <Card>
-          <CardHeader>
-            <CardDescription>{t("cards.level")}</CardDescription>
-            <CardTitle className="text-2xl">{tLevels(String(model.summary.level))}</CardTitle>
+          <CardHeader className="flex flex-row items-start justify-between gap-3">
+            <div className="space-y-1.5">
+              <CardDescription>{t("cards.level")}</CardDescription>
+              <CardTitle className="text-2xl">{tLevels(String(model.summary.level))}</CardTitle>
+            </div>
+            <LevelBadge level={model.summary.level} />
           </CardHeader>
           <CardContent className="space-y-1 text-sm">
             {model.summary.sclLevel ? <p>{t("cards.scl", { level: tLevels(String(model.summary.sclLevel)) })}</p> : null}

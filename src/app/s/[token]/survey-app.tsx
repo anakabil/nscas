@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NextIntlClientProvider, useTranslations, type AbstractIntlMessages } from "next-intl";
 import { deleteDraft, emptyDraft, loadDraft, saveDraft, type SurveyDraft } from "./draft-store";
+import { TokenArt, type TokenArtName } from "@/components/token-art";
 
 // Aplikasi survei di peramban (docs/01 M3, docs/05 bagian 3): satu karakteristik per layar, kartu pernyataan
 // tanpa nomor tingkat, draf di IndexedDB, dan pengiriman sekali di akhir yang diulang otomatis bila sambungan
@@ -201,7 +202,7 @@ function Survey({
 
   useEffect(() => () => void (timer.current && clearTimeout(timer.current)), []);
 
-  if (send === "done") return <Message title={t("done.title")} body={[t("done.body"), t("done.close")]} testId="survey-done" />;
+  if (send === "done") return <Message title={t("done.title")} body={[t("done.body"), t("done.close")]} testId="survey-done" art="thanks" />;
   if (send === "declined") {
     return (
       <Message title={t("consent.declinedTitle")} body={[t("consent.declinedBody")]} testId="survey-declined">
@@ -212,7 +213,14 @@ function Survey({
     );
   }
   if (typeof send === "object") {
-    return <Message title={t(`status.${send.failed}.title`)} body={[t(`status.${send.failed}.body`)]} testId="survey-failed" />;
+    return (
+      <Message
+        title={t(`status.${send.failed}.title`)}
+        body={[t(`status.${send.failed}.body`)]}
+        testId="survey-failed"
+        art={send.failed === "ERROR" ? undefined : send.failed === "USED" ? "thanks" : "unavailable"}
+      />
+    );
   }
 
   const answered =
@@ -251,6 +259,7 @@ function Survey({
       <main className={`flex-1 px-4 pt-4 ${withNav ? "pb-28" : "pb-8"}`}>
         {screen.kind === "language" ? (
           <section className="space-y-4">
+            <TokenArt name="welcome" priority className="max-w-sm" />
             <h1 className="text-brand-navy text-2xl leading-tight font-bold">{t("heading")}</h1>
             <h2 className="text-lg font-semibold">{t("language.title")}</h2>
             <p>{t("language.intro")}</p>
@@ -266,6 +275,7 @@ function Survey({
 
         {screen.kind === "consent" ? (
           <section className="space-y-4">
+            <TokenArt name="privacy" className="max-w-40" />
             <h1 className="text-brand-navy text-2xl leading-tight font-bold">{t("consent.title")}</h1>
             <div className="border-border bg-card rounded-xl border p-4 text-base whitespace-pre-line" data-testid="survey-consent">
               {lang === "en" && consent.en ? consent.en : consent.id}
@@ -478,9 +488,10 @@ function ClimateScreen({
   );
 }
 
-function Message({ title, body, testId, children }: { title: string; body: string[]; testId: string; children?: React.ReactNode }) {
+function Message({ title, body, testId, art, children }: { title: string; body: string[]; testId: string; art?: TokenArtName; children?: React.ReactNode }) {
   return (
     <main className="survey mx-auto flex min-h-dvh max-w-xl flex-col gap-4 px-4 py-10" data-testid={testId}>
+      {art ? <TokenArt name={art} className="max-w-sm" /> : null}
       <h1 className="text-brand-navy text-2xl leading-tight font-bold">{title}</h1>
       {body.map((p) => (
         <p key={p}>{p}</p>

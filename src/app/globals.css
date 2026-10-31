@@ -215,3 +215,10 @@
   background-color: var(--heat-suppressed);
   background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgb(94 96 117 / 0.18) 6px 8px);
 }
+
+/* Pola latar halus untuk bidang biru batu gelap (docs/11 V26): helm, papan klip, perisai, dan gedung yang disambung. */
+.bg-brand-pattern {
+  background-color: var(--brand-navy-deep);
+  background-image: url("/illustrations/pattern-tile.png");
+  background-size: 192px 192px;
+}

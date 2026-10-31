@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, Database, HardDrive, XCircle } from "lucide-react";
+import { UiCheckCircle, UiDatabase, UiHardDrive, UiXCircle } from "@/components/icons/nscas-icons";
 import { getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,9 @@ import { pingStorage } from "@/lib/storage";
 // Selalu diperiksa saat diminta, tidak pernah disajikan dari cache.
 export const dynamic = "force-dynamic";
 
-const ICONS: Record<HealthComponent, typeof Database> = {
-  database: Database,
-  storage: HardDrive,
+const ICONS: Record<HealthComponent, typeof UiDatabase> = {
+  database: UiDatabase,
+  storage: UiHardDrive,
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -65,7 +65,7 @@ export default async function HealthPage() {
                     </CardDescription>
                   </div>
                   <Badge variant={c.ok ? "success" : "destructive"}>
-                    {c.ok ? <CheckCircle2 aria-hidden /> : <XCircle aria-hidden />}
+                    {c.ok ? <UiCheckCircle aria-hidden /> : <UiXCircle aria-hidden />}
                     {c.ok ? t("statusOk") : t("statusError")}
                   </Badge>
                 </CardHeader>

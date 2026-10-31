@@ -6,6 +6,7 @@ import { QuickAccess } from "@/components/assessment/quick-access";
 import { TransitionPanel, type TransitionView } from "@/components/assessment/transition-panel";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Illustration, type IllustrationName } from "@/components/illustration";
 import { loadAssessmentHeader, loadEffectiveParameters } from "@/lib/assessments/load";
 import { gatherTransitionFacts } from "@/lib/assessments/service";
 import { evaluateTransition, nextTransitions } from "@/lib/assessments/state-machine";
@@ -16,6 +17,15 @@ import { ALL_ROLES } from "@/lib/auth/roles";
 import { getDb } from "@/lib/db";
 import { getAppTimeZone } from "@/lib/env";
 import { formatDate, formatDateTime, formatNumber } from "@/lib/format";
+
+// Ilustrasi tahap yang sedang berjalan (docs/11 V03 sampai V06); asesmen yang ditutup memakai ilustrasi hasil.
+const PHASE_ILLUSTRATIONS: Record<ReturnType<typeof phaseOf>, IllustrationName> = {
+  PREPARATION: "phase-preparation",
+  DATA_COLLECTION: "phase-data-collection",
+  SCORING: "phase-scoring",
+  RESULTS: "phase-results",
+  CLOSED: "phase-results",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -103,14 +113,17 @@ export default async function AssessmentOverviewPage({ params }: { params: Promi
         <CardHeader>
           <CardTitle>{t("assessment.overview.nextSteps")}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <p className="text-sm" data-testid="assessment-guide">
-            {t(`assessment.guide.${assessment.status}`)}
-          </p>
-          {transitions.length === 0 ? <p className="text-muted-foreground text-sm">{t("assessment.overview.noTransition")}</p> : null}
-          {transitions.map((transition) => (
-            <TransitionPanel key={transition.to} assessmentId={access.assessmentId} transition={transition} />
-          ))}
+        <CardContent className="grid gap-6 md:grid-cols-[minmax(0,1fr)_14rem] md:items-start">
+          <div className="min-w-0 space-y-6">
+            <p className="text-sm" data-testid="assessment-guide">
+              {t(`assessment.guide.${assessment.status}`)}
+            </p>
+            {transitions.length === 0 ? <p className="text-muted-foreground text-sm">{t("assessment.overview.noTransition")}</p> : null}
+            {transitions.map((transition) => (
+              <TransitionPanel key={transition.to} assessmentId={access.assessmentId} transition={transition} />
+            ))}
+          </div>
+          <Illustration name={PHASE_ILLUSTRATIONS[currentPhase]} className="hidden w-56 md:block" />
         </CardContent>
       </Card>
 

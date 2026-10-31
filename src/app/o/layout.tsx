@@ -10,7 +10,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: t("metaTitle"),
     manifest: "/o/manifest.webmanifest",
     appleWebApp: { capable: true, title: t("manifest.shortName"), statusBarStyle: "default" },
-    icons: { apple: "/brand/pwa-192.png" },
     robots: { index: false, follow: false },
   };
 }

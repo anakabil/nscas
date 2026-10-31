@@ -4,6 +4,7 @@ import { REPORT_ROLES } from "@/lib/auth/roles";
 import { renderReportHtml } from "@/lib/report/html";
 import { reportForView } from "@/lib/report/service";
 import type { ReportContent } from "@/lib/report/types";
+import { REPORT_ASSET_FILES } from "@/lib/report/assets";
 
 const paramsSchema = z.object({ id: z.string().min(1).max(64), reportId: z.string().min(1).max(64) });
 
@@ -20,7 +21,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       report.content as unknown as ReportContent,
       report.kind,
       { status: report.status, signerName: report.signerName, signerPosition: report.signerPosition, signedAt: report.signedAt?.toISOString() ?? null },
-      { logoSrc: "/brand/logo-long-color.png", fontSrc: "/fonts/PlusJakartaSans-latin-wght-normal.woff2" },
+      {
+        logoSrc: `/${REPORT_ASSET_FILES.logo}`,
+        fontSrc: `/${REPORT_ASSET_FILES.font}`,
+        coverSrc: `/${REPORT_ASSET_FILES.cover}`,
+        levelBadgeSrcs: REPORT_ASSET_FILES.levelBadges.map((file) => `/${file}`),
+      },
     );
     return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
   } catch (error) {

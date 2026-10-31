@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { UiCheck } from "@/components/icons/nscas-icons";
 import type { PhaseState } from "@/lib/assessments/workflow";
 import { cn } from "@/lib/utils";
 
@@ -37,7 +37,7 @@ export function PhaseStepper({ phases, label }: { phases: StepperPhase[]; label:
               phase.state === "upcoming" && "border-border bg-card text-muted-foreground",
             )}
           >
-            {phase.state === "done" ? <Check className="size-4" /> : index + 1}
+            {phase.state === "done" ? <UiCheck className="size-4" /> : index + 1}
           </span>
           <span className="space-y-0.5">
             <span className={cn("block text-sm font-semibold", phase.state === "upcoming" && "text-muted-foreground")}>{phase.label}</span>

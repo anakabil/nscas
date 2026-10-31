@@ -11,6 +11,7 @@ import { getAppTimeZone } from "@/lib/env";
 import { listEvidence, loadEvidenceChecklist } from "@/lib/evidence/service";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { EvidenceItemActions, EvidenceUploadForm } from "./evidence-forms";
+import { EmptyState } from "@/components/illustration";
 
 export const dynamic = "force-dynamic";
 
@@ -100,7 +101,11 @@ export default async function EvidencePage({ params }: { params: Promise<{ id: s
           <CardDescription>{formatNumber(items.length)}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {items.length === 0 ? <p className="text-muted-foreground">{t("list.empty")}</p> : null}
+          {items.length === 0 ? (
+            <EmptyState illustration="empty-evidence">
+              <p>{t("list.empty")}</p>
+            </EmptyState>
+          ) : null}
           {items.map((item) => (
             // Kunci memakai versi pertama agar kartu tidak dipasang ulang saat versi baru tersimpan, sehingga pesan
             // "Bukti tersimpan" tetap terlihat setelah halaman disegarkan.

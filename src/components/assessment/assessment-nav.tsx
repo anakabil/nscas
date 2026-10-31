@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronDown } from "lucide-react";
+import { UiCheck, UiChevronDown } from "@/components/icons/nscas-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { NavGroupKey, NavPage } from "@/lib/assessments/nav";
@@ -55,7 +55,7 @@ function PhaseMarker({ state }: { state?: PhaseState }) {
   if (state === "done") {
     return (
       <span aria-hidden className="bg-success/15 text-success flex size-4 items-center justify-center rounded-full">
-        <Check className="size-3" strokeWidth={2.5} />
+        <UiCheck className="size-3" strokeWidth={2.5} />
       </span>
     );
   }
@@ -104,7 +104,7 @@ function NavList({ groups, active }: { groups: AssessmentNavGroup[]; active: str
               <span className={cn("min-w-0 flex-1 text-sm leading-snug font-semibold", group.state === "upcoming" && "text-muted-foreground")}>{group.title}</span>
               <PhaseMarker state={group.state} />
               {group.stateLabel ? <span className="sr-only">({group.stateLabel})</span> : null}
-              <ChevronDown aria-hidden className="text-muted-foreground size-4 shrink-0 transition-transform group-open/phase:rotate-180" />
+              <UiChevronDown aria-hidden className="text-muted-foreground size-4 shrink-0 transition-transform group-open/phase:rotate-180" />
             </summary>
             <div className="border-border mt-0.5 mb-2 ml-6 space-y-0.5 border-l pl-2">
               {group.items.map((item) => (
@@ -142,7 +142,7 @@ export function AssessmentNav({ groups, label, menuLabel }: { groups: Assessment
             <span className="text-muted-foreground font-normal">{menuLabel}:</span>
             <span className="truncate">{activeItem?.label}</span>
           </span>
-          <ChevronDown aria-hidden className="text-muted-foreground size-4 shrink-0 transition-transform group-open:rotate-180" />
+          <UiChevronDown aria-hidden className="text-muted-foreground size-4 shrink-0 transition-transform group-open:rotate-180" />
         </summary>
         <nav aria-label={label} className="border-border border-t px-2 py-3">
           <NavList groups={groups} active={active} />

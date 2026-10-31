@@ -4,6 +4,8 @@
     "fullName": "Nusa Safety Culture Assessment System",
     "tagline": "Online measurement of occupational safety and health (OSH) culture maturity",
     "owner": "PT Nusa Rendra Jayatama (Nusa Safety)",
+    "byline": "by Nusa Safety",
+    "ogImageAlt": "NSCAS, occupational safety and health culture assessment by Nusa Safety",
     "logoAlt": "Nusa Safety logo"
   },
   "common": {
@@ -11,7 +13,7 @@
     "draftBanner": "Draft, not yet confirmed by the assessor panel meeting"
   },
   "home": {
-    "intro": "This application is under construction. The assessment console, respondent survey, and reports will be available in later phases.",
+    "intro": "Sign in to manage safety culture assessments. Workers who fill in the survey do not need to sign in: they open the shared link or scan the QR code.",
     "healthLink": "Check system status",
     "login": "Sign in"
   },
@@ -283,6 +285,11 @@
     "title": "Access denied",
     "description": "You do not have permission to open this page. If you need access, contact your organisation's administrator.",
     "back": "Back to assessments"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The address you opened does not exist or has moved. Check the address, or start again from the home page.",
+    "back": "Back to home"
   },
   "assessment": {
     "nav": {

@@ -26,7 +26,12 @@ Gradasi lima tingkat kematangan (1 ke 5): `#CBD3DC`, `#A9B8C8`, `#8399B1`, `#5A7
 
 Huruf: Plus Jakarta Sans (next/font, dimuat lokal) untuk seluruh antarmuka. Angka besar memakai `font-variant-numeric: tabular-nums`.
 
-Logo: `public/brand/logo-long-color.png` untuk kepala konsol dan laporan. Tulisan "nusa" pada berkas ini berwarna putih, sehingga logo selalu ditempatkan di atas biru batu gelap: langsung di bidang kepala konsol dan panel halaman masuk, atau di kotaknya sendiri di latar terang. `logo-short-color.png` untuk ikon aplikasi, `logo-short-white.png` untuk latar gelap. Berkas asal tersedia di folder `aset-logo/`.
+Logo ada dua lapis (docs/11 bagian 5):
+
+1. Logo aplikasi NSCAS: cincin ukur lima busur dengan titik merah, komponen `NscasMark` dan `NscasLockup` di `src/components/nscas-mark.tsx`. Tulisan "NSCAS" dan "oleh Nusa Safety" berupa teks HTML, bukan gambar. Dipakai di kepala konsol, halaman masuk, beranda, ikon tab peramban (`src/app/icon.svg`, `favicon.ico`, `apple-icon.png`), dan ikon aplikasi observasi (`public/brand/nscas-app-icon-192.png` dan `-512.png`). Bentuk tangga dan segel sengaja dihindari agar tidak dikira tanda sertifikasi.
+2. Logo perusahaan Nusa Safety: `public/brand/logo-long-color.png`, tidak diubah. Tulisan "nusa" berwarna putih, sehingga logo selalu di atas biru batu gelap: kepala konsol (layar lebar), panel halaman masuk, pita sampul laporan, atau kotaknya sendiri di latar terang. Berkas asal tersedia di folder `aset-logo/`.
+
+Ilustrasi ada di `public/illustrations/` dan selalu bersifat hiasan (alt kosong): seluruh informasi tetap ada di teks. Komponen: `Illustration`, `EmptyState`, dan `LevelBadge` di `src/components/illustration.tsx`; `TokenArt` di `src/components/token-art.tsx` untuk rute bertoken (dikirim apa adanya agar muatan survei tetap terukur); `StatePage` untuk halaman akses ditolak dan tidak ditemukan. Pola latar `bg-brand-pattern` (V26) dipakai di kepala konsol.
 
 ## 2. Pola komponen
 
@@ -39,23 +44,23 @@ Logo: `public/brand/logo-long-color.png` untuk kepala konsol dan laporan. Tulisa
 - Halaman Ringkasan asesmen memuat penanda kemajuan empat tahap, panduan singkat untuk status saat ini, dan daftar syarat menuju status berikutnya. Setiap syarat yang belum terpenuhi menautkan ke halaman tempat syarat itu dikerjakan.
 - Daftar asesmen yang masih kosong menampilkan panduan "Mulai pengukuran" tiga langkah sesuai peran pengguna: organisasi klien, asesor utama, lalu asesmen.
 - Pilihan yang memberi hak tinggi, misalnya peran pengguna, tidak boleh terisi otomatis. Pengguna wajib memilih sendiri.
-- Simbol menu memakai satu set ikon garis Lucide (lisensi ISC) dengan ketebalan garis 1,75 dan ukuran 16 piksel di menu, 20 piksel di ubin. Simbol selalu didampingi nama halaman, kecuali di kepala halaman pada layar menengah (nama tetap dibacakan pembaca layar dan tampil saat disorot). Pemetaan simbol ada di `src/components/assessment/nav-icons.ts`:
+- Simbol memakai set khusus NSCAS (41 simbol, docs/11 bagian 6). Sumbernya `public/icons/nav/*.svg` di kisi 24 x 24, garis 2, warna `currentColor`. Perintah `npm run icons` mengubahnya menjadi komponen di `src/components/icons/nscas-icons.tsx`. Pengubah hanya menerima elemen gambar dasar dan warna `currentColor`, dan tes memastikan komponen selalu sama dengan berkas SVG. Impor `lucide-react` dilarang oleh ESLint agar gaya tetap seragam. Di menu, ketebalan garis 1,75 dan ukuran 16 piksel; di ubin 20 piksel. Simbol selalu didampingi nama halaman, kecuali di kepala halaman pada layar menengah (nama tetap dibacakan pembaca layar dan tampil saat disorot). Pemetaan simbol ada di `src/components/assessment/nav-icons.ts`:
 
 | Halaman | Simbol | Halaman | Simbol |
 |---|---|---|---|
-| Ringkasan | `LayoutGrid` | Bukti | `FolderOpen` |
-| Rincian | `FileText` | Observasi | `Camera` |
-| Unit | `Building2` | Validasi | `MessagesSquare` |
-| Strata | `Layers` | Penilaian asesor | `ListChecks` |
-| Parameter | `SlidersHorizontal` | Rapat panel | `Gavel` |
-| Kalkulator sampel | `Calculator` | Dasbor | `ChartColumn` |
-| Tim asesor | `UsersRound` | Rencana aksi | `ListTodo` |
-| Responden | `Users` | Laporan | `FileChartColumn` |
-| Kode QR | `QrCode` | Jejak audit | `History` |
-| Partisipasi | `TrendingUp` | | |
-| Penilaian mandiri | `UserCheck` | | |
+| Ringkasan | `NavOverview` | Bukti | `NavEvidence` |
+| Rincian | `NavDetails` | Observasi | `NavObservations` |
+| Unit | `NavUnits` | Validasi | `NavValidation` |
+| Strata | `NavStrata` | Penilaian asesor | `NavScoring` |
+| Parameter | `NavParameters` | Rapat panel | `NavPanel` |
+| Kalkulator sampel | `NavSampling` | Dasbor | `NavDashboard` |
+| Tim asesor | `NavTeam` | Rencana aksi | `NavActionPlan` |
+| Responden | `NavRespondents` | Laporan | `NavReport` |
+| Kode QR | `NavQr` | Jejak audit | `NavAudit` |
+| Partisipasi | `NavParticipation` | | |
+| Penilaian mandiri | `NavSelfAssessments` | | |
 
-  Tahap: Persiapan `Settings2`, Pengumpulan data `Inbox`, Penilaian `Scale`, Hasil dan tindak lanjut `Target`. Menu utama: Asesmen `ClipboardList`, Organisasi dan pengguna `Building2`, Retensi data `Archive`, Akun saya `UserRound`, Keluar `LogOut`.
+  Tahap: Persiapan `NavPhasePreparation`, Pengumpulan data `NavPhaseDataCollection`, Penilaian `NavPhaseScoring`, Hasil dan tindak lanjut `NavPhaseResults`. Menu utama: Asesmen `NavAssessments`, Organisasi dan pengguna `NavOrganizations`, Retensi data `NavRetention`, Akun saya `NavAccount`, Keluar `NavLogout`, Menu `NavMenu`. Simbol bantu berawalan `Ui` (centang, lingkaran, panah, tambah, masuk, status sistem).
 - Di kolom samping, hanya tahap yang sedang berjalan dan tahap yang memuat halaman terbuka yang terbuka. Tahap lain dilipat menjadi satu baris bersimbol yang dapat dibuka dengan satu klik.
 - Ringkasan asesmen memuat ubin "Akses cepat" bersimbol untuk halaman tahap yang sedang berjalan, masing-masing dengan keterangan satu baris.
 - Hasil yang belum final diberi pita "Draf, belum ditetapkan rapat panel".

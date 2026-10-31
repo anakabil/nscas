@@ -4,6 +4,8 @@
     "fullName": "Nusa Safety Culture Assessment System",
     "tagline": "Pengukuran tingkat kematangan budaya keselamatan dan kesehatan kerja (K3) secara daring",
     "owner": "PT Nusa Rendra Jayatama (Nusa Safety)",
+    "byline": "oleh Nusa Safety",
+    "ogImageAlt": "NSCAS, pengukuran budaya keselamatan dan kesehatan kerja oleh Nusa Safety",
     "logoAlt": "Logo Nusa Safety"
   },
   "common": {
@@ -11,7 +13,7 @@
     "draftBanner": "Draf, belum ditetapkan rapat panel"
   },
   "home": {
-    "intro": "Aplikasi ini sedang dalam tahap pembangunan. Konsol asesmen, survei responden, dan laporan akan tersedia pada fase berikutnya.",
+    "intro": "Masuk untuk mengelola asesmen budaya K3. Pekerja yang mengisi survei tidak perlu masuk: cukup membuka tautan atau memindai kode QR yang dibagikan.",
     "healthLink": "Periksa status sistem",
     "login": "Masuk"
   },
@@ -283,6 +285,11 @@
     "title": "Akses ditolak",
     "description": "Anda tidak memiliki hak untuk membuka halaman ini. Bila Anda memerlukan akses, hubungi administrator organisasi Anda.",
     "back": "Kembali ke daftar asesmen"
+  },
+  "notFound": {
+    "title": "Halaman tidak ditemukan",
+    "description": "Alamat yang Anda buka tidak ada atau sudah dipindahkan. Periksa kembali alamatnya, atau mulai lagi dari beranda.",
+    "back": "Kembali ke beranda"
   },
   "assessment": {
     "nav": {
