@@ -30,6 +30,13 @@ class SecurityController extends Controller
             $props['requiresConfirmation'] = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm');
         }
 
+        // Pemberitahuan kewajiban verifikasi dua langkah dihitung di sini, bukan lewat pesan kilat sesi: halaman ini
+        // didahului konfirmasi kata sandi, sehingga pesan kilat dari pengalihan sudah hilang saat halaman tampil.
+        $user = $request->user()->loadMissing(['memberships', 'teamAssignments']);
+        $props['twoFactorRequired'] = config('nscas.enforce_two_factor')
+            && $user->two_factor_confirmed_at === null
+            && collect($user->allRoles())->contains(fn ($role) => $role->requiresTwoFactor());
+
         return Inertia::render('settings/security', $props);
     }
 

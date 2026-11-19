@@ -33,7 +33,7 @@ class EnsureAccountIsUsable
             $user->loadMissing(['memberships', 'teamAssignments']);
             foreach ($user->allRoles() as $role) {
                 if ($role->requiresTwoFactor()) {
-                    return redirect()->route('security.edit')->with('status', 'two-factor-required');
+                    return redirect()->route('security.edit');
                 }
             }
         }

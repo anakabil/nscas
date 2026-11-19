@@ -1,4 +1,4 @@
-import { Form, Head, usePage } from '@inertiajs/react';
+import { Form, Head } from '@inertiajs/react';
 import { ShieldAlert } from 'lucide-react';
 import { useRef } from 'react';
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
@@ -16,14 +16,14 @@ import ManageTwoFactor from '@/components/manage-two-factor';
 // oxfmt-ignore
 type Props = {
     passwordRules: string;
+    /** Peran pengguna mewajibkan verifikasi dua langkah dan belum diaktifkan (dihitung di server). */
+    twoFactorRequired?: boolean;
 } &
     ManageTwoFactorProps;
 
 export default function Security(props: Props) {
     const t = useT();
-    // Diisi EnsureAccountIsUsable saat peran pengguna mewajibkan verifikasi dua langkah.
-    const { flash } = usePage().props;
-    const twoFactorRequired = flash?.status === 'two-factor-required';
+    const twoFactorRequired = props.twoFactorRequired === true;
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 

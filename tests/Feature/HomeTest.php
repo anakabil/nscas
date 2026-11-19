@@ -106,8 +106,17 @@ class HomeTest extends TestCase
 
         $this->actingAs($admin)->get(route('home'))->assertRedirect(route('security.edit'));
         $this->actingAs($viewer)->get(route('home'))->assertOk();
+        // Pemberitahuan tetap tampil setelah konfirmasi kata sandi, karena dihitung di server.
+        $this->actingAs($admin)->withSession(['auth.password_confirmed_at' => time()])
+            ->get(route('security.edit'))->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->where('twoFactorRequired', true));
+        $this->actingAs($viewer)->withSession(['auth.password_confirmed_at' => time()])
+            ->get(route('security.edit'))->assertInertia(fn (Assert $page) => $page->where('twoFactorRequired', false));
+
         $admin->forceFill(['two_factor_confirmed_at' => now()])->save();
         $this->actingAs($admin)->get(route('home'))->assertOk();
+        $this->actingAs($admin)->withSession(['auth.password_confirmed_at' => time()])
+            ->get(route('security.edit'))->assertInertia(fn (Assert $page) => $page->where('twoFactorRequired', false));
     }
 
     public function test_deactivated_accounts_are_signed_out(): void
