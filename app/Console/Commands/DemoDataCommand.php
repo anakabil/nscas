@@ -12,6 +12,8 @@ use App\Models\InstrumentVersion;
 use App\Models\Organization;
 use App\Models\ParticipationSnapshot;
 use App\Models\RosterEntry;
+use App\Models\SelfAssessment;
+use App\Models\SelfAssessmentAnswer;
 use App\Models\SurveyResponse;
 use App\Models\Unit;
 use App\Models\User;
@@ -121,6 +123,10 @@ class DemoDataCommand extends Command
             }
             if ($assessment !== null && $status !== AssessmentStatus::Draft && ! SurveyResponse::where('assessment_id', $assessment->id)->exists()) {
                 $this->answers($assessment);
+            }
+            // Fase R4: penilaian mandiri manajemen contoh.
+            if ($assessment !== null && $status !== AssessmentStatus::Draft && ! SelfAssessment::where('assessment_id', $assessment->id)->exists()) {
+                $this->selfAssessments($assessment, $status === AssessmentStatus::DataCollection);
             }
         }
         Auth::forgetUser();
@@ -321,6 +327,57 @@ class DemoDataCommand extends Command
             }
             foreach (array_chunk($climate, 2000) as $rows) {
                 DB::table('climate_answers')->insert($rows);
+            }
+        }
+    }
+
+    /**
+     * Penilaian mandiri contoh dengan nama dan alasan fiktif. Manajemen menilai sedikit lebih tinggi daripada pekerja,
+     * pola yang lazim dan menjadi bahan kesenjangan persepsi pada fase penilaian.
+     */
+    private function selfAssessments(Assessment $assessment, bool $collecting): void
+    {
+        mt_srand(crc32('sa'.$assessment->name));
+        $people = [
+            ['Ir. Hendro Saputra', 'Direktur Operasi', 'Kantor Pusat Jakarta', 'SUBMITTED'],
+            ['Ratna Dewi, S.T.', 'Kepala Divisi K3 dan Lingkungan', 'Kantor Pusat Jakarta', 'SUBMITTED'],
+            ['Agus Wibowo, S.T.', 'Manajer Proyek', 'Proyek Gedung Perkantoran Kuningan', 'SUBMITTED'],
+            ['Yudi Prasetyo', 'Manajer Proyek', 'Proyek Jalan Tol Semarang', $collecting ? 'DRAFT' : 'SUBMITTED'],
+        ];
+        if ($collecting) {
+            $people[] = ['Sri Handayani', 'Manajer Lokasi', 'Divisi Gedung', 'NOT_OPENED'];
+        }
+        $bases = [
+            'Praktik ini terlihat dari rapat koordinasi mingguan di proyek dan tindak lanjut temuan inspeksi yang dicatat dalam laporan bulanan.',
+            'Dasar penilaian kami adalah catatan pelaksanaan safety talk, hasil inspeksi gabungan, dan pembahasan insiden pada rapat manajemen.',
+            'Penerapannya sudah berjalan di sebagian besar proyek, tetapi belum seragam di proyek baru dan pada pekerjaan subkontraktor.',
+            'Kami menilai berdasarkan tinjauan manajemen terakhir, program kerja K3 tahunan, dan umpan balik pekerja dalam forum komunikasi.',
+        ];
+        $characteristics = DB::table('characteristics')->where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->get(['id']);
+        $units = Unit::where('assessment_id', $assessment->id)->pluck('id', 'name');
+        $at = CarbonImmutable::parse($assessment->survey_opens_at ?? $assessment->period_start)->addDays(6)->setTime(10, 0);
+
+        foreach ($people as $i => [$name, $position, $unitName, $state]) {
+            $token = SurveyLinks::issue($assessment, ['unit_id' => $units[$unitName] ?? $units->first(), 'stratum_id' => null, 'kind' => 'SELF_ASSESSMENT', 'channel' => 'LINK'])['token'];
+            $sa = SelfAssessment::create([
+                'assessment_id' => $assessment->id, 'unit_id' => $token->unit_id, 'access_token_id' => $token->id,
+                'respondent_name' => $name, 'respondent_position' => $position,
+                'status' => $state === 'SUBMITTED' ? 'SUBMITTED' : 'DRAFT',
+                'submitted_at' => $state === 'SUBMITTED' ? $at->addDays($i) : null,
+            ]);
+            if ($state === 'NOT_OPENED') {
+                continue;
+            }
+            $token->forceFill(['first_opened_at' => $at->subDay(), 'completed_at' => $state === 'SUBMITTED' ? $at->addDays($i) : null])->save();
+            foreach ($characteristics as $k => $c) {
+                if ($state === 'DRAFT' && $k >= 9) {
+                    break;
+                }
+                SelfAssessmentAnswer::create([
+                    'self_assessment_id' => $sa->id, 'characteristic_id' => $c->id,
+                    'level' => max(2, min(5, 3 + mt_rand(0, 2) - ($k % 5 === 4 ? 1 : 0))),
+                    'justification' => $bases[($k + $i) % count($bases)],
+                ]);
             }
         }
     }

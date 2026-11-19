@@ -101,8 +101,8 @@ Akun contoh
   eksekutif@contoh.test       Pemirsa eksekutif, PT Konstruksi Contoh
 
 Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Tahap 1 (perencanaan), halaman Responden,
-Kode QR, dan Partisipasi, serta survei responden di telepon sudah dapat dipakai. Halaman yang bertanda fase R4 dan
-seterusnya baru berisi penjelasan.
+Kode QR, Partisipasi, dan Penilaian mandiri, serta survei responden di telepon sudah dapat dipakai. Halaman yang bertanda
+fase R5 dan seterusnya baru berisi penjelasan.
 Undangan dan pengingat survei tidak terkirim ke luar; bukalah kotak surat uji (Mailpit) untuk melihatnya.
 EOF
   )

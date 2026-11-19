@@ -47,7 +47,7 @@ final class SelfAssessmentAdmin
     {
         $total = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->count();
 
-        return SelfAssessment::where('assessment_id', $assessment->id)->orderBy('created_at')
+        return SelfAssessment::where('assessment_id', $assessment->id)->orderBy('created_at')->orderBy('respondent_name')
             ->with(['unit:id,name', 'accessToken:id,revoked_at,first_opened_at'])
             ->withCount(['answers as answered_count' => fn ($q) => $q->whereNotNull('level')])
             ->get()

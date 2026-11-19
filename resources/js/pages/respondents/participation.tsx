@@ -52,7 +52,7 @@ export default function RespondentsParticipation(props: Props) {
     const totals = props.summary.totals;
 
     return (
-        <CollectionShell module="participation" common={props} canEdit={false}>
+        <CollectionShell module="participation" common={props} canEdit={false} readOnlyNotice={false}>
             <div className="max-w-3xl space-y-2 text-sm leading-relaxed text-muted-foreground">
                 <p>{t('participation.intro', { min: props.minCell })}</p>
                 {props.scoped ? <p className="text-charcoal">{t('participation.scoped')}</p> : null}

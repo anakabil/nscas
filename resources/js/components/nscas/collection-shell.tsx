@@ -46,11 +46,14 @@ export function CollectionShell({
     module,
     common,
     canEdit,
+    readOnlyNotice = true,
     children,
 }: {
     module: string;
     common: CollectionCommon;
     canEdit: boolean;
+    /** false pada halaman yang memang hanya untuk dibaca, misalnya partisipasi dan rincian jawaban. */
+    readOnlyNotice?: boolean;
     children: ReactNode;
 }) {
     const t = useT();
@@ -63,7 +66,7 @@ export function CollectionShell({
             ? t('collection.notYet')
             : common.distribution === 'closed'
               ? t('collection.closed')
-              : !canEdit && module !== 'participation'
+              : !canEdit && readOnlyNotice
                 ? t('collection.readOnly')
                 : null;
     const survey = common.window;

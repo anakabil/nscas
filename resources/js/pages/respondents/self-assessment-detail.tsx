@@ -29,7 +29,7 @@ export default function SelfAssessmentDetail(props: CollectionCommon & { detail:
     const d = props.detail;
 
     return (
-        <CollectionShell module="selfAssessments" common={props} canEdit={false}>
+        <CollectionShell module="selfAssessments" common={props} canEdit={false} readOnlyNotice={false}>
             <Link
                 href={props.backHref}
                 className="inline-flex items-center gap-2 text-sm font-medium text-maroon hover:underline"

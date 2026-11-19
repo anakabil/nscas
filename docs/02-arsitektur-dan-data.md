@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 sampai R3)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R4)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -74,6 +74,8 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `climate_dimensions`, `climate_items` | Dimensi dan butir skala iklim, termasuk penanda butir terbalik | R3. Dari `seed/skala-iklim-draf.json` (status draf) |
 | `survey_responses` | Asesmen, unit, strata, versi instrumen, bahasa, tanggal kirim (WIB, tanpa jam), rentang durasi, tanda mutu, status dikeluarkan dari analisis | R3. Anonim (aturan 2): UUID versi 4 acak, tanpa cap waktu, tanpa kolom atau kunci asing ke token dan daftar responden |
 | `characteristic_answers`, `climate_answers` | Tingkat per karakteristik (kosong untuk Tidak tahu) dan nilai 1 sampai 5 per butir iklim | R3. UUID versi 4 acak; urutan fisik baris diacak setiap malam (`nscas:shuffle-survey-rows`) |
+| `self_assessments` | Penilaian mandiri manajemen: asesmen, unit, token yang berlaku, nama dan jabatan pengisi, status DRAFT atau SUBMITTED, waktu kirim | R4. Teridentifikasi dan diaudit; token jenis SELF_ASSESSMENT pada `access_tokens` dapat diganti tanpa kehilangan draf |
+| `self_assessment_answers` | Tingkat, alasan (paling sedikit 50 karakter saat kirim), dan id bukti per karakteristik | R4. Terkunci setelah dikirim; penautan bukti diisi sejak R5 |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
@@ -85,7 +87,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R4 | `self_assessments`, `self_assessment_answers` |
 | R5 | `evidence_items`, `evidence_versions`, `observation_windows`, `observations` |
 | R6 | `validation_sessions`, `validation_ratings`, `validation_plans` |
 | R7 | `evidence_ratings`, `score_runs`, `panel_adjustments` |

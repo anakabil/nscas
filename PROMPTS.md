@@ -18,8 +18,8 @@ Cara membangun ulang sebuah modul:
 | R1 | Administrasi dan konfigurasi asesmen, dasbor progres di beranda | 1 | Selesai |
 | R2 | Responden, undangan, kode QR, partisipasi | 2 | Selesai |
 | R3 | Survei responden | 2 | Selesai |
-| R4 | Penilaian mandiri manajemen | 2 | Berikutnya |
-| R5 | Bukti dokumen dan observasi lapangan | 2 | |
+| R4 | Penilaian mandiri manajemen | 2 | Selesai |
+| R5 | Bukti dokumen dan observasi lapangan | 2 | Berikutnya |
 | R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | |
 | R7 | Penilaian asesor dan rapat panel | 4 | |
 | R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | |
@@ -55,7 +55,7 @@ Dasbor dibangun pada fase R1 dengan ukuran tahap perencanaan, kesiapan menuju st
 |---|---|
 | R2 (selesai) | Responden terdaftar dan token terbit; survei selesai dibanding sasaran kalkulator sampel; jumlah strata di bawah ambang partisipasi minimum |
 | R3 (selesai) | Survei selesai dihitung dari token secara langsung pada dasbor dan halaman Partisipasi, per unit dan strata, dengan jumlah di bawah ambang sel disembunyikan; tren harian dari cuplikan pukul 23.00 WIB |
-| R4 | Penilaian mandiri manajemen yang selesai |
+| R4 (selesai) | Penilaian mandiri terkirim dibanding yang diterbitkan |
 | R5 | Dokumen bukti per tema; proyek yang sudah diobservasi dibanding sasaran |
 | R6 | Wawancara dan diskusi kelompok terarah dibanding sasaran; status mutu data |
 | R7 | Sub-tema yang sudah dinilai dua asesor; rapat panel |
@@ -88,7 +88,10 @@ Rujukan versi 1: `src/app/s/[token]`, `src/lib/survey`, `docs/arsip-v1/02` bagia
 4. Halaman survei tidak memuat kode konsol; muatan di bawah 350 KB (tes).
 5. Teks persetujuan memakai `config('nscas.data_location')`.
 
-## R4. Penilaian mandiri manajemen
+## R4. Penilaian mandiri manajemen (selesai)
+
+Hasil: administrator klien menerbitkan tautan penilaian mandiri per orang (nama, jabatan, unit; tautan ditampilkan sekali), mencabut, dan menerbitkan ulang tanpa kehilangan draf; asesor dan administrator klien melihat progres dan rincian jawaban. Formulir `/sa/{token}` berupa paket ringan tanpa kode konsol: pemberitahuan bahwa penilaian teridentifikasi, identitas pengisi, satu karakteristik per layar dengan pernyataan berurutan acak tanpa nomor tingkat, alasan wajib paling sedikit 50 karakter, draf disimpan di server setiap berpindah layar, pemeriksaan akhir, lalu kirim sekali dan terkunci. Setiap perubahan dicatat di jejak audit. Penautan bukti dokumen menunggu modul Bukti (R5); kolomnya sudah tersedia. Dasbor beranda menampilkan penilaian mandiri terkirim dibanding yang diterbitkan. Tes: `tests/Unit/Domain/SelfAssessment`, `tests/Feature/SelfAssessment`.
+
 
 Rujukan versi 1: `src/app/sa/[token]`, `src/lib/self-assessment`.
 
