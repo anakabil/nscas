@@ -33,7 +33,7 @@ Gradasi logam, dipakai hemat:
 2. Emas adalah aksen, bukan warna dasar. Dalam satu gambar, luas emas paling banyak sekitar 10 persen. Satu ikon hanya memiliki satu unsur emas.
 3. Tanpa teks, huruf, atau angka di dalam gambar. Tulisan dipasang di antarmuka agar dapat diterjemahkan dan tetap tajam.
 4. Tanpa bentuk tangga, segel, medali, pita, stempel, atau karangan daun. Bentuk itu dapat dikira tanda sertifikasi, padahal NSCAS adalah pengukuran internal.
-5. Huruf antarmuka: Playfair Display untuk judul dan tulisan merek, Plus Jakarta Sans untuk teks. Keduanya dipasang lokal.
+5. Huruf antarmuka: Bodoni Moda untuk judul dan tulisan merek, Instrument Sans untuk teks. Keduanya dipasang lokal (docs/05 bagian 1.2).
 
 ### 1.3 Aturan K3 untuk gambar yang memuat pekerja
 
@@ -83,7 +83,7 @@ Di bidang terang, urutan perak dibalik (makin gelap) agar busur keempat tetap pa
 | L03 | `public/favicon.svg`, `public/favicon.ico` | Lima busur tebal tanpa monogram di persegi membulat hitam | Ikon tab peramban, 16 sampai 48 piksel |
 | L04 | `public/apple-touch-icon.png` | Simbol tanpa garis skala di bidang hitam penuh | Layar utama telepon, 180 piksel |
 | L05 | `public/brand/nscas-app-icon-192.png`, `-512.png` | Sama dengan L04; simbol di zona aman 80 persen | Ikon aplikasi yang dapat dipasang |
-| L06 | Komponen `NscasLockup` | Simbol, tulisan NSCAS berhuruf Playfair Display berjarak lebar, dan baris "oleh Nusa Safety" berwarna emas | Kepala halaman, halaman masuk, surel |
+| L06 | Komponen `NscasLockup` | Simbol, tulisan NSCAS berhuruf Bodoni Moda berjarak lebar, dan baris "oleh Nusa Safety" berwarna emas | Kepala halaman, halaman masuk, surel |
 
 Tulisan NSCAS selalu berupa teks, bukan gambar. Sumber vektornya ada di `resources/js/components/brand/nscas-mark.tsx`.
 

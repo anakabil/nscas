@@ -14,19 +14,19 @@ export default function Pending({ area, buildPhase }: { area: string; buildPhase
             <Head title={title} />
             <Container className="py-14">
                 <article
-                    className="frame-silver mx-auto max-w-2xl rounded-2xl p-8 sm:p-10"
+                    className="frame-silver mx-auto max-w-2xl rounded-lg p-8 sm:p-10"
                     data-testid="pending-page"
                     data-area={area}
                 >
                     <div className="flex items-start gap-5">
                         <span
                             aria-hidden
-                            className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-obsidian text-silver-bright"
+                            className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-obsidian text-silver-bright"
                         >
                             {Icon ? <Icon className="size-6" strokeWidth={1.5} /> : null}
                         </span>
                         <div className="space-y-2">
-                            <h1 className="font-display text-2xl font-semibold text-obsidian">{title}</h1>
+                            <h1 className="font-display text-[1.85rem] leading-tight text-obsidian">{title}</h1>
                             <p className="text-sm text-muted-foreground">{t(`accountMenu.${area}.hint`)}</p>
                         </div>
                     </div>

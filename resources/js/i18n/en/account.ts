@@ -22,19 +22,19 @@ export const account = {
         },
         forgotPassword: {
             title: 'Forgot password',
-            description: 'Enter your email address to receive a password reset link.',
-            submit: 'Email password reset link',
+            description: 'Enter your account email address. A link to reset your password will be sent to that address.',
+            submit: 'Send reset link',
             returnTo: 'Or return to',
             returnLink: 'the sign-in page',
         },
         resetPassword: {
             title: 'Reset password',
-            description: 'Enter your new password below.',
+            description: 'Enter a new password for your account.',
             submit: 'Reset password',
         },
         confirmPassword: {
             title: 'Confirm password',
-            description: 'The page you are opening is protected. Enter your password again before continuing.',
+            description: 'The page you are opening is protected. Enter your password again to continue.',
             submit: 'Confirm password',
         },
         twoFactorChallenge: {
@@ -45,11 +45,11 @@ export const account = {
             },
             recovery: {
                 heading: 'Recovery code',
-                description: 'Enter one of your recovery codes to confirm that this account is yours.',
+                description: 'Enter one of your recovery codes to prove that this account is yours.',
                 placeholder: 'Enter recovery code',
             },
             submit: 'Continue',
-            alternative: 'or you can',
+            alternative: 'Or you can',
             useRecoveryCode: 'sign in with a recovery code',
             useCode: 'sign in with a verification code',
         },
@@ -57,7 +57,7 @@ export const account = {
     settings: {
         twoFactorRequired: 'Your role requires two-step verification. Enable it before continuing.',
         save: 'Save',
-        errorTitle: 'Something went wrong.',
+        errorTitle: 'Something went wrong',
         profile: {
             title: 'Profile settings',
             heading: 'Profile',
@@ -74,7 +74,7 @@ export const account = {
             description: 'Use a long, random password to keep your account secure.',
             current: 'Current password',
             new: 'New password',
-            confirmation: 'Confirm password',
+            confirmation: 'Confirm new password',
         },
         twoFactor: {
             heading: 'Two-step verification',
@@ -93,11 +93,10 @@ export const account = {
             enableDescription:
                 'To finish enabling two-step verification, scan the QR code or enter the setup key in your authenticator app.',
             enabledTitle: 'Two-step verification is enabled',
-            enabledDescription:
-                'Two-step verification is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-            verifyTitle: 'Check the verification code',
+            enabledDescription: 'Scan the QR code or enter the setup key in your authenticator app.',
+            verifyTitle: 'Confirm the verification code',
             verifyDescription: 'Enter the {length}-digit code from your authenticator app.',
-            manualEntry: 'or enter the setup key manually',
+            manualEntry: 'Or enter the setup key manually',
             continue: 'Continue',
             close: 'Close',
             back: 'Back',
@@ -106,14 +105,14 @@ export const account = {
         recoveryCodes: {
             heading: 'Recovery codes',
             description:
-                'Recovery codes let you sign in again if you lose the device that holds your authenticator app. Store them in a secure password manager.',
+                'Recovery codes let you sign in again if you lose the device your authenticator app is installed on. Store them in a secure password manager app.',
             show: 'Show recovery codes',
             hide: 'Hide recovery codes',
             regenerate: 'Regenerate codes',
             listLabel: 'Recovery codes',
             loading: 'Loading recovery codes',
             usageBefore:
-                'Each recovery code can be used once to sign in to your account and is removed after use. If you need new codes, select',
+                'Each recovery code can be used only once to sign in to your account and is then removed. If you need new codes, select',
             usageAfter: 'above.',
         },
     },

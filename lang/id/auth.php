@@ -13,9 +13,9 @@ return [
     |
     */
 
-    'failed' => 'Surel atau kata sandi salah. Periksa kembali, lalu coba lagi.',
-    'password' => 'Kata sandi yang Anda masukkan salah.',
+    'failed' => 'Alamat surel atau kata sandi tidak sesuai. Periksa kembali, lalu coba lagi.',
+    'password' => 'Kata sandi yang Anda masukkan tidak sesuai. Periksa kembali, lalu coba lagi.',
     'throttle' => 'Terlalu banyak percobaan masuk. Coba lagi dalam :seconds detik.',
-    'inactive' => 'Akun ini sudah dinonaktifkan. Hubungi administrator organisasi Anda.',
+    'inactive' => 'Akun ini telah dinonaktifkan. Hubungi administrator organisasi Anda.',
 
 ];

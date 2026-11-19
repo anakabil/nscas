@@ -40,12 +40,22 @@ Aturan warna:
 
 | Huruf | Pemakaian |
 |---|---|
-| Playfair Display (kelas `font-display`) | Judul halaman, judul bagian, tulisan merek NSCAS, angka hiasan |
-| Plus Jakarta Sans | Semua teks lain |
+| Bodoni Moda (kelas `font-display`) | Judul halaman, judul bagian, tulisan merek NSCAS, angka hiasan. Ketebalan bawaan 500; kata yang ditekankan memakai miring (`em`), bukan tebal |
+| Instrument Sans | Semua teks lain, termasuk tabel dan formulir |
 
-Keduanya dipasang lokal dari paket npm. Halaman tidak pernah memanggil layanan huruf pihak ketiga. Halaman survei responden hanya memuat Plus Jakarta Sans.
+Dasar pemilihan. Rekomendasi palet tipografi Adobe untuk kesan mewah, anggun, dan klasik menempatkan huruf didone (Didot) di urutan teratas. Didot berlisensi komersial dan tidak dapat dipasang lokal tanpa lisensi, sehingga dipakai Bodoni Moda, huruf didone berlisensi terbuka (OFL 1.1) dengan sumbu ukuran optik. Teks kerja memakai Instrument Sans, grotesk tenang yang tidak bersaing dengan judul. Pasangan ini diuji berdampingan dengan empat pasangan lain (termasuk Playfair Display dan Plus Jakarta Sans versi sebelumnya) pada contoh kepala halaman, kartu, dan tabel angka.
 
-Label kecil berhuruf besar dengan jarak lebar memakai kelas `eyebrow`.
+Aturan huruf:
+
+1. Ukuran optik Bodoni dikunci pada 18 untuk layar biasa dan 30 untuk layar beresolusi tinggi. Ukuran optik otomatis membuat garis rambut terlalu tipis dan tampak putus pada layar 1x.
+2. Bodoni hanya untuk ukuran 20 piksel ke atas. Di bawah itu pakai Instrument Sans.
+3. Angka data memakai kelas `numeral` (angka tabular dan setinggi huruf besar) agar kolom rata.
+4. Judul memakai pemenggalan baris seimbang; paragraf memakai pemenggalan yang menghindari satu kata di baris terakhir.
+5. Berkas huruf: Instrument Sans sekitar 30 KB dan Bodoni Moda sekitar 46 KB per gaya untuk huruf Latin. Halaman survei responden hanya memuat Instrument Sans.
+
+Keduanya dipasang lokal dari paket npm. Halaman tidak pernah memanggil layanan huruf pihak ketiga.
+
+Label kecil berhuruf besar dengan jarak lebar memakai kelas `eyebrow`, didahului garis emas pendek pada judul bagian.
 
 ### 1.3 Unsur khas
 
@@ -56,6 +66,10 @@ Label kecil berhuruf besar dengan jarak lebar memakai kelas `eyebrow`.
 | `frame-gold` | Kartu dengan garis tepi gradasi emas | Hanya kartu tahap yang sedang berjalan |
 | `hairline-silver`, `hairline-gold` | Garis tipis yang memudar di kedua ujung | Pemisah |
 | `text-gold-metal`, `text-silver-metal` | Teks bergradasi logam | Hanya di bidang gelap, untuk momen merek |
+| `frame-obsidian` | Bingkai ganda tipis di bidang gelap: garis luar perak samar, garis dalam emas sangat halus | Panel asesmen yang ditampilkan di beranda |
+| `rule-ornament` | Garis rambut perak dengan belah ketupat emas di tengah | Satu kali per bagian besar, misalnya panel halaman masuk |
+
+Sudut kartu dan tombol sengaja kecil (`--radius` 0,375 rem) untuk kesan presisi dan resmi. Ikon tahap pada kartu ditempatkan di dalam lingkaran bergaris perak; tahap yang berjalan memakai lingkaran hitam dengan cincin emas.
 
 ### 1.4 Logo dan ikon
 
@@ -65,7 +79,7 @@ Ikon enam tahap memakai set khusus di `components/icons/stage-icons.tsx`: garis 
 
 ## 2. Pola halaman
 
-1. Beranda menampilkan dua sudut pandang menu: menurut tahap penilaian (enam kartu) dan menurut jenis akun (ubin tugas utama), ditambah menu akun. Keenam tahap selalu tampil agar pengguna melihat seluruh metode; halaman di dalamnya hanya yang boleh dibuka jenis akun tersebut.
+1. Beranda menampilkan dua sudut pandang menu: menurut tahap asesmen (enam kartu) dan menurut jenis akun (ubin tugas utama), ditambah menu akun. Keenam tahap selalu tampil agar pengguna melihat seluruh metode; halaman di dalamnya hanya yang boleh dibuka jenis akun tersebut.
 2. Setiap kartu tahap memuat nomor, ikon, keadaan (Selesai, Sedang berjalan, Berikutnya), ringkasan satu kalimat, dan daftar halamannya.
 3. Kepala asesmen selalu memuat organisasi, nama asesmen, periode, status, tahap ("Tahap 2 dari 6"), dan penanda enam ruas.
 4. Pusat asesmen menampilkan syarat menuju status berikutnya.

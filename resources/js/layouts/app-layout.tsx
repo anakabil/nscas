@@ -77,7 +77,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                         className="size-4 text-white/60 transition-transform group-open:rotate-180"
                                     />
                                 </summary>
-                                <div className="absolute right-0 z-30 mt-2 w-64 rounded-xl border border-border bg-card p-2 text-card-foreground shadow-xl">
+                                <div className="absolute right-0 z-30 mt-2 w-64 rounded-lg border border-border bg-card p-2 text-card-foreground shadow-xl">
                                     <p className="px-3 pt-2 pb-3 text-xs text-muted-foreground">
                                         {t('nav.signedInAs', { name: user.name })}
                                     </p>

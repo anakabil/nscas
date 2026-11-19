@@ -23,14 +23,14 @@ export default function AssessmentModule({ assessment, module }: Props) {
             <AssessmentHeader assessment={assessment} back={{ href: assessment.href, label: t('module.backToHub') }} />
             <Container className="py-12">
                 <article
-                    className="frame-silver mx-auto max-w-2xl rounded-2xl p-8 sm:p-10"
+                    className="frame-silver mx-auto max-w-2xl rounded-lg p-8 sm:p-10"
                     data-testid="module-page"
                     data-module={module.key}
                 >
                     <div className="flex items-start gap-5">
                         <span
                             aria-hidden
-                            className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-obsidian text-silver-bright"
+                            className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-obsidian text-silver-bright"
                         >
                             {Icon ? <Icon className="size-6" strokeWidth={1.5} /> : null}
                         </span>
@@ -40,7 +40,7 @@ export default function AssessmentModule({ assessment, module }: Props) {
                                     ? t('module.stageLabel', { number: stage.number, stage: t(`stages.${stage.key}.title`) })
                                     : t('module.crossStageLabel')}
                             </p>
-                            <h2 className="font-display text-2xl font-semibold text-obsidian">{title}</h2>
+                            <h2 className="font-display text-[1.85rem] leading-tight text-obsidian">{title}</h2>
                             <p className="text-sm text-muted-foreground">{t(`modules.${module.key}.hint`)}</p>
                         </div>
                     </div>

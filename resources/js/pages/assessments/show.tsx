@@ -2,21 +2,22 @@ import { Head } from '@inertiajs/react';
 import { Circle } from 'lucide-react';
 import { AssessmentHeader } from '@/components/nscas/assessment-header';
 import { Container, SectionHeading, StageCard, TaskTile } from '@/components/nscas/parts';
-import { useT } from '@/i18n';
+import { useLocale, useT } from '@/i18n';
 import type { AssessmentMenu } from '@/types/nscas';
 
 // Pusat asesmen: menu enam tahap, syarat menuju status berikutnya, dan halaman lintas tahap.
 export default function AssessmentShow({ assessment }: { assessment: AssessmentMenu }) {
     const t = useT();
+    const locale = useLocale();
     return (
         <>
             <Head title={assessment.name} />
             <AssessmentHeader assessment={assessment} back={{ href: '/home', label: t('hub.backToHome') }} />
             <Container className="space-y-14 py-12">
-                <section className="frame-silver rounded-xl p-6 sm:p-8" data-testid="next-step">
+                <section className="frame-silver rounded-lg p-7 sm:p-9" data-testid="next-step">
                     {assessment.next ? (
                         <div className="space-y-4">
-                            <h2 className="font-display text-xl font-semibold text-obsidian">
+                            <h2 className="font-display text-[1.5rem] leading-tight text-obsidian">
                                 {t('hub.nextTitle', { status: t(`statuses.${assessment.next.to}`) })}
                             </h2>
                             <ul className="grid gap-x-8 gap-y-2.5 text-sm sm:grid-cols-2">
@@ -32,7 +33,10 @@ export default function AssessmentShow({ assessment }: { assessment: AssessmentM
                                 ))}
                             </ul>
                             <p className="text-xs leading-relaxed text-muted-foreground">
-                                {t('hub.nextActor', { role: t(`roles.${assessment.next.actor}.name`) })} {t('hub.nextPending')}
+                                {t('hub.nextActor', {
+                                    role: t(`roles.${assessment.next.actor}.name`).toLocaleLowerCase(locale),
+                                })}{' '}
+                                {t('hub.nextPending')}
                             </p>
                         </div>
                     ) : (

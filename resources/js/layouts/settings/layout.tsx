@@ -15,7 +15,9 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     return (
         <Container className="py-10">
             <header className="space-y-2">
-                <h1 className="font-display text-3xl font-semibold text-obsidian">{t('settingsNav.title')}</h1>
+                <h1 className="font-display text-[2.25rem] leading-tight text-obsidian sm:text-[2.6rem]">
+                    {t('settingsNav.title')}
+                </h1>
                 <p className="text-sm text-muted-foreground">{t('settingsNav.description')}</p>
             </header>
             <div className="hairline-silver my-6" />
@@ -37,7 +39,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                         </Link>
                     ))}
                 </nav>
-                <section className="max-w-xl flex-1 space-y-12 rounded-xl border border-border bg-card p-6 sm:p-8">
+                <section className="max-w-xl flex-1 space-y-12 rounded-lg border border-border bg-card p-6 sm:p-8">
                     {children}
                 </section>
             </div>

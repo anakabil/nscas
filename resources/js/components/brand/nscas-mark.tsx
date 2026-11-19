@@ -118,7 +118,7 @@ export function NscasLockup({
             <span className="flex flex-col leading-none">
                 <span
                     className={cn(
-                        'font-display font-semibold tracking-[0.28em]',
+                        'font-display font-normal tracking-[0.3em]',
                         title,
                         tone === 'dark' ? 'text-white' : 'text-obsidian',
                     )}

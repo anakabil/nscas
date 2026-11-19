@@ -23,13 +23,16 @@ export default function AuthLayout({
         <div className="grid min-h-screen lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
             <aside className="bg-obsidian-dial relative hidden overflow-hidden text-white lg:flex lg:flex-col lg:justify-between lg:p-14">
                 <NscasLockup name={t('app.name')} byline={t('app.byline')} size="md" />
-                <div className="relative max-w-md space-y-6">
-                    <NscasMark detailed className="w-40 opacity-95" />
-                    <div className="space-y-4">
-                        <p className="eyebrow text-gold">{t('app.fullName')}</p>
-                        <p className="font-display text-3xl leading-snug font-medium text-white">{t('app.tagline')}</p>
+                <div className="relative max-w-md space-y-8">
+                    <NscasMark detailed className="w-44 opacity-95" />
+                    <div className="space-y-5">
+                        <p className="eyebrow flex items-center gap-3 text-gold">
+                            <span aria-hidden className="h-px w-10 bg-gold/80" />
+                            {t('app.fullName')}
+                        </p>
+                        <p className="font-display text-[2.35rem] leading-[1.12] text-white">{t('app.tagline')}</p>
                     </div>
-                    <div className="hairline-gold w-40" />
+                    <div className="rule-ornament w-48 opacity-90" />
                 </div>
                 <p className="text-xs text-white/55">{t('app.owner')}</p>
             </aside>
@@ -48,12 +51,10 @@ export default function AuthLayout({
                 </div>
                 <div className="flex flex-1 flex-col justify-center px-5 py-10 sm:px-10">
                     <div className="mx-auto w-full max-w-md">
-                        <div className="frame-silver rounded-2xl p-7 shadow-[0_24px_60px_-40px_rgb(17_17_19/0.45)] sm:p-9">
+                        <div className="frame-silver rounded-lg p-7 shadow-[0_30px_70px_-45px_rgb(17_17_19/0.5)] sm:p-10">
                             {title ? (
                                 <div className="mb-7 space-y-2">
-                                    <h1 className="font-display text-[1.7rem] leading-tight font-semibold text-obsidian">
-                                        {title}
-                                    </h1>
+                                    <h1 className="font-display text-[2rem] leading-[1.12] text-obsidian">{title}</h1>
                                     {description ? (
                                         <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
                                     ) : null}
