@@ -4,6 +4,7 @@ namespace App\Http\Presenters;
 
 use App\Domain\Access\Role;
 use App\Domain\Progress\ProgressCalculator;
+use App\Domain\Respondents\Participation;
 use App\Domain\Setup\ConditionEvaluator;
 use App\Domain\Setup\ConditionResult;
 use App\Domain\Setup\PlanningChecklist;
@@ -11,6 +12,7 @@ use App\Domain\Setup\SetupFacts;
 use App\Domain\Workflow\Stage;
 use App\Domain\Workflow\Workflow;
 use App\Models\Assessment;
+use App\Services\Respondents\ParticipationReport;
 use DateTimeImmutable;
 
 /**
@@ -36,6 +38,12 @@ final class ProgressPresenter
         );
         $planning = PlanningChecklist::items($facts, $status->parametersLocked());
         $moduleHref = static fn (?string $module): ?string => $module === null ? null : self::moduleHref($assessment, $module);
+        $surveyTarget = $assessment->parameter_snapshot['samplePlan']['result']['surveyTargetTotal']
+            ?? $assessment->parameter_draft['samplePlan']['result']['surveyTargetTotal']
+            ?? null;
+        // Jumlah selesai dari token, disembunyikan bila di bawah ambang sel (aturan 3).
+        $minCell = ParticipationReport::thresholds($assessment)[0];
+        $completed = Participation::maskCount($facts->completedSurveys, $minCell);
 
         return [
             'id' => $assessment->id,
@@ -68,9 +76,14 @@ final class ProgressPresenter
             'teamSize' => $facts->teamSize,
             'units' => $facts->unitCount,
             'workers' => $facts->workers,
-            'surveyTarget' => $assessment->parameter_snapshot['samplePlan']['result']['surveyTargetTotal']
-                ?? $assessment->parameter_draft['samplePlan']['result']['surveyTargetTotal']
-                ?? null,
+            'surveyTarget' => $surveyTarget,
+            'participation' => [
+                'roster' => $facts->rosterCount,
+                'tokens' => $facts->activeSurveyTokens,
+                'completed' => $completed,
+                'minCell' => $minCell,
+                'rateOfTarget' => $completed['suppressed'] || ! $surveyTarget ? null : $facts->completedSurveys / $surveyTarget,
+            ],
         ];
     }
 

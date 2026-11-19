@@ -71,6 +71,13 @@ export type AssessmentProgress = {
     units: number;
     workers: number;
     surveyTarget: number | null;
+    participation: {
+        roster: number;
+        tokens: number;
+        completed: { value: number | null; suppressed: boolean };
+        minCell: number;
+        rateOfTarget: number | null;
+    };
 };
 
 export type DashboardRow = AssessmentSummary & AssessmentProgress;

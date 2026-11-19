@@ -243,25 +243,7 @@ export function ProgressDashboard({ dashboard }: { dashboard: Dashboard }) {
                                         <ReadinessCell row={row} />
                                     </td>
                                     <td className="px-4 py-4">
-                                        {row.stage === 1 ? (
-                                            <div className="space-y-1.5">
-                                                <p className="numeral text-sm text-foreground">
-                                                    {t('dashboard.planning', {
-                                                        done: row.planning.done,
-                                                        total: row.planning.total,
-                                                    })}
-                                                </p>
-                                                <Bar
-                                                    value={row.planning.done / row.planning.total}
-                                                    label={t('dashboard.planning', {
-                                                        done: row.planning.done,
-                                                        total: row.planning.total,
-                                                    })}
-                                                />
-                                            </div>
-                                        ) : (
-                                            <p className="text-sm text-muted-foreground">{t('dashboard.planningLocked')}</p>
-                                        )}
+                                        <StageProgressCell row={row} />
                                     </td>
                                     <td className="px-4 py-4">
                                         <ScheduleCell row={row} />
@@ -286,5 +268,46 @@ export function ProgressDashboard({ dashboard }: { dashboard: Dashboard }) {
             )}
             <p className="text-xs leading-relaxed text-muted-foreground">{t('dashboard.legend')}</p>
         </section>
+    );
+}
+
+/**
+ * Kemajuan tahap berjalan: kelengkapan halaman perencanaan pada tahap 1, lalu partisipasi survei terhadap sasaran
+ * sejak tahap 2. Jumlah selesai di bawah ambang sel tidak ditampilkan (aturan 3).
+ */
+function StageProgressCell({ row }: { row: DashboardRow }) {
+    const t = useT();
+    const locale = useLocale();
+    if (row.stage === 1) {
+        const label = t('dashboard.planning', { done: row.planning.done, total: row.planning.total });
+        return (
+            <div className="space-y-1.5">
+                <p className="numeral text-sm text-foreground">{label}</p>
+                <Bar value={row.planning.done / row.planning.total} label={label} />
+            </div>
+        );
+    }
+    if (row.stage === null) {
+        return <p className="text-sm text-muted-foreground">{t('dashboard.closed')}</p>;
+    }
+    const p = row.participation;
+    const completed = p.completed.suppressed
+        ? t('dashboard.participation.suppressed', { min: p.minCell })
+        : number(p.completed.value ?? 0, locale);
+    const label =
+        row.surveyTarget !== null
+            ? t('dashboard.participation.ofTarget', { completed, target: number(row.surveyTarget, locale) })
+            : t('dashboard.participation.completed', { completed });
+    return (
+        <div className="space-y-1.5" data-testid="participation-cell">
+            <p className="numeral text-sm text-foreground">{label}</p>
+            {p.rateOfTarget !== null ? <Bar value={Math.min(1, p.rateOfTarget)} label={label} /> : null}
+            <p className="numeral text-xs text-muted-foreground">
+                {t('dashboard.participation.distribution', {
+                    roster: number(p.roster, locale),
+                    tokens: number(p.tokens, locale),
+                })}
+            </p>
+        </div>
     );
 }
