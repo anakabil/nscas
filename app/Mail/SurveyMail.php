@@ -18,7 +18,10 @@ class SurveyMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /** @param  'invitation'|'reminder'|'continue'  $kind  "continue": token yang sudah dibuka tidak diganti, tanpa tautan baru. */
+    /**
+     * @param  'invitation'|'reminder'|'continue'|'selfAssessment'  $kind  "continue": token yang sudah dibuka tidak
+     *                                                                     diganti, tanpa tautan baru. "selfAssessment": tautan penilaian mandiri manajemen, tidak anonim.
+     */
     public function __construct(
         public string $kind,
         public string $recipientName,
@@ -51,13 +54,20 @@ class SurveyMail extends Mailable
             $deadline = $t('deadline', ['date' => $local->translatedFormat($locale === 'id' ? 'j F Y, H.i' : 'j F Y, H:i').' WIB']);
         }
 
+        $self = $this->kind === 'selfAssessment';
+
         return [
             'locale' => $locale,
             'greeting' => $t('greeting', ['name' => $this->recipientName]),
             'intro' => $t("{$this->kind}.intro", ['organization' => $this->organization]),
-            'anonymity' => $t('anonymity'),
-            'duration' => $this->kind === 'continue' ? null : $t('duration'),
-            'button' => $t('button'),
+            // Penilaian mandiri tidak anonim dan diberi tahu demikian (CLAUDE.md aturan 2).
+            'anonymity' => $self ? $t('selfAssessment.notice') : $t('anonymity'),
+            'duration' => match (true) {
+                $self => $t('selfAssessment.duration'),
+                $this->kind === 'continue' => null,
+                default => $t('duration'),
+            },
+            'button' => $self ? $t('selfAssessment.button') : $t('button'),
             'linkIntro' => $t('linkIntro'),
             'personal' => $t('personal'),
             'deadline' => $deadline,

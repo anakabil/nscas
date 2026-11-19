@@ -34,6 +34,9 @@ export const respondents = {
             opensAt: 'Opens',
             closesAt: 'Closes',
             save: 'Save survey window',
+            close: 'Close the survey now',
+            confirmClose:
+                'Close the survey now? Links and QR codes stop working. The survey can be reopened by changing the closing time.',
         },
         import: {
             title: 'Import respondent list',
@@ -270,6 +273,15 @@ export const respondents = {
             revoked: 'Link revoked.',
             newLink: 'New link (shown only once):',
             view: 'View answers',
+            email: 'Send by email',
+            emailed: 'Sent by email',
+        },
+        email: {
+            title: 'Send the link to {name}',
+            hint: 'A new link is sent by email and the previous link stops working. The draft is kept.',
+            address: 'Email address',
+            send: 'Send',
+            cancel: 'Cancel',
         },
         detail: {
             respondent: '{name}, {position}',

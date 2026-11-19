@@ -34,5 +34,14 @@ final readonly class SetupFacts
         public int $characteristicCount = 0,
         public int $projectCount = 0,
         public int $projectsObserved = 0,
+        // Fase R6: gerbang mutu data dan validasi lapangan.
+        public bool $surveyClosed = false,
+        public bool $participationReviewed = false,
+        public int $selfAssessmentsPending = 0,
+        public bool $dataQualityReviewed = false,
+        public bool $validationPlanSet = false,
+        public bool $validationSessionsCompleted = false,
+        public bool $siteVisitCompleted = false,
+        public int $characteristicsReviewed = 0,
     ) {}
 }

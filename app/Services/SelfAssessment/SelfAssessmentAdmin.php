@@ -4,6 +4,7 @@ namespace App\Services\SelfAssessment;
 
 use App\Domain\Access\Role;
 use App\Domain\Respondents\SurveyWindow;
+use App\Jobs\SendSelfAssessmentLink;
 use App\Models\AccessToken;
 use App\Models\Assessment;
 use App\Models\Characteristic;
@@ -66,6 +67,7 @@ final class SelfAssessmentAdmin
                 'issuedAt' => $sa->created_at->toIso8601String(),
                 'submittedAt' => $sa->submitted_at?->toIso8601String(),
                 'answered' => (int) $sa->answered_count,
+                'emailed' => $sa->respondent_email !== null,
                 'total' => $total,
             ])->all();
     }
@@ -99,6 +101,22 @@ final class SelfAssessmentAdmin
             Audit::record('selfAssessment.reissue', $sa, [], $locked, $actorRole);
 
             return self::link($issued['raw']);
+        });
+    }
+
+    /**
+     * Mengirim tautan baru lewat surel (keputusan R4). Alamat disimpan terenkripsi; token dibuat oleh pekerja antrean
+     * tepat sebelum surel dikirim, sehingga tautan lama berhenti berlaku saat surel terkirim.
+     */
+    public function sendByEmail(Assessment $assessment, string $id, string $email, Role $actorRole): void
+    {
+        DB::transaction(function () use ($assessment, $id, $email, $actorRole) {
+            $locked = $this->lockOpen($assessment);
+            $sa = $this->changeable($locked, $id);
+            $sa->forceFill(['respondent_email' => $email])->save();
+            // Alamat tidak ditulis ke jejak audit; cukup fakta bahwa tautan dikirim lewat surel.
+            Audit::record('selfAssessment.email', $sa, ['after' => ['channel' => 'EMAIL']], $locked, $actorRole);
+            SendSelfAssessmentLink::dispatch($locked->id, $sa->id)->afterCommit();
         });
     }
 

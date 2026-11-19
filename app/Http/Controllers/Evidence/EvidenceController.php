@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Evidence;
 
 use App\Domain\Access\Permissions;
 use App\Domain\Access\Resource;
+use App\Domain\Access\Role;
 use App\Domain\Evidence\EvidenceRules;
 use App\Domain\Files\FileType;
 use App\Domain\Setup\UnitTree;
@@ -13,6 +14,7 @@ use App\Models\Unit;
 use App\Services\Evidence\EvidenceService;
 use App\Services\Files\ObjectStore;
 use App\Services\Respondents\RespondentScope;
+use App\Services\Validation\ValidationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,9 +28,10 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
  */
 class EvidenceController extends CollectionController
 {
-    public function index(Request $request, Assessment $assessment, EvidenceService $evidence): Response
+    public function index(Request $request, Assessment $assessment, EvidenceService $evidence, ValidationService $validation): Response
     {
         $roles = $this->pageRoles($request, $assessment, 'evidence');
+        $assessor = in_array(Role::LeadAssessor, $roles, true) || in_array(Role::Assessor, $roles, true);
         $scope = RespondentScope::units($request->user(), $assessment, $roles);
         $units = Unit::where('assessment_id', $assessment->id)->get(['id', 'parent_id', 'name']);
         $flat = UnitTree::flatten($units->map(fn (Unit $u) => ['id' => $u->id, 'parentId' => $u->parent_id, 'name' => $u->name])->all());
@@ -43,6 +46,9 @@ class EvidenceController extends CollectionController
                 array_filter($flat, fn (array $u) => $scope === null || in_array($u['id'], $scope, true)),
             )),
             'checklist' => $evidence->checklist($assessment, $scope),
+            // Pernyataan asesor bahwa bukti satu karakteristik sudah ditinjau (syarat evidence_reviewed, fase R6).
+            'canReview' => $assessor && ValidationService::evidenceReviewOpen($assessment->status),
+            'reviews' => $assessor ? $validation->evidenceReviews($assessment) : (object) [],
             'items' => $evidence->list($assessment, $scope),
             'maxBytes' => FileType::MAX_UPLOAD_BYTES,
             'urls' => [
@@ -149,5 +155,21 @@ class EvidenceController extends CollectionController
             'characteristicId' => (string) $l['characteristicId'],
             'requirementIds' => array_values(array_map('strval', $l['requirementIds'] ?? [])),
         ], $links));
+    }
+
+    /** Asesor menandai bukti satu karakteristik sudah ditinjau, atau menarik tanda itu. */
+    public function review(Request $request, Assessment $assessment, string $characteristic, ValidationService $validation): RedirectResponse
+    {
+        $roles = $this->pageRoles($request, $assessment, 'evidence');
+        $actor = in_array(Role::LeadAssessor, $roles, true) ? Role::LeadAssessor : (in_array(Role::Assessor, $roles, true) ? Role::Assessor : null);
+        abort_if($actor === null, 403);
+        $data = $request->validate([
+            'reviewed' => ['required', 'boolean'],
+            'note' => ['nullable', 'string', 'max:2000'],
+        ]);
+        $note = trim((string) ($data['note'] ?? ''));
+        $validation->reviewEvidence($assessment, $request->user(), $actor, $characteristic, (bool) $data['reviewed'], $note === '' ? null : $note);
+
+        return back()->with('status', 'saved');
     }
 }

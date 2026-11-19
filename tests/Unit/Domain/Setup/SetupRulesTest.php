@@ -145,10 +145,32 @@ class SetupRulesTest extends TestCase
 
     public function test_conditions_of_modules_not_yet_built_are_unknown_and_block_the_transition(): void
     {
-        $results = ConditionEvaluator::evaluate(Workflow::next(AssessmentStatus::DataCollection), $this->completeFacts());
+        $results = ConditionEvaluator::evaluate(Workflow::next(AssessmentStatus::Scoring), $this->completeFacts());
 
         $this->assertContains(null, array_map(fn ($r) => $r->met, $results));
         $this->assertFalse(ConditionEvaluator::allowed($results));
+    }
+
+    public function test_validation_gates_need_reviews_submitted_self_assessments_and_a_site_visit(): void
+    {
+        $toValidation = Workflow::next(AssessmentStatus::DataCollection);
+        $this->assertSame(
+            ['survey_closed', 'participation_reviewed', 'self_assessments_submitted', 'data_quality_reviewed', 'validation_plan_set'],
+            $toValidation->conditions,
+        );
+        $ready = new SetupFacts(surveyClosed: true, participationReviewed: true, selfAssessmentsSubmitted: 2, dataQualityReviewed: true, validationPlanSet: true);
+        $this->assertTrue(ConditionEvaluator::allowed(ConditionEvaluator::evaluate($toValidation, $ready)));
+
+        // Tautan aktif yang belum dikirim menahan transisi (keputusan R4).
+        $pending = new SetupFacts(surveyClosed: true, participationReviewed: true, selfAssessmentsSubmitted: 2, selfAssessmentsPending: 1, dataQualityReviewed: true, validationPlanSet: true);
+        $this->assertFalse(ConditionEvaluator::check('self_assessments_submitted', $pending));
+        $this->assertFalse(ConditionEvaluator::check('self_assessments_submitted', new SetupFacts));
+
+        $toScoring = Workflow::next(AssessmentStatus::Validation);
+        $this->assertSame(['validation_sessions_completed', 'site_visit_completed', 'evidence_reviewed'], $toScoring->conditions);
+        $noVisit = new SetupFacts(validationSessionsCompleted: true, characteristicCount: 30, characteristicsReviewed: 30);
+        $this->assertSame([true, false, true], array_map(fn ($r) => $r->met, ConditionEvaluator::evaluate($toScoring, $noVisit)));
+        $this->assertFalse(ConditionEvaluator::check('evidence_reviewed', new SetupFacts(characteristicCount: 30, characteristicsReviewed: 29)));
     }
 
     public function test_unit_scope_includes_every_unit_below_the_assigned_ones(): void

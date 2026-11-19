@@ -19,6 +19,8 @@ export const setup = {
     flash: {
         saved: 'Changes saved.',
         created: 'Created successfully.',
+        emailQueued: 'The email has been queued for sending.',
+        sessionsCreated: 'Validation sessions were created from the proposal.',
         transitioned: 'Assessment status changed.',
     },
     shell: {

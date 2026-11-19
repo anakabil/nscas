@@ -20,8 +20,8 @@ Cara membangun ulang sebuah modul:
 | R3 | Survei responden | 2 | Selesai |
 | R4 | Penilaian mandiri manajemen | 2 | Selesai |
 | R5 | Bukti dokumen dan observasi lapangan | 2 | Selesai |
-| R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | Berikutnya |
-| R7 | Penilaian asesor dan rapat panel | 4 | |
+| R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | Selesai |
+| R7 | Penilaian asesor dan rapat panel | 4 | Berikutnya |
 | R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | |
 | R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | |
 | R10 | Laporan dan komunikasi hasil | 5 | |
@@ -72,12 +72,13 @@ Pemilik proyek menyetujui seluruh rekomendasi Trustie pada 19 November 2026. Kep
 | R2 | Tautan, undangan, dan kode QR hanya diterbitkan administrator klien; kode QR boleh untuk satu strata; token yang sudah selesai tidak dapat dicabut atau diterbitkan ulang | Sudah berlaku |
 | R3 | Skala iklim tetap draf sampai ditelaah ahli dan diuji coba; batas laju 600 pembukaan dan 300 kiriman per menit; urutan pernyataan acak tanpa nomor tingkat | Sudah berlaku; telaah ahli di bagian Tugas di luar fase |
 | R3 | Trustie menyusun draf terjemahan Inggris isi instrumen untuk ditelaah | Tugas di luar fase |
-| R5 | Syarat `evidence_reviewed` berupa pernyataan tinjauan asesor per karakteristik; hitungan dua jenis bukti hanya penanda | R6 |
+| R5 | Syarat `evidence_reviewed` berupa pernyataan tinjauan asesor per karakteristik; hitungan dua jenis bukti hanya penanda | Sudah berlaku (R6) |
 | R5 | Asesor tetap hanya membaca bukti; dokumen yang diterima saat wawancara diunggah administrator klien dan dicatat pada catatan sesi | Sudah berlaku (matriks `docs/04`) |
 | R5 | Aplikasi web yang dapat dipasang (PWA) untuk halaman kamera observasi | R12 |
 | `docs/13` | D1 instrumen versi 2 berstruktur 5 tema dan 20 subtema, dengan instrumen versi 1 sebagai jembatan; D5 kode dan judul subtema SCL 2.0 di seed tanpa teks kriteria | Tugas di luar fase, sebelum R7 |
 | `docs/13` | D2 aturan penetapan tingkat per tema; D3 ambang 0,80 dan 0,50 sebagai awal; D4 fixture versi 2 | R7 |
-| `docs/13` | D6 paling sedikit satu kunjungan proyek fisik setiap asesmen | R6 |
+| `docs/13` | D6 paling sedikit satu kunjungan proyek fisik setiap asesmen | Sudah berlaku (R6) |
+| R4 | Tautan penilaian mandiri tetap diterbitkan administrator klien, dapat dikirim lewat surel Hostinger; syarat `self_assessments_submitted` (paling sedikit satu terkirim, tidak ada tautan aktif yang belum dikirim) | Sudah berlaku (R6) |
 | Bahasa | "Peninjau eksekutif"; "masa survei" dan "masa observasi" menggantikan "jendela"; "Pengaturan lengkap" | Sudah berlaku (`docs/05` butir 6 dan 8) |
 | Lokasi data | Persetujuan atas lokasi Singapura tetap sesuai rencana awal: rumusan diserahkan kepada klien untuk dibaca dan disetujui | `docs/04` bagian 1.1 |
 
@@ -138,7 +139,10 @@ Rujukan versi 1: `src/lib/evidence`, `src/lib/observations`, `src/app/o`, `src/l
 2. Pemetaan bukti ke karakteristik dan butir daftar periksa.
 3. Masa observasi per proyek; pengambilan foto dan video dari kamera di dalam aplikasi; waktu dari server; lokasi dan akurasinya; unggahan di luar radius ditandai.
 
-## R6. Mutu data, temuan awal, wawancara dan diskusi kelompok
+## R6. Mutu data, temuan awal, wawancara dan diskusi kelompok (selesai)
+
+Hasil: tahap 3 memiliki tiga halaman. Mutu data: partisipasi per strata dengan alasan tertulis untuk strata di bawah batas, alfa Cronbach per dimensi iklim, rwg per unit, dan jawaban bertanda yang dapat dikeluarkan dari analisis dengan alasan lalu dipulihkan (tanpa unit dan strata pada daftarnya), ditutup dengan tinjauan partisipasi dan tinjauan mutu data oleh asesor utama. Temuan awal: rata-rata berbobot jumlah pekerja strata per karakteristik dan kelompok jabatan, selisih persepsi manajemen dan pelaksana per karakteristik dan aspek, porsi "Tidak tahu", penilaian mandiri, jenis bukti, iklim per kelompok, dan usulan karakteristik fokus beserta alasannya; tanpa tingkat, dengan sel di bawah lima responden disembunyikan (`App\Domain\Findings\PreliminaryFindings`). Validasi: usulan sesi dari rencana sampel (wawancara manajemen dan operasional, diskusi kelompok terarah paling banyak delapan peserta, kunjungan proyek fisik dan daring; `App\Domain\Validation\SessionProposal`), jadwal WIB, tautan rapat HTTPS, narasumber yang disimpan terpisah dari catatan, panduan pertanyaan per kelompok jabatan dari `seed/panduan-validasi-v1.json` yang dapat diubah asesor utama, nilai 1,0 sampai 5,0 kelipatan 0,5 milik setiap asesor, persetujuan perekaman, dan catatan umpan balik harian. Asesor menandai bukti setiap karakteristik sudah ditinjau dari halaman Bukti dokumen. Tombol Tutup survei sekarang di halaman Responden, dan tautan penilaian mandiri dapat dikirim lewat surel (alamat terenkripsi, token baru dibuat saat surel dikirim). Syarat baru diperiksa otomatis: `survey_closed`, `participation_reviewed`, `self_assessments_submitted`, `data_quality_reviewed`, `validation_plan_set`, `validation_sessions_completed`, `site_visit_completed`, `evidence_reviewed`. Setiap perubahan tercatat di jejak audit. Tes: `tests/Unit/Domain/{Findings,Validation}`, `tests/Feature/Validation`; seluruh halaman baru diperiksa pada lebar 360, 768, 1024, dan 1440 piksel tanpa luapan.
+
 
 Rujukan versi 1: `src/lib/validation`, `src/app/(console)/assessments/[id]/validation`, `dashboard/quality`, `src/lib/survey/rules.ts`. Dasar: `docs/12` temuan T1, T3, T4.
 

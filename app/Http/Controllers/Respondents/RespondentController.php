@@ -182,6 +182,15 @@ class RespondentController extends CollectionController
         return back()->with('status', 'saved');
     }
 
+    public function closeSurvey(Request $request, Assessment $assessment, RespondentDistribution $service): RedirectResponse
+    {
+        $actor = $this->windowWriter($this->pageRoles($request, $assessment, 'respondents'));
+        abort_if($actor === null, 403);
+        $service->closeSurvey($assessment, $actor);
+
+        return back()->with('status', 'saved');
+    }
+
     public function assign(Request $request, Assessment $assessment, RespondentDistribution $service): RedirectResponse
     {
         $roles = $this->pageRoles($request, $assessment, 'respondents');

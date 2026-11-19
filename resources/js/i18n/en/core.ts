@@ -129,6 +129,8 @@ export const core = {
         participation_reviewed: 'Participation in every stratum meets the minimum or has a written justification',
         data_quality_reviewed: 'Data quality statistics have been reviewed',
         validation_plan_set: 'The validation plan has been prepared from the early findings',
+        self_assessments_submitted: 'Management self-assessments have been sent and none is still pending',
+        site_visit_completed: 'At least one physical project visit has been carried out',
         validation_sessions_completed: 'Interviews and focus group discussions were held as planned',
         evidence_reviewed: 'Evidence completeness for every characteristic has been reviewed',
         two_assessor_ratings: 'Every characteristic is rated by two assessors',

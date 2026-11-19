@@ -21,6 +21,8 @@ export const setup = {
         saved: 'Perubahan berhasil disimpan.',
         created: 'Data berhasil dibuat.',
         transitioned: 'Status asesmen berhasil diubah.',
+        emailQueued: 'Surel masuk antrean pengiriman.',
+        sessionsCreated: 'Sesi validasi dibuat dari usulan.',
     },
     shell: {
         navTitle: 'Tahap 1. Perencanaan',

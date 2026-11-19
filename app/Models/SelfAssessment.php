@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property string $respondent_position
  * @property string $status
  * @property Carbon|null $submitted_at
+ * @property string|null $respondent_email
  * @property Carbon $created_at
  */
 class SelfAssessment extends Model
@@ -29,7 +30,7 @@ class SelfAssessment extends Model
 
     protected function casts(): array
     {
-        return ['submitted_at' => 'datetime'];
+        return ['submitted_at' => 'datetime', 'respondent_email' => 'encrypted'];
     }
 
     /** @return HasMany<SelfAssessmentAnswer, $this> */

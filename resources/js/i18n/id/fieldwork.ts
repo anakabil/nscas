@@ -22,6 +22,14 @@ export const fieldwork = {
             notMet: 'belum terpenuhi',
             uploadFor: 'Unggah bukti untuk karakteristik ini',
         },
+        review: {
+            summary: 'Ditinjau asesor',
+            done: 'Ditinjau',
+            by: 'Ditinjau oleh {name}, {date}.',
+            note: 'Catatan tinjauan (opsional)',
+            mark: 'Tandai sudah ditinjau',
+            withdraw: 'Tarik tanda tinjauan',
+        },
         items: {
             empty: 'Belum ada bukti yang diunggah.',
             version: 'Versi {version}',

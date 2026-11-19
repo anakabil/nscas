@@ -22,6 +22,14 @@ export const fieldwork = {
             notMet: 'not met',
             uploadFor: 'Upload evidence for this characteristic',
         },
+        review: {
+            summary: 'Reviewed by assessors',
+            done: 'Reviewed',
+            by: 'Reviewed by {name}, {date}.',
+            note: 'Review note (optional)',
+            mark: 'Mark as reviewed',
+            withdraw: 'Withdraw review',
+        },
         items: {
             empty: 'No evidence has been uploaded yet.',
             version: 'Version {version}',

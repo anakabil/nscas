@@ -9,9 +9,11 @@ import { useLocale, useT } from '@/i18n';
 import { cn } from '@/lib/utils';
 import type { AssessmentMenu } from '@/types/nscas';
 
-/** Bagian bersama halaman tahap 2 fase R2 yang dikirim CollectionController::collectionCommon(). */
+/** Bagian bersama halaman tahap 2 dan 3 yang dikirim CollectionController::collectionCommon(). */
 export type CollectionCommon = {
     assessment: AssessmentMenu;
+    /** Kunci teks label tahap: 'collection' (tahap 2) atau 'validationStage' (tahap 3). */
+    stage?: string;
     tabs: { key: string; href: string }[];
     distribution: 'notYet' | 'open' | 'closed';
     window: { opensAt: string | null; closesAt: string | null; open: boolean };
@@ -127,7 +129,7 @@ export function CollectionShell({
                             {Icon ? <Icon className="size-6" strokeWidth={1.5} /> : null}
                         </span>
                         <div className="space-y-1.5">
-                            <p className="eyebrow text-gold-deep">{t('collection.stage')}</p>
+                            <p className="eyebrow text-gold-deep">{t(`${common.stage ?? 'collection'}.stage`)}</p>
                             <h2 className="font-display text-[1.9rem] leading-tight text-ink">{title}</h2>
                         </div>
                     </header>
@@ -156,12 +158,12 @@ export function CollectionShell({
                             {notice}
                         </p>
                     ) : null}
-                    {flash?.status === 'saved' ? (
+                    {flash?.status && ['saved', 'emailQueued', 'sessionsCreated'].includes(flash.status) ? (
                         <p
                             role="status"
                             className="rounded-md border border-success/30 bg-success/10 px-4 py-3 text-sm text-success"
                         >
-                            {t('flash.saved')}
+                            {t(`flash.${flash.status}`)}
                         </p>
                     ) : null}
                     {children}

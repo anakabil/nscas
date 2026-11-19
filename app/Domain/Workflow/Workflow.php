@@ -31,10 +31,11 @@ final class Workflow
             ]),
             // Gerbang mutu data sebelum validasi lapangan (docs/12 temuan T3).
             new Transition(AssessmentStatus::DataCollection, AssessmentStatus::Validation, $lead, [
-                'survey_closed', 'participation_reviewed', 'data_quality_reviewed', 'validation_plan_set',
+                'survey_closed', 'participation_reviewed', 'self_assessments_submitted', 'data_quality_reviewed', 'validation_plan_set',
             ]),
+            // Paling sedikit satu kunjungan proyek fisik (keputusan D6, docs/13).
             new Transition(AssessmentStatus::Validation, AssessmentStatus::Scoring, $lead, [
-                'validation_sessions_completed', 'evidence_reviewed',
+                'validation_sessions_completed', 'site_visit_completed', 'evidence_reviewed',
             ]),
             new Transition(AssessmentStatus::Scoring, AssessmentStatus::PanelReview, $lead, [
                 'two_assessor_ratings', 'score_run_saved',

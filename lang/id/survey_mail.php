@@ -15,6 +15,13 @@ return [
         'subject' => 'Lanjutkan survei budaya keselamatan dan kesehatan kerja :organization',
         'intro' => 'Anda sudah membuka survei budaya keselamatan dan kesehatan kerja (K3) tetapi belum mengirimkan jawaban. Lanjutkan pengisian dari tautan yang sama dan perangkat yang sama dengan yang Anda pakai sebelumnya. Jawaban yang sudah diisi tersimpan di perangkat tersebut.',
     ],
+    'selfAssessment' => [
+        'subject' => 'Tautan penilaian mandiri manajemen :organization',
+        'intro' => ':organization bersama Nusa Safety meminta Anda mengisi penilaian mandiri manajemen tentang praktik keselamatan dan kesehatan kerja (K3) di unit Anda.',
+        'notice' => 'Penilaian mandiri tidak anonim: nama dan jabatan Anda tercatat dan dapat dilihat tim asesor.',
+        'duration' => 'Isian tersimpan otomatis dan dapat dilanjutkan dari tautan yang sama sebelum dikirim.',
+        'button' => 'Buka penilaian mandiri',
+    ],
     'greeting' => 'Yth. :name,',
     'anonymity' => 'Jawaban Anda tidak dapat dihubungkan dengan identitas Anda. Hasil hanya disajikan secara gabungan untuk kelompok paling sedikit lima orang.',
     'duration' => 'Pengisian memerlukan sekitar 15 menit dan dapat dilakukan melalui telepon genggam.',

@@ -6,9 +6,16 @@ use App\Domain\Access\Role;
 use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\Kickoff;
 use App\Domain\Setup\SetupFacts;
+use App\Domain\Validation\SessionProposal;
+use App\Domain\Validation\ValidationRules;
 use App\Models\AccessToken;
 use App\Models\Assessment;
+use App\Models\AssessmentReview;
+use App\Models\EvidenceReview;
 use App\Models\ObservationWindow;
+use App\Models\SelfAssessment;
+use App\Models\StratumJustification;
+use App\Models\ValidationSession;
 use App\Services\Evidence\EvidenceService;
 use App\Services\Respondents\ParticipationReport;
 use Illuminate\Database\Eloquent\Collection;
@@ -57,11 +64,31 @@ final class SetupFactsCollector
             ->selectRaw('assessment_id, count(distinct unit_id) as n')->groupBy('assessment_id')->pluck('n', 'assessment_id');
         $evidence = app(EvidenceService::class);
 
+        // Fase R6: tinjauan, alasan strata, penilaian mandiri yang belum terkirim, sesi validasi, dan tinjauan bukti.
+        $ids = $assessments->modelKeys();
+        $reviews = AssessmentReview::whereIn('assessment_id', $ids)->get(['assessment_id', 'kind'])->groupBy('assessment_id');
+        $justified = StratumJustification::whereIn('assessment_id', $ids)->pluck('stratum_id')->flip();
+        $pendingSelf = SelfAssessment::whereIn('assessment_id', $ids)->where('status', '!=', 'SUBMITTED')
+            ->whereHas('accessToken', fn ($q) => $q->whereNull('revoked_at'))
+            ->selectRaw('assessment_id, count(*) as n')->groupBy('assessment_id')->pluck('n', 'assessment_id');
+        $sessions = ValidationSession::whereIn('assessment_id', $ids)->withCount('ratings')
+            ->get(['id', 'assessment_id', 'type', 'status', 'focus_characteristic_ids'])->groupBy('assessment_id');
+        $reviewedEvidence = EvidenceReview::whereIn('assessment_id', $ids)
+            ->selectRaw('assessment_id, count(*) as n')->groupBy('assessment_id')->pluck('n', 'assessment_id');
+        $minParticipation = [];
+
         $facts = [];
         foreach ($assessments as $assessment) {
             $checklist = $assessment->status->parametersLocked() ? $evidence->checklist($assessment, null)['rows'] : [];
             $team = $assessment->team;
             $draft = $assessment->parameter_draft ?? [];
+            $minParticipation[$assessment->id] = ParticipationReport::thresholds($assessment)[1];
+            $below = $assessment->strata->filter(fn ($s) => $s->population > 0
+                && ((int) ($completedByStratum[$s->id] ?? 0)) / $s->population < $minParticipation[$assessment->id]);
+            $kinds = ($reviews[$assessment->id] ?? collect())->pluck('kind')->all();
+            $ownSessions = ($sessions[$assessment->id] ?? collect())->map(fn ($s) => [
+                'type' => $s->type, 'status' => $s->status, 'focus' => count($s->focus_characteristic_ids), 'ratings' => (int) $s->ratings_count,
+            ])->values()->all();
             $facts[$assessment->id] = new SetupFacts(
                 unitCount: (int) $assessment->units_count,
                 strataCount: (int) $assessment->strata_count,
@@ -81,14 +108,21 @@ final class SetupFactsCollector
                 rosterCount: (int) $assessment->roster_count,
                 activeSurveyTokens: (int) $assessment->active_survey_tokens_count,
                 completedSurveys: (int) $assessment->completed_surveys_count,
-                strataBelowMinimum: $assessment->strata->filter(fn ($s) => $s->population > 0
-                    && ((int) ($completedByStratum[$s->id] ?? 0)) / $s->population < ParticipationReport::thresholds($assessment)[1])->count(),
+                strataBelowMinimum: $below->count(),
                 selfAssessmentsIssued: (int) $assessment->self_assessments_count,
                 selfAssessmentsSubmitted: (int) $assessment->self_assessments_submitted_count,
                 characteristicsWithEvidence: count(array_filter($checklist, fn (array $row) => ! $row['belowMinimum'])),
                 characteristicCount: count($checklist),
                 projectCount: (int) $assessment->project_units_count,
                 projectsObserved: (int) ($observedProjects[$assessment->id] ?? 0),
+                surveyClosed: $assessment->survey_closes_at !== null && $assessment->survey_closes_at->lessThanOrEqualTo(now()),
+                participationReviewed: in_array('PARTICIPATION', $kinds, true) && $below->every(fn ($s) => $justified->has($s->id)),
+                selfAssessmentsPending: (int) ($pendingSelf[$assessment->id] ?? 0),
+                dataQualityReviewed: in_array('DATA_QUALITY', $kinds, true),
+                validationPlanSet: ValidationRules::planSet($ownSessions),
+                validationSessionsCompleted: ValidationRules::sessionsCompleted($ownSessions),
+                siteVisitCompleted: array_filter($ownSessions, fn (array $s) => $s['type'] === SessionProposal::SITE_VISIT && $s['status'] === 'COMPLETED') !== [],
+                characteristicsReviewed: (int) ($reviewedEvidence[$assessment->id] ?? 0),
             );
         }
 

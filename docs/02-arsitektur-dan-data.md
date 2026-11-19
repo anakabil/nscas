@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 sampai R5)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R6)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -82,6 +82,14 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `observation_windows` | Masa observasi per proyek: judul, waktu buka dan tutup, daftar periksa (O1, O2, dan seterusnya), titik proyek, radius toleransi, pembuat | R5. Dibuat asesor utama atau asesor |
 | `observation_captures` | Foto atau video kamera: butir, kunci objek, SHA-256, jenis dari isi, ukuran, waktu server, lokasi dan akurasi, jarak ke titik proyek, penanda di luar radius, catatan, pengunggah | R5. Tidak anonim; waktu dari server, bukan dari perangkat |
 | `pending_uploads` | Izin unggah yang belum diselesaikan: jenis, asesmen, pengguna, kunci objek, nama berkas, ukuran yang dinyatakan, data tambahan, waktu kedaluwarsa | R5. Id baris menjadi tiket unggah; baris dan objek yang tidak diselesaikan dihapus setiap jam oleh `nscas:prune-uploads` |
+| `assessment_reviews` | Tinjauan asesor utama per jenis (PARTICIPATION, DATA_QUALITY): catatan, peninjau, waktu | R6. Satu baris per jenis; syarat `participation_reviewed` dan `data_quality_reviewed` |
+| `stratum_justifications` | Alasan tertulis untuk strata yang partisipasinya di bawah batas | R6. Satu baris per strata |
+| `evidence_reviews` | Pernyataan asesor bahwa bukti satu karakteristik sudah ditinjau, dengan catatan | R6. Syarat `evidence_reviewed` bila semua karakteristik ditinjau |
+| `validation_guides` | Panduan pertanyaan per kelompok jabatan: pembuka dan pertanyaan per kode karakteristik | R6. Disalin dari `seed/panduan-validasi-v1.json` saat pertama dibuka; diubah asesor utama |
+| `validation_sessions` | Sesi wawancara, diskusi kelompok terarah, kunjungan proyek fisik atau daring: nama, kelompok jabatan, unit, strata, jadwal, tautan rapat HTTPS, lokasi, jumlah peserta, status, karakteristik fokus, persetujuan perekaman, catatan | R6. Syarat `validation_plan_set`, `validation_sessions_completed`, `site_visit_completed` |
+| `validation_participants` | Nama dan jabatan narasumber | R6. Disimpan terpisah dari catatan dan nilai; tidak masuk laporan |
+| `validation_ratings` | Nilai 1,0 sampai 5,0 kelipatan 0,5 per sesi, karakteristik, dan asesor, dengan dasar penilaian | R6. Batasan basis data memeriksa rentang dan kelipatan |
+| `feedback_notes` | Ringkasan umpan balik harian kepada organisasi | R6. Satu baris per tanggal |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
@@ -93,7 +101,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R6 | `validation_sessions`, `validation_ratings`, `validation_plans` |
 | R7 | `evidence_ratings`, `score_runs`, `panel_adjustments` |
 | R9 | `gaps`, `action_items`, `monitoring_reviews` |
 | R10 | `reports` |

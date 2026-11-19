@@ -15,6 +15,13 @@ return [
         'subject' => 'Continue the occupational safety and health culture survey of :organization',
         'intro' => 'You have opened the occupational safety and health (OSH) culture survey but have not submitted your answers. Continue from the same link on the same device you used before. Your answers so far are saved on that device.',
     ],
+    'selfAssessment' => [
+        'subject' => ':organization management self-assessment link',
+        'intro' => ':organization and Nusa Safety ask you to complete the management self-assessment of occupational safety and health (OSH) practice in your unit.',
+        'notice' => 'The self-assessment is not anonymous: your name and position are recorded and visible to the assessor team.',
+        'duration' => 'Your answers are saved automatically and can be continued from the same link until you submit.',
+        'button' => 'Open self-assessment',
+    ],
     'greeting' => 'Dear :name,',
     'anonymity' => 'Your answers cannot be linked to your identity. Results are only presented in combined form for groups of at least five people.',
     'duration' => 'It takes about 15 minutes and can be completed on a mobile phone.',

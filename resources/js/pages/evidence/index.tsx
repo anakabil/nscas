@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/react';
-import { CheckCircle2, ChevronDown, Circle, Download, Eye, FilePlus2, FileUp, Link2, Trash2 } from 'lucide-react';
+import { BadgeCheck, CheckCircle2, ChevronDown, Circle, Download, Eye, FilePlus2, FileUp, Link2, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import EvidenceController from '@/actions/App/Http/Controllers/Evidence/EvidenceController';
 import { CollectionShell } from '@/components/nscas/collection-shell';
@@ -49,7 +49,10 @@ type Props = CollectionCommon & {
     items: Item[];
     maxBytes: number;
     urls: { grant: string; finalize: string };
+    canReview: boolean;
+    reviews: Record<string, Review>;
 };
+type Review = { note: string | null; by: string | null; at: string };
 
 const ACCEPT = '.pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,.doc,.docx,.xls,.xlsx';
 const PREVIEWABLE = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
@@ -70,12 +73,21 @@ export default function EvidenceIndex(props: Props) {
     const [mapping, setMapping] = useState<Item | null>(null);
     const rows = props.checklist.rows;
     const complete = rows.filter((r) => !r.belowMinimum).length;
-    const notice = !props.uploadOpen ? t('evidence.closed') : !props.canEdit ? t('collection.readOnly') : null;
+    const reviewed = rows.filter((r) => props.reviews[r.characteristicId]).length;
+    const assessor = props.canReview || Object.keys(props.reviews).length > 0;
+    const notice = !props.uploadOpen
+        ? t('evidence.closed')
+        : !props.canEdit && !props.canReview
+          ? t('collection.readOnly')
+          : null;
 
     return (
         <CollectionShell module="evidence" common={props} canEdit={props.canEdit} showWindow={false} notice={notice}>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <dl className="grid flex-1 grid-cols-2 gap-3 sm:max-w-xl" data-testid="evidence-summary">
+                <dl
+                    className={cn('grid flex-1 grid-cols-2 gap-3', assessor ? 'sm:max-w-3xl sm:grid-cols-3' : 'sm:max-w-xl')}
+                    data-testid="evidence-summary"
+                >
                     <div className="frame-hairline rounded-lg px-4 py-3">
                         <dt className="text-xs text-muted-foreground">
                             {t('evidence.summary.complete', { min: props.checklist.minTypes })}
@@ -88,6 +100,14 @@ export default function EvidenceIndex(props: Props) {
                         <dt className="text-xs text-muted-foreground">{t('evidence.summary.items')}</dt>
                         <dd className="numeral mt-1 font-display text-2xl text-ink">{props.items.length}</dd>
                     </div>
+                    {assessor ? (
+                        <div className="frame-hairline col-span-2 rounded-lg px-4 py-3 sm:col-span-1">
+                            <dt className="text-xs text-muted-foreground">{t('evidence.review.summary')}</dt>
+                            <dd className="numeral mt-1 font-display text-2xl text-ink" data-testid="evidence-reviewed">
+                                {t('evidence.summary.ofTotal', { count: reviewed, total: rows.length })}
+                            </dd>
+                        </div>
+                    ) : null}
                 </dl>
                 {props.canEdit ? (
                     <Button onClick={() => setUpload({ previous: null, preset: [] })} data-testid="evidence-upload-open">
@@ -128,6 +148,9 @@ export default function EvidenceIndex(props: Props) {
                     rows={rows}
                     minTypes={props.checklist.minTypes}
                     canEdit={props.canEdit}
+                    canReview={props.canReview}
+                    reviews={props.reviews}
+                    assessmentId={props.assessment.id}
                     onUpload={(row) =>
                         setUpload({ previous: null, preset: [{ characteristicId: row.characteristicId, requirementIds: [] }] })
                     }
@@ -164,14 +187,21 @@ function ChecklistView({
     rows,
     minTypes,
     canEdit,
+    canReview,
+    reviews,
+    assessmentId,
     onUpload,
 }: {
     rows: ChecklistRow[];
     minTypes: number;
     canEdit: boolean;
+    canReview: boolean;
+    reviews: Record<string, Review>;
+    assessmentId: string;
     onUpload: (row: ChecklistRow) => void;
 }) {
     const t = useT();
+    const locale = useLocale();
     const [open, setOpen] = useState<string | null>(null);
     return (
         <ul className="divide-y divide-border rounded-lg border border-border" data-testid="evidence-checklist">
@@ -189,8 +219,14 @@ function ChecklistView({
                                 <span className="block text-sm font-medium text-ink">
                                     {row.code} {row.name}
                                 </span>
-                                <span className="block text-xs text-muted-foreground">
+                                <span className="flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground">
                                     {t('evidence.checklist.items', { count: row.evidenceCount })}
+                                    {reviews[row.characteristicId] ? (
+                                        <span className="inline-flex items-center gap-1 text-success">
+                                            <BadgeCheck aria-hidden className="size-3.5" />
+                                            {t('evidence.review.done')}
+                                        </span>
+                                    ) : null}
                                 </span>
                             </span>
                             <span
@@ -242,12 +278,74 @@ function ChecklistView({
                                         {t('evidence.checklist.uploadFor')}
                                     </Button>
                                 ) : null}
+                                {reviews[row.characteristicId] ? (
+                                    <p className="text-xs text-charcoal">
+                                        {t('evidence.review.by', {
+                                            name: reviews[row.characteristicId].by ?? '',
+                                            date: formatDateTime(reviews[row.characteristicId].at, locale),
+                                        })}
+                                        {reviews[row.characteristicId].note ? ` ${reviews[row.characteristicId].note}` : ''}
+                                    </p>
+                                ) : null}
+                                {canReview ? (
+                                    <ReviewToggle
+                                        assessmentId={assessmentId}
+                                        characteristicId={row.characteristicId}
+                                        reviewed={Boolean(reviews[row.characteristicId])}
+                                    />
+                                ) : null}
                             </div>
                         ) : null}
                     </li>
                 );
             })}
         </ul>
+    );
+}
+
+/** Pernyataan asesor bahwa bukti karakteristik ini sudah ditinjau (syarat menuju penilaian). */
+function ReviewToggle({
+    assessmentId,
+    characteristicId,
+    reviewed,
+}: {
+    assessmentId: string;
+    characteristicId: string;
+    reviewed: boolean;
+}) {
+    const t = useT();
+    const [note, setNote] = useState('');
+    const [busy, setBusy] = useState(false);
+    const send = (value: boolean) => {
+        setBusy(true);
+        router.put(
+            EvidenceController.review.url({ assessment: assessmentId, characteristic: characteristicId }),
+            { reviewed: value, note: value ? note : null },
+            { preserveScroll: true, onFinish: () => setBusy(false) },
+        );
+    };
+    if (reviewed) {
+        return (
+            <Button variant="ghost" size="sm" disabled={busy} onClick={() => send(false)}>
+                {t('evidence.review.withdraw')}
+            </Button>
+        );
+    }
+    return (
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Input
+                aria-label={t('evidence.review.note')}
+                placeholder={t('evidence.review.note')}
+                maxLength={2000}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="sm:max-w-md"
+            />
+            <Button size="sm" disabled={busy} onClick={() => send(true)} data-testid="evidence-review">
+                <BadgeCheck aria-hidden />
+                {t('evidence.review.mark')}
+            </Button>
+        </div>
     );
 }
 

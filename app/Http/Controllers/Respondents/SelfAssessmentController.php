@@ -79,4 +79,14 @@ class SelfAssessmentController extends CollectionController
 
         return back()->with('selfAssessmentLink', ['name' => $name, 'link' => $link]);
     }
+
+    /** Mengirim tautan baru lewat surel Hostinger (keputusan R4); tautan lama berhenti berlaku saat surel terkirim. */
+    public function email(Request $request, Assessment $assessment, string $selfAssessment, SelfAssessmentAdmin $admin): RedirectResponse
+    {
+        $actor = $this->writerFor($this->pageRoles($request, $assessment, 'selfAssessments'), Resource::TokensAndParticipation);
+        $data = $request->validate(['email' => ['required', 'string', 'email:rfc', 'max:254']]);
+        $admin->sendByEmail($assessment, $selfAssessment, mb_strtolower(trim($data['email'])), $actor);
+
+        return back()->with('status', 'emailQueued');
+    }
 }

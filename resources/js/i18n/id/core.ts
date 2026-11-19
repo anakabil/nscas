@@ -136,6 +136,8 @@ export const core = {
         participation_reviewed: 'Partisipasi setiap strata memenuhi batas minimum atau disertai alasan tertulis',
         data_quality_reviewed: 'Statistik mutu data telah ditinjau',
         validation_plan_set: 'Rencana validasi telah disusun berdasarkan temuan awal',
+        self_assessments_submitted: 'Penilaian mandiri manajemen telah terkirim dan tidak ada yang masih tertunda',
+        site_visit_completed: 'Paling sedikit satu kunjungan proyek fisik telah dilaksanakan',
         validation_sessions_completed: 'Wawancara dan diskusi kelompok terarah telah dilaksanakan sesuai dengan rencana',
         evidence_reviewed: 'Kelengkapan bukti setiap karakteristik telah ditinjau',
         two_assessor_ratings: 'Setiap karakteristik telah dinilai oleh dua asesor',

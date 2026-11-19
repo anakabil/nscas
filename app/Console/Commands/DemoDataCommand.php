@@ -6,11 +6,15 @@ use App\Domain\Access\Role;
 use App\Domain\Observations\Geo;
 use App\Domain\Setup\EditableParameters;
 use App\Domain\Survey\SurveyRules;
+use App\Domain\Validation\SessionProposal;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Models\AccessToken;
 use App\Models\Assessment;
+use App\Models\AssessmentReview;
 use App\Models\Characteristic;
 use App\Models\EvidenceItem;
+use App\Models\EvidenceReview;
+use App\Models\FeedbackNote;
 use App\Models\InstrumentVersion;
 use App\Models\ObservationCapture;
 use App\Models\ObservationWindow;
@@ -19,13 +23,18 @@ use App\Models\ParticipationSnapshot;
 use App\Models\RosterEntry;
 use App\Models\SelfAssessment;
 use App\Models\SelfAssessmentAnswer;
+use App\Models\StratumJustification;
 use App\Models\SurveyResponse;
 use App\Models\Unit;
 use App\Models\User;
+use App\Models\ValidationRating;
+use App\Models\ValidationSession;
 use App\Services\AssessmentSetup;
 use App\Services\Files\ObjectStore;
+use App\Services\Respondents\ParticipationReport;
 use App\Services\Respondents\RespondentDistribution;
 use App\Services\Respondents\SurveyLinks;
+use App\Services\Validation\ValidationService;
 use Carbon\CarbonImmutable;
 use Database\Seeders\InstrumentVersionSeeder;
 use Illuminate\Console\Command;
@@ -141,6 +150,11 @@ class DemoDataCommand extends Command
             // Fase R4: penilaian mandiri manajemen contoh.
             if ($assessment !== null && $status !== AssessmentStatus::Draft && ! SelfAssessment::where('assessment_id', $assessment->id)->exists()) {
                 $this->selfAssessments($assessment, $status === AssessmentStatus::DataCollection);
+            }
+            // Fase R6: tinjauan mutu data dan validasi lapangan untuk asesmen yang sudah melewati pengumpulan data.
+            if ($assessment !== null && $status->position() > AssessmentStatus::DataCollection->position()
+                && ! ValidationSession::where('assessment_id', $assessment->id)->exists()) {
+                $this->validation($assessment, $lead, $assessor, $status === AssessmentStatus::Validation);
             }
         }
         Auth::forgetUser();
@@ -322,7 +336,13 @@ class DemoDataCommand extends Command
                     'id' => $id, 'assessment_id' => $assessment->id, 'unit_id' => $token->unit_id, 'stratum_id' => $token->stratum_id,
                     'instrument_version_id' => $assessment->instrument_version_id, 'language' => mt_rand(1, 20) === 1 ? 'en' : 'id',
                     'submitted_on' => SurveyRules::wibDate($token->completed_at), 'duration_bucket' => $buckets[mt_rand(0, 5)],
-                    'quality_flags' => '[]',
+                    // Sebagian kecil jawaban bertanda agar tinjauan mutu data (fase R6) memiliki contoh.
+                    'quality_flags' => match (mt_rand(1, 60)) {
+                        1 => '["POLA_SERAGAM"]',
+                        2 => '["TERLALU_CEPAT"]',
+                        3 => '["BANYAK_TIDAK_TAHU"]',
+                        default => '[]',
+                    },
                 ];
                 foreach ($characteristics as $k => $characteristicId) {
                     $noise = (mt_rand() / mt_getrandmax() - 0.5) * 1.6 + ($k % 3 - 1) * 0.3;
@@ -580,5 +600,91 @@ class DemoDataCommand extends Command
         imagedestroy($image);
 
         return (string) ob_get_clean();
+    }
+
+    /**
+     * Fase R6: survei ditutup, tinjauan partisipasi dan mutu data, sesi dari rencana sampel, narasumber fiktif, nilai
+     * dua asesor, catatan umpan balik, dan tinjauan bukti. Bila $inProgress, sebagian sesi dan tinjauan bukti belum
+     * selesai sehingga halaman validasi menampilkan pekerjaan yang masih berjalan.
+     */
+    private function validation(Assessment $assessment, User $lead, User $assessor, bool $inProgress): void
+    {
+        mt_srand(crc32('validasi '.$assessment->name));
+        $at = CarbonImmutable::parse($assessment->period_end)->subDays(20)->setTime(9, 0);
+        $assessment->forceFill(['survey_closes_at' => $at->subDays(3)->utc()])->save();
+
+        // Alasan untuk strata di bawah batas partisipasi, lalu kedua tinjauan asesor utama.
+        $min = ParticipationReport::thresholds($assessment)[1];
+        $completed = AccessToken::where('assessment_id', $assessment->id)->where('kind', 'SURVEY')->whereNotNull('completed_at')
+            ->selectRaw('stratum_id, count(*) as n')->groupBy('stratum_id')->pluck('n', 'stratum_id');
+        foreach ($assessment->strata()->get() as $stratum) {
+            if ($stratum->population > 0 && ((int) ($completed[$stratum->id] ?? 0)) / $stratum->population < $min) {
+                StratumJustification::create([
+                    'assessment_id' => $assessment->id, 'stratum_id' => $stratum->id, 'written_by' => $lead->id,
+                    'justification' => 'Sebagian besar pekerja strata ini bekerja bergilir di lokasi terpencil selama masa survei. Hasilnya dibaca bersama wawancara dan observasi lapangan.',
+                ]);
+            }
+        }
+        foreach (['PARTICIPATION' => 'Partisipasi diterima dengan catatan pada strata pelaksana.', 'DATA_QUALITY' => 'Jawaban bertanda diperiksa; tidak ada yang dikeluarkan.'] as $kind => $note) {
+            AssessmentReview::create(['assessment_id' => $assessment->id, 'kind' => $kind, 'note' => $note, 'reviewed_by' => $lead->id, 'reviewed_at' => $at->subDays(2)]);
+        }
+
+        // Sesi dari usulan rencana sampel, dengan karakteristik fokus dari temuan awal.
+        $proposal = app(ValidationService::class)->proposal($assessment);
+        $characteristics = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->get(['id', 'code']);
+        $focus = $proposal !== null && $proposal['focus'] !== [] ? array_column($proposal['focus'], 'characteristicId') : $characteristics->take(4)->pluck('id')->all();
+        $projects = Unit::where('assessment_id', $assessment->id)->where('type', 'PROJECT')->orderBy('name')->get(['id', 'name']);
+        $names = ['Ahmad Fauzi', 'Rina Marlina', 'Dedi Kurnia', 'Sri Wahyuni', 'Bambang Irawan', 'Lina Oktaviani', 'Yusuf Hakim', 'Wulan Sari'];
+        $positions = ['MANAGEMENT' => 'Manajer Proyek', 'SUPERVISORY' => 'Pengawas Lapangan', 'FIELD' => 'Tukang Besi'];
+        $base = ['MANAGEMENT' => 3.5, 'SUPERVISORY' => 3.0, 'FIELD' => 2.5];
+        foreach (($proposal['sessions'] ?? []) as $i => $p) {
+            $visit = in_array($p['type'], [SessionProposal::SITE_VISIT, SessionProposal::VIRTUAL_SITE_VISIT], true);
+            $done = ! $inProgress || $i % 3 !== 2;
+            $project = $projects->isEmpty() ? null : $projects[$i % $projects->count()];
+            $session = ValidationSession::create([
+                'assessment_id' => $assessment->id,
+                'type' => $p['type'],
+                'label' => trim(preg_replace('/\s+/', ' ', __('setup.sessionLabels.'.$p['type'], ['stratum' => $p['stratumCode'] ?? '', 'n' => $p['sequence']], 'id'))),
+                'layer' => $p['layer'],
+                'stratum_id' => $p['stratumId'],
+                'unit_id' => $visit ? $project?->id : null,
+                'scheduled_at' => $at->addDays(intdiv($i, 3))->addHours(($i % 3) * 2)->utc(),
+                'meeting_url' => $p['type'] === SessionProposal::SITE_VISIT ? null : 'https://rapat.contoh.test/validasi-'.($i + 1),
+                'location' => $p['type'] === SessionProposal::SITE_VISIT ? ($project?->name ?? 'Lokasi proyek') : null,
+                'participant_count' => $p['participantCount'] ?: null,
+                'status' => $done ? 'COMPLETED' : 'SCHEDULED',
+                'focus_characteristic_ids' => $focus,
+                'recording_consent' => $done,
+                'notes' => $done ? 'Narasumber menyebut contoh nyata penerapan prosedur, tetapi tindak lanjut laporan bahaya belum konsisten antarproyek.' : null,
+            ]);
+            if ($visit || ! $done) {
+                continue;
+            }
+            foreach (range(1, max(1, min(3, (int) $p['participantCount']))) as $k) {
+                $session->participants()->create(['full_name' => $names[($i + $k) % count($names)], 'position' => $positions[$p['layer']] ?? 'Pekerja']);
+            }
+            foreach ([$lead, $assessor] as $rater) {
+                foreach ($focus as $characteristicId) {
+                    $level = max(1.0, min(5.0, round((($base[$p['layer']] ?? 3.0) + mt_rand(-2, 2) * 0.5) * 2) / 2));
+                    ValidationRating::create([
+                        'validation_session_id' => $session->id, 'characteristic_id' => $characteristicId, 'assessor_id' => $rater->id,
+                        'level' => $level, 'note' => 'Didukung contoh yang disebut lebih dari satu narasumber.',
+                    ]);
+                }
+            }
+        }
+
+        foreach ([3, 2, 1] as $daysBefore) {
+            FeedbackNote::create([
+                'assessment_id' => $assessment->id, 'note_date' => $at->addDays(3 - $daysBefore)->toDateString(), 'author_id' => $lead->id,
+                'summary' => 'Sesi hari ini berjalan sesuai jadwal. Temuan sementara: komunikasi bahaya harian sudah rutin, tindak lanjut laporan perlu dipantau.',
+            ]);
+        }
+        foreach ($characteristics as $k => $c) {
+            if ($inProgress && $k % 2 === 1) {
+                continue;
+            }
+            EvidenceReview::create(['assessment_id' => $assessment->id, 'characteristic_id' => $c->id, 'reviewed_by' => $assessor->id, 'reviewed_at' => $at->addDay(), 'note' => null]);
+        }
     }
 }

@@ -45,7 +45,7 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 
 ## 4. Yang dapat dicoba pada versi ini
 
-Versi 2 saat ini berada di akhir fase R5 (bukti dokumen dan observasi lapangan). Yang sudah dapat dicoba:
+Versi 2 saat ini berada di akhir fase R6 (mutu data, temuan awal, dan validasi lapangan). Yang sudah dapat dicoba:
 
 1. Halaman masuk, pilihan bahasa Indonesia dan Inggris (tersimpan di akun), dan pengaturan ulang kata sandi melalui kotak surat uji.
 2. Dasbor progres pengukuran di beranda, untuk akun pengelola sistem, asesor utama, asesor, dan administrator klien. Dasbor diperbarui otomatis setiap 60 detik.
@@ -62,9 +62,15 @@ Versi 2 saat ini berada di akhir fase R5 (bukti dokumen dan observasi lapangan).
 9. Bukti dokumen, dengan akun administrator klien: buka tab Bukti dokumen, lihat daftar periksa per karakteristik, unggah PDF atau gambar dan petakan ke karakteristik serta butir daftar periksanya, ubah pemetaan, unggah versi baru, unduh, lalu hapus. Akun koordinator unit hanya dapat mengunggah untuk unitnya; akun asesor hanya membaca. Di Codespaces berkas disimpan di disk codespace, bukan di penyimpanan objek.
 10. Observasi lapangan: dengan akun asesor utama, buka tab Observasi lapangan dan buka masa observasi untuk proyek; dengan akun administrator klien di telepon, tekan Buka kamera, izinkan kamera dan lokasi, ambil foto, lalu kirim. Asesor melihat rekaman beserta waktu server, jarak ke titik proyek, dan penanda di luar radius. Asesmen contoh sudah memiliki satu jendela yang sedang terbuka.
 11. Pengingat survei dapat dicoba tanpa menunggu pukul 08.00 WIB dengan perintah `php artisan nscas:survey-reminders` di terminal; surelnya masuk ke kotak surat uji.
-12. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
+12. Tahap 3 pada asesmen contoh "Proyek Gedung 2026" (status Validasi), dengan akun asesor utama:
+   - Mutu data: partisipasi per strata beserta alasan tertulis, alfa Cronbach, rwg per unit, dan jawaban bertanda; coba keluarkan satu jawaban dengan alasan lalu pulihkan.
+   - Temuan awal: rata-rata per karakteristik dan kelompok jabatan, selisih persepsi, dan usulan karakteristik fokus.
+   - Wawancara dan diskusi kelompok: saring sesi menurut status, buka satu sesi, isi nilai dan dasar penilaian, tambah narasumber, lalu ubah status menjadi Selesai. Tambah sesi baru dari tombol Tambah sesi, dan ubah panduan pertanyaan.
+   - Bukti dokumen: tandai bukti satu karakteristik sudah ditinjau.
+   - Pada asesmen "Kantor Pusat 2026" (status Pengumpulan data), tombol Buat sesi dari usulan menyusun sesi dari rencana sampel, dan tombol Tutup survei sekarang ada di halaman Responden. Dengan akun administrator klien, tombol surat pada daftar Penilaian mandiri mengirim tautan lewat surel ke kotak surat uji.
+13. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
 
-Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R6 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
+Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R7 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
 
 Di lingkungan ini verifikasi dua langkah tidak diwajibkan, agar keenam akun contoh dapat langsung dicoba. Untuk mencoba alur wajibnya, buka berkas `.env` di codespace, ubah `NSCAS_ENFORCE_TWO_FACTOR=false` menjadi `true`, lalu jalankan `bash .devcontainer/start.sh --restart` di terminal. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator. Di produksi nilai ini wajib `true`.
 

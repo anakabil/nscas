@@ -197,9 +197,25 @@ function WindowForm({ assessment, common }: { assessment: string; common: Collec
                         />
                     </Field>
                 </div>
-                <Button type="submit" disabled={form.processing}>
-                    {form.processing ? t('common.saving') : t('respondents.window.save')}
-                </Button>
+                <div className="flex flex-wrap gap-3">
+                    <Button type="submit" disabled={form.processing}>
+                        {form.processing ? t('common.saving') : t('respondents.window.save')}
+                    </Button>
+                    {common.window.open ? (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            data-testid="close-survey"
+                            onClick={() => {
+                                if (window.confirm(t('respondents.window.confirmClose'))) {
+                                    router.post(RespondentController.closeSurvey.url(assessment), {}, { preserveScroll: true });
+                                }
+                            }}
+                        >
+                            {t('respondents.window.close')}
+                        </Button>
+                    ) : null}
+                </div>
             </Panel>
         </form>
     );

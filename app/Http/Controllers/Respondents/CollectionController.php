@@ -36,12 +36,14 @@ abstract class CollectionController extends SetupController
     {
         $assessment->loadMissing('organization');
         $visible = collect(ModuleCatalog::all($assessment->status))->filter(fn ($m) => $m->visibleTo($roles))->pluck('key')->all();
+        $tabs = $this->tabMap();
 
         return [
             'assessment' => AssessmentPresenter::menu($assessment, $roles),
+            'stage' => $this->stageKey(),
             'tabs' => array_values(array_map(
-                fn (string $key) => ['key' => $key, 'href' => route('assessments.module', ['assessment' => $assessment, 'path' => self::TABS[$key]])],
-                array_filter(array_keys(self::TABS), fn (string $key) => in_array($key, $visible, true)),
+                fn (string $key) => ['key' => $key, 'href' => route('assessments.module', ['assessment' => $assessment, 'path' => $tabs[$key]])],
+                array_filter(array_keys($tabs), fn (string $key) => in_array($key, $visible, true)),
             )),
             'distribution' => $this->distribution($assessment),
             'window' => [
@@ -50,6 +52,18 @@ abstract class CollectionController extends SetupController
                 'open' => SurveyWindow::isOpen($assessment->status, $assessment->survey_opens_at, $assessment->survey_closes_at, now()),
             ],
         ];
+    }
+
+    /** @return array<string, string> kunci modul ke jalur halaman */
+    protected function tabMap(): array
+    {
+        return self::TABS;
+    }
+
+    /** Kunci teks label tahap pada kepala halaman. */
+    protected function stageKey(): string
+    {
+        return 'collection';
     }
 
     /** 'notYet' sebelum dikunci, 'open' saat dikunci atau mengumpulkan data, 'closed' sesudahnya. */

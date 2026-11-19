@@ -8,7 +8,8 @@ use App\Domain\Workflow\Transition;
 
 /**
  * Pemeriksa syarat transisi status (docs/01 bagian 3, App\Domain\Workflow\Workflow). Fase R1 memeriksa syarat tahap
- * perencanaan, fase R2 syarat dimulainya pengumpulan data; syarat tahap lain bernilai null sampai modulnya dibangun.
+ * perencanaan, fase R2 syarat dimulainya pengumpulan data, fase R6 gerbang mutu data dan validasi; syarat tahap lain
+ * bernilai null sampai modulnya dibangun.
  */
 final class ConditionEvaluator
 {
@@ -27,10 +28,12 @@ final class ConditionEvaluator
         'roster_imported' => 'respondents',
         'tokens_issued' => 'respondents',
         'survey_closed' => 'respondents',
-        'participation_reviewed' => 'participation',
+        'participation_reviewed' => 'dataQuality',
+        'self_assessments_submitted' => 'selfAssessments',
         'data_quality_reviewed' => 'dataQuality',
         'validation_plan_set' => 'validation',
         'validation_sessions_completed' => 'validation',
+        'site_visit_completed' => 'validation',
         'evidence_reviewed' => 'evidence',
         'two_assessor_ratings' => 'scoring',
         'score_run_saved' => 'scoring',
@@ -73,6 +76,15 @@ final class ConditionEvaluator
             'assessors_calibrated' => $facts->calibrationComplete,
             'roster_imported' => $facts->rosterCount >= 1,
             'tokens_issued' => $facts->activeSurveyTokens >= 1,
+            'survey_closed' => $facts->surveyClosed,
+            'participation_reviewed' => $facts->participationReviewed,
+            // Paling sedikit satu terkirim, dan tidak ada tautan aktif yang belum dikirim (keputusan R4).
+            'self_assessments_submitted' => $facts->selfAssessmentsSubmitted >= 1 && $facts->selfAssessmentsPending === 0,
+            'data_quality_reviewed' => $facts->dataQualityReviewed,
+            'validation_plan_set' => $facts->validationPlanSet,
+            'validation_sessions_completed' => $facts->validationSessionsCompleted,
+            'site_visit_completed' => $facts->siteVisitCompleted,
+            'evidence_reviewed' => $facts->characteristicCount >= 1 && $facts->characteristicsReviewed >= $facts->characteristicCount,
             default => null,
         };
     }

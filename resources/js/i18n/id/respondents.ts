@@ -34,6 +34,9 @@ export const respondents = {
             opensAt: 'Dibuka',
             closesAt: 'Ditutup',
             save: 'Simpan masa survei',
+            close: 'Tutup survei sekarang',
+            confirmClose:
+                'Tutup survei sekarang? Tautan dan kode QR berhenti berlaku. Survei dapat dibuka kembali dengan mengubah waktu tutup.',
         },
         import: {
             title: 'Impor daftar responden',
@@ -269,6 +272,15 @@ export const respondents = {
             revoked: 'Tautan dicabut.',
             newLink: 'Tautan baru (hanya ditampilkan sekali):',
             view: 'Lihat jawaban',
+            email: 'Kirim lewat surel',
+            emailed: 'Dikirim lewat surel',
+        },
+        email: {
+            title: 'Kirim tautan kepada {name}',
+            hint: 'Tautan baru dikirim lewat surel dan tautan sebelumnya berhenti berlaku. Draf tetap tersimpan.',
+            address: 'Alamat surel',
+            send: 'Kirim',
+            cancel: 'Batal',
         },
         detail: {
             respondent: '{name}, {position}',

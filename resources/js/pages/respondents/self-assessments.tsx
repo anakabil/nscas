@@ -1,11 +1,12 @@
 import { Link, router, useForm } from '@inertiajs/react';
-import { Copy, Eye, RotateCcw, ShieldOff, UserPlus } from 'lucide-react';
+import { Copy, Eye, Mail, RotateCcw, ShieldOff, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import SelfAssessmentController from '@/actions/App/Http/Controllers/Respondents/SelfAssessmentController';
 import { CollectionShell } from '@/components/nscas/collection-shell';
 import type { CollectionCommon } from '@/components/nscas/collection-shell';
 import { Field, NativeSelect, Panel, formatDateTime } from '@/components/nscas/setup-shell';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useLocale, useT } from '@/i18n';
 
@@ -19,6 +20,7 @@ type Row = {
     submittedAt: string | null;
     answered: number;
     total: number;
+    emailed: boolean;
 };
 
 type Props = CollectionCommon & {
@@ -35,6 +37,7 @@ export default function SelfAssessments(props: Props) {
     const assessment = props.assessment.id;
     const form = useForm({ name: '', position: '', unit_id: '' });
     const [copied, setCopied] = useState(false);
+    const [emailFor, setEmailFor] = useState<Row | null>(null);
 
     return (
         <CollectionShell module="selfAssessments" common={props} canEdit={props.canEdit}>
@@ -145,6 +148,11 @@ export default function SelfAssessments(props: Props) {
                                             className={`py-2 pr-3 ${r.status === 'SUBMITTED' ? 'text-success' : r.status === 'REVOKED' ? 'text-destructive' : ''}`}
                                         >
                                             {t(`selfAssessments.table.statuses.${r.status}`)}
+                                            {r.emailed ? (
+                                                <span className="block text-xs text-muted-foreground">
+                                                    {t('selfAssessments.table.emailed')}
+                                                </span>
+                                            ) : null}
                                         </td>
                                         <td className="numeral py-2 pr-3">
                                             {t('selfAssessments.table.progressValue', { count: r.answered, total: r.total })}
@@ -196,6 +204,18 @@ export default function SelfAssessments(props: Props) {
                                                             size="icon"
                                                             variant="ghost"
                                                             className="size-8"
+                                                            aria-label={t('selfAssessments.table.email')}
+                                                            title={t('selfAssessments.table.email')}
+                                                            data-testid="sa-email"
+                                                            onClick={() => setEmailFor(r)}
+                                                        >
+                                                            <Mail aria-hidden />
+                                                        </Button>
+                                                        <Button
+                                                            type="button"
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="size-8"
                                                             aria-label={t('selfAssessments.table.reissue')}
                                                             title={t('selfAssessments.table.reissue')}
                                                             onClick={() =>
@@ -222,6 +242,54 @@ export default function SelfAssessments(props: Props) {
                     </div>
                 )}
             </Panel>
+            {emailFor ? <EmailDialog assessment={assessment} row={emailFor} onClose={() => setEmailFor(null)} /> : null}
         </CollectionShell>
+    );
+}
+
+/** Mengirim tautan baru lewat surel (keputusan R4); tautan lama berhenti berlaku saat surel terkirim. */
+function EmailDialog({ assessment, row, onClose }: { assessment: string; row: Row; onClose: () => void }) {
+    const t = useT();
+    const form = useForm({ email: '' });
+    return (
+        <Dialog open onOpenChange={(open) => (open ? null : onClose())}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{t('selfAssessments.email.title', { name: row.name })}</DialogTitle>
+                    <DialogDescription>{t('selfAssessments.email.hint')}</DialogDescription>
+                </DialogHeader>
+                <form
+                    className="space-y-4"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        form.post(SelfAssessmentController.email.url({ assessment, selfAssessment: row.id }), {
+                            preserveScroll: true,
+                            onSuccess: onClose,
+                        });
+                    }}
+                >
+                    <Field id="sa-email" label={t('selfAssessments.email.address')} error={form.errors.email}>
+                        <Input
+                            id="sa-email"
+                            type="email"
+                            required
+                            autoComplete="off"
+                            maxLength={254}
+                            value={form.data.email}
+                            onChange={(e) => form.setData('email', e.target.value)}
+                        />
+                    </Field>
+                    <div className="flex flex-wrap justify-end gap-2">
+                        <Button type="button" variant="ghost" onClick={onClose}>
+                            {t('selfAssessments.email.cancel')}
+                        </Button>
+                        <Button type="submit" disabled={form.processing}>
+                            <Mail aria-hidden />
+                            {t('selfAssessments.email.send')}
+                        </Button>
+                    </div>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 }

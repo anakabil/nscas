@@ -314,6 +314,31 @@ final class RespondentDistribution
         });
     }
 
+    /**
+     * Menutup masa survei sekarang (syarat survey_closed, fase R6). Tautan yang belum dipakai tidak lagi dapat
+     * dibuka; masa survei dapat dibuka kembali lewat pengaturan masa survei selama pengumpulan data.
+     */
+    public function closeSurvey(Assessment $assessment, Role $actorRole): void
+    {
+        DB::transaction(function () use ($assessment, $actorRole) {
+            $locked = $this->lockForDistribution($assessment);
+            if ($locked->status !== AssessmentStatus::DataCollection) {
+                throw RuleViolation::locked('SURVEY_NOT_RUNNING');
+            }
+            $now = now()->utc();
+            if ($locked->survey_closes_at !== null && $locked->survey_closes_at->lessThanOrEqualTo($now)) {
+                return;
+            }
+            $before = ['opensAt' => $locked->survey_opens_at?->toIso8601String(), 'closesAt' => $locked->survey_closes_at?->toIso8601String()];
+            $opensAt = $locked->survey_opens_at === null || $locked->survey_opens_at->greaterThan($now) ? $now : $locked->survey_opens_at;
+            $locked->forceFill(['survey_opens_at' => $opensAt, 'survey_closes_at' => $now])->save();
+            Audit::record('survey.close', $locked, [
+                'before' => $before,
+                'after' => ['opensAt' => $opensAt->toIso8601String(), 'closesAt' => $now->toIso8601String()],
+            ], actorRole: $actorRole);
+        });
+    }
+
     /** Menugaskan koordinator unit (anggota organisasi klien berperan koordinator unit) pada satu unit. */
     public function assignCoordinator(Assessment $assessment, int $userId, string $unitId, Role $actorRole): void
     {

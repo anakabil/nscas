@@ -44,9 +44,9 @@ final class ModuleCatalog
             new Module('observations', Stage::DataCollection, 'observations', $read(Resource::EvidenceAndObservations), 'R5', ready: true),
 
             // Tahap 3. Validasi dan triangulasi
-            new Module('dataQuality', Stage::Validation, 'data-quality', $read(Resource::RawSurveyAnswers), 'R6'),
-            new Module('findings', Stage::Validation, 'findings', $read(Resource::RawSurveyAnswers), 'R6'),
-            new Module('validation', Stage::Validation, 'validation', $assessors, 'R6'),
+            new Module('dataQuality', Stage::Validation, 'data-quality', $read(Resource::RawSurveyAnswers), 'R6', ready: true),
+            new Module('findings', Stage::Validation, 'findings', $read(Resource::RawSurveyAnswers), 'R6', ready: true),
+            new Module('validation', Stage::Validation, 'validation', $assessors, 'R6', ready: true),
 
             // Tahap 4. Penilaian dan penetapan
             new Module('scoring', Stage::Rating, 'scoring', $read(Resource::AssessorRatings), 'R7'),
