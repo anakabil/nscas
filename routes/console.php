@@ -16,3 +16,5 @@ Schedule::command('nscas:participation-snapshot')->dailyAt('23:00')->timezone('A
 Schedule::command('nscas:shuffle-survey-rows')->dailyAt('00:45')->timezone('Asia/Jakarta')->withoutOverlapping();
 // Fase R5 (docs/02 bagian 5): izin unggah yang tidak diselesaikan dihapus beserta berkasnya.
 Schedule::command('nscas:prune-uploads')->hourly()->withoutOverlapping();
+// Fase R9: pengingat tenggat rencana aksi.
+Schedule::command('nscas:action-reminders')->dailyAt('08:05')->timezone('Asia/Jakarta')->withoutOverlapping();

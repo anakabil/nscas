@@ -31,6 +31,7 @@ use App\Models\ScoreRun;
 use App\Models\User;
 use App\Models\ValidationRating;
 use App\Models\ValidationSession;
+use App\Services\ActionPlan\ActionPlanService;
 use App\Services\Findings\SurveyDataLoader;
 use App\Support\Audit;
 use App\Support\RuleViolation;
@@ -502,6 +503,8 @@ class ScoringService
             }
             $final = $this->adjustedResult($run);
             $run->forceFill(['is_final' => true, 'final_result' => $final, 'finalized_at' => now(), 'finalized_by' => $user->id])->save();
+            // Daftar kesenjangan dibentuk dari hasil final sebagai awal rencana aksi (docs/01 M10).
+            app(ActionPlanService::class)->ensureGaps($locked, $actorRole);
             Audit::record('panel.finalize', $run, ['after' => [
                 'organizationIndex' => $final['organization']['index'] ?? null,
                 'indicativeLevel' => $final['organization']['indicativeLevel'] ?? null,

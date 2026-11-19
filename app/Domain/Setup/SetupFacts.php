@@ -48,5 +48,8 @@ final readonly class SetupFacts
         public bool $scoreRunCurrent = false,
         public bool $panelDecisionsComplete = false,
         public bool $resultsLocked = false,
+        // Fase R9: rencana aksi terbit dan pemantauan selesai.
+        public bool $actionPlanPublished = false,
+        public bool $monitoringClosed = false,
     ) {}
 }

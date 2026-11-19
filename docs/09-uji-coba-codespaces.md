@@ -45,7 +45,7 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 
 ## 4. Yang dapat dicoba pada versi ini
 
-Versi 2 saat ini berada di akhir fase R8 (dasbor hasil). Yang sudah dapat dicoba:
+Versi 2 saat ini berada di akhir fase R9 (rencana aksi dan pemantauan). Yang sudah dapat dicoba:
 
 1. Halaman masuk, pilihan bahasa Indonesia dan Inggris (tersimpan di akun), dan pengaturan ulang kata sandi melalui kotak surat uji.
 2. Dasbor progres pengukuran di beranda, untuk akun pengelola sistem, asesor utama, asesor, dan administrator klien. Dasbor diperbarui otomatis setiap 60 detik.
@@ -70,9 +70,10 @@ Versi 2 saat ini berada di akhir fase R8 (dasbor hasil). Yang sudah dapat dicoba
    - Pada asesmen "Kantor Pusat 2026" (status Pengumpulan data), tombol Buat sesi dari usulan menyusun sesi dari rencana sampel, dan tombol Tutup survei sekarang ada di halaman Responden. Dengan akun administrator klien, tombol surat pada daftar Penilaian mandiri mengirim tautan lewat surel ke kotak surat uji.
 13. Tahap 4 pada asesmen contoh "Perdana" (status Penilaian, organisasi PT Infrastruktur Lain), dengan akun asesor: buka Penilaian asesor, pilih satu karakteristik, baca sumber datanya, lalu beri nilai dan alasan; nilai asesor lain baru tampil setelah Anda menyimpan nilai sendiri. Dengan akun asesor utama: isi jalur setara, lalu Jalankan perhitungan. Rapat panel yang sudah ditetapkan dapat dilihat pada asesmen "2025" (status Pemantauan).
 14. Dasbor hasil pada asesmen "2025" dengan akun administrator klien atau peninjau eksekutif: kartu indeks dan tingkat, batang per aspek dan karakteristik, peta warna per strata dan unit, analisis kepekaan bobot, dan tombol Unduh Excel. Akun koordinator unit hanya melihat unitnya pada peta per unit. Perbandingan antarperiode ada di tahap 6.
-15. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
+15. Rencana aksi pada asesmen "2025": halaman Kesenjangan dan rencana aksi memuat kesenjangan berurutan dengan analisis penyebab dan tindakan; halaman Pemantauan rencana aksi di tahap 6 memuat kemajuan per triwulan, verifikasi asesor, dan tinjauan triwulan. Pengingat tenggat dapat dicoba dengan `php artisan nscas:action-reminders`; surelnya masuk ke kotak surat uji.
+16. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
 
-Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R9 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
+Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R10 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
 
 Di lingkungan ini verifikasi dua langkah tidak diwajibkan, agar keenam akun contoh dapat langsung dicoba. Untuk mencoba alur wajibnya, buka berkas `.env` di codespace, ubah `NSCAS_ENFORCE_TWO_FACTOR=false` menjadi `true`, lalu jalankan `bash .devcontainer/start.sh --restart` di terminal. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator. Di produksi nilai ini wajib `true`.
 

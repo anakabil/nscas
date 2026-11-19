@@ -3,12 +3,15 @@
 namespace App\Console\Commands;
 
 use App\Domain\Access\Role;
+use App\Domain\ActionPlan\ActionPlanRules;
 use App\Domain\Observations\Geo;
 use App\Domain\Setup\EditableParameters;
 use App\Domain\Survey\SurveyRules;
 use App\Domain\Validation\SessionProposal;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Models\AccessToken;
+use App\Models\ActionItem;
+use App\Models\ActionUpdate;
 use App\Models\Assessment;
 use App\Models\AssessmentReview;
 use App\Models\Characteristic;
@@ -16,7 +19,9 @@ use App\Models\EvidenceItem;
 use App\Models\EvidenceRating;
 use App\Models\EvidenceReview;
 use App\Models\FeedbackNote;
+use App\Models\GapItem;
 use App\Models\InstrumentVersion;
+use App\Models\MonitoringReview;
 use App\Models\ObservationCapture;
 use App\Models\ObservationWindow;
 use App\Models\Organization;
@@ -164,6 +169,11 @@ class DemoDataCommand extends Command
             if ($assessment !== null && $status->position() >= AssessmentStatus::Scoring->position()
                 && ! ScoreRun::where('assessment_id', $assessment->id)->exists()) {
                 $this->scoring($assessment->refresh(), $lead, $assessor, $status);
+            }
+            // Fase R9: analisis penyebab, tindakan, penerbitan, kemajuan, verifikasi, dan tinjauan triwulan.
+            if ($assessment !== null && $status->position() >= AssessmentStatus::ActionPlanning->position()
+                && GapItem::where('assessment_id', $assessment->id)->exists() && ! ActionItem::whereIn('gap_item_id', GapItem::where('assessment_id', $assessment->id)->select('id'))->exists()) {
+                $this->actionPlan($assessment->refresh(), $lead, $assessor, $accounts['CLIENT_ADMIN'], $status);
             }
         }
         Auth::forgetUser();
@@ -739,5 +749,69 @@ class DemoDataCommand extends Command
             $service->finalize($assessment, $lead, Role::LeadAssessor);
         }
         $assessment->forceFill(['status' => $final])->save();
+    }
+
+    /**
+     * Fase R9: analisis penyebab untuk setiap kesenjangan, satu atau dua tindakan dengan tenggat berbeda, penerbitan,
+     * lalu pada asesmen pemantauan kemajuan bercampur (sebagian selesai dan terverifikasi, sebagian terlambat) serta
+     * tinjauan triwulan sebelumnya.
+     */
+    private function actionPlan(Assessment $assessment, User $lead, User $assessor, User $admin, AssessmentStatus $status): void
+    {
+        mt_srand(crc32('rencana '.$assessment->name));
+        $owners = [['Hendra Gunawan', 'Manajer K3'], ['Siti Rahmawati', 'Kepala Divisi Gedung'], ['Agus Prasetyo', 'Manajer Proyek'], ['Dewi Lestari', 'Kepala Sumber Daya Manusia']];
+        $units = Unit::where('assessment_id', $assessment->id)->orderBy('name')->pluck('id')->all();
+        $start = CarbonImmutable::parse($assessment->period_end)->addDays(20);
+        $monitoring = $status === AssessmentStatus::Monitoring;
+        foreach (GapItem::where('assessment_id', $assessment->id)->orderBy('rank')->get() as $g) {
+            $g->forceFill([
+                'root_cause' => 'Prosedur sudah ada, tetapi pengawas lapangan belum rutin menindaklanjuti temuan dan pekerja penyedia jasa belum dilibatkan.',
+                'priority' => $g->rank <= 4 ? 'HIGH' : ($g->rank <= 10 ? 'MEDIUM' : 'LOW'),
+            ])->save();
+            foreach (range(1, $g->rank <= 6 ? 2 : 1) as $k) {
+                [$name, $position] = $owners[($g->rank + $k) % count($owners)];
+                $due = $start->addDays(30 * (($g->rank + $k) % 8));
+                $action = ActionItem::create([
+                    'gap_item_id' => $g->id,
+                    'title' => $k === 1 ? 'Pembinaan pengawas tentang tindak lanjut temuan '.$g->characteristic_code : 'Forum bulanan bersama penyedia jasa untuk '.$g->characteristic_code,
+                    'owner_name' => $name, 'owner_position' => $position,
+                    'unit_id' => $units === [] ? null : $units[($g->rank + $k) % count($units)],
+                    'due_date' => $due->toDateString(),
+                    'success_indicator' => 'Sembilan puluh persen temuan ditindaklanjuti dalam tujuh hari.',
+                    'status' => 'PLANNED', 'created_by' => $admin->id,
+                ]);
+                if (! $monitoring) {
+                    continue;
+                }
+                $past = $due->lessThan(now());
+                $state = match (true) {
+                    $past && mt_rand(1, 10) <= 7 => 'VERIFIED',
+                    $past && mt_rand(1, 10) <= 5 => 'DONE',
+                    $past => 'IN_PROGRESS',
+                    mt_rand(1, 3) === 1 => 'IN_PROGRESS',
+                    default => 'PLANNED',
+                };
+                $progress = match ($state) {
+                    'VERIFIED', 'DONE' => 100,
+                    'IN_PROGRESS' => 30 + mt_rand(0, 5) * 10,
+                    default => 0,
+                };
+                if ($state !== 'PLANNED') {
+                    ActionUpdate::create(['action_item_id' => $action->id, 'kind' => 'PROGRESS', 'note' => 'Kegiatan berjalan; daftar hadir dan notulen tersimpan di bukti dokumen.', 'progress_percent' => $progress, 'status' => $state === 'VERIFIED' ? 'DONE' : $state, 'created_by' => $admin->id, 'created_at' => $due->subDays(5)]);
+                }
+                if ($state === 'VERIFIED') {
+                    ActionUpdate::create(['action_item_id' => $action->id, 'kind' => 'VERIFICATION', 'note' => 'Bukti pelaksanaan diperiksa dan sesuai indikator.', 'progress_percent' => 100, 'status' => 'VERIFIED', 'created_by' => $assessor->id, 'created_at' => $due]);
+                }
+                $action->forceFill(['status' => $state, 'progress_percent' => $progress, 'verified_by' => $state === 'VERIFIED' ? $assessor->id : null, 'verified_at' => $state === 'VERIFIED' ? $due : null])->save();
+            }
+        }
+        $assessment->forceFill(['action_plan_published_at' => $start->subDays(10)])->save();
+        if ($monitoring) {
+            MonitoringReview::create([
+                'assessment_id' => $assessment->id, 'quarter' => ActionPlanRules::quarterOf($start->addDays(90)->toDateString()),
+                'summary' => 'Sebagian besar tindakan prioritas tinggi berjalan sesuai jadwal. Dua tindakan terlambat karena pergantian pengawas proyek.',
+                'closing' => false, 'reviewed_by' => $lead->id,
+            ]);
+        }
     }
 }

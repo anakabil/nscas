@@ -23,8 +23,8 @@ Cara membangun ulang sebuah modul:
 | R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | Selesai |
 | R7 | Penilaian asesor dan rapat panel | 4 | Selesai |
 | R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | Selesai |
-| R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | Berikutnya |
-| R10 | Laporan dan komunikasi hasil | 5 | |
+| R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | Selesai |
+| R10 | Laporan dan komunikasi hasil | 5 | Berikutnya |
 | R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | |
 | R12 | Uji menyeluruh, uji beban, penempatan produksi | Lintas tahap | |
 
@@ -174,7 +174,10 @@ Rujukan versi 1: `src/lib/dashboard`, `src/app/(console)/assessments/[id]/dashbo
 
 Kartu indeks dan tingkat dengan lencana, grafik aspek dan karakteristik, peta warna dengan penyembunyian sel, ekspor Excel, perbandingan antarperiode, dan analisis kepekaan bobot lapisan (`docs/12` bagian 6). Pernyataan "bukan sertifikat" wajib tampil.
 
-## R9. Kesenjangan, rencana aksi, dan pemantauan
+## R9. Kesenjangan, rencana aksi, dan pemantauan (selesai)
+
+Hasil: daftar kesenjangan terbentuk otomatis saat rapat panel menetapkan hasil, untuk setiap karakteristik dengan nilai akhir di bawah tingkat sasaran, diurutkan menurut bobot aspek dikali besar kesenjangan (karakteristik kontekstual di akhir). Asesor dan administrator klien mengisi analisis penyebab dan prioritas; administrator klien, asesor, dan koordinator unit (unitnya saja) menyusun tindakan dengan penanggung jawab, jabatan, surel opsional (terenkripsi, tidak ditulis ke jejak audit), unit pelaksana, tenggat, dan indikator keberhasilan. Rencana aksi diterbitkan asesor utama atau administrator klien setelah setiap kesenjangan memiliki analisis penyebab dan tindakan. Pemantauan mengelompokkan tindakan per triwulan tenggat dengan penanda melewati tenggat, segera jatuh tempo, dan menunggu verifikasi; pelaksana mencatat kemajuan; asesor memverifikasi tindakan selesai atau mengembalikannya; asesor mencatat tinjauan triwulan dan tinjauan penutup. Pengingat tenggat setiap pukul 08.05 WIB dikirim lewat surel kepada penanggung jawab dan administrator klien, paling sering seminggu sekali per tindakan. Syarat `action_plan_published` dan `monitoring_closed` diperiksa otomatis. Tes: `tests/Unit/Domain/ActionPlan`, `tests/Feature/ActionPlan`.
+
 
 Rujukan versi 1: `src/lib/action-plans`, `src/app/(console)/assessments/[id]/gaps`.
 

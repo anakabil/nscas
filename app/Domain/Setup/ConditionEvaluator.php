@@ -91,6 +91,8 @@ final class ConditionEvaluator
             'score_run_saved' => $facts->scoreRunCurrent,
             'panel_adjustments_justified' => $facts->panelDecisionsComplete,
             'results_locked' => $facts->resultsLocked,
+            'action_plan_published' => $facts->actionPlanPublished,
+            'monitoring_closed' => $facts->monitoringClosed,
             default => null,
         };
     }

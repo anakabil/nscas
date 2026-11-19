@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Domain\Access\Role;
+use App\Domain\ActionPlan\ActionPlanRules;
 use App\Domain\Panel\PanelRules;
 use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\Kickoff;
@@ -11,10 +12,12 @@ use App\Domain\Validation\SessionProposal;
 use App\Domain\Validation\ValidationRules;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Models\AccessToken;
+use App\Models\ActionItem;
 use App\Models\Assessment;
 use App\Models\AssessmentReview;
 use App\Models\EvidenceRating;
 use App\Models\EvidenceReview;
+use App\Models\MonitoringReview;
 use App\Models\ObservationWindow;
 use App\Models\ScoreRun;
 use App\Models\SelfAssessment;
@@ -89,6 +92,10 @@ final class SetupFactsCollector
         $characteristicIds = DB::table('characteristics')->whereIn('instrument_version_id', $assessments->pluck('instrument_version_id')->filter()->unique())
             ->get(['id', 'instrument_version_id'])->groupBy('instrument_version_id');
         $scoring = app(ScoringService::class);
+        // Fase R9: status tindakan dan tinjauan penutup pemantauan.
+        $actionStatuses = ActionItem::join('gap_items', 'gap_items.id', '=', 'action_items.gap_item_id')->whereIn('gap_items.assessment_id', $ids)
+            ->get(['gap_items.assessment_id', 'action_items.status'])->groupBy('assessment_id');
+        $closingReviews = MonitoringReview::whereIn('assessment_id', $ids)->where('closing', true)->pluck('assessment_id')->flip();
 
         $facts = [];
         foreach ($assessments as $assessment) {
@@ -150,6 +157,11 @@ final class SetupFactsCollector
                     ($final ?? $latest)->decisions->pluck('rationale', 'characteristic_code')->all(),
                 ),
                 resultsLocked: $final !== null,
+                actionPlanPublished: $assessment->action_plan_published_at !== null,
+                monitoringClosed: ActionPlanRules::monitoringClosed(
+                    ($actionStatuses[$assessment->id] ?? collect())->pluck('status')->all(),
+                    $closingReviews->has($assessment->id),
+                ),
             );
         }
 

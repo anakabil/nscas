@@ -1,4 +1,5 @@
 import { account } from './account';
+import { actionPlan } from './action-plan';
 import { core } from './core';
 import { fieldwork } from './fieldwork';
 import { respondents } from './respondents';
@@ -7,4 +8,14 @@ import { scoring } from './scoring';
 import { setup } from './setup';
 import { validation } from './validation';
 
-export const en = { ...core, ...account, ...setup, ...respondents, ...fieldwork, ...validation, ...scoring, ...results };
+export const en = {
+    ...core,
+    ...account,
+    ...setup,
+    ...respondents,
+    ...fieldwork,
+    ...validation,
+    ...scoring,
+    ...results,
+    ...actionPlan,
+};

@@ -38,6 +38,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $locked_by
  * @property Carbon|null $survey_opens_at
  * @property Carbon|null $survey_closes_at
+ * @property Carbon|null $action_plan_published_at
  */
 #[Fillable([
     'organization_id', 'name', 'scope_type', 'period_start', 'period_end', 'target_level', 'status', 'created_by',
@@ -68,6 +69,7 @@ class Assessment extends Model
             'calibration' => 'array',
             'survey_opens_at' => 'datetime',
             'survey_closes_at' => 'datetime',
+            'action_plan_published_at' => 'datetime',
         ];
     }
 

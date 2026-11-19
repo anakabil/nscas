@@ -15,6 +15,8 @@ use App\Http\Controllers\Respondents\RespondentController;
 use App\Http\Controllers\Respondents\SelfAssessmentController;
 use App\Http\Controllers\Respondents\SelfAssessmentFormController;
 use App\Http\Controllers\Respondents\SurveyEntryController;
+use App\Http\Controllers\Results\GapsController;
+use App\Http\Controllers\Results\MonitoringController;
 use App\Http\Controllers\Results\ResultsController;
 use App\Http\Controllers\Results\TrendController;
 use App\Http\Controllers\Scoring\PanelController;
@@ -181,6 +183,16 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::get('dashboard', [ResultsController::class, 'index'])->name('results.index');
         Route::get('dashboard/export', [ResultsController::class, 'export'])->middleware('throttle:20,1')->name('results.export');
         Route::get('trend', [TrendController::class, 'index'])->name('trend.index');
+        // Fase R9: kesenjangan, rencana aksi, dan pemantauan.
+        Route::get('gaps', [GapsController::class, 'index'])->name('gaps.index');
+        Route::post('gaps/publish', [GapsController::class, 'publish'])->name('gaps.publish');
+        Route::put('gaps/{gap}', [GapsController::class, 'analyse'])->whereAlphaNumeric('gap')->name('gaps.analyse');
+        Route::post('gaps/{gap}/actions', [GapsController::class, 'store'])->whereAlphaNumeric('gap')->name('actions.store');
+        Route::put('actions/{action}', [GapsController::class, 'update'])->whereAlphaNumeric('action')->name('actions.update');
+        Route::get('monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+        Route::post('actions/{action}/progress', [MonitoringController::class, 'progress'])->whereAlphaNumeric('action')->name('actions.progress');
+        Route::post('actions/{action}/verify', [MonitoringController::class, 'verify'])->whereAlphaNumeric('action')->name('actions.verify');
+        Route::put('monitoring/reviews', [MonitoringController::class, 'review'])->name('monitoring.review');
     });
 
     // Penerima unggahan saat penyimpanan memakai disk lokal; dengan disk s3 peramban mengunggah langsung (fase R5).

@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 sampai R7)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R9)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -94,6 +94,10 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `scl_fulfillments` | Pemenuhan jalur setara per aspek dan tangga (0 sampai 100 persen) dengan alasan | R7. Diisi asesor utama |
 | `score_runs` | Eksekusi mesin: versi mesin, masukan (nilai lapisan dan hitungan, tanpa jawaban mentah), parameter terkunci, hasil, pelaksana; kolom final diisi satu kali saat penetapan | R7. Pemicu `score_run_guard` menolak perubahan masukan dan hasil, serta perubahan atau penghapusan eksekusi final; paling banyak satu eksekusi final per asesmen |
 | `panel_decisions` | Keputusan panel per karakteristik: disesuaikan (nilai 1,00 sampai 5,00) atau dikukuhkan, nilai mesin, alasan, pemutus | R7. Pemicu `panel_decision_guard` menolak perubahan setelah hasil ditetapkan |
+| `gap_items` | Kesenjangan per karakteristik dari hasil final: nilai saat ini, sasaran, kesenjangan, skor prioritas, urutan, analisis penyebab, prioritas tim | R9. Dibentuk saat hasil ditetapkan; `assessments.action_plan_published_at` menandai penerbitan |
+| `action_items` | Tindakan: judul, uraian, penanggung jawab dan jabatan, surel (terenkripsi), unit, tenggat, indikator keberhasilan, status, kemajuan, verifikasi, waktu pengingat terakhir | R9. Status PLANNED, IN_PROGRESS, DONE, CANCELLED, VERIFIED |
+| `action_updates` | Riwayat pembaruan kemajuan dan verifikasi asesor | R9 |
+| `monitoring_reviews` | Tinjauan pemantauan per triwulan, dengan penanda tinjauan penutup | R9. Syarat `monitoring_closed` |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
@@ -105,7 +109,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R9 | `gaps`, `action_items`, `monitoring_reviews` |
 | R10 | `reports` |
 | R11 | `destruction_records` |
 

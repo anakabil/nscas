@@ -71,6 +71,12 @@ return [
         'RESULTS_FINAL' => 'The results have been finalized and locked, so they cannot be changed.',
         'DECISIONS_MISSING' => 'Every flagged characteristic needs a written decision before the results are finalized.',
         'INVALID_PANEL_VALUE' => 'The panel value must be between 1.00 and 5.00 with at most two decimals.',
+        'PLAN_CLOSED' => 'The action plan cannot be changed at this assessment status.',
+        'ACTION_VERIFIED' => 'This action has been verified, so it cannot be changed.',
+        'ACTION_NOT_DONE' => 'Only actions marked as done can be verified.',
+        'GAP_LIST_MISSING' => 'The gap list has not been formed because the results are not finalized.',
+        'ACTION_PLAN_INCOMPLETE' => 'Every gap needs a root cause analysis and at least one action before the action plan is published.',
+        'MONITORING_CLOSED' => 'Monitoring reviews are recorded while the assessment is in the monitoring stage.',
     ],
     'sessionLabels' => [
         'INTERVIEW' => 'Interview :stratum, session :n',

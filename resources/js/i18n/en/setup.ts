@@ -23,6 +23,7 @@ export const setup = {
         sessionsCreated: 'Validation sessions were created from the proposal.',
         scoreRun: 'The scoring run has finished and was saved.',
         finalized: 'The results have been finalized and locked.',
+        published: 'The action plan has been published.',
         transitioned: 'Assessment status changed.',
     },
     shell: {

@@ -72,6 +72,12 @@ return [
         'RESULTS_FINAL' => 'Hasil sudah ditetapkan dan dikunci sehingga tidak dapat diubah.',
         'DECISIONS_MISSING' => 'Semua karakteristik bertanda harus diputuskan dengan alasan tertulis sebelum hasil ditetapkan.',
         'INVALID_PANEL_VALUE' => 'Nilai panel harus antara 1,00 dan 5,00 dengan paling banyak dua angka desimal.',
+        'PLAN_CLOSED' => 'Rencana aksi tidak dapat diubah pada status asesmen ini.',
+        'ACTION_VERIFIED' => 'Tindakan ini sudah diverifikasi sehingga tidak dapat diubah.',
+        'ACTION_NOT_DONE' => 'Hanya tindakan berstatus selesai yang dapat diverifikasi.',
+        'GAP_LIST_MISSING' => 'Daftar kesenjangan belum terbentuk karena hasil belum ditetapkan.',
+        'ACTION_PLAN_INCOMPLETE' => 'Setiap kesenjangan memerlukan analisis penyebab dan paling sedikit satu tindakan sebelum rencana aksi diterbitkan.',
+        'MONITORING_CLOSED' => 'Tinjauan pemantauan dicatat saat asesmen berada pada tahap pemantauan.',
     ],
     'sessionLabels' => [
         'INTERVIEW' => 'Wawancara :stratum, sesi :n',

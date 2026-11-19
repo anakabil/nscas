@@ -25,6 +25,7 @@ export const setup = {
         sessionsCreated: 'Sesi validasi dibuat dari usulan.',
         scoreRun: 'Perhitungan nilai selesai dan tersimpan.',
         finalized: 'Hasil ditetapkan dan dikunci.',
+        published: 'Rencana aksi diterbitkan.',
     },
     shell: {
         navTitle: 'Tahap 1. Perencanaan',
