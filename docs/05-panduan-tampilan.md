@@ -75,7 +75,7 @@ Sudut kartu dan tombol sengaja kecil (`--radius` 0,375 rem) untuk kesan presisi 
 
 Logo NSCAS (Dial Lima Busur) ada di `resources/js/components/brand/nscas-mark.tsx`. Makna, aturan pakai, dan daftar berkasnya ada di `docs/11` bagian 3. Logo Nusa Safety tetap dipakai apa adanya dari `public/brand/logo-long-color.png`.
 
-Ikon enam tahap memakai set khusus di `components/icons/stage-icons.tsx`: garis mengikuti warna teks, satu unsur emas. Ikon halaman kerja sementara memakai ikon garis Lucide dengan ketebalan 1,5 sampai set khusus selesai dibuat (`docs/11` bagian 5). Semua ikon bersifat hiasan dan selalu didampingi nama.
+Ikon enam tahap memakai set khusus di `components/icons/stage-icons.tsx`: garis mengikuti warna teks, satu unsur emas. Ikon 25 halaman kerja dan 6 menu akun memakai set khusus dengan gaya yang sama di `components/icons/module-icons.tsx`, mengikuti konsep `docs/11` bagian 5. Ikon garis Lucide hanya dipakai untuk penunjuk kecil antarmuka (panah, centang, menu). Semua ikon bersifat hiasan dan selalu didampingi nama.
 
 ## 2. Pola halaman
 

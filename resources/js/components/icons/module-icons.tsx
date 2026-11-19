@@ -41,11 +41,11 @@ function tint(accent: string, opacity = 0.22) {
 export function IconDetails({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <path d="M18.5 10.6V7.3L14 2.8H5.5v18.4h5" />
-            <path d="M14 2.8v4.5h4.5M8.5 8.8h2.6M8.5 12h5.5M8.5 15.2h1.8" />
+            <path d="M17.5 10.6V7.3L13 2.8H4.5v18.4h5" />
+            <path d="M13 2.8v4.5h4.5M7.5 8.8h2.6M7.5 12h5.5M7.5 15.2h1.8" />
             <g stroke={accent}>
-                <circle cx="16.8" cy="16.8" r="2.8" fill={accent} fillOpacity={0.2} />
-                <path d="M16.8 12.3v3M16.8 18.3v3M12.3 16.8h3M18.3 16.8h3" />
+                <circle cx="15.8" cy="16.8" r="2.8" fill={accent} fillOpacity={0.2} />
+                <path d="M15.8 12.3v3M15.8 18.3v3M11.3 16.8h3M17.3 16.8h3" />
             </g>
         </Frame>
     );
@@ -55,8 +55,8 @@ export function IconDetails({ accent = GOLD, ...props }: IconProps) {
 export function IconUnits({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <path d="M12 18.6 7.15 12.7A6.2 6.2 0 1 1 16.85 12.7Z" />
-            <path d="M9.6 12V8.6h2.2V6.2h2.6V12" />
+            <path d="M12 18.6 7.23 12.86A6.2 6.2 0 1 1 16.77 12.86Z" />
+            <path d="M8.8 9.2 12 6.4l3.2 2.8M9.7 9.6V12M12 9.6V12M14.3 9.6V12" />
             <ellipse cx="12" cy="20.2" rx="3.6" ry="1.1" {...tint(accent)} />
         </Frame>
     );
@@ -90,13 +90,13 @@ export function IconSampling({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
             <circle cx="12" cy="12" r="9.2" />
-            <circle cx="9.6" cy="11.4" r="1.3" />
-            <circle cx="14.4" cy="11.4" r="1.3" />
-            <circle cx="12" cy="15.6" r="1.3" />
-            <g {...tint(accent, 1)}>
-                <circle cx="12" cy="7.2" r="1" />
-                <circle cx="7.2" cy="15.6" r="1" />
-                <circle cx="16.8" cy="15.6" r="1" />
+            <circle cx="16.5" cy="9.4" r="1.35" />
+            <circle cx="12" cy="17.2" r="1.35" />
+            <circle cx="7.5" cy="9.4" r="1.35" />
+            <g {...tint(accent, 0.25)}>
+                <circle cx="12" cy="6.8" r="1" />
+                <circle cx="16.5" cy="14.6" r="1" />
+                <circle cx="7.5" cy="14.6" r="1" />
             </g>
         </Frame>
     );
@@ -106,11 +106,11 @@ export function IconSampling({ accent = GOLD, ...props }: IconProps) {
 export function IconTeam({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <circle cx="8.6" cy="8" r="3" />
-            <path d="M2.6 20a6 6 0 0 1 9.9-4.55" />
-            <path d="M14.3 4.3a2.6 2.6 0 1 1 1.6 4.95M17.6 11.9c1.4.4 2.6 1.2 3.3 2.3" />
-            <circle cx="17.6" cy="17.6" r="3.4" {...tint(accent)} />
-            <path d="m16.1 17.7 1.05 1.05 2-2.2" stroke={accent} />
+            <circle cx="8.7" cy="7.3" r="3" />
+            <path d="M2.7 19.3a6 6 0 0 1 9.9-4.55" />
+            <circle cx="16.3" cy="6.5" r="2.4" />
+            <circle cx="17.7" cy="16.9" r="3.4" {...tint(accent)} />
+            <path d="m16.2 17 1.05 1.05 2-2.2" stroke={accent} />
         </Frame>
     );
 }
@@ -121,7 +121,7 @@ export function IconKickoff({ accent = GOLD, ...props }: IconProps) {
         <Frame {...props}>
             <path d="M6.4 8.8H4.3a1 1 0 0 0-1 1v4.4a1 1 0 0 0 1 1h2.1Z" />
             <path d="M6.4 8.8 14.2 4.6v14.8l-7.8-4.2" />
-            <path d="m8 16.1 1.1 3.7h2.2l-.85-2.9" />
+            <path d="m8.4 16.3 1.05 3.5" />
             <path d="M17.2 12h3.3M17 8.3l2.7-1.5M17 15.7l2.7 1.5" stroke={accent} />
         </Frame>
     );
@@ -133,10 +133,10 @@ export function IconKickoff({ accent = GOLD, ...props }: IconProps) {
 export function IconRespondents({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <path d="M7 20.6a5 5 0 0 1 10 0M9.7 10.4a2.3 2.3 0 0 0 4.6 0" />
-            <path d="M2.6 18.2a3.4 3.4 0 0 1 3.2-3M3.9 11.6a1.7 1.7 0 0 0 3.4 0M3.1 11.2h4.9M3.8 11.2a1.8 1.8 0 0 1 3.6 0" />
-            <path d="M21.4 18.2a3.4 3.4 0 0 0-3.2-3M16.7 11.6a1.7 1.7 0 0 0 3.4 0M16 11.2h4.9M16.6 11.2a1.8 1.8 0 0 1 3.6 0" />
-            <path d="M8.5 9.6h7M9.3 9.6a2.7 2.7 0 0 1 5.4 0Z" {...tint(accent)} />
+            <path d="M6.6 19.2a5.4 5.4 0 0 1 10.8 0M9.9 9a2.1 2.1 0 0 0 4.2 0" />
+            <path d="M2.8 19.2a3.1 3.1 0 0 1 2.28-3.08M3.8 11a2 2 0 0 1 4 0M3.3 11h5" />
+            <path d="M21.2 19.2a3.1 3.1 0 0 0-2.28-3.08M16.2 11a2 2 0 0 1 4 0M15.7 11h5" />
+            <path d="M8.5 8h7M9.3 8a2.7 2.7 0 0 1 5.4 0Z" {...tint(accent)} />
         </Frame>
     );
 }
@@ -161,12 +161,12 @@ export function IconQr({ accent = GOLD, ...props }: IconProps) {
 export function IconParticipation({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <path d="m4.8 19.1 4.4-3.3M11.4 14.6l4.4-1.9" />
-            <circle cx="3.9" cy="19.8" r="1.1" />
-            <circle cx="10.3" cy="15.1" r="1.1" />
-            <circle cx="17.6" cy="3.9" r="1.6" />
-            <path d="M15.1 9a2.5 2.5 0 0 1 5 0" />
-            <circle cx="17.6" cy="12.4" r="1.6" {...tint(accent, 0.25)} />
+            <path d="M5.29 19.15 9.91 15.75M11.86 14.8l4.8-1.39" />
+            <circle cx="4.4" cy="19.8" r="1.1" />
+            <circle cx="10.8" cy="15.1" r="1.1" />
+            <circle cx="18.1" cy="4.1" r="1.4" />
+            <path d="M15.8 9.6a2.3 2.3 0 0 1 4.6 0" />
+            <circle cx="18.1" cy="13" r="1.5" {...tint(accent, 0.25)} />
         </Frame>
     );
 }
@@ -187,10 +187,10 @@ export function IconSelfAssessments({ accent = GOLD, ...props }: IconProps) {
 export function IconEvidence({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <path d="M3 18.6V5.9c0-.6.5-1.1 1.1-1.1h3.6L9.5 7H10" />
-            <path d="M10 10.4V3.6h6.4l2.6 2.6v4.2" />
-            <path d="M3 18.6 5.5 11.3c.2-.5.6-.8 1.1-.8h14.3l-2.6 7.5c-.2.5-.6.8-1.1.8H3" />
-            <path d="M12.4 7.4V4.2a1.2 1.2 0 0 1 2.4 0v4.2" stroke={accent} />
+            <path d="M3 19.8V7a1.5 1.5 0 0 1 1.5-1.5h3.1l1.6 1.8" />
+            <path d="M10.8 11.5V4.8a.8.8 0 0 1 .8-.8h1.1M16.3 4h1.5a.8.8 0 0 1 .8.8v6.7" />
+            <path d="M3 19.8 5.55 12.35a1.2 1.2 0 0 1 1.13-.85H21l-2.62 7.45a1.2 1.2 0 0 1-1.13.85H3" />
+            <path d="M13.4 8.6V4.9a1.2 1.2 0 0 1 2.4 0v4.4" stroke={accent} />
         </Frame>
     );
 }
@@ -199,9 +199,9 @@ export function IconEvidence({ accent = GOLD, ...props }: IconProps) {
 export function IconObservations({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <path d="M13.9 8.4h-.4l-1.3-2H7.8l-1.3 2H4.4a1.9 1.9 0 0 0-1.9 1.9v7.5a1.9 1.9 0 0 0 1.9 1.9h11a1.9 1.9 0 0 0 1.9-1.9v-4.3" />
-            <circle cx="9.9" cy="14" r="3.1" />
-            <path d="M18.4 11.6 16.05 7.5A2.7 2.7 0 1 1 20.75 7.5Z" {...tint(accent)} />
+            <path d="M14.05 8.8h-.4l-1.3-2H7.95l-1.3 2H4.7a1.9 1.9 0 0 0-1.9 1.9v7.5a1.9 1.9 0 0 0 1.9 1.9h10.7a1.9 1.9 0 0 0 1.9-1.9v-4.3" />
+            <circle cx="10.05" cy="14.4" r="3.1" />
+            <path d="M18.4 12 16.05 7.9A2.7 2.7 0 1 1 20.75 7.9Z" {...tint(accent)} />
         </Frame>
     );
 }
@@ -239,7 +239,7 @@ export function IconValidation({ accent = GOLD, ...props }: IconProps) {
         <Frame {...props}>
             <path d="M14.5 6.6V5.45a2.2 2.2 0 0 0-2.2-2.2H4.95a2.2 2.2 0 0 0-2.2 2.2v4.35a2.2 2.2 0 0 0 2.2 2.2h.55v2.8l2.6-2.8" />
             <path d="M12.2 8.75h6.85a2.2 2.2 0 0 1 2.2 2.2v4.6a2.2 2.2 0 0 1-2.2 2.2h-.45v2.75l-2.75-2.75H12.2a2.2 2.2 0 0 1-2.2-2.2v-4.6a2.2 2.2 0 0 1 2.2-2.2Z" />
-            <g {...tint(accent, 1)}>
+            <g {...tint(accent, 0.25)}>
                 <circle cx="12.9" cy="13.25" r="0.45" />
                 <circle cx="15.6" cy="13.25" r="0.45" />
                 <circle cx="18.3" cy="13.25" r="0.45" />
@@ -260,7 +260,7 @@ export function IconScoring({ accent = GOLD, ...props }: IconProps) {
                 <path
                     d="M6.1 14 5.22 16.29 2.77 16.42 4.67 17.96 4.04 20.33 6.1 19Z"
                     fill={accent}
-                    fillOpacity={0.35}
+                    fillOpacity={0.25}
                     stroke="none"
                 />
             </g>
@@ -272,11 +272,11 @@ export function IconScoring({ accent = GOLD, ...props }: IconProps) {
 export function IconPanel({ accent = GOLD, ...props }: IconProps) {
     return (
         <Frame {...props}>
-            <circle cx="12" cy="13.2" r="4.6" />
-            <rect x="9.4" y="4.1" width="5.2" height="2.2" rx="1.1" />
-            <rect x="9.4" y="4.1" width="5.2" height="2.2" rx="1.1" transform="rotate(120 12 13.2)" />
-            <rect x="9.4" y="4.1" width="5.2" height="2.2" rx="1.1" transform="rotate(240 12 13.2)" />
-            <circle cx="12" cy="13.2" r="1.3" {...tint(accent, 0.25)} />
+            <circle cx="12" cy="13.4" r="4.2" />
+            <rect x="10.5" y="3.9" width="3" height="3" rx="0.7" />
+            <rect x="10.5" y="3.9" width="3" height="3" rx="0.7" transform="rotate(120 12 13.4)" />
+            <rect x="10.5" y="3.9" width="3" height="3" rx="0.7" transform="rotate(240 12 13.4)" />
+            <circle cx="12" cy="13.4" r="1.2" {...tint(accent, 0.25)} />
         </Frame>
     );
 }
@@ -436,8 +436,9 @@ export function IconAccount({ accent = GOLD, ...props }: IconProps) {
         <Frame {...props}>
             <circle cx="9" cy="7.6" r="3.2" />
             <path d="M2.8 20.6A6.2 6.2 0 0 1 12 15.17" />
-            <path d="M17.7 10.8l3.5 1.4v3.3c0 2.5-1.5 4.1-3.5 5-2-.9-3.5-2.5-3.5-5v-3.3Z" {...tint(accent)} />
-            <path d="M16.3 15.6h2.8v2.2h-2.8ZM16.9 15.6v-.7a.8.8 0 0 1 1.6 0v.7" />
+            <path d="m17.6 10.2 3.6 1.45v3.45c0 2.7-1.5 4.4-3.6 5.4-2.1-1-3.6-2.7-3.6-5.4v-3.45Z" {...tint(accent)} />
+            <rect x="16.1" y="15.2" width="3" height="2.6" rx="0.5" />
+            <path d="M16.75 15.2v-.8a.85.85 0 0 1 1.7 0v.8" />
         </Frame>
     );
 }

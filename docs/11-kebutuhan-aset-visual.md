@@ -56,7 +56,7 @@ Dalam palet ini, rompi digambar perak terang dengan pita pemantul emas pucat, da
 |---|---|---|
 | Logo NSCAS (bagian 3) | 6 berkas | Sudah dibuat sebagai vektor dan terpasang; menunggu persetujuan pemilik merek |
 | Ikon tahap (bagian 4) | 6 | Sudah dibuat sebagai vektor dan terpasang |
-| Ikon halaman kerja dan akun (bagian 5) | 31 | Sementara memakai ikon garis pengganti; perlu dibuat sesuai konsep di tabel |
+| Ikon halaman kerja dan akun (bagian 5) | 31 | Sudah dibuat sebagai vektor dan terpasang (`module-icons.tsx`); prompt di tabel tetap berlaku bila ingin versi bergambar |
 | Lencana tingkat kematangan (bagian 6) | 5 | Perlu dibuat |
 | Ilustrasi dan gambar (bagian 7) | 22 | Perlu dibuat |
 
