@@ -1,6 +1,6 @@
 # 03. Aturan Penilaian, Sampel, dan Mutu Data
 
-Dokumen ini adalah spesifikasi mesin penilaian. Implementasi rujukan ada di `seed/fixtures/referensi_skoring.py`. Implementasi TypeScript di `src/lib/scoring/` wajib menghasilkan nilai yang sama dengan fixture pada toleransi 1e-6.
+Dokumen ini adalah spesifikasi mesin penilaian. Implementasi rujukan ada di `seed/fixtures/referensi_skoring.py`. Implementasi PHP di `app/Domain/Scoring/` wajib menghasilkan nilai yang sama dengan fixture pada toleransi 1e-6. Implementasi ini dipindahkan dari TypeScript versi 1 dan diuji setara pada seluruh fixture (`tests/Unit/Scoring`). Catatan pemindahan: fungsi JavaScript seperti `Math.ceil` pada dokumen ini dibaca sebagai padanannya di PHP; perilakunya sama.
 
 ## 1. Prinsip umum
 

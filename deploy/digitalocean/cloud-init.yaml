@@ -1,0 +1,259 @@
+#cloud-config
+# NSCAS: data pengguna (user data) untuk Droplet DigitalOcean, Ubuntu 24.04 LTS, wilayah Singapura (sgp1).
+# Tempel seluruh isi berkas ini pada kolom "Initialization scripts" atau "User data" saat membuat Droplet.
+# Panduan lengkap: docs/08-penempatan.md.
+#
+# Berkas ini TIDAK memuat rahasia apa pun dan aman disimpan di repositori. Kunci SSH diambil dari kunci yang
+# dipilih di panel DigitalOcean saat Droplet dibuat. Rahasia aplikasi baru diisi kemudian di /opt/nscas/.env.
+#
+# Yang dikerjakan saat Droplet pertama kali menyala:
+#   1. Memperbarui paket sistem dan memasang ufw, fail2ban, unattended-upgrades, git, age, dan s3cmd.
+#   2. Membuat pengguna non-root "deploy" dan menyalin kunci SSH yang dipilih di panel ke pengguna itu.
+#   3. Memasang Docker Engine dan plugin compose dari repositori apt resmi Docker.
+#   4. Mematikan login SSH dengan kata sandi dan login SSH sebagai root.
+#   5. Mengaktifkan firewall ufw: hanya port 22, 80, dan 443 yang dibuka.
+#   6. Mengaktifkan pembaruan keamanan otomatis dan fail2ban.
+#   7. Membuat direktori /opt/nscas milik pengguna deploy.
+#
+# Kemajuan dapat dibaca di /var/log/nscas-bootstrap.log. Pekerjaan selesai bila berkas
+# /var/lib/nscas-bootstrap.done sudah ada.
+
+timezone: Asia/Jakarta
+ssh_pwauth: false
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - age
+  - ca-certificates
+  - curl
+  - fail2ban
+  - git
+  - gnupg
+  - s3cmd
+  - ufw
+  - unattended-upgrades
+
+users:
+  - default
+  - name: deploy
+    gecos: NSCAS deploy
+    shell: /bin/bash
+    groups: [sudo]
+    # Pengguna deploy tidak memiliki kata sandi dan hanya dapat masuk dengan kunci SSH. Keanggotaan grup docker
+    # setara dengan akses root, sehingga sudo tanpa kata sandi tidak menambah hak baru.
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    lock_passwd: true
+
+write_files:
+  - path: /etc/docker/daemon.json
+    owner: root:root
+    permissions: "0644"
+    content: |
+      {
+        "live-restore": true,
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "20m",
+          "max-file": "5"
+        }
+      }
+
+  - path: /etc/fail2ban/jail.d/nscas.local
+    owner: root:root
+    permissions: "0644"
+    content: |
+      [sshd]
+      enabled = true
+      backend = systemd
+      maxretry = 5
+      findtime = 10m
+      bantime = 1h
+
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root:root
+    permissions: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+
+  - path: /etc/apt/apt.conf.d/52nscas-unattended-upgrades
+    owner: root:root
+    permissions: "0644"
+    content: |
+      // Pembaruan keamanan otomatis. Mulai ulang otomatis pukul 03.00 WIB bila kernel diperbarui.
+      // Selama jendela survei besar, ubah Automatic-Reboot menjadi "false" lalu mulai ulang secara terjadwal.
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "03:00";
+
+  - path: /etc/sysctl.d/60-nscas.conf
+    owner: root:root
+    permissions: "0644"
+    content: |
+      vm.swappiness = 10
+
+  # Cadangan harian untuk tata letak A. Timer TIDAK diaktifkan otomatis; lihat docs/08 bagian cadangan.
+  - path: /etc/systemd/system/nscas-backup.service
+    owner: root:root
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Cadangan harian basis data NSCAS (pg_dump terenkripsi ke Spaces)
+      Wants=network-online.target docker.service
+      After=network-online.target docker.service
+
+      [Service]
+      Type=oneshot
+      User=deploy
+      Group=deploy
+      ExecStart=/opt/nscas/app/deploy/digitalocean/backup.sh
+      Nice=10
+
+  - path: /etc/systemd/system/nscas-backup.timer
+    owner: root:root
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Jadwal cadangan harian NSCAS pukul 01.30 WIB
+
+      [Timer]
+      OnCalendar=*-*-* 01:30:00 Asia/Jakarta
+      RandomizedDelaySec=300
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+
+  - path: /usr/local/sbin/nscas-bootstrap
+    owner: root:root
+    permissions: "0750"
+    content: |
+      #!/usr/bin/env bash
+      # Penyiapan awal Droplet NSCAS. Aman dijalankan ulang: sudo /usr/local/sbin/nscas-bootstrap
+      set -euo pipefail
+      export DEBIAN_FRONTEND=noninteractive
+
+      DEPLOY_USER=deploy
+      DOCKER_KEY=/etc/apt/keyrings/docker.asc
+      DOCKER_KEY_FINGERPRINT=9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+      log() { printf '[nscas-bootstrap] %s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
+
+      log "Mulai."
+
+      # 1. Docker Engine dan plugin compose dari repositori apt resmi Docker.
+      install -m 0755 -d /etc/apt/keyrings
+      if [ ! -s "${DOCKER_KEY}" ]; then
+        curl -fsSL --retry 5 --retry-delay 3 https://download.docker.com/linux/ubuntu/gpg -o "${DOCKER_KEY}"
+      fi
+      chmod a+r "${DOCKER_KEY}"
+      fingerprint="$(gpg --show-keys --with-colons "${DOCKER_KEY}" | awk -F: '$1 == "fpr" { print $10; exit }')"
+      if [ "${fingerprint}" != "${DOCKER_KEY_FINGERPRINT}" ]; then
+        rm -f "${DOCKER_KEY}"
+        log "GAGAL: sidik jari kunci repositori Docker tidak cocok. Pemasangan dihentikan."
+        exit 1
+      fi
+      # shellcheck disable=SC1091
+      . /etc/os-release
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=${DOCKER_KEY}] https://download.docker.com/linux/ubuntu ${UBUNTU_CODENAME:-${VERSION_CODENAME}} stable" \
+        > /etc/apt/sources.list.d/docker.list
+      apt-get update
+      apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      systemctl enable --now docker
+      usermod -aG docker "${DEPLOY_USER}"
+      log "Docker terpasang: $(docker --version)"
+
+      # 2. Kunci SSH pengguna deploy, disalin dari kunci yang dipilih di panel DigitalOcean.
+      deploy_home="$(getent passwd "${DEPLOY_USER}" | cut -d: -f6)"
+      install -d -m 0700 -o "${DEPLOY_USER}" -g "${DEPLOY_USER}" "${deploy_home}/.ssh"
+      key_source=""
+      for candidate in /root/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys; do
+        if [ -s "${candidate}" ]; then
+          key_source="${candidate}"
+          break
+        fi
+      done
+      if [ -n "${key_source}" ] && [ ! -s "${deploy_home}/.ssh/authorized_keys" ]; then
+        # Membuang awalan opsi (misalnya command="...") sehingga hanya tersisa kunci publiknya.
+        sed -E 's/^.*((ssh-(rsa|ed25519)|ecdsa-sha2-nistp[0-9]+|sk-ssh-ed25519@openssh\.com|sk-ecdsa-sha2-nistp256@openssh\.com) )/\1/' "${key_source}" \
+          | grep -E '^(ssh-|ecdsa-|sk-)' > "${deploy_home}/.ssh/authorized_keys" || true
+      fi
+      if [ -e "${deploy_home}/.ssh/authorized_keys" ]; then
+        chown "${DEPLOY_USER}:${DEPLOY_USER}" "${deploy_home}/.ssh/authorized_keys"
+        chmod 0600 "${deploy_home}/.ssh/authorized_keys"
+      fi
+
+      # 3. SSH: tanpa kata sandi. Login root dimatikan hanya bila pengguna deploy sudah memiliki kunci,
+      #    agar akses ke server tidak terkunci.
+      if [ -s "${deploy_home}/.ssh/authorized_keys" ]; then
+        printf '%s\n' \
+          'PasswordAuthentication no' \
+          'KbdInteractiveAuthentication no' \
+          'PermitRootLogin no' \
+          "AllowUsers ${DEPLOY_USER}" \
+          'X11Forwarding no' \
+          > /etc/ssh/sshd_config.d/00-nscas.conf
+        log "SSH: hanya pengguna ${DEPLOY_USER} dengan kunci SSH."
+      else
+        printf '%s\n' \
+          'PasswordAuthentication no' \
+          'KbdInteractiveAuthentication no' \
+          'PermitRootLogin prohibit-password' \
+          'X11Forwarding no' \
+          > /etc/ssh/sshd_config.d/00-nscas.conf
+        log "PERINGATAN: tidak ada kunci SSH yang ditemukan. Login kata sandi tetap dimatikan."
+        log "PERINGATAN: tambahkan kunci SSH melalui konsol Droplet di panel DigitalOcean, lalu jalankan ulang skrip ini."
+      fi
+      chmod 0644 /etc/ssh/sshd_config.d/00-nscas.conf
+      sshd -t
+      systemctl restart ssh
+
+      # 4. Firewall: hanya 22, 80, dan 443. Port yang diterbitkan Docker melewati aturan ufw, sehingga
+      #    docker-compose.prod.yml hanya menerbitkan 80 dan 443. Pasang juga Cloud Firewall DigitalOcean.
+      ufw default deny incoming
+      ufw default allow outgoing
+      ufw limit 22/tcp comment 'SSH'
+      ufw allow 80/tcp comment 'HTTP'
+      ufw allow 443/tcp comment 'HTTPS'
+      ufw --force enable
+
+      # 5. fail2ban dan pembaruan keamanan otomatis.
+      systemctl enable fail2ban
+      systemctl restart fail2ban
+      systemctl enable --now unattended-upgrades
+
+      # 6. Berkas swap 2 GB agar build image tidak kehabisan memori pada Droplet kecil.
+      if [ -z "$(swapon --show --noheadings)" ]; then
+        if [ ! -e /swapfile ]; then
+          fallocate -l 2G /swapfile
+          chmod 0600 /swapfile
+          mkswap /swapfile
+        fi
+        swapon /swapfile
+        grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+      fi
+      sysctl --system > /dev/null
+
+      # 7. Direktori kerja NSCAS. Berkas .env berisi rahasia dibuat kemudian oleh operator.
+      install -d -m 0750 -o "${DEPLOY_USER}" -g "${DEPLOY_USER}" /opt/nscas
+
+      # 8. Unit cadangan dikenali systemd, tetapi timernya belum diaktifkan.
+      systemctl daemon-reload
+
+      touch /var/lib/nscas-bootstrap.done
+      log "Selesai. Masuk dengan: ssh ${DEPLOY_USER}@<alamat IP Droplet>"
+
+runcmd:
+  - [bash, -c, "set -o pipefail; /usr/local/sbin/nscas-bootstrap 2>&1 | tee -a /var/log/nscas-bootstrap.log"]
+
+# Mulai ulang satu kali bila pembaruan paket memerlukannya (misalnya kernel baru).
+power_state:
+  mode: reboot
+  message: NSCAS, mulai ulang setelah pembaruan paket awal
+  timeout: 30
+  condition: test -f /var/run/reboot-required
+
+final_message: "NSCAS: cloud-init selesai setelah $UPTIME detik. Periksa /var/log/nscas-bootstrap.log."

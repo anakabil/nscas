@@ -1,0 +1,85 @@
+# Layanan pendukung untuk PENGEMBANGAN LOKAL saja: PostgreSQL 16, Mailpit, dan MinIO.
+# Aplikasi Laravel dijalankan langsung di mesin pengembang (composer dev), bukan dari berkas ini.
+# Untuk produksi gunakan docker-compose.prod.yml dan docs/08-penempatan.md.
+#
+# Kredensial di bawah ini adalah nilai bawaan pengembangan dan tidak boleh dipakai di server mana pun.
+# Semua port hanya terikat ke 127.0.0.1.
+#
+# Nilai .env lokal yang sesuai:
+#   DB_CONNECTION=pgsql   DB_HOST=127.0.0.1   DB_PORT=5432
+#   DB_DATABASE=nscas     DB_USERNAME=nscas   DB_PASSWORD=nscas
+#   MAIL_MAILER=smtp      MAIL_HOST=127.0.0.1 MAIL_PORT=1025     (kotak masuk: http://localhost:8025)
+#   FILESYSTEM_DISK=s3    AWS_ENDPOINT=http://127.0.0.1:9000     AWS_USE_PATH_STYLE_ENDPOINT=true
+#   AWS_ACCESS_KEY_ID=nscas-dev   AWS_SECRET_ACCESS_KEY=nscas-dev-secret
+#   AWS_DEFAULT_REGION=us-east-1  AWS_BUCKET=nscas-dev           (konsol: http://localhost:9001)
+
+name: nscas-dev
+
+services:
+    postgres:
+        image: postgres:16
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: nscas
+            POSTGRES_USER: nscas
+            POSTGRES_PASSWORD: nscas
+        ports:
+            - "127.0.0.1:${FORWARD_DB_PORT:-5432}:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U nscas -d nscas"]
+            interval: 5s
+            timeout: 5s
+            retries: 12
+
+    mailpit:
+        image: axllent/mailpit:latest
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:${FORWARD_MAILPIT_SMTP_PORT:-1025}:1025"
+            - "127.0.0.1:${FORWARD_MAILPIT_UI_PORT:-8025}:8025"
+
+    # Image resmi minio/minio sudah tidak tersedia di Docker Hub. pgsty/minio adalah lanjutan yang dipelihara
+    # komunitas dan kompatibel dengan API S3. Hanya dipakai saat pengembangan; produksi memakai DigitalOcean Spaces.
+    minio:
+        image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+        restart: unless-stopped
+        command: ["server", "/data", "--console-address", ":9001"]
+        environment:
+            MINIO_ROOT_USER: nscas-dev
+            MINIO_ROOT_PASSWORD: nscas-dev-secret
+        ports:
+            - "127.0.0.1:${FORWARD_MINIO_PORT:-9000}:9000"
+            - "127.0.0.1:${FORWARD_MINIO_CONSOLE_PORT:-9001}:9001"
+        volumes:
+            - minio_data:/data
+        healthcheck:
+            test: ["CMD", "mc", "ready", "local"]
+            interval: 5s
+            timeout: 5s
+            retries: 12
+
+    # Langkah sekali jalan: membuat bucket privat nscas-dev bila belum ada, lalu berhenti.
+    minio-init:
+        image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+        restart: "no"
+        depends_on:
+            minio:
+                condition: service_healthy
+        environment:
+            MINIO_ROOT_USER: nscas-dev
+            MINIO_ROOT_PASSWORD: nscas-dev-secret
+            MINIO_BUCKET: nscas-dev
+        entrypoint: ["/bin/sh", "-c"]
+        command:
+            - |
+                set -eu
+                mc alias set dev http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null
+                mc mb --ignore-existing "dev/$$MINIO_BUCKET"
+                mc anonymous set none "dev/$$MINIO_BUCKET"
+                echo "Bucket $$MINIO_BUCKET siap."
+
+volumes:
+    postgres_data:
+    minio_data:

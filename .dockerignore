@@ -1,0 +1,75 @@
+# Berkas yang tidak boleh atau tidak perlu masuk ke konteks build image NSCAS.
+
+# Rahasia dan konfigurasi lokal. Image tidak pernah memuat berkas env.
+.env
+.env.*
+auth.json
+storage/*.key
+*.pem
+*.key
+
+# Riwayat git dan otomasi repositori
+.git
+.gitignore
+.gitattributes
+.github
+
+# Dependensi dan hasil build dipasang ulang di dalam image
+node_modules
+vendor
+public/build
+public/hot
+public/storage
+public/fonts-manifest.dev.json
+bootstrap/ssr
+bootstrap/cache/*.php
+
+# Berkas TypeScript Wayfinder dibuat ulang saat build (tahap assets)
+resources/js/actions
+resources/js/routes
+resources/js/wayfinder
+
+# Data yang terbentuk saat aplikasi berjalan
+storage/app/private/*
+storage/app/public/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+storage/pail
+
+# Pengujian, dokumentasi, dan paket penempatan tidak dibutuhkan saat berjalan
+tests
+phpunit.xml
+.phpunit.cache
+.phpunit.result.cache
+docs
+deploy
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.prod.yml
+*.md
+
+# Perkakas editor dan asisten
+.editorconfig
+.agents
+.amp
+.claude
+.codex
+.cursor
+.factory
+.fleet
+.grok
+.idea
+.junie
+.kiro
+.mcp.json
+.nova
+.pi
+.vscode
+.zed
+.DS_Store
+npm-debug.log
+yarn-error.log

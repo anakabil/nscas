@@ -43,7 +43,7 @@ DRAFT -> CONFIGURED -> LOCKED -> DATA_COLLECTION -> SCORING -> PANEL_REVIEW -> A
 | REPORTED ke MONITORING | Rencana aksi diterbitkan ke klien | LEAD_ASSESSOR |
 | ARCHIVED ke PURGED | Masa retensi habis; berita acara pemusnahan dibuat | SUPER_ADMIN |
 
-Pengumpulan data dari tiga lapisan berjalan bersamaan selama `DATA_COLLECTION`. Setiap transisi tercatat di jejak audit.
+Catatan versi 2. Siklus di atas berlaku dengan satu tambahan: status `VALIDATION` di antara `DATA_COLLECTION` dan `SCORING`. Survei, penilaian mandiri, bukti, dan observasi dikumpulkan selama `DATA_COLLECTION`; wawancara dan diskusi kelompok terarah dilakukan pada `VALIDATION`, setelah survei ditutup dan temuan awal tersedia. Status dikelompokkan menjadi enam tahap, dan syarat transisi yang berlaku ada di `App\Domain\Workflow\Workflow`. Dasarnya ada di `docs/12`. Setiap transisi tercatat di jejak audit.
 
 ## 4. Dua belas modul
 

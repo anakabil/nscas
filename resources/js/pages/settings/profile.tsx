@@ -1,11 +1,11 @@
 import { Form, Head, usePage } from '@inertiajs/react';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import DeleteUser from '@/components/delete-user';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { translator, useT } from '@/i18n';
 import { edit } from '@/routes/profile';
 import type { Auth } from '@/types';
 
@@ -14,19 +14,20 @@ type PageProps = {
 };
 
 export default function Profile() {
+    const t = useT();
     const { auth } = usePage<PageProps>().props;
 
     return (
         <>
-            <Head title="Profile settings" />
+            <Head title={t('settings.profile.title')} />
 
-            <h1 className="sr-only">Profile settings</h1>
+            <h1 className="sr-only">{t('settings.profile.title')}</h1>
 
             <div className="space-y-6">
                 <Heading
                     variant="small"
-                    title="Profile"
-                    description="Update your name and email address"
+                    title={t('settings.profile.heading')}
+                    description={t('settings.profile.description')}
                 />
 
                 <Form
@@ -39,7 +40,9 @@ export default function Profile() {
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name">
+                                    {t('settings.profile.name')}
+                                </Label>
 
                                 <Input
                                     id="name"
@@ -48,7 +51,9 @@ export default function Profile() {
                                     name="name"
                                     required
                                     autoComplete="name"
-                                    placeholder="Full name"
+                                    placeholder={t(
+                                        'settings.profile.namePlaceholder',
+                                    )}
                                 />
 
                                 <InputError
@@ -58,7 +63,9 @@ export default function Profile() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">
+                                    {t('settings.profile.email')}
+                                </Label>
 
                                 <Input
                                     id="email"
@@ -68,7 +75,7 @@ export default function Profile() {
                                     name="email"
                                     required
                                     autoComplete="username"
-                                    placeholder="Email address"
+                                    placeholder={t('settings.profile.email')}
                                 />
 
                                 <InputError
@@ -82,24 +89,27 @@ export default function Profile() {
                                     disabled={processing}
                                     data-test="update-profile-button"
                                 >
-                                    Save
+                                    {t('settings.save')}
                                 </Button>
                             </div>
                         </>
                     )}
                 </Form>
             </div>
-
-            <DeleteUser />
         </>
     );
 }
 
-Profile.layout = {
-    breadcrumbs: [
-        {
-            title: 'Profile settings',
-            href: edit(),
-        },
-    ],
+// Judul remah roti diterjemahkan dari bahasa halaman (prop bersama `locale`), tanpa hook.
+Profile.layout = ({ locale }: { locale?: string }) => {
+    const t = translator(locale === 'en' ? 'en' : 'id');
+
+    return {
+        breadcrumbs: [
+            {
+                title: t('settings.profile.title'),
+                href: edit(),
+            },
+        ],
+    };
 };

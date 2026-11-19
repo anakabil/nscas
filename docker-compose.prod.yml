@@ -1,0 +1,121 @@
+# NSCAS: susunan layanan PRODUKSI untuk Droplet DigitalOcean (wilayah Singapura, sgp1).
+# Panduan lengkap: docs/08-penempatan.md.
+#
+# Cara pakai yang dianjurkan (membaca /opt/nscas/.env dan mencatat versi image yang aktif):
+#   deploy/digitalocean/deploy.sh deploy <ref>
+#   deploy/digitalocean/deploy.sh compose ps
+#
+# Cara pakai langsung:
+#   docker compose -f docker-compose.prod.yml --env-file /opt/nscas/.env up -d
+#   docker compose -f docker-compose.prod.yml --env-file /opt/nscas/.env run --rm migrate
+#
+# Tata letak:
+#   A (uji coba, satu Droplet)        COMPOSE_PROFILES=single di /opt/nscas/.env, PostgreSQL berjalan di Droplet.
+#   B dan C (Managed PostgreSQL)      COMPOSE_PROFILES dikosongkan, layanan postgres tidak dijalankan.
+#
+# Rahasia tidak pernah ditulis di berkas ini atau di dalam image. Semuanya dibaca dari berkas env di server.
+# Server aplikasi tidak menyimpan keadaan: sesi, cache, dan antrean berada di PostgreSQL, berkas di Spaces.
+# Jangan pernah menjalankan `docker compose down -v` di produksi karena volume basis data ikut terhapus.
+
+name: nscas
+
+x-app: &app
+    image: ${NSCAS_IMAGE:-nscas:current}
+    restart: unless-stopped
+    env_file:
+        - path: ${NSCAS_ENV_FILE:-/opt/nscas/.env}
+          required: true
+    environment: &app-environment
+        # Dikunci di sini agar salah isi berkas env tidak membuka mode debug di produksi.
+        APP_ENV: production
+        APP_DEBUG: "false"
+    depends_on:
+        postgres:
+            condition: service_healthy
+            required: false
+    security_opt:
+        - no-new-privileges:true
+    cap_drop:
+        - ALL
+    logging: &logging
+        driver: json-file
+        options:
+            max-size: "20m"
+            max-file: "5"
+
+services:
+    # Web: FrankenPHP mode klasik.
+    #   SERVER_NAME berisi domain   HTTPS di 443 dengan sertifikat otomatis, 80 dialihkan ke HTTPS.
+    #   SERVER_NAME=:8080           HTTP polos di port 80 Droplet, untuk di belakang Load Balancer.
+    app:
+        <<: *app
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                NSCAS_REVISION: ${NSCAS_REVISION:-unknown}
+        ports:
+            - "80:8080"
+            - "443:8443"
+        volumes:
+            - caddy_data:/data
+            - caddy_config:/config
+        stop_grace_period: 30s
+
+    # Worker antrean (driver database).
+    worker:
+        <<: *app
+        command: ["php", "artisan", "queue:work", "--tries=3", "--max-time=3600"]
+        init: true
+        stop_grace_period: 120s
+        healthcheck:
+            disable: true
+
+    # Penjadwal Laravel. Jalankan hanya di satu server.
+    scheduler:
+        <<: *app
+        command: ["php", "artisan", "schedule:work"]
+        init: true
+        stop_grace_period: 70s
+        healthcheck:
+            disable: true
+
+    # Migrasi basis data, sekali jalan:
+    #   docker compose -f docker-compose.prod.yml --env-file /opt/nscas/.env run --rm migrate
+    migrate:
+        <<: *app
+        profiles: ["tools"]
+        restart: "no"
+        command: ["php", "artisan", "migrate", "--force"]
+        healthcheck:
+            disable: true
+
+    # PostgreSQL di dalam Droplet, hanya untuk tata letak A (profil "single").
+    # Tidak ada port yang dibuka ke luar; hanya layanan lain di jaringan compose yang dapat menghubunginya.
+    postgres:
+        image: postgres:16
+        profiles: ["single"]
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${DB_DATABASE:-nscas}
+            POSTGRES_USER: ${DB_USERNAME:-nscas}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD kosong. Jalankan melalui deploy.sh atau tambahkan --env-file /opt/nscas/.env}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        shm_size: 256mb
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+            interval: 5s
+            timeout: 5s
+            retries: 12
+            start_period: 20s
+        stop_grace_period: 60s
+        security_opt:
+            - no-new-privileges:true
+        logging: *logging
+
+volumes:
+    # Sertifikat TLS yang diperoleh Caddy. Harus bertahan antar-penempatan agar tidak meminta sertifikat berulang.
+    caddy_data:
+    caddy_config:
+    postgres_data:

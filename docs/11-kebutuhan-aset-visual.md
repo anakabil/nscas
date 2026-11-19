@@ -1,500 +1,285 @@
-# 11. Kebutuhan Aset Visual NSCAS untuk Generator Gambar AI
+# 11. Kebutuhan Aset Visual NSCAS Versi 2
 
-Dokumen ini adalah daftar kebutuhan ilustrasi, lencana, gambar, logo aplikasi, dan simbol antarmuka NSCAS yang akan dibuat dengan generator gambar AI. Disusun 31 Oktober 2026, setelah menu konsol diberi simbol (docs/05 bagian 2). Gaya visual mengikuti palet tenang di docs/05 bagian 1: modern, elegan, dan tidak mencolok.
+Dokumen ini adalah daftar nama, konsep, dan warna untuk logo, ikon, ilustrasi, dan gambar NSCAS versi 2, sebagai bahan generator gambar AI. Daftar versi 1 (tema biru batu) diarsipkan di `docs/arsip-v1/` dan tidak dipakai lagi.
 
-## 1. Pembagian tugas: yang dibuat AI dan yang tidak
+## 1. Arah visual
 
-| Jenis | Cara pembuatan | Alasan |
-|---|---|---|
-| Logo perusahaan Nusa Safety | Tetap memakai berkas resmi di `aset-logo/`, tidak diubah | Identitas merek perusahaan tidak boleh diubah oleh AI. |
-| Logo aplikasi NSCAS (baru) | Konsep dibuat dengan generator AI (bagian 5), lalu dirapikan desainer menjadi vektor final | Logo harus tajam di semua ukuran, orisinal, dan dapat didaftarkan sebagai merek. |
-| Simbol antarmuka (41 simbol) | Saat ini memakai set ikon garis Lucide. Set khusus NSCAS dibuat dengan prompt per simbol di bagian 6, lalu diubah menjadi SVG | Simbol antarmuka wajib berupa vektor yang seragam ketebalannya. Hasil generator AI berupa gambar raster, sehingga perlu vektorisasi sebelum dipasang. |
-| Ilustrasi, lencana tingkat, sampul laporan, gambar pratinjau tautan | Generator gambar AI (daftar di bagian 4) | Di sinilah AI memberi nilai tambah: suasana, konteks konstruksi, dan kehangatan visual. |
+Nama arah visual: Monokrom Perak dan Emas. Gagasan dasarnya, NSCAS adalah instrumen ukur yang presisi, sehingga tampilannya meminjam bahasa jam tangan mekanis dan alat ukur: bidang hitam, garis logam tipis, dan satu aksen emas.
 
-## 2. Panduan gaya
+### 1.1 Palet
 
-Palet di bawah berlaku untuk semua aset. Akhiran gaya, prompt negatif, dan aturan K3 di bagian ini dipakai untuk ilustrasi dan gambar (bagian 4). Logo (bagian 5) dan simbol antarmuka (bagian 6) memakai akhiran sendiri karena bentuknya jauh lebih sederhana.
-
-1. Gaya: ilustrasi vektor datar yang modern dan minimal. Bentuk geometris bersih, sudut sedikit membulat, banyak ruang kosong, tanpa efek tiga dimensi, tanpa bayangan tajam.
-2. Palet (sama dengan antarmuka):
-
-| Warna | Kode | Pemakaian dalam gambar |
-|---|---|---|
-| Biru batu gelap | `#1E2F45` | Bidang gelap, garis utama |
-| Biru batu tua | `#2B4A6F` | Objek utama |
-| Biru baja | `#5A7797` | Objek pendukung |
-| Biru kabut | `#CBD3DC` | Bidang lembut, latar objek |
-| Hijau toska redup | `#6E9A94` | Aksen kedua, tanaman, keberhasilan |
-| Oker lembut | `#C29B52` | Aksen hangat, helm, sorotan |
-| Putih pudar | `#F4F5F7` | Latar |
-| Merah merek | `#E62129` | Aksen sangat kecil saja, misalnya satu detail |
-
-3. Manusia: pekerja konstruksi Indonesia, laki-laki dan perempuan (sebagian pekerja perempuan berhijab di bawah helm), wajah disederhanakan tanpa detail sehingga tidak menyerupai orang nyata.
-4. Tanpa teks, huruf, angka, atau logo di dalam gambar. Seluruh tulisan dipasang di antarmuka agar dapat diterjemahkan dan tetap tajam. Generator AI juga sering menghasilkan huruf yang rusak.
-5. Latar: aset bertanda "transparan" dibuat di atas latar polos `#FFFFFF`, lalu latarnya dihapus (fitur hapus latar di generator atau di Adobe Express).
-6. Konsistensi: buat seluruh set dalam satu sesi. Pakai gambar pertama yang sudah disetujui sebagai acuan gaya, misalnya fitur Style Reference di Midjourney (`--sref`), Adobe Firefly, atau Leonardo.
-
-Akhiran gaya, ditempel di akhir setiap prompt pada bagian 4:
-
-```
-modern minimal flat vector illustration, clean geometric shapes, softly rounded corners, elegant and calm corporate style, muted palette of deep slate navy #1E2F45, slate blue #2B4A6F, steel blue #5A7797, mist blue #CBD3DC, muted teal #6E9A94 and soft ochre #C29B52 on off-white #F4F5F7, tiny accent of red #E62129 only, generous negative space, no text, no letters, no numbers, no logos, no watermark
-```
-
-Prompt negatif, untuk generator yang menyediakannya:
-
-```
-text, letters, numbers, logo, watermark, signature, neon, oversaturated colors, 3D render, photorealistic, glossy, harsh shadows, cluttered background, distorted hands, exaggerated cartoon
-```
-
-Aturan K3 untuk manusia, ditempel pada prompt yang memuat pekerja:
-
-```
-Indonesian construction workers, men and women, some women wearing hijab under the hard hat, simplified faces without detailed features, every worker wears a white or ochre hard hat with chin strap fastened, orange high-visibility vest, safety boots and work gloves, safe working posture, tidy site
-```
-
-## 3. Daftar periksa K3 sebelum aset dipakai
-
-Gambar untuk sistem budaya K3 tidak boleh menampilkan perilaku tidak aman. Setiap hasil generator wajib diperiksa terhadap butir berikut, dan ditolak bila satu butir saja tidak terpenuhi.
-
-| No. | Butir pemeriksaan | Dasar |
-|---|---|---|
-| 1 | Setiap pekerja memakai helm dengan tali dagu terpasang, rompi reflektif, sepatu keselamatan, dan sarung tangan bila menangani material | Permenakertrans Nomor PER.08/MEN/VII/2010 tentang Alat Pelindung Diri |
-| 2 | Pekerjaan di ketinggian memakai full body harness yang tersambung ke titik angkur, dan perancah memiliki pagar pengaman | Permenaker Nomor 9 Tahun 2016 tentang K3 dalam Pekerjaan pada Ketinggian |
-| 3 | Tidak ada pekerja yang memegang telepon saat berada di ketinggian, di dekat alat berat, atau saat mengoperasikan peralatan. Pengisian survei digambarkan di area aman, misalnya ruang istirahat | Prinsip pengendalian bahaya pada SMKK, Permen PUPR Nomor 10 Tahun 2021 |
-| 4 | Lokasi kerja rapi: tidak ada material berserakan, kabel melintang, orang merokok, atau pekerja di bawah beban yang diangkat crane | Prinsip pengendalian bahaya pada SMKK |
-| 5 | Tidak ada logo perusahaan nyata (termasuk klien) dan tidak ada logo atau nama NEN maupun Safety Culture Ladder | CLAUDE.md aturan 8 |
-| 6 | Tidak ada wajah yang menyerupai orang nyata | Pelindungan data pribadi dan citra |
-| 7 | Tidak ada huruf atau angka di dalam gambar | Bagian 2 butir 4 |
-| 8 | Warna sesuai palet; tidak ada warna neon atau jenuh | docs/05 bagian 1 |
-| 9 | Tidak ada bentuk tangga, segel, pita, medali, atau stempel yang dapat dikira tanda sertifikasi | Hasil NSCAS adalah pengukuran internal, bukan sertifikat Safety Culture Ladder (CLAUDE.md) |
-
-## 4. Daftar aset
-
-Prioritas 1 paling berdampak dan dikerjakan lebih dulu. Ukuran adalah ukuran berkas yang diserahkan. Bila generator memberi ukuran lain, pilih rasio yang sama; saya akan memotong dan mengompresnya.
-
-### 4.1 Ringkasan
-
-| ID | Nama berkas | Letak di aplikasi | Ukuran (rasio) | Latar | Batas berkas | Prioritas |
-|---|---|---|---|---|---|---|
-| V01 | `login-panel.webp` | Panel kiri halaman masuk, di belakang nama sistem | 1200 x 1600 (3:4) | Gelap penuh | 150 KB | 1 |
-| V02 | `empty-start.png` | Panduan "Mulai pengukuran" di daftar asesmen | 800 x 600 (4:3) | Transparan | 120 KB | 1 |
-| V03 | `phase-preparation.png` | Tahap 1 Persiapan: kartu akses cepat dan penanda kemajuan | 640 x 480 (4:3) | Transparan | 80 KB | 1 |
-| V04 | `phase-data-collection.png` | Tahap 2 Pengumpulan data | 640 x 480 (4:3) | Transparan | 80 KB | 1 |
-| V05 | `phase-scoring.png` | Tahap 3 Penilaian | 640 x 480 (4:3) | Transparan | 80 KB | 1 |
-| V06 | `phase-results.png` | Tahap 4 Hasil dan tindak lanjut | 640 x 480 (4:3) | Transparan | 80 KB | 1 |
-| V07 | `survey-welcome.webp` | Layar pembuka survei responden (telepon) | 720 x 480 (3:2) | `#F4F5F7` | 25 KB | 1 |
-| V08 | `survey-thanks.webp` | Layar terima kasih survei | 720 x 480 (3:2) | `#F4F5F7` | 25 KB | 1 |
-| V09 | `survey-privacy.webp` | Layar persetujuan dan anonimitas survei | 480 x 480 (1:1) | `#F4F5F7` | 15 KB | 1 |
-| V10 | `report-cover.jpg` | Pita sampul laporan PDF | 2480 x 1100 (kira-kira 9:4) | Gelap penuh | 400 KB | 1 |
-| V11 | `og-image.png` | Pratinjau tautan di WhatsApp dan surel | 1200 x 630 (1,91:1) | Gelap penuh | 300 KB | 1 |
-| V12 | `empty-respondents.png` | Daftar responden kosong | 800 x 600 (4:3) | Transparan | 80 KB | 2 |
-| V13 | `empty-evidence.png` | Daftar bukti kosong | 800 x 600 (4:3) | Transparan | 80 KB | 2 |
-| V14 | `empty-observations.png` | Jendela observasi kosong | 800 x 600 (4:3) | Transparan | 80 KB | 2 |
-| V15 | `empty-report.png` | Belum ada versi laporan | 800 x 600 (4:3) | Transparan | 80 KB | 2 |
-| V16 | `empty-action-plan.png` | Daftar kesenjangan kosong | 800 x 600 (4:3) | Transparan | 80 KB | 2 |
-| V17 | `state-forbidden.png` | Halaman akses ditolak | 800 x 600 (4:3) | Transparan | 80 KB | 2 |
-| V18 | `state-link-unavailable.png` | Tautan survei atau kode QR tidak berlaku | 800 x 600 (4:3) | Transparan | 40 KB | 2 |
-| V19 | `state-not-found.png` | Halaman tidak ditemukan (baru) | 800 x 600 (4:3) | Transparan | 80 KB | 2 |
-| V20 sampai V24 | `level-1.png` sampai `level-5.png` | Lencana tingkat kematangan di dasbor dan laporan | 512 x 512 (1:1) | Transparan | 40 KB per berkas | 2 |
-| V25 | `email-header.png` | Kepala surel undangan dan pengingat | 1200 x 300 (4:1) | Gelap penuh | 80 KB | 2 |
-| V26 | `pattern-tile.png` | Pola latar halus untuk kepala halaman dan panel masuk | 512 x 512 (1:1), dapat disambung | Gelap penuh | 40 KB | 3 |
-| L01 sampai L05 | Lihat bagian 5 | Ikon tab peramban, ikon aplikasi observasi, halaman masuk, sampul laporan, kepala surel | 1024 x 1024 (1:1) | Putih | Tidak dibatasi | 1 |
-| S01 sampai S41 | Lihat bagian 6 | Menu konsol, menu asesmen, akses cepat, dan penanda status | 1024 x 1024 (1:1) | Putih | Tidak dibatasi | 2 |
-
-Batas berkas survei (V07 sampai V09) ketat karena halaman survei dibuka pekerja dengan sinyal lemah. Muatan halaman survei 178 KB sebelum aset dipasang dan 187 KB sesudahnya, dari batas 350 KB yang diuji otomatis (docs/07).
-
-### 4.2 Prompt per aset
-
-Setiap prompt di bawah ditambah akhiran gaya di bagian 2. Prompt yang memuat pekerja juga ditambah aturan K3 di bagian 2.
-
-V01 Panel halaman masuk. Komposisi gelap dan tenang; bagian kiri atas dan tengah dibiarkan polos untuk logo dan tulisan.
-
-```
-abstract architectural line drawing of a modern building under construction with a tower crane and steel frame, thin light lines in mist blue and steel blue on a deep slate navy #1E2F45 background, very low contrast, calm, lots of empty space in the upper left and center, subtle depth
-```
-
-V02 Mulai pengukuran.
-
-```
-safety culture assessor with a tablet standing in front of a building under construction, a large checklist card with three tick boxes floating beside, a hard hat and a clipboard on a small table, welcoming and calm
-```
-
-V03 Persiapan.
-
-```
-planning a safety culture assessment: a site blueprint, a simple organisation chart of offices and projects as connected nodes, a sliders control panel, two assessors discussing at a table
-```
-
-V04 Pengumpulan data. Pengisian survei di ruang istirahat, bukan di area kerja.
-
-```
-construction workers sitting in a clean site rest area filling in a short survey on their smartphones, a folder of documents and a camera nearby, relaxed and safe setting away from machinery
-```
-
-V05 Penilaian.
-
-```
-two safety assessors reviewing evidence documents side by side at a desk, a balance scale symbol and a checklist between them, focused and fair atmosphere
-```
-
-V06 Hasil dan tindak lanjut.
-
-```
-a clean bar chart rising in steps next to an action plan checklist and a target symbol, a manager and a site supervisor shaking hands, sense of progress and improvement
-```
-
-V07 Pembuka survei. Bentuk sederhana dengan sedikit detail agar berkas tetap kecil.
-
-```
-one construction worker sitting on a bench in a site rest area holding a smartphone, a speech bubble with a simple checkmark, very simple shapes, few details, flat colors
-```
-
-V08 Terima kasih.
-
-```
-a smiling construction worker giving a thumbs up next to a large checkmark inside a soft shield shape, very simple shapes, few details, flat colors
-```
-
-V09 Persetujuan dan anonimitas.
-
-```
-a shield with a padlock and an anonymous person silhouette inside, simple and reassuring, very few details, flat colors
-```
-
-V10 Sampul laporan.
-
-```
-wide abstract banner of a modern construction skyline with tower cranes, layered translucent geometric shapes suggesting steps of a maturity ladder, deep slate navy #1E2F45 background with slate blue and mist blue layers, a thin soft ochre accent line, elegant and calm, empty band on the left third for a title
-```
-
-V11 Pratinjau tautan. Separuh kiri dikosongkan untuk tulisan yang dipasang kemudian.
-
-```
-abstract construction site motif on the right half, a hard hat and a checklist icon formed by simple geometric shapes, deep slate navy background, left half completely empty for a title
-```
-
-V12 Responden kosong.
-
-```
-an empty list card with three blank rows and a group of worker silhouettes waiting beside it, an upload arrow symbol, calm
-```
-
-V13 Bukti kosong.
-
-```
-an open empty folder with a document sliding into it, a small paperclip and a magnifying glass, calm
-```
-
-V14 Observasi kosong.
-
-```
-a camera on a tripod facing a calm construction site with a map pin and a small clock, nobody in frame, calm
-```
-
-V15 Laporan kosong.
-
-```
-a blank report document with a chart outline and a pen beside it, a signature line, calm
-```
-
-V16 Rencana aksi kosong.
-
-```
-an empty kanban board with three columns and a single card being placed, a small flag, calm
-```
-
-V17 Akses ditolak.
-
-```
-a closed door with a shield and padlock emblem, a polite stop hand symbol, calm and not alarming
-```
-
-V18 Tautan tidak berlaku.
-
-```
-a broken chain link and a small hourglass beside a smartphone, calm and not alarming, very few details
-```
-
-V19 Halaman tidak ditemukan.
-
-```
-a construction worker looking at a large site map with a dotted path ending at a question mark shape without any letter, friendly and calm
-```
-
-V20 sampai V24 Lencana tingkat kematangan. Lima lencana dengan komposisi identik: cincin ukur yang terbagi lima busur sama panjang, searah jarum jam mulai dari pukul tujuh. Jumlah busur yang terisi sesuai tingkat, dan warnanya mengikuti gradasi tingkat (1 `#CBD3DC`, 2 `#A9B8C8`, 3 `#8399B1`, 4 `#5A7797`, 5 `#2B4A6F`). Bentuk tangga sengaja dihindari agar tidak dikira tanda sertifikasi (bagian 3 butir 9). Nama dan angka tingkat dipasang di antarmuka, bukan di gambar. Buat lencana tingkat 3 lebih dulu, lalu pakai sebagai acuan gaya untuk keempat lencana lain.
-
-```
-circular gauge emblem made of five equal thick arc segments with small gaps, arranged clockwise starting at seven o'clock and ending at five o'clock, the first three segments filled with steel blue #8399B1 and the remaining two segments as light mist blue #E8EDF2, empty center, flat vector, centered, no text, no numbers, no needle
-```
-
-V25 Kepala surel.
-
-```
-thin wide banner of abstract construction skyline lines and soft geometric layers in slate blue and mist blue on deep slate navy, empty center area, elegant and calm
-```
-
-V26 Pola latar.
-
-```
-seamless repeating pattern tile of tiny thin line icons (hard hat, gear, clipboard, shield, building) evenly spaced, line color #2B4A6F on background #1E2F45, very subtle, tileable
-```
-
-## 5. Logo aplikasi NSCAS
-
-### 5.1 Kedudukan logo
-
-NSCAS adalah produk PT Nusa Rendra Jayatama. Logo aplikasi melengkapi logo Nusa Safety, bukan menggantikannya. Logo dipakai di enam tempat:
-
-1. ikon tab peramban (favicon);
-2. ikon aplikasi observasi di layar telepon;
-3. panel halaman masuk, berdampingan dengan logo Nusa Safety;
-4. sampul laporan PDF;
-5. kepala surel;
-6. gambar pratinjau tautan.
-
-Logo terdiri atas tiga unsur:
-
-1. Simbol (logomark).
-2. Tulisan "NSCAS" (logotype).
-3. Baris pengenal "oleh Nusa Safety".
-
-Tulisan tidak dibuat AI. Tulisan disusun dengan huruf Plus Jakarta Sans Bold, huruf antarmuka NSCAS, agar seragam dan tajam.
-
-### 5.2 Makna yang harus terbaca
-
-| No. | Makna | Alasan dalam konsep aplikasi |
-|---|---|---|
-| 1 | Pengukuran yang objektif | NSCAS adalah alat ukur; hasilnya angka indeks dan tingkat kematangan |
-| 2 | Kematangan yang meningkat bertahap | Lima tingkat kematangan budaya K3 dan rencana aksi untuk naik tingkat |
-| 3 | Budaya dibentuk bersama oleh orang | Responden adalah pekerja di semua strata, dari direksi sampai subkontraktor |
-| 4 | Keselamatan dan perlindungan | Konteks K3 dan perlindungan data responden |
-| 5 | Akar Nusantara (opsional) | Nama Nusa Safety; cukup lewat lengkung halus, bukan peta |
-
-### 5.3 Batasan
-
-| No. | Batasan | Alasan |
-|---|---|---|
-| 1 | Tidak berbentuk tangga, anak tangga berjajar, segel, pita, medali, atau stempel | Dapat dikira tanda sertifikasi Safety Culture Ladder. NSCAS adalah pengukuran internal, bukan sertifikasi (CLAUDE.md). |
-| 2 | Helm, palang medis, dan bola dunia tidak menjadi unsur utama | Klise dan tidak membedakan NSCAS dari produk K3 lain |
-| 3 | Tetap terbaca pada 16 piksel | Paling banyak tiga bentuk utama, tanpa garis yang sangat tipis |
-| 4 | Paling banyak tiga nada biru dari palet (`#1E2F45`, `#2B4A6F`, `#5A7797`) ditambah aksen merah kecil, dan tetap utuh dalam satu warna | Nada yang lebih muda dari `#5A7797` hampir hilang di atas putih pada ukuran kecil. Versi putih dipakai di kepala halaman gelap, versi biru batu gelap untuk cetak satu warna. |
-| 5 | Tidak meniru logo Nusa Safety | Boleh meminjam bingkai persegi membulat sebagai tanda kekerabatan merek |
-| 6 | Tanpa huruf di dalam simbol | Tulisan "NSCAS" dipasang terpisah |
-
-### 5.4 Tiga arah konsep
-
-Generate ketiganya, bandingkan, lalu pilih satu. Rekomendasi saya konsep A. Bentuknya paling khas untuk sistem asesmen, tetap terbaca pada ukuran kecil, dan selaras dengan lencana tingkat (V20 sampai V24) yang memakai cincin ukur yang sama.
-
-Akhiran untuk prompt logo:
-
-```
-minimal flat vector logo mark, geometric and balanced, bold simple shapes that stay legible at 16 pixels, colors limited to deep slate navy #1E2F45, slate blue #2B4A6F and steel blue #5A7797 with one small red #E62129 accent, plain white background, centered, generous margin, no text, no letters, no gradients, no 3D, no mockup, no shadow
-```
-
-Prompt negatif untuk logo:
-
-```
-text, letters, ladder, staircase, steps, certificate seal, ribbon, medal, stamp, laurel wreath, hard hat clipart, medical cross, globe, map, photo, 3D, gradient, mockup
-```
-
-Konsep A, cincin ukur kematangan. Lima busur membentuk lingkaran terbuka seperti alat ukur, makin tebal dan makin gelap searah jarum jam dari biru baja ke biru batu gelap (tingkat 1 ke 5). Satu titik merah kecil di ujung busur kelima menandai tujuan, yaitu budaya yang matang.
-
-```
-a circular gauge mark made of five arc segments with small gaps, each segment slightly thicker and darker than the previous one going clockwise from steel blue #5A7797 to deep slate navy #1E2F45, a small red dot at the end of the fifth segment, empty center
-```
-
-Konsep B, perisai berlapis. Perisai tersusun dari lima pita lengkung yang naik dari biru baja di bawah ke biru batu gelap di atas. Di tengahnya ada ruang negatif berbentuk anak panah ke atas yang menandai peningkatan.
-
-```
-a shield shape built from five stacked curved bands rising from steel blue #5A7797 at the bottom to deep slate navy #1E2F45 at the top, the negative space between the bands forms an upward arrow in the center, a small red dot at the tip of the arrow
-```
-
-Konsep C, lingkar orang. Tiga figur manusia abstrak, masing-masing kepala bulat dan badan lengkung, saling merangkul membentuk lingkaran. Di tengahnya ada titik merah kecil yang menandai kepedulian bersama terhadap keselamatan.
-
-```
-three abstract human figures made of a round head and a curved body each, arms linked to form a closed circle, slate blue #2B4A6F and deep slate navy #1E2F45, a small red dot in the center of the circle
-```
-
-### 5.5 Berkas logo yang dibutuhkan
-
-| ID | Nama berkas | Isi | Ukuran | Cara pembuatan |
-|---|---|---|---|---|
-| L01 | `nscas-mark-color.png` | Simbol berwarna, latar putih | 1024 x 1024 | Generator AI dari konsep terpilih |
-| L02 | `nscas-mark-mono.svg` | Simbol satu warna dalam dua versi: putih untuk latar gelap dan `#1E2F45` untuk cetak satu warna | Vektor | Diturunkan dari L01 saat vektorisasi |
-| L03 | `nscas-app-icon.png` | Simbol putih di dalam persegi membulat `#1E2F45`, zona aman 80 persen (ikon aplikasi di telepon) | 1024 x 1024 | Diturunkan dari L01 |
-| L04 | `favicon.svg` | Versi sederhana untuk 16 dan 32 piksel | Vektor | Saya buat dari vektor final |
-| L05 | `nscas-lockup.svg` | Simbol, tulisan "NSCAS", dan "oleh Nusa Safety" mendatar | Vektor | Saya susun dengan Plus Jakarta Sans setelah simbol final |
-
-### 5.6 Langkah setelah konsep terpilih
-
-1. Generate empat sampai delapan variasi dari konsep terpilih, lalu pilih satu.
-2. Uji keterbacaan: kecilkan ke 32 dan 16 piksel, lalu lihat juga versi satu warna.
-3. Minta desainer merapikan dan memvektorkan simbol, misalnya dengan Adobe Illustrator. Ada dua alasan. Pertama, garis hasil AI jarang benar-benar rapi. Kedua, perlindungan hak cipta atas karya yang sepenuhnya dihasilkan AI belum jelas pengaturannya dalam UU Nomor 28 Tahun 2014 tentang Hak Cipta, sehingga finalisasi oleh desainer memperkuat posisi kepemilikan perusahaan.
-4. Setelah final, pertimbangkan pendaftaran merek "NSCAS", baik kata maupun logo, ke Direktorat Jenderal Kekayaan Intelektual sesuai UU Nomor 20 Tahun 2016 tentang Merek dan Indikasi Geografis.
-5. Serahkan SVG final. Saya pasang di favicon, ikon aplikasi observasi, halaman masuk, sampul laporan, dan kepala surel.
-
-## 6. Simbol antarmuka: keterangan dan prompt per simbol
-
-### 6.1 Aturan bentuk
-
-1. Digambar di kisi 24 x 24 dengan garis 2 piksel seragam (tampil 1,75 piksel di antarmuka), ujung dan sambungan garis membulat.
-2. Hanya garis tepi tanpa isi, kecuali titik atau aksen kecil yang memang diminta.
-3. Satu warna. Saat dipasang, warnanya mengikuti teks: biru batu tua saat aktif, abu-abu saat tidak aktif. Karena itu simbol cukup dibuat dalam satu warna `#2B4A6F`.
-4. Tampak depan datar, tanpa perspektif, bayangan, atau bidang latar.
-5. Paling banyak tiga sampai empat unsur, agar tetap dapat dibedakan pada ukuran 16 piksel.
-6. Simbol yang sudah menjadi kebiasaan umum (keluar, menu, tambah, panah, centang) mempertahankan bentuk kebiasaannya.
-
-Awalan prompt simbol. Tempelkan sebelum subjek di kolom terakhir tabel 6.2 sampai 6.5:
-
-```
-single minimalist line icon, drawn on a 24 by 24 grid and rendered large at 1024 by 1024 pixels, uniform 2 pixel stroke, rounded line caps and rounded joins, outline only without fill, single color #2B4A6F on a pure white background, centered with even padding, flat front view, geometric, consistent with a professional enterprise software icon set, no text, no letters, no numbers, no shading, no background shape, subject:
-```
-
-Prompt negatif simbol:
-
-```
-filled shapes, multiple colors, gradient, 3D, shadow, perspective, background circle, sketchy or hand drawn lines, uneven stroke, text, letters
-```
-
-### 6.2 Kepala halaman
-
-| ID | Berkas | Menu | Fungsi di aplikasi | Bentuk yang diharapkan | Hindari | Subjek prompt |
-|---|---|---|---|---|---|---|
-| S01 | `nav-assessments.svg` | Asesmen | Daftar seluruh asesmen budaya K3; pintu masuk setiap pengukuran | Papan klip yang penjepitnya berbentuk helm sederhana, dengan tiga baris daftar periksa | Palang medis | `a clipboard whose top clip is shaped like a simple hard hat, with three short checklist lines on the board` |
-| S02 | `nav-organizations.svg` | Organisasi dan pengguna | Organisasi klien dan akun pengguna beserta perannya | Gedung kantor bertingkat dengan satu figur orang di depannya | Pabrik berasap, pilar bank | `an office building with three rows of windows and a small person silhouette standing in front` |
-| S03 | `nav-retention.svg` | Retensi data | Pemusnahan data mentah setelah masa simpan berakhir, beserta berita acaranya | Kotak arsip dengan jam pasir kecil | Tempat sampah, api | `an archive storage box with a small hourglass at the lower right` |
-| S04 | `nav-account.svg` | Akun saya | Profil, kata sandi, dan verifikasi dua langkah | Siluet setengah badan dengan perisai bergembok kecil di kanan bawah | Wajah berdetail | `a person bust silhouette with a small shield containing a padlock at the lower right` |
-| S05 | `nav-logout.svg` | Keluar | Mengakhiri sesi | Bingkai pintu dengan panah keluar ke kanan | Tanda silang, tombol daya | `an open door frame with an arrow pointing out to the right` |
-| S06 | `nav-menu.svg` | Menu (telepon) | Membuka menu utama di layar sempit | Tiga garis mendatar sama panjang | Tiga titik | `three horizontal lines of equal length` |
-
-### 6.3 Tahap asesmen
-
-| ID | Berkas | Tahap | Fungsi di aplikasi | Bentuk yang diharapkan | Hindari | Subjek prompt |
-|---|---|---|---|---|---|---|
-| S07 | `nav-phase-preparation.svg` | 1. Persiapan | Menyusun asesmen: rincian, unit, strata, parameter, sampel, dan tim | Gulungan cetak biru dengan pensil dan roda gigi kecil | Kunci pas (kesan perbaikan mesin) | `a rolled blueprint sheet with a pencil lying across it and a small gear in the corner` |
-| S08 | `nav-phase-data-collection.svg` | 2. Pengumpulan data | Survei pekerja, penilaian mandiri, bukti, observasi, dan validasi | Baki masuk dengan panah turun dan tiga titik di atasnya (data datang dari banyak sumber) | Awan, ember | `an inbox tray with a downward arrow entering it and three small dots above the arrow` |
-| S09 | `nav-phase-scoring.svg` | 3. Penilaian | Penilaian bukti oleh asesor dan rapat panel | Timbangan dua lengan yang seimbang (adil, dinilai dua asesor) | Palu hakim | `a balanced two pan scale with a central pillar` |
-| S10 | `nav-phase-results.svg` | 4. Hasil dan tindak lanjut | Dasbor, rencana aksi, dan laporan | Sasaran dengan anak panah tepat di tengah dan garis tren naik kecil | Piala, tangga | `a target with three rings and an arrow hitting the center, a small upward trend line beside it` |
-
-### 6.4 Halaman asesmen
-
-| ID | Berkas | Halaman | Fungsi di aplikasi | Bentuk yang diharapkan | Hindari | Subjek prompt |
-|---|---|---|---|---|---|---|
-| S11 | `nav-overview.svg` | Ringkasan | Kemajuan, langkah berikutnya, dan akses cepat | Empat persegi membulat 2 x 2, satu terisi | Rumah | `a two by two grid of rounded squares with the top left square filled` |
-| S12 | `nav-details.svg` | Rincian | Nama, periode, lingkup, dan versi instrumen | Lembar dokumen dengan sudut terlipat dan tiga baris teks | Buku tebal | `a document sheet with a folded top right corner and three text lines` |
-| S13 | `nav-units.svg` | Unit | Kantor, lokasi, dan proyek yang diukur | Penanda lokasi berisi gedung kecil (berbeda dari S02) | Peta penuh | `a map location pin with a tiny building inside` |
-| S14 | `nav-strata.svg` | Strata | Kelompok jabatan dan jumlah pekerjanya | Tiga lapisan bertumpuk seperti piramida jabatan | Tangga | `three stacked horizontal layers forming a flat pyramid, each layer slightly wider than the one above` |
-| S15 | `nav-parameters.svg` | Parameter | Bobot, ambang, dan teks persetujuan responden | Tiga penggeser mendatar dengan kenop di posisi berbeda | Roda gigi (sudah dipakai S07) | `three horizontal slider tracks with round knobs at different positions` |
-| S16 | `nav-sampling.svg` | Kalkulator sampel | Jumlah responden minimal setiap strata | Lingkaran berisi sepuluh titik, tiga terisi (sampel diambil dari populasi) | Kalkulator saku | `a circle containing ten small dots arranged evenly with three of them filled` |
-| S17 | `nav-team.svg` | Tim asesor | Asesor utama dan anggota tim | Dua figur setengah badan, yang depan berlencana centang kecil | Tiga figur (sudah dipakai S18) | `two person bust silhouettes side by side, the front one with a small check badge` |
-| S18 | `nav-respondents.svg` | Responden | Daftar pekerja responden, jendela survei, dan tautan survei | Tiga figur pekerja berhelm sederhana | Figur berdasi | `three worker silhouettes wearing simple hard hats, the middle one slightly in front` |
-| S19 | `nav-qr.svg` | Kode QR | Kode QR untuk pekerja tanpa surel | Kode QR sederhana dengan tiga persegi sudut dan beberapa titik | Kode batang | `a simplified QR code with three corner squares and a few small squares in the middle` |
-| S20 | `nav-participation.svg` | Partisipasi | Tingkat partisipasi per unit dan strata | Garis tren naik dengan figur orang kecil di titik tertinggi | Panah zig-zag tajam | `a rising line chart with three points and a tiny person icon at the highest point` |
-| S21 | `nav-self-assessments.svg` | Penilaian mandiri | Penilaian mandiri oleh manajemen | Figur setengah badan berdasi dengan tanda centang | Cermin | `a person bust silhouette wearing a necktie with a check mark beside the shoulder` |
-| S22 | `nav-evidence.svg` | Bukti | Dokumen bukti untuk setiap karakteristik | Map terbuka dengan selembar dokumen dan penjepit kertas | Kaca pembesar besar | `an open folder with a document sheet and a paperclip` |
-| S23 | `nav-observations.svg` | Observasi | Foto dan video lapangan yang diambil langsung dengan kamera perangkat, beserta lokasinya | Kamera dengan penanda lokasi kecil | Kamera pengawas (kesan memata-matai pekerja) | `a camera with a small map location pin at the top right` |
-| S24 | `nav-validation.svg` | Validasi | Diskusi kelompok terarah dan wawancara | Dua gelembung percakapan bertumpuk, yang depan berisi tiga titik | Mikrofon | `two overlapping speech bubbles, the front one containing three dots` |
-| S25 | `nav-scoring.svg` | Penilaian asesor | Nilai bukti per karakteristik, kelipatan 0,5 | Daftar periksa dengan bintang setengah terisi | Rapor sekolah | `a checklist with two check marks and a half filled star at the bottom` |
-| S26 | `nav-panel.svg` | Rapat panel | Pembahasan bersama dan penetapan hasil final | Meja bundar tampak atas dengan tiga kursi | Palu hakim (kesan pengadilan) | `a round table seen from above with three chairs around it` |
-| S27 | `nav-dashboard.svg` | Dasbor | Indeks, peta warna, dan kesenjangan | Tiga batang grafik dalam bingkai persegi membulat | Speedometer mobil | `a bar chart with three bars of different heights inside a rounded rectangle frame` |
-| S28 | `nav-action-plan.svg` | Rencana aksi | Daftar kesenjangan dan rencana aksi | Daftar tugas dengan bendera kecil | Kalender | `a to do list with two lines and a small flag at the top right` |
-| S29 | `nav-report.svg` | Laporan | Penyusunan, finalisasi, dan tanda tangan laporan | Dokumen dengan grafik batang kecil dan garis tanda tangan | Segel atau stempel | `a document sheet with a small bar chart in the upper half and a signature line at the bottom` |
-| S30 | `nav-audit.svg` | Jejak audit | Riwayat seluruh perubahan data asesmen | Jam dengan panah melingkar berlawanan arah jarum jam | Kaca pembesar | `a clock face with a counterclockwise circular arrow around it` |
-
-### 6.5 Simbol bantu
-
-Simbol-simbol ini sudah menjadi kebiasaan umum di semua aplikasi. Bentuknya cukup diseragamkan gayanya dengan set di atas, tanpa mengubah makna.
-
-| ID | Berkas | Dipakai untuk | Subjek prompt |
+| Nama | Kode | Peran | Boleh untuk teks |
 |---|---|---|---|
-| S31 | `ui-check.svg` | Tahap atau langkah selesai | `a single check mark` |
-| S32 | `ui-check-circle.svg` | Syarat terpenuhi | `a check mark inside a circle` |
-| S33 | `ui-circle.svg` | Syarat belum terpenuhi | `an empty circle` |
-| S34 | `ui-x-circle.svg` | Pemeriksaan gagal di halaman status sistem | `an x mark inside a circle` |
-| S35 | `ui-arrow-right.svg` | Membuka halaman tujuan | `an arrow pointing right` |
-| S36 | `ui-chevron-down.svg` | Membuka atau melipat kelompok menu | `a downward chevron` |
-| S37 | `ui-plus.svg` | Membuat data baru, misalnya asesmen baru | `a plus sign` |
-| S38 | `ui-login.svg` | Tombol Masuk di beranda | `a door frame with an arrow pointing in from the left` |
-| S39 | `ui-activity.svg` | Tautan status sistem | `a heartbeat pulse line` |
-| S40 | `ui-database.svg` | Status basis data | `a database cylinder with three stacked disks` |
-| S41 | `ui-hard-drive.svg` | Status penyimpanan berkas | `a hard drive box with two small indicator dots` |
+| Obsidian | `#0B0B0C` | Bidang gelap utama: kepala halaman, panel identitas, sampul | Sebagai latar |
+| Grafit | `#17171A` | Gradasi bidang gelap | Sebagai latar |
+| Arang | `#26262B` | Garis ikon di bidang terang, bidang sekunder gelap | Ya, di bidang terang |
+| Perak tua | `#8D9299` | Garis logam, ikon pendukung | Tidak, kontras kurang |
+| Perak | `#C7CAD0` | Garis ikon di bidang gelap, bingkai logam | Ya, di bidang gelap |
+| Perak terang | `#E9EAEC` | Kilau logam, ikon di bidang gelap | Ya, di bidang gelap |
+| Putih | `#FFFFFF` | Bidang kerja, kartu | Ya, di bidang gelap |
+| Abu kabut | `#F5F5F6` | Latar halaman | Sebagai latar |
+| Emas | `#D4AF37` | Aksen tunggal: tahap berjalan, unsur kunci ikon, busur kelima logo | Ya, hanya di bidang gelap |
+| Emas pucat | `#E6CF8B` | Kilau emas, teks kecil di bidang gelap | Ya, hanya di bidang gelap |
+| Emas tua | `#8A6D1B` | Emas untuk bidang terang | Ya, di bidang terang (kontras 5,0 banding 1) |
 
-### 6.6 Cara membuat set yang seragam
+Gradasi logam, dipakai hemat:
 
-1. Buat S11 (Ringkasan) lebih dulu sampai sesuai, lalu jadikan acuan gaya (style reference) untuk semua simbol lain.
-2. Buat satu simbol per gambar. Hasilnya lebih terkendali daripada satu lembar berisi banyak simbol.
-3. Ubah setiap simbol menjadi SVG, misalnya dengan Image Trace di Adobe Illustrator. Bila Bapak cukup mengirim PNG, saya yang melakukan vektorisasi.
-4. Bandingkan seluruh set berdampingan pada 16 dan 24 piksel: ketebalan garis, ukuran visual, dan gaya sudut harus sama.
-5. Saya ubah warnanya menjadi warna teks (`currentColor`), lalu memasangnya menggantikan Lucide melalui `src/components/assessment/nav-icons.ts`.
+1. Emas: `#F3DFA2` ke `#D4AF37` ke `#9C7A1E`, arah diagonal.
+2. Perak: `#FFFFFF` ke `#C7CAD0` ke `#8D9299`, arah tegak.
 
-## 7. Penyerahan dan pemasangan
+### 1.2 Aturan gaya
 
-1. Simpan setiap aset dengan nama berkas persis seperti tabel 4.1, 5.5, dan 6.2 sampai 6.5.
-2. Catat prompt, nama generator, dan tanggal pembuatan setiap aset sebagai bukti asal-usul. Pastikan paket generator yang dipakai mengizinkan penggunaan komersial.
-3. Kirimkan berkasnya melalui percakapan ini atau satu folder bersama. Ilustrasi dan gambar saya periksa dengan daftar periksa K3, saya ubah ke WebP, saya kompres sesuai batas berkas, lalu saya simpan di `public/illustrations/`. Simbol saya ubah ke SVG dengan warna `currentColor` dan saya simpan di `public/icons/nav/`. Logo saya simpan di `public/brand/`. Setelah itu semuanya saya pasang di letak masing-masing.
-4. Ilustrasi diperlakukan sebagai hiasan: bila berkas gagal dimuat, halaman tetap utuh karena seluruh informasi ada di teks.
+1. Dua dimensi dan datar. Kesan mewah datang dari proporsi, garis tipis yang rapi, dan ruang kosong, bukan dari efek tiga dimensi, kilap berlebihan, atau bayangan tebal.
+2. Emas adalah aksen, bukan warna dasar. Dalam satu gambar, luas emas paling banyak sekitar 10 persen. Satu ikon hanya memiliki satu unsur emas.
+3. Tanpa teks, huruf, atau angka di dalam gambar. Tulisan dipasang di antarmuka agar dapat diterjemahkan dan tetap tajam.
+4. Tanpa bentuk tangga, segel, medali, pita, stempel, atau karangan daun. Bentuk itu dapat dikira tanda sertifikasi, padahal NSCAS adalah pengukuran internal.
+5. Huruf antarmuka: Playfair Display untuk judul dan tulisan merek, Plus Jakarta Sans untuk teks. Keduanya dipasang lokal.
 
-## 8. Status pemasangan (31 Oktober 2026)
+### 1.3 Aturan K3 untuk gambar yang memuat pekerja
 
-### 8.1 Paket yang diterima
+Setiap gambar pekerja wajib lolos daftar periksa berikut sebelum dipakai. Dasarnya Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor PER.08/MEN/VII/2010 tentang Alat Pelindung Diri, Peraturan Menteri Ketenagakerjaan Nomor 9 Tahun 2016 tentang K3 dalam Pekerjaan pada Ketinggian, dan Peraturan Menteri PUPR Nomor 10 Tahun 2021.
 
-Paket `NSCAS_ALL_Assets_72_plus_Batch07.zip` berisi 72 aset inti (26 ilustrasi, 5 berkas logo, 41 simbol) dan 10 berkas pelengkap responsif (Batch 7). Menurut catatan asal-usul paket, gambar disusun sebagai jalur vektor SVG dengan Python lalu diekspor ke PNG, WebP, dan JPEG. Arah visualnya dijajaki lebih dulu dengan generator gambar OpenAI. Gambar ini bukan foto. Catatan tersebut memenuhi butir 2 bagian 7.
-
-### 8.2 Hasil pemeriksaan
-
-| Pemeriksaan | Hasil |
+| No. | Butir |
 |---|---|
-| Keamanan SVG (skrip, atribut peristiwa, tautan keluar, entitas, `foreignObject`) | Bersih pada 73 berkas SVG |
-| Keseragaman teknis simbol | 41 simbol memakai viewBox 24 x 24, garis 2, dan `currentColor` |
-| Daftar periksa K3 bagian 3 | Terpenuhi: helm dengan tali dagu, rompi bergaris pemantul, sepatu keselamatan, sarung tangan, pekerja perempuan berhijab, tidak ada pekerjaan di ketinggian tanpa pengaman, tanpa teks, tanpa bentuk tangga atau segel |
-| Ukuran berkas | Semua di bawah batas tabel 4.1; aset survei 4 sampai 8 KB |
-| Muatan halaman survei | 187 KB setelah pemasangan (sebelumnya 178 KB; batas 350 KB). Ilustrasi survei dan halaman keadaan memakai elemen img biasa, dan halaman tidak ditemukan tidak memakai next/link, karena keduanya menarik sekitar 22 KB JavaScript konsol ke setiap halaman survei |
-| Catatan mutu (bukan pelanggaran) | Pose duduk pada V04 dan V07 agak kaku; S13 Unit agak mirip tanda jeda; S26 Rapat panel agak mirip serangga pada 16 piksel |
+| 1 | Helm keselamatan terpasang dengan tali dagu |
+| 2 | Rompi berpemantul, sepatu keselamatan, dan sarung tangan sesuai pekerjaan |
+| 3 | Tidak ada pekerja di ketinggian tanpa pagar pengaman atau sabuk tubuh penuh |
+| 4 | Sikap kerja aman, lokasi tertata |
+| 5 | Pekerja laki-laki dan perempuan; sebagian pekerja perempuan berhijab di bawah helm |
+| 6 | Wajah disederhanakan sehingga tidak menyerupai orang nyata |
 
-### 8.3 Perbaikan sebelum pemasangan
+Dalam palet ini, rompi digambar perak terang dengan pita pemantul emas pucat, dan helm putih atau emas pucat. Warna jingga dan kuning terang tidak dipakai agar gambar tetap monokrom.
 
-| Simbol | Masalah pada ukuran sebenarnya | Perbaikan |
+## 2. Status aset
+
+| Kelompok | Jumlah | Status |
 |---|---|---|
-| S15 Parameter | Kenop berisi putih menjadi gumpalan di latar gelap | Lintasan diputus di sekitar kenop, tanpa isian |
-| S17 Tim asesor | Lencana centang berisi putih | Isian dihapus, garis bahu dipendekkan agar tidak menembus lencana |
-| S16 Kalkulator sampel | Sepuluh titik berjari-jari 0,6 tidak terbaca pada 16 piksel | Enam titik lebih besar: tiga terisi (sampel), tiga kosong (populasi) |
+| Logo NSCAS (bagian 3) | 6 berkas | Sudah dibuat sebagai vektor dan terpasang; menunggu persetujuan pemilik merek |
+| Ikon tahap (bagian 4) | 6 | Sudah dibuat sebagai vektor dan terpasang |
+| Ikon halaman kerja dan akun (bagian 5) | 31 | Sementara memakai ikon garis pengganti; perlu dibuat sesuai konsep di tabel |
+| Lencana tingkat kematangan (bagian 6) | 5 | Perlu dibuat |
+| Ilustrasi dan gambar (bagian 7) | 22 | Perlu dibuat |
 
-### 8.4 Letak pemasangan
+## 3. Logo NSCAS
 
-| Aset | Letak |
-|---|---|
-| S01 sampai S41 | Seluruh simbol antarmuka, menggantikan Lucide (`public/icons/nav/`, `npm run icons`) |
-| Logo NSCAS | Kepala konsol, halaman masuk, beranda (komponen SVG dan teks HTML) |
-| L04 favicon, Batch 7 `favicon.ico` dan `apple-touch-icon.png` | `src/app/icon.svg`, `favicon.ico`, `apple-icon.png` |
-| Batch 7 ikon aplikasi 192 dan 512 | Manifest aplikasi observasi `/o`, termasuk ikon bertopeng (maskable) |
-| V01 | Panel kiri halaman masuk |
-| V02 | Panduan "Mulai pengukuran" di daftar asesmen |
-| V03 sampai V06 | Kartu "Langkah berikutnya" di Ringkasan, sesuai tahap yang berjalan |
-| V07, V09, V08 | Layar pembuka, persetujuan, dan terima kasih survei |
-| V10 | Pita sampul laporan PDF, dengan logo Nusa Safety di atasnya |
-| V11 | Gambar pratinjau tautan (Open Graph) |
-| V12 sampai V16 | Keadaan kosong: responden, bukti, observasi, laporan, rencana aksi |
-| V17, V19 | Halaman akses ditolak dan halaman tidak ditemukan (baru) |
-| V18 | Tautan survei, penilaian mandiri, atau kode QR yang tidak berlaku. Tautan yang sudah dipakai memakai V08 karena survei sudah diisi |
-| V20 sampai V24 | Kartu tingkat kematangan di dasbor, serta kartu indeks laporan lengkap dan ringkasan eksekutif |
-| V25 | Kepala surel undangan, pengingat, dan pengingat rencana aksi. Disisipkan sebagai gambar inline (CID), bukan dimuat dari server, agar pembukaan surel tidak tercatat di server |
-| V26 | Pola latar kepala konsol |
+### 3.1 Konsep: Dial Lima Busur
 
-### 8.5 Berkas yang tidak dipasang
+| Unsur | Makna | Warna |
+|---|---|---|
+| Lima busur pada lengkung 270 derajat | Lima tingkat kematangan budaya K3, dibaca searah jarum jam seperti alat ukur | Busur 1 sampai 4 perak yang makin terang: `#8D9299`, `#A7ACB3`, `#C3C7CC`, `#E2E4E7` |
+| Busur kelima | Tujuan pengukuran, yaitu budaya yang matang | Gradasi emas |
+| Garis skala halus di luar busur | Ketelitian dan keterukuran | Putih 38 persen di bidang gelap; hitam 38 persen di bidang terang |
+| Monogram N berserif di tengah | Nusa Safety sebagai pemilik metode | Putih `#F4F4F5` di bidang gelap; `#111113` di bidang terang |
+| Lengkung terbuka di bawah | Pengukuran yang belum selesai: budaya selalu dapat ditingkatkan | Tanpa warna |
 
-| Berkas | Alasan |
-|---|---|
-| `nscas-lockup.svg` | Tulisan berupa elemen teks yang tidak dapat memakai huruf halaman bila dimuat sebagai gambar; diganti komponen `NscasLockup` |
-| `nscas-mark-color.png`, `nscas-mark-mono*.svg`, `nscas-app-icon.png` | Sudah terwakili oleh komponen SVG dan ikon aplikasi Batch 7 |
-| `concept-alternatives/`, `sources/`, `previews/` | Bahan kerja, bukan aset tayang |
-| Batch 7 D01 sampai D05 | Tata letak yang ada memakai V01, V10, V11, dan V25; versi responsif belum diperlukan |
-| Batch 7 `favicon-16.png`, `favicon-32.png` | Sudah dicakup `icon.svg` dan `favicon.ico` |
+Di bidang terang, urutan perak dibalik (makin gelap) agar busur keempat tetap paling kuat: `#B9BDC3`, `#9A9FA6`, `#7B8087`, `#5B6067`.
 
-### 8.6 Keputusan yang masih menunggu
+### 3.2 Berkas
 
-1. Persetujuan akhir logo konsep A oleh pemilik merek. Logo sudah tayang di aplikasi dan dapat diganti dengan mengubah satu komponen dan tiga berkas ikon.
-2. Keseragaman titik merah: di logo berwarna titik ada di ujung busur kelima, di favicon di tengah busur kelima, dan ikon aplikasi tanpa titik.
-3. Pendaftaran merek "NSCAS" ke Direktorat Jenderal Kekayaan Intelektual. Repositori kode bersifat publik, sehingga logo sudah dapat dilihat umum.
+| ID | Berkas | Isi | Pemakaian |
+|---|---|---|---|
+| L01 | `public/brand/nscas-mark-dark.svg` | Simbol lengkap dengan garis skala, untuk bidang gelap | Sampul laporan, panel halaman masuk, presentasi |
+| L02 | `public/brand/nscas-mark-light.svg` | Simbol lengkap untuk bidang terang | Kop dokumen, laporan |
+| L03 | `public/favicon.svg`, `public/favicon.ico` | Lima busur tebal tanpa monogram di persegi membulat hitam | Ikon tab peramban, 16 sampai 48 piksel |
+| L04 | `public/apple-touch-icon.png` | Simbol tanpa garis skala di bidang hitam penuh | Layar utama telepon, 180 piksel |
+| L05 | `public/brand/nscas-app-icon-192.png`, `-512.png` | Sama dengan L04; simbol di zona aman 80 persen | Ikon aplikasi yang dapat dipasang |
+| L06 | Komponen `NscasLockup` | Simbol, tulisan NSCAS berhuruf Playfair Display berjarak lebar, dan baris "oleh Nusa Safety" berwarna emas | Kepala halaman, halaman masuk, surel |
+
+Tulisan NSCAS selalu berupa teks, bukan gambar. Sumber vektornya ada di `resources/js/components/brand/nscas-mark.tsx`.
+
+### 3.3 Aturan pakai
+
+1. Ruang bebas di sekeliling simbol paling sedikit selebar satu busur.
+2. Ukuran terkecil simbol lengkap 32 piksel. Di bawah itu pakai L03.
+3. Simbol tidak diputar, tidak diberi bayangan, dan warnanya tidak diganti.
+4. Logo NSCAS melengkapi logo Nusa Safety (`public/brand/logo-long-color.png`), bukan menggantikannya. Logo perusahaan tidak diubah.
+
+### 3.4 Prompt bila ingin menjelajahi variasi
+
+```
+minimal luxury logo mark for a precision measurement instrument, a 270 degree open dial made of five thin separate arc segments, four segments in graduated brushed silver from dark to bright and the fifth segment in gold, fine watch dial tick marks outside the arcs, an elegant high contrast serif capital letter N in the center, flat vector, on pure black #0B0B0C background, perfectly symmetric, generous margin, no text other than the single letter N, no gradients except subtle metallic, no 3D, no shadow, no mockup
+```
+
+Prompt negatif:
+
+```
+ladder, staircase, steps, certificate seal, ribbon, medal, stamp, laurel wreath, shield crest, hard hat clipart, medical cross, globe, 3D render, glossy, bevel, emboss, mockup, photo, extra letters, words
+```
+
+### 3.5 Yang masih perlu diputuskan
+
+1. Persetujuan akhir oleh pemilik merek.
+2. Perapian oleh desainer dan pemeriksaan kemiripan dengan merek lain.
+3. Pendaftaran merek NSCAS ke Direktorat Jenderal Kekayaan Intelektual sesuai Undang-Undang Nomor 20 Tahun 2016. Repositori kode bersifat publik, sehingga logo sudah dapat dilihat umum.
+
+## 4. Ikon enam tahap penilaian
+
+Sudah dibuat di `resources/js/components/icons/stage-icons.tsx`. Kisi 24 x 24, garis 1,5, ujung membulat. Garis mengikuti warna teks; satu unsur berwarna emas.
+
+| ID | Berkas bila dibuat ulang | Tahap | Konsep | Warna garis | Unsur emas |
+|---|---|---|---|---|---|
+| T01 | `stage-planning.svg` | 1. Perencanaan | Jangka: mengukur dan menetapkan lingkup sebelum bekerja | Arang di bidang terang, perak terang di bidang gelap | Poros jangka |
+| T02 | `stage-collection.svg` | 2. Pengumpulan data | Tiga lapisan bertumpuk: tiga sumber data yang terhimpun | Sama | Lapisan teratas |
+| T03 | `stage-validation.svg` | 3. Validasi dan triangulasi | Tiga titik yang saling terhubung: temuan diuji dari tiga arah | Sama | Titik puncak |
+| T04 | `stage-rating.svg` | 4. Penilaian dan penetapan | Timbangan seimbang: dua asesor, satu ketetapan | Sama | Poros timbangan |
+| T05 | `stage-reporting.svg` | 5. Pelaporan dan rencana aksi | Lembar laporan dengan batang hasil | Sama | Tiga batang yang naik |
+| T06 | `stage-monitoring.svg` | 6. Pemantauan dan perbaikan | Dua panah melingkar: siklus yang terus berputar | Sama | Titik pusat |
+
+## 5. Ikon halaman kerja dan akun
+
+### 5.1 Aturan bentuk
+
+1. Kisi 24 x 24, garis 1,5 seragam, ujung dan sambungan membulat, hanya garis tepi.
+2. Paling banyak tiga sampai empat unsur, agar terbaca pada 16 piksel.
+3. Garis satu warna. Satu unsur kunci diberi warna emas dengan isian emas 25 persen.
+4. Diserahkan sebagai SVG dengan garis `currentColor` dan unsur emas `#D4AF37`. Bila generator hanya menghasilkan PNG, buat pada 1024 x 1024 di latar putih; vektorisasinya dikerjakan saat pemasangan.
+
+Awalan prompt, ditempel sebelum subjek:
+
+```
+single minimalist luxury line icon on a 24 by 24 grid rendered large at 1024 by 1024 pixels, uniform thin 1.5 unit stroke, rounded caps and joins, outline only, charcoal #26262B lines on pure white background with exactly one small element in gold #D4AF37, centered, flat front view, geometric, refined and elegant like a watchmaker pictogram, no text, no letters, no numbers, no shading, no background shape, subject:
+```
+
+Prompt negatif:
+
+```
+filled shapes, more than one gold element, multiple colors, gradient, 3D, shadow, perspective, sketchy lines, uneven stroke, text, letters, ladder, seal, medal
+```
+
+### 5.2 Tahap 1, Perencanaan
+
+| ID | Berkas | Halaman | Konsep | Unsur emas | Subjek prompt |
+|---|---|---|---|---|---|
+| M01 | `details.svg` | Rincian dan lingkup | Lembar dokumen dengan bingkai bidik di sudut: lingkup yang ditetapkan | Bingkai bidik | `a document sheet with three text lines and a small target reticle at the lower right` |
+| M02 | `units.svg` | Unit | Penanda lokasi berisi gedung kecil: kantor, lokasi, proyek | Titik penanda | `a map location pin with a tiny building inside` |
+| M03 | `strata.svg` | Strata | Tiga lapisan piramida datar: jenjang jabatan | Lapisan puncak | `three stacked horizontal layers forming a flat pyramid` |
+| M04 | `parameters.svg` | Parameter penilaian | Tiga penggeser mendatar: bobot dan ambang | Kenop tengah | `three horizontal slider tracks with round knobs at different positions` |
+| M05 | `sampling.svg` | Kalkulator sampel | Lingkaran berisi enam titik, tiga terisi: sampel dari populasi | Tiga titik terisi | `a circle containing six dots, three filled and three empty` |
+| M06 | `team.svg` | Tim asesor | Dua figur setengah badan dengan lencana centang kecil | Lencana centang | `two person bust silhouettes with a small check badge` |
+| M07 | `kickoff.svg` | Komunikasi awal | Pengeras suara tangan dengan tiga garis suara: pesan pimpinan kepada pekerja | Garis suara | `a megaphone with three short sound lines` |
+
+### 5.3 Tahap 2, Pengumpulan data
+
+| ID | Berkas | Halaman | Konsep | Unsur emas | Subjek prompt |
+|---|---|---|---|---|---|
+| M08 | `respondents.svg` | Responden dan undangan | Tiga figur pekerja berhelm sederhana | Helm figur tengah | `three worker silhouettes wearing simple hard hats` |
+| M09 | `qr.svg` | Kode QR | Kode QR sederhana dengan tiga persegi sudut | Satu persegi sudut | `a simplified QR code with three corner squares and a few small squares` |
+| M10 | `participation.svg` | Partisipasi | Garis tren naik dengan figur kecil di puncak | Titik puncak | `a rising line chart with three points and a tiny person at the highest point` |
+| M11 | `self-assessments.svg` | Penilaian mandiri | Figur berdasi dengan tanda centang | Tanda centang | `a person bust silhouette wearing a necktie with a check mark beside the shoulder` |
+| M12 | `evidence.svg` | Bukti dokumen | Map terbuka dengan selembar dokumen | Penjepit kertas | `an open folder with a document sheet and a paperclip` |
+| M13 | `observations.svg` | Observasi lapangan | Kamera dengan penanda lokasi kecil; bukan kamera pengawas | Penanda lokasi | `a camera with a small map location pin at the top right` |
+
+### 5.4 Tahap 3, Validasi dan triangulasi
+
+| ID | Berkas | Halaman | Konsep | Unsur emas | Subjek prompt |
+|---|---|---|---|---|---|
+| M14 | `data-quality.svg` | Mutu data | Alat ukur setengah lingkaran dengan jarum: mutu yang terukur | Jarum | `a semicircular gauge with a needle pointing to the upper right` |
+| M15 | `findings.svg` | Temuan awal | Kaca pembesar di atas tiga batang: melihat data sebelum menilai | Lensa | `a magnifying glass over three small bars of different heights` |
+| M16 | `validation.svg` | Wawancara dan diskusi kelompok | Dua gelembung percakapan bertumpuk | Tiga titik di gelembung depan | `two overlapping speech bubbles, the front one containing three dots` |
+
+### 5.5 Tahap 4, Penilaian dan penetapan
+
+| ID | Berkas | Halaman | Konsep | Unsur emas | Subjek prompt |
+|---|---|---|---|---|---|
+| M17 | `scoring.svg` | Penilaian asesor | Daftar periksa dengan bintang setengah terisi: nilai kelipatan 0,5 | Bintang | `a checklist with two check marks and a half filled star at the bottom` |
+| M18 | `panel.svg` | Rapat panel | Meja bundar tampak atas dengan tiga kursi; bukan palu hakim | Titik tengah meja | `a round table seen from above with three chairs around it` |
+
+### 5.6 Tahap 5, Pelaporan dan rencana aksi
+
+| ID | Berkas | Halaman | Konsep | Unsur emas | Subjek prompt |
+|---|---|---|---|---|---|
+| M19 | `dashboard.svg` | Dasbor hasil | Tiga batang grafik dalam bingkai membulat | Batang tertinggi | `a bar chart with three bars inside a rounded rectangle frame` |
+| M20 | `gaps.svg` | Kesenjangan dan rencana aksi | Dua batang berbeda tinggi dengan panah penghubung: jarak yang ditutup | Panah | `two bars of different heights with a small arrow bridging the gap between them` |
+| M21 | `report.svg` | Laporan | Dokumen dengan grafik kecil dan garis tanda tangan | Garis tanda tangan | `a document sheet with a small bar chart and a signature line at the bottom` |
+| M22 | `communication.svg` | Komunikasi hasil | Lembar hasil dengan panah menuju tiga figur kecil: hasil kembali ke pekerja | Panah | `a document sheet with an arrow pointing to three small person silhouettes` |
+
+### 5.7 Tahap 6, Pemantauan dan perbaikan
+
+| ID | Berkas | Halaman | Konsep | Unsur emas | Subjek prompt |
+|---|---|---|---|---|---|
+| M23 | `monitoring.svg` | Pemantauan rencana aksi | Kalender dengan tanda centang | Tanda centang | `a calendar page with a check mark` |
+| M24 | `trend.svg` | Perbandingan antarperiode | Dua garis tren bertumpuk, yang baru lebih tinggi | Garis yang baru | `two line charts overlaid, the newer one higher than the older one` |
+
+### 5.8 Lintas tahap dan menu akun
+
+| ID | Berkas | Menu | Konsep | Unsur emas | Subjek prompt |
+|---|---|---|---|---|---|
+| M25 | `audit.svg` | Jejak audit | Jam dengan panah melingkar berlawanan arah jarum jam | Jarum jam | `a clock face with a counterclockwise circular arrow around it` |
+| A01 | `assessments.svg` | Daftar asesmen | Papan klip dengan tiga baris daftar periksa | Penjepit papan | `a clipboard with three short checklist lines` |
+| A02 | `new-assessment.svg` | Asesmen baru | Papan klip dengan tanda tambah | Tanda tambah | `a clipboard with a plus sign` |
+| A03 | `organizations.svg` | Organisasi dan pengguna | Gedung kantor dengan satu figur di depannya | Figur | `an office building with three rows of windows and a small person in front` |
+| A04 | `retention.svg` | Retensi data | Kotak arsip dengan jam pasir kecil; bukan tempat sampah | Jam pasir | `an archive storage box with a small hourglass` |
+| A05 | `system-status.svg` | Status sistem | Garis denyut di dalam bingkai layar | Garis denyut | `a monitor frame with a heartbeat pulse line` |
+| A06 | `account.svg` | Akun dan keamanan | Figur setengah badan dengan perisai bergembok kecil | Perisai | `a person bust silhouette with a small shield containing a padlock` |
+
+## 6. Lencana tingkat kematangan
+
+Lima lencana dengan komposisi yang sama dengan logo: lima busur pada lengkung 270 derajat, tanpa monogram. Angka tingkat dipasang sebagai teks di tengah.
+
+| ID | Berkas | Tingkat | Busur terisi | Warna busur terisi | Busur kosong |
+|---|---|---|---|---|---|
+| B01 | `level-1.svg` | 1 Patologis | 1 | Perak tua `#8D9299` | Abu `#E4E4E7` |
+| B02 | `level-2.svg` | 2 Reaktif | 2 | Perak tua ke perak | Abu `#E4E4E7` |
+| B03 | `level-3.svg` | 3 Kalkulatif | 3 | Perak tua ke perak terang | Abu `#E4E4E7` |
+| B04 | `level-4.svg` | 4 Proaktif | 4 | Perak tua ke arang `#26262B` | Abu `#E4E4E7` |
+| B05 | `level-5.svg` | 5 Progresif | 5 | Empat busur arang, busur kelima emas | Tidak ada |
+
+Emas hanya muncul pada tingkat 5. Dengan begitu, emas pada logo dan pada lencana bermakna sama: budaya yang matang.
+
+## 7. Ilustrasi dan gambar
+
+Akhiran gaya, ditempel di akhir setiap prompt bagian ini:
+
+```
+premium flat 2D vector illustration, monochrome palette of obsidian black #0B0B0C, charcoal #26262B, silver #C7CAD0, bright silver #E9EAEC and white, with a single restrained accent of gold #D4AF37, thin precise lines, clean geometric shapes, elegant editorial composition, generous negative space, no text, no letters, no numbers, no logos, no watermark
+```
+
+Prompt negatif:
+
+```
+text, letters, numbers, logo, watermark, bright colors, orange, neon, 3D render, photorealistic, glossy, harsh shadows, cluttered, cartoon, ladder, staircase, certificate seal, medal, ribbon
+```
+
+Aturan pekerja, ditempel pada prompt yang memuat orang:
+
+```
+Indonesian construction workers, men and women, some women wearing hijab under the hard hat, simplified faces without detailed features, every worker wears a white hard hat with chin strap fastened, a light silver high-visibility vest with pale gold reflective stripes, safety boots and work gloves, safe working posture, tidy site
+```
+
+| ID | Berkas | Letak | Ukuran | Latar | Konsep | Warna dominan dan aksen |
+|---|---|---|---|---|---|---|
+| V01 | `login-panel.webp` | Panel halaman masuk | 1200 x 1600 | Obsidian | Siluet kota dan proyek konstruksi dari garis perak tipis di bawah lingkar dial samar | Obsidian dan perak; satu garis cakrawala emas |
+| V02 | `home-hero.webp` | Latar kepala beranda | 2400 x 800 | Obsidian | Lingkar ukur konsentris yang memudar, tanpa objek | Obsidian; kilau emas samar di satu sudut |
+| V03 | `empty-start.png` | Beranda tanpa asesmen | 800 x 600 | Transparan | Meja kerja dengan papan klip kosong dan jangka | Perak dan arang; poros jangka emas |
+| V04 | `survey-welcome.webp` | Layar pembuka survei | 720 x 480 | Abu kabut `#F5F5F6` | Pekerja duduk mengisi survei di telepon, dengan gelembung centang | Perak dan arang; centang emas |
+| V05 | `survey-privacy.webp` | Layar persetujuan survei | 480 x 480 | Abu kabut | Perisai bergembok: jawaban tidak dapat dihubungkan dengan identitas | Arang dan perak; gembok emas |
+| V06 | `survey-thanks.webp` | Layar terima kasih survei | 720 x 480 | Abu kabut | Pekerja berdiri dengan tanda centang besar | Perak dan arang; centang emas |
+| V07 | `state-link-unavailable.png` | Tautan survei tidak berlaku | 800 x 600 | Transparan | Telepon dengan rantai tautan terputus | Arang dan perak; mata rantai emas |
+| V08 | `state-forbidden.png` | Akses ditolak | 800 x 600 | Transparan | Pintu tertutup dengan perisai bergembok | Arang dan perak; gembok emas |
+| V09 | `state-not-found.png` | Halaman tidak ditemukan | 800 x 600 | Transparan | Pekerja melihat denah dengan satu ruang kosong | Perak dan arang; tanda lokasi emas |
+| V10 | `empty-respondents.png` | Daftar responden kosong | 800 x 600 | Transparan | Papan klip daftar nama kosong dan tiga pekerja | Perak dan arang; helm emas pucat |
+| V11 | `empty-evidence.png` | Daftar bukti kosong | 800 x 600 | Transparan | Map terbuka dengan satu lembar dan kaca pembesar | Perak dan arang; lensa emas |
+| V12 | `empty-observations.png` | Jendela observasi kosong | 800 x 600 | Transparan | Kamera dan penanda lokasi di depan perancah berpagar | Perak dan arang; penanda emas |
+| V13 | `empty-validation.png` | Belum ada sesi validasi | 800 x 600 | Transparan | Meja bundar dengan kursi kosong dan dua gelembung percakapan | Perak dan arang; gelembung emas |
+| V14 | `empty-action-plan.png` | Daftar kesenjangan kosong | 800 x 600 | Transparan | Papan rencana tiga kolom dengan satu kartu | Perak dan arang; kartu emas |
+| V15 | `empty-report.png` | Belum ada laporan | 800 x 600 | Transparan | Lembar laporan dengan grafik dan pena | Perak dan arang; pena emas |
+| V16 | `report-cover.jpg` | Pita sampul laporan PDF | 2480 x 1100 | Obsidian | Lingkar dial besar terpotong di kanan, garis kota di bawah | Obsidian dan perak; busur emas |
+| V17 | `email-header.png` | Kepala surel | 1200 x 300 | Obsidian | Pita gelap dengan lengkung dial di kanan | Obsidian dan perak; garis emas tipis |
+| V18 | `og-image.png` | Pratinjau tautan | 1200 x 630 | Obsidian | Simbol logo besar di kanan, bidang kiri kosong untuk judul | Obsidian dan perak; busur emas |
+| V19 | `pattern-dial.svg` | Pola latar bidang gelap | Vektor, dapat disambung | Obsidian | Lingkar konsentris dan garis skala samar | Putih 4 persen; tanpa emas |
+| V20 | `stage-01.webp` sampai `stage-06.webp` | Kepala setiap tahap di pusat asesmen (6 berkas) | 1200 x 480 | Obsidian | Benda kerja tiap tahap sebagai garis perak: jangka, lapisan data, tiga titik, timbangan, lembar laporan, panah siklus | Obsidian dan perak; satu unsur emas, sama dengan ikon tahap |
+| V21 | `certificate-free-note.svg` | Catatan "bukan sertifikat" di laporan | Vektor | Putih | Bingkai garis tipis polos tanpa segel | Arang; tanpa emas |
+| V22 | `print-watermark-draft.svg` | Tanda air draf laporan | Vektor | Transparan | Garis diagonal halus | Emas tua 8 persen |
+
+Halaman survei dibuka pekerja dengan sinyal lemah. Karena itu V04 sampai V06 dibatasi 25 KB per berkas dan V05 dibatasi 15 KB.
+
+## 8. Penyerahan dan pemasangan
+
+1. Simpan setiap berkas dengan nama persis seperti tabel.
+2. Catat prompt, nama generator, dan tanggal pembuatan sebagai bukti asal-usul. Pastikan paket generator mengizinkan penggunaan komersial.
+3. Kirim berkas melalui percakapan kerja atau folder bersama. Sebelum dipasang, berkas diperiksa: keamanan SVG, daftar periksa K3 bagian 1.3, kesesuaian palet, dan ukuran berkas.
+4. Ikon dipasang di `resources/js/components/icons/`, ilustrasi di `public/illustrations/`, dan berkas merek di `public/brand/`.
+5. Ilustrasi diperlakukan sebagai hiasan: teks alternatif kosong, dan seluruh informasi tetap ada di teks halaman.
 
 ## Rujukan
 
@@ -503,7 +288,5 @@ Kementerian Ketenagakerjaan Republik Indonesia. (2016). *Peraturan Menteri Keten
 Kementerian Pekerjaan Umum dan Perumahan Rakyat Republik Indonesia. (2021). *Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 10 Tahun 2021 tentang Pedoman Sistem Manajemen Keselamatan Konstruksi*.
 
 Kementerian Tenaga Kerja dan Transmigrasi Republik Indonesia. (2010). *Peraturan Menteri Tenaga Kerja dan Transmigrasi Nomor PER.08/MEN/VII/2010 tentang Alat Pelindung Diri*.
-
-Republik Indonesia. (2014). *Undang-Undang Nomor 28 Tahun 2014 tentang Hak Cipta*.
 
 Republik Indonesia. (2016). *Undang-Undang Nomor 20 Tahun 2016 tentang Merek dan Indikasi Geografis*.

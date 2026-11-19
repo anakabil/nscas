@@ -38,10 +38,18 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'locale' => app()->getLocale(),
+            // Hanya kolom yang diperlukan antarmuka; rahasia dua langkah dan sandi tidak pernah dikirim.
             'auth' => [
-                'user' => $request->user(),
+                'user' => ($user = $request->user()) ? [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'isSuperAdmin' => $user->is_super_admin,
+                    'twoFactorEnabled' => $user->two_factor_confirmed_at !== null,
+                ] : null,
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'flash' => ['status' => fn () => $request->session()->get('status')],
         ];
     }
 }

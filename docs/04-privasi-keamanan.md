@@ -1,10 +1,30 @@
 # 04. Privasi, Keamanan, dan Retensi
 
+Catatan versi 2. Ketentuan pada dokumen ini tetap berlaku. Rujukan ke berkas `src/...` menunjuk implementasi versi 1 (riwayat Git `8ad6b3d`) dan diganti dengan padanan Laravel saat modulnya dibangun ulang. Bagian 1.1 tentang lokasi data adalah ketentuan baru.
+
 ## 1. Dasar
 
 - Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi: Nusa Safety bertindak sebagai prosesor data atas nama klien sebagai pengendali data, berdasarkan perjanjian pemrosesan data.
-- Peraturan Pemerintah Nomor 71 Tahun 2019 tentang Penyelenggaraan Sistem dan Transaksi Elektronik. Kewajiban penempatan data di Indonesia terutama berlaku bagi penyelenggara lingkup publik, tetapi proposal kepada klien menjanjikan penyimpanan di pusat data Indonesia, sehingga janji itu mengikat.
-- Komitmen proposal: identitas responden dipisahkan dari jawaban, hasil hanya dilaporkan agregat, minimal 5 responden per sel laporan, data disimpan di Indonesia, dan data mentah dimusnahkan dengan berita acara.
+- Peraturan Pemerintah Nomor 71 Tahun 2019 tentang Penyelenggaraan Sistem dan Transaksi Elektronik. Kewajiban penempatan data di Indonesia terutama berlaku bagi penyelenggara lingkup publik.
+- Komitmen proposal: identitas responden dipisahkan dari jawaban, hasil hanya dilaporkan agregat, minimal 5 responden per sel laporan, dan data mentah dimusnahkan dengan berita acara. Komitmen lokasi data diatur di bagian 1.1.
+
+### 1.1 Lokasi data: DigitalOcean wilayah Singapura
+
+Keputusan pemilik proyek, 19 November 2026: produksi NSCAS ditempatkan di DigitalOcean. DigitalOcean tidak memiliki pusat data di Indonesia; wilayah terdekat adalah Singapura (`sgp1`). Basis data, penyimpanan berkas, dan cadangan berada di wilayah itu.
+
+Keputusan ini mengubah komitmen proposal awal kepada klien, yang menjanjikan penyimpanan di pusat data Indonesia. Karena itu berlaku ketentuan berikut.
+
+| No. | Syarat sebelum ada data responden nyata | Dasar | Penanggung jawab | Status |
+|---|---|---|---|---|
+| 1 | Persetujuan tertulis klien atas lokasi Singapura, sebagai adendum proposal atau klausul perjanjian pemrosesan data | Komitmen proposal; UU 27/2022 tentang kewajiban prosesor bertindak atas perintah pengendali | Nusa Safety | Belum |
+| 2 | Perjanjian pemrosesan data menyebut lokasi, penyedia layanan, dan langkah pengamanan | UU 27/2022 | Nusa Safety dan klien | Belum |
+| 3 | Dasar transfer ke luar negeri didokumentasikan: tingkat pelindungan di negara tujuan, atau pelindungan yang memadai dan mengikat, atau persetujuan subjek data | UU 27/2022 Pasal 56 | Klien sebagai pengendali, dibantu Nusa Safety | Belum |
+| 4 | Teks persetujuan responden menyebut Singapura | UU 27/2022 tentang persetujuan yang jelas dan spesifik | Nusa Safety | Sudah di bagian 8; berlaku di aplikasi lewat `NSCAS_DATA_LOCATION` |
+| 5 | Enkripsi saat transit dan saat tersimpan, serta cadangan terenkripsi di wilayah yang sama | Praktik pengamanan | Nusa Safety | Disiapkan di `docs/08` |
+
+Selama syarat 1 sampai 3 belum terpenuhi, server DigitalOcean hanya boleh dipakai untuk uji coba dengan data buatan. Rancangan aplikasi tetap dapat dipindah ke penyedia lain karena seluruhnya berjalan di Docker dengan PostgreSQL dan penyimpanan kompatibel S3.
+
+Catatan untuk penasihat hukum. Uraian ini adalah pembacaan praktisi K3 atas ketentuan pelindungan data, bukan pendapat hukum. Rumusan adendum dan dasar transfer sebaiknya ditinjau penasihat hukum perusahaan.
 
 ## 2. Matriks hak akses
 
@@ -29,7 +49,7 @@ Tanda: B = baca, U = ubah, X = tidak ada akses.
 
 SUPER_ADMIN tidak dapat melihat daftar responden dan jawaban mentah agar pengelola sistem tidak dapat menghubungkan identitas dengan jawaban.
 
-Seluruh pemeriksaan dilakukan di server melalui `requireRole(assessmentId, allowedRoles, { unitId? })` di `src/lib/auth/guard.ts`. Tes e2e wajib mencakup upaya akses lintas organisasi dan lintas unit yang harus ditolak.
+Seluruh pemeriksaan dilakukan di server melalui `App\Support\AssessmentAccess::require($user, $assessment, $resource, $mode)`; matriksnya ada di `App\Domain\Access\Permissions`. Pengguna tanpa peran pada sebuah asesmen menerima 404 agar keberadaan asesmen organisasi lain tidak terungkap. Tes wajib mencakup upaya akses lintas organisasi dan lintas unit yang harus ditolak.
 
 ## 3. Autentikasi
 
@@ -80,4 +100,4 @@ Tabel `AuditLog` dilindungi pemicu PostgreSQL yang menolak UPDATE dan DELETE. Le
 
 ## 8. Teks persetujuan responden (templat, dapat disesuaikan sebelum dikunci)
 
-> Survei ini diselenggarakan oleh Nusa Safety atas permintaan {nama organisasi} untuk mengukur budaya keselamatan dan kesehatan kerja. Jawaban Anda tidak dapat dihubungkan dengan identitas Anda. Hasil hanya disajikan secara gabungan untuk kelompok paling sedikit lima orang. Data disimpan di pusat data di Indonesia dan dimusnahkan setelah {masa simpan} bulan. Keikutsertaan bersifat sukarela dan Anda dapat berhenti kapan saja. Dengan menekan tombol Setuju, Anda menyetujui pemrosesan jawaban sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.
+> Survei ini diselenggarakan oleh Nusa Safety atas permintaan {nama organisasi} untuk mengukur budaya keselamatan dan kesehatan kerja. Jawaban Anda tidak dapat dihubungkan dengan identitas Anda. Hasil hanya disajikan secara gabungan untuk kelompok paling sedikit lima orang. Data disimpan di pusat data di {lokasi data} dan dimusnahkan setelah {masa simpan} bulan. Keikutsertaan bersifat sukarela dan Anda dapat berhenti kapan saja. Dengan menekan tombol Setuju, Anda menyetujui pemrosesan jawaban sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.
