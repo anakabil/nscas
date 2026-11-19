@@ -1,16 +1,18 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
 import { AccountTile, Container, SectionHeading, StageCard, StageMeter, TaskTile } from '@/components/nscas/parts';
+import { ProgressDashboard } from '@/components/nscas/progress-dashboard';
 import { formatDate, useLocale, useT } from '@/i18n';
 import { cn } from '@/lib/utils';
 import type { User } from '@/types/auth';
-import type { AccountMenuItem, AssessmentMenu, AssessmentSummary, Persona } from '@/types/nscas';
+import type { AccountMenuItem, AssessmentMenu, AssessmentSummary, Dashboard, Persona } from '@/types/nscas';
 
 type Props = {
     persona: Persona;
     accountMenu: AccountMenuItem[];
     assessments: AssessmentSummary[];
     selected: AssessmentMenu | null;
+    dashboard: Dashboard | null;
 };
 
 // Penanda tempat nama di dalam kalimat sapaan, agar nama dapat dicetak miring tanpa memecah kunci terjemahan.
@@ -29,7 +31,7 @@ function Greeting({ text, name }: { text: string; name: string }) {
 }
 
 // Beranda: menu utama menurut tahap penilaian dan menurut jenis akun.
-export default function Home({ persona, accountMenu, assessments, selected }: Props) {
+export default function Home({ persona, accountMenu, assessments, selected, dashboard }: Props) {
     const t = useT();
     const locale = useLocale();
     const user = usePage<{ auth: { user: User } }>().props.auth.user;
@@ -102,6 +104,8 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
             </div>
 
             <Container className="space-y-16 py-12">
+                {dashboard ? <ProgressDashboard dashboard={dashboard} /> : null}
+
                 {selected === null ? (
                     <section className="frame-hairline rounded-lg p-10 text-center" data-testid="home-empty">
                         <h2 className="font-display text-[1.75rem] text-ink">{t('home.emptyTitle')}</h2>

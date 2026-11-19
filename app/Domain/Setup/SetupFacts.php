@@ -22,5 +22,6 @@ final readonly class SetupFacts
         public bool $samplePlanSaved = false,
         public bool $kickoffComplete = false,
         public bool $calibrationComplete = false,
+        public int $workers = 0,
     ) {}
 }

@@ -47,9 +47,14 @@ class HandleInertiaRequests extends Middleware
                     'email' => $user->email,
                     'isSuperAdmin' => $user->is_super_admin,
                     'twoFactorEnabled' => $user->two_factor_confirmed_at !== null,
+                    'mustChangePassword' => $user->must_change_password,
                 ] : null,
             ],
-            'flash' => ['status' => fn () => $request->session()->get('status')],
+            // Kata sandi sementara akun baru atau yang diatur ulang: hanya ada pada satu permintaan berikutnya.
+            'flash' => [
+                'status' => fn () => $request->session()->get('status'),
+                'temporaryPassword' => fn () => $request->session()->get('temporaryPassword'),
+            ],
         ];
     }
 }

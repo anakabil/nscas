@@ -1,0 +1,41 @@
+<?php
+
+// Pesan galat aturan konfigurasi asesmen dan pengelolaan akun (fase R1). Aturan bahasa: docs/05 bagian 4.
+// Setiap pesan menyebut apa yang perlu dilakukan pengguna. Sebagian dibawa dari v1 messages/id.json.
+
+return [
+    'errors' => [
+        'CONFIGURATION_LOCKED' => 'Parameter asesmen ini telah dikunci sehingga tidak dapat diubah lagi.',
+        'ASSESSMENT_CLOSED' => 'Asesmen ini telah ditutup sehingga tidak dapat diubah.',
+        'INVALID_TRANSITION' => 'Status asesmen telah berubah. Muat ulang halaman, lalu periksa kembali.',
+        'FORBIDDEN' => 'Jenis akun Anda tidak berwenang melakukan tindakan ini.',
+        'TRANSITION_BLOCKED' => 'Syarat perubahan status belum terpenuhi. Lengkapi butir yang belum dicentang.',
+        'OPERATOR_ORGANIZATION' => 'Asesmen hanya dapat dibuat untuk organisasi klien yang aktif.',
+        'INSTRUMENT_NOT_PUBLISHED' => 'Versi instrumen ini belum terbit sehingga belum dapat dipakai.',
+        'PARENT_NOT_FOUND' => 'Unit induk tidak ditemukan pada asesmen ini.',
+        'UNIT_CYCLE' => 'Unit tidak dapat menjadi induk dari dirinya sendiri atau dari unit di bawahnya.',
+        'UNIT_HAS_CHILDREN' => 'Hapus atau pindahkan unit di bawahnya lebih dulu.',
+        'UNIT_IN_USE' => 'Unit ini telah dipakai data lain sehingga tidak dapat dihapus.',
+        'COORDINATES_INCOMPLETE' => 'Isi garis lintang, garis bujur, dan radius sekaligus, atau kosongkan ketiganya.',
+        'STRATUM_CODE_TAKEN' => 'Kode strata telah dipakai pada asesmen ini. Gunakan kode lain.',
+        'STRATUM_IN_USE' => 'Strata ini telah dipakai data responden sehingga tidak dapat dihapus.',
+        'LAYER_WEIGHTS_SUM' => 'Jumlah ketiga bobot lapisan harus 1,00.',
+        'SCL_STEPS' => 'Ambang harus diisi untuk tingkat 2, 3, 4, dan 5.',
+        'MIN_REPORT_CELL' => 'Jumlah minimal responden per sel laporan tidak boleh kurang dari 5.',
+        'DPA_DATE_REQUIRED' => 'Isi tanggal penandatanganan perjanjian pemrosesan data.',
+        'NO_POPULATION' => 'Isi jumlah pekerja setiap strata lebih dulu di halaman Strata.',
+        'NOT_ASSESSOR_STAFF' => 'Pengguna ini bukan asesor Nusa Safety yang aktif.',
+        'NOT_LEAD_ASSESSOR_STAFF' => 'Pengguna ini tidak memiliki peran asesor utama di Nusa Safety.',
+        'ALREADY_ASSIGNED' => 'Pengguna ini telah ditugaskan pada asesmen ini.',
+        'LAST_LEAD_ASSESSOR' => 'Asesmen harus memiliki paling sedikit satu asesor utama.',
+        'OPERATOR_ALWAYS_ACTIVE' => 'Organisasi Nusa Safety tidak dapat dinonaktifkan.',
+        'EMAIL_TAKEN' => 'Alamat surel ini telah dipakai akun lain.',
+        'SELF_ROLE' => 'Anda tidak dapat mencabut peran administrator klien dari akun Anda sendiri.',
+        'SELF_DEACTIVATE' => 'Anda tidak dapat menonaktifkan akun Anda sendiri.',
+        'ROLE_REQUIRED' => 'Pilih paling sedikit satu peran.',
+        'ROLE_NOT_VALID_FOR_ORGANIZATION' => 'Peran yang dipilih tidak sesuai dengan jenis organisasi ini atau di luar wewenang Anda.',
+    ],
+    'mustChangePassword' => 'Ganti kata sandi sementara Anda sebelum melanjutkan.',
+    'passwordChanged' => 'Kata sandi berhasil diganti.',
+    'saved' => 'Perubahan berhasil disimpan.',
+];

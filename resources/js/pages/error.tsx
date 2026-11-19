@@ -2,11 +2,11 @@ import { Head } from '@inertiajs/react';
 import { NscasMark } from '@/components/brand/nscas-mark';
 import { useT } from '@/i18n';
 
-// Halaman galat (403, 404, 429, 500, 503). Tautan kembali berupa elemen a biasa: halaman ini juga tampil untuk
+// Halaman galat (403, 404, 409, 429, 500, 503). Tautan kembali berupa elemen a biasa: halaman ini juga tampil untuk
 // pengunjung yang belum masuk, dan beranda akan mengarahkan mereka ke halaman masuk.
 export default function ErrorPage({ status }: { status: number }) {
     const t = useT();
-    const code = [403, 404, 419, 429, 500, 503].includes(status) ? status : 500;
+    const code = [403, 404, 409, 419, 429, 500, 503].includes(status) ? status : 500;
     return (
         <>
             <Head title={t(`errors.${code}.title`)} />

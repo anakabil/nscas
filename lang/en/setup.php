@@ -1,0 +1,40 @@
+<?php
+
+// Error messages for assessment setup and account management (phase R1).
+
+return [
+    'errors' => [
+        'CONFIGURATION_LOCKED' => 'The parameters of this assessment are locked and can no longer be changed.',
+        'ASSESSMENT_CLOSED' => 'This assessment is closed and can no longer be changed.',
+        'INVALID_TRANSITION' => 'The assessment status has changed. Reload the page and check again.',
+        'FORBIDDEN' => 'Your account type is not permitted to perform this action.',
+        'TRANSITION_BLOCKED' => 'The conditions for this status change are not yet met. Complete the unchecked items.',
+        'OPERATOR_ORGANIZATION' => 'An assessment can only be created for an active client organisation.',
+        'INSTRUMENT_NOT_PUBLISHED' => 'This instrument version has not been published and cannot be used yet.',
+        'PARENT_NOT_FOUND' => 'The parent unit was not found in this assessment.',
+        'UNIT_CYCLE' => 'A unit cannot be the parent of itself or of a unit below it.',
+        'UNIT_HAS_CHILDREN' => 'Delete or move the units below it first.',
+        'UNIT_IN_USE' => 'This unit is used by other data and cannot be deleted.',
+        'COORDINATES_INCOMPLETE' => 'Fill in latitude, longitude, and radius together, or leave all three empty.',
+        'STRATUM_CODE_TAKEN' => 'This stratum code is already used in this assessment. Use another code.',
+        'STRATUM_IN_USE' => 'This stratum is used by respondent data and cannot be deleted.',
+        'LAYER_WEIGHTS_SUM' => 'The three layer weights must add up to 1.00.',
+        'SCL_STEPS' => 'Thresholds must be filled in for levels 2, 3, 4, and 5.',
+        'MIN_REPORT_CELL' => 'The minimum number of respondents per report cell cannot be less than 5.',
+        'DPA_DATE_REQUIRED' => 'Fill in the date the data processing agreement was signed.',
+        'NO_POPULATION' => 'Fill in the number of workers in each stratum first on the Strata page.',
+        'NOT_ASSESSOR_STAFF' => 'This user is not an active Nusa Safety assessor.',
+        'NOT_LEAD_ASSESSOR_STAFF' => 'This user does not hold the lead assessor role at Nusa Safety.',
+        'ALREADY_ASSIGNED' => 'This user is already assigned to this assessment.',
+        'LAST_LEAD_ASSESSOR' => 'An assessment must have at least one lead assessor.',
+        'OPERATOR_ALWAYS_ACTIVE' => 'The Nusa Safety organisation cannot be deactivated.',
+        'EMAIL_TAKEN' => 'This email address is already used by another account.',
+        'SELF_ROLE' => 'You cannot remove the client administrator role from your own account.',
+        'SELF_DEACTIVATE' => 'You cannot deactivate your own account.',
+        'ROLE_REQUIRED' => 'Select at least one role.',
+        'ROLE_NOT_VALID_FOR_ORGANIZATION' => 'The selected role does not match this type of organisation or is outside your authority.',
+    ],
+    'mustChangePassword' => 'Change your temporary password before continuing.',
+    'passwordChanged' => 'Password changed successfully.',
+    'saved' => 'Changes saved.',
+];

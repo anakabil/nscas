@@ -12,4 +12,5 @@ return [
      | Produksi: DigitalOcean Singapura, dengan persetujuan tertulis klien.
      */
     'data_location' => env('NSCAS_DATA_LOCATION', 'Singapura'),
+    'data_location_en' => env('NSCAS_DATA_LOCATION_EN', 'Singapore'),
 ];

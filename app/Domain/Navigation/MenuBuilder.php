@@ -101,10 +101,10 @@ final class MenuBuilder
         $has = static fn (Role ...$any): bool => (bool) array_filter($roles, static fn (Role $r): bool => in_array($r, $any, true));
         $items = [['key' => 'assessments', 'path' => '/assessments', 'ready' => true, 'buildPhase' => 'R0']];
         if ($has(Role::LeadAssessor)) {
-            $items[] = ['key' => 'newAssessment', 'path' => '/assessments/create', 'ready' => false, 'buildPhase' => 'R1'];
+            $items[] = ['key' => 'newAssessment', 'path' => '/assessments/create', 'ready' => true, 'buildPhase' => 'R1'];
         }
         if ($has(Role::SuperAdmin, Role::LeadAssessor, Role::ClientAdmin)) {
-            $items[] = ['key' => 'organizations', 'path' => '/organizations', 'ready' => false, 'buildPhase' => 'R1'];
+            $items[] = ['key' => 'organizations', 'path' => '/organizations', 'ready' => true, 'buildPhase' => 'R1'];
         }
         if ($has(Role::SuperAdmin)) {
             $items[] = ['key' => 'retention', 'path' => '/retention', 'ready' => false, 'buildPhase' => 'R11'];

@@ -1,11 +1,11 @@
 import { Form, Head } from '@inertiajs/react';
-import { ShieldAlert } from 'lucide-react';
+import { KeyRound, ShieldAlert } from 'lucide-react';
 import { useRef } from 'react';
 import SecurityController from '@/actions/App/Http/Controllers/Settings/SecurityController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { translator, useT } from '@/i18n';
@@ -18,12 +18,15 @@ type Props = {
     passwordRules: string;
     /** Peran pengguna mewajibkan verifikasi dua langkah dan belum diaktifkan (dihitung di server). */
     twoFactorRequired?: boolean;
+    /** Akun memakai kata sandi sementara dari administrator dan wajib menggantinya (fase R1). */
+    mustChangePassword?: boolean;
 } &
     ManageTwoFactorProps;
 
 export default function Security(props: Props) {
     const t = useT();
     const twoFactorRequired = props.twoFactorRequired === true;
+    const mustChangePassword = props.mustChangePassword === true;
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
 
@@ -32,6 +35,14 @@ export default function Security(props: Props) {
             <Head title={t('settings.security.title')} />
 
             <h1 className="sr-only">{t('settings.security.title')}</h1>
+
+            {mustChangePassword && (
+                <Alert className="border-gold/60 bg-parchment" data-testid="must-change-password">
+                    <KeyRound aria-hidden="true" />
+                    <AlertTitle>{t('security.mustChangeTitle')}</AlertTitle>
+                    <AlertDescription className="text-foreground">{t('security.mustChangeBody')}</AlertDescription>
+                </Alert>
+            )}
 
             {twoFactorRequired && (
                 <Alert>

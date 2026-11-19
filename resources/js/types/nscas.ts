@@ -54,3 +54,29 @@ export type Persona = {
     roles: RoleCode[];
     organizations: string[];
 };
+
+// Progres pengukuran satu asesmen (App\Http\Presenters\ProgressPresenter).
+export type ConditionCheck = { key: string; met: boolean | null; href: string | null };
+
+export type AssessmentProgress = {
+    id: string;
+    stage: number | null;
+    status: string;
+    next: { to: string; toStage: number | null; actor: RoleCode; canTransition: boolean; conditions: ConditionCheck[] } | null;
+    readiness: { met: number; checkable: number; total: number };
+    planning: { items: { key: string; done: boolean; href: string }[]; done: number; total: number };
+    schedule: { phase: 'notStarted' | 'running' | 'ended'; elapsed: number; daysRemaining: number; totalDays: number };
+    attention: string[];
+    teamSize: number;
+    units: number;
+    workers: number;
+    surveyTarget: number | null;
+};
+
+export type DashboardRow = AssessmentSummary & AssessmentProgress;
+
+export type Dashboard = {
+    updatedAt: string;
+    totals: { active: number; closed: number; attention: number; ready: number; byStage: number[] };
+    rows: DashboardRow[];
+};

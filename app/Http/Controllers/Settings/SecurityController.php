@@ -37,6 +37,8 @@ class SecurityController extends Controller
             && $user->two_factor_confirmed_at === null
             && collect($user->allRoles())->contains(fn ($role) => $role->requiresTwoFactor());
 
+        $props['mustChangePassword'] = $user->must_change_password;
+
         return Inertia::render('settings/security', $props);
     }
 
@@ -45,9 +47,10 @@ class SecurityController extends Controller
      */
     public function update(PasswordUpdateRequest $request): RedirectResponse
     {
-        $request->user()->update([
+        $request->user()->forceFill([
             'password' => $request->password,
-        ]);
+            'must_change_password' => false,
+        ])->save();
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Password updated.')]);
 

@@ -4,6 +4,7 @@ use App\Http\Middleware\EnsureAccountIsUsable;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
+use App\Support\RuleViolation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -34,6 +35,20 @@ return Application::configure(basePath: dirname(__DIR__))
         // sehingga env() di sini hanya melihat variabel lingkungan sistem dan mengabaikan isi berkas .env.
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Pelanggaran aturan bisnis dari layanan: 422 kembali ke formulir dengan pesan pada isian terkait; 409 (data
+        // terkunci) dan 403 sebagai halaman galat. Pesan diambil dari lang/<bahasa>/setup.php.
+        $exceptions->render(function (RuleViolation $e, Request $request) {
+            if ($e->status === 422) {
+                return $request->expectsJson()
+                    ? response()->json(['message' => __('setup.errors.'.$e->key), 'errors' => [$e->field => [__('setup.errors.'.$e->key)]]], 422)
+                    : back()->withErrors([$e->field => __('setup.errors.'.$e->key)])->withInput();
+            }
+
+            return $request->expectsJson()
+                ? response()->json(['message' => __('setup.errors.'.$e->key), 'code' => $e->key], $e->status)
+                : Inertia::render('error', ['status' => $e->status, 'reason' => $e->key])->toResponse($request)->setStatusCode($e->status);
+        });
+
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
@@ -45,7 +60,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($status === 419) {
                 return back()->with('status', 'session-expired');
             }
-            if (! in_array($status, [403, 404, 429, 500, 503], true) || ($status === 500 && config('app.debug'))) {
+            if (! in_array($status, [403, 404, 409, 429, 500, 503], true) || ($status === 500 && config('app.debug'))) {
                 return $response;
             }
 

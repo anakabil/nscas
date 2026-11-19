@@ -95,8 +95,11 @@ class AssessmentAccessTest extends TestCase
         $this->actingAs($admin)->get(route('assessments.module', [$this->assessmentA, 'scoring']))->assertForbidden();
         $this->actingAs($viewer)->get(route('assessments.module', [$this->assessmentA, 'respondents']))->assertForbidden();
         $this->actingAs($viewer)->get(route('assessments.module', [$this->assessmentA, 'dashboard']))->assertOk();
+        // Halaman tahap 1 sudah dibangun (fase R1): alamat modul yang sama membuka halaman kerjanya.
         $this->actingAs($lead)->get(route('assessments.module', [$this->assessmentA, 'setup/units']))->assertOk()
-            ->assertInertia(fn (Assert $page) => $page->component('assessments/module')->where('module.key', 'units')->where('module.stage', 1));
+            ->assertInertia(fn (Assert $page) => $page->component('setup/units')->where('canEdit', true));
+        $this->actingAs($lead)->get(route('assessments.module', [$this->assessmentA, 'participation']))->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('assessments/module')->where('module.key', 'participation')->where('module.stage', 2));
         $this->actingAs($lead)->get(route('assessments.module', [$this->assessmentA, 'tidak-ada']))->assertNotFound();
     }
 

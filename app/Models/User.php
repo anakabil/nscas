@@ -25,10 +25,12 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $remember_token
  * @property bool $is_super_admin
  * @property bool $is_active
+ * @property string|null $locale
+ * @property bool $must_change_password
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'locale'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -36,7 +38,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /** Nilai bawaan yang sama dengan basis data, agar model baru langsung konsisten sebelum dimuat ulang. */
-    protected $attributes = ['is_super_admin' => false, 'is_active' => true];
+    protected $attributes = ['is_super_admin' => false, 'is_active' => true, 'must_change_password' => false];
 
     /**
      * Get the attributes that should be cast.
@@ -51,6 +53,7 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
             'is_super_admin' => 'boolean',
             'is_active' => 'boolean',
+            'must_change_password' => 'boolean',
         ];
     }
 

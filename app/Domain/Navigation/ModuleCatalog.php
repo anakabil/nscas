@@ -27,13 +27,13 @@ final class ModuleCatalog
 
         return [
             // Tahap 1. Perencanaan
-            new Module('details', Stage::Planning, 'setup', $parameters, 'R1'),
-            new Module('units', Stage::Planning, 'setup/units', $parameters, 'R1'),
-            new Module('strata', Stage::Planning, 'setup/strata', $parameters, 'R1'),
-            new Module('parameters', Stage::Planning, 'setup/parameters', $parameters, 'R1'),
-            new Module('sampling', Stage::Planning, 'setup/sampling', $parameters, 'R1'),
-            new Module('team', Stage::Planning, 'setup/team', [Role::SuperAdmin, ...$assessors, Role::ClientAdmin], 'R1'),
-            new Module('kickoff', Stage::Planning, 'setup/kickoff', [...$assessors, Role::ClientAdmin], 'R1'),
+            new Module('details', Stage::Planning, 'setup', $parameters, 'R1', ready: true),
+            new Module('units', Stage::Planning, 'setup/units', $parameters, 'R1', ready: true),
+            new Module('strata', Stage::Planning, 'setup/strata', $parameters, 'R1', ready: true),
+            new Module('parameters', Stage::Planning, 'setup/parameters', $parameters, 'R1', ready: true),
+            new Module('sampling', Stage::Planning, 'setup/sampling', $parameters, 'R1', ready: true),
+            new Module('team', Stage::Planning, 'setup/team', [Role::SuperAdmin, ...$assessors, Role::ClientAdmin], 'R1', ready: true),
+            new Module('kickoff', Stage::Planning, 'setup/kickoff', [...$assessors, Role::ClientAdmin], 'R1', ready: true),
 
             // Tahap 2. Pengumpulan data
             new Module('respondents', Stage::DataCollection, 'respondents', $read(Resource::Roster), 'R2'),

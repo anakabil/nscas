@@ -13,16 +13,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $id
  * @property string $name
  * @property bool $is_operator
+ * @property string|null $legal_name
+ * @property string|null $sector
+ * @property bool $is_active
  */
-#[Fillable(['name', 'is_operator'])]
+#[Fillable(['name', 'is_operator', 'legal_name', 'sector', 'is_active'])]
 class Organization extends Model
 {
     /** @use HasFactory<OrganizationFactory> */
     use HasFactory, HasUlids;
 
+    protected $attributes = ['is_operator' => false, 'is_active' => true];
+
     protected function casts(): array
     {
-        return ['is_operator' => 'boolean'];
+        return ['is_operator' => 'boolean', 'is_active' => 'boolean'];
     }
 
     /** @return HasMany<Membership, $this> */

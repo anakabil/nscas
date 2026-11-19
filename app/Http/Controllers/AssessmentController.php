@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Domain\Navigation\ModuleCatalog;
 use App\Http\Presenters\AssessmentPresenter;
+use App\Http\Presenters\ProgressPresenter;
+use App\Services\SetupFactsCollector;
+use DateTimeImmutable;
 use App\Models\Assessment;
 use App\Support\AssessmentAccess;
 use Illuminate\Http\Request;
@@ -33,6 +36,7 @@ class AssessmentController extends Controller
 
         return Inertia::render('assessments/show', [
             'assessment' => AssessmentPresenter::menu($assessment, $roles),
+            'progress' => ProgressPresenter::for($assessment, $roles, SetupFactsCollector::for($assessment), new DateTimeImmutable('today')),
         ]);
     }
 
