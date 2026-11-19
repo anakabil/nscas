@@ -9,6 +9,7 @@ use App\Domain\Survey\SurveyRules;
 use App\Models\AccessToken;
 use App\Models\Assessment;
 use App\Models\Characteristic;
+use App\Models\EvidenceItem;
 use App\Models\Organization;
 use App\Models\SelfAssessment;
 use App\Models\SelfAssessmentAnswer;
@@ -60,6 +61,8 @@ final class SelfAssessmentForm
             'submittedAt' => $sa->submitted_at?->toIso8601String(),
             'minLength' => SelfAssessmentRules::JUSTIFICATION_MIN_LENGTH,
             'maxLength' => SelfAssessmentRules::JUSTIFICATION_MAX_LENGTH,
+            // Bukti versi terbaru yang belum dihapus (fase R5), untuk ditautkan per karakteristik.
+            'evidence' => $this->evidenceChoices($assessment),
             'characteristics' => $characteristics->map(function (Characteristic $c) use ($answers, $seed) {
                 $answer = $answers->get($c->id);
                 $statements = $c->statements->map(fn ($s) => ['id' => $s->id, 'level' => $s->level, 'text' => ['id' => $s->text_id, 'en' => $s->text_en]])->values()->all();
@@ -77,6 +80,27 @@ final class SelfAssessmentForm
                 ];
             })->all(),
         ];
+    }
+
+    /**
+     * Bukti versi terbaru yang belum dihapus, beserta karakteristik yang dipetakan, urut judul.
+     *
+     * @return list<array{id: string, title: string, version: int, characteristicIds: list<string>}>
+     */
+    private function evidenceChoices(Assessment $assessment): array
+    {
+        return EvidenceItem::where('assessment_id', $assessment->id)
+            ->whereNull('deleted_at')
+            ->whereNotExists(fn ($q) => $q->select(DB::raw(1))->from('evidence_items as newer')->whereColumn('newer.supersedes_id', 'evidence_items.id'))
+            ->with('links:id,evidence_item_id,characteristic_id')
+            ->orderBy('title')->orderBy('id')
+            ->get(['id', 'title', 'version'])
+            ->map(fn (EvidenceItem $e) => [
+                'id' => $e->id,
+                'title' => $e->title,
+                'version' => $e->version,
+                'characteristicIds' => $e->links->pluck('characteristic_id')->values()->all(),
+            ])->all();
     }
 
     /** @return array{ok: bool, status: int, code: string|null} */
@@ -123,8 +147,9 @@ final class SelfAssessmentForm
                 }
                 $level = $statement->level;
             }
-            // Bukti dokumen dibangun pada fase R5; sampai saat itu tidak ada bukti yang dapat ditautkan.
-            if ($evidenceIds !== []) {
+            // Bukti yang ditautkan harus milik asesmen ini dan belum dihapus (fase R5).
+            $evidenceIds = array_values(array_unique($evidenceIds));
+            if ($evidenceIds !== [] && EvidenceItem::where('assessment_id', $assessment->id)->whereNull('deleted_at')->whereIn('id', $evidenceIds)->count() !== count($evidenceIds)) {
                 return $this->fail(422, 'UNKNOWN_EVIDENCE');
             }
             $answer = SelfAssessmentAnswer::firstOrNew(['self_assessment_id' => $sa->id, 'characteristic_id' => $characteristic->id]);

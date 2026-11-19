@@ -4,6 +4,8 @@ import { survey as en } from '@/i18n/en/survey';
 import { survey as id } from '@/i18n/id/survey';
 import { deleteDraft, emptyDraft, loadDraft, saveDraft } from './draft-store';
 import type { SurveyDraft } from './draft-store';
+import { QuestionList } from './question-list';
+import type { ListGroup } from './question-list';
 
 // Aplikasi survei di peramban (docs/01 M3), dibawa dari v1 src/app/s/[token]/survey-app.tsx: satu karakteristik per
 // layar, kartu pernyataan tanpa nomor tingkat, draf di IndexedDB, dan pengiriman sekali di akhir yang diulang otomatis
@@ -119,6 +121,9 @@ function Survey({
     const t = useMemo(() => translator(lang), [lang]);
     const [send, setSend] = useState<SendState>('idle');
     const [online, setOnline] = useState(true);
+    // Daftar pertanyaan terbuka, dan apakah tombol utama kembali ke ringkasan setelah mengubah jawaban.
+    const [listOpen, setListOpen] = useState(false);
+    const [returnToReview, setReturnToReview] = useState(false);
     const retry = useRef(0);
     const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -137,14 +142,21 @@ function Survey({
     const step = Math.min(draft.step, screens.length - 1);
     const screen = screens[step] as Screen;
     const questionScreens = data.characteristics.length + data.climateScreens.length;
-    const position =
-        screen.kind === 'A'
-            ? screen.index + 1
-            : screen.kind === 'B'
-              ? data.characteristics.length + screen.index + 1
-              : screen.kind === 'review'
-                ? questionScreens
-                : 0;
+    const reviewStep = screens.length - 1;
+    const stepOf = (kind: 'A' | 'B' | 'stratum', index = 0) =>
+        screens.findIndex((s) => s.kind === kind && (kind === 'stratum' || (s as { index: number }).index === index));
+    const screenDone = (s: Screen): boolean =>
+        s.kind === 'A'
+            ? (data.characteristics[s.index] as { id: string }).id in draft.answers
+            : s.kind === 'B'
+              ? (data.climateScreens[s.index] ?? []).every((i) => draft.climate[i.id] !== undefined)
+              : s.kind === 'stratum'
+                ? draft.stratumId !== null
+                : true;
+    // Layar pertanyaan pertama yang belum lengkap; layar sesudahnya belum boleh dibuka dari daftar.
+    const firstOpen = screens.findIndex((s) => (s.kind === 'A' || s.kind === 'B' || s.kind === 'stratum') && !screenDone(s));
+    const complete = firstOpen === -1;
+    const answeredScreens = screens.filter((s) => (s.kind === 'A' || s.kind === 'B') && screenDone(s)).length;
 
     const update = useCallback(
         (patch: Partial<SurveyDraft>) => {
@@ -157,7 +169,13 @@ function Survey({
 
     const go = (to: number) => {
         update({ step: Math.max(0, Math.min(to, screens.length - 1)) });
+        setListOpen(false);
         window.scrollTo({ top: 0 });
+    };
+    // Berpindah dari daftar atau ringkasan: setelah semua terjawab, tombol utama membawa kembali ke ringkasan.
+    const jump = (to: number) => {
+        setReturnToReview(complete);
+        go(to);
     };
 
     useEffect(() => {
@@ -297,19 +315,76 @@ function Survey({
         );
     }
 
-    const answered =
-        screen.kind === 'A'
-            ? (data.characteristics[screen.index] as { id: string }).id in draft.answers
-            : screen.kind === 'B'
-              ? (data.climateScreens[screen.index] ?? []).every((i) => draft.climate[i.id] !== undefined)
-              : screen.kind === 'stratum'
-                ? draft.stratumId !== null
-                : true;
-    const remainingMinutes = Math.ceil(((questionScreens - position) * NOMINAL_MINUTES) / questionScreens);
-    const withNav = screen.kind === 'A' || screen.kind === 'B' || screen.kind === 'stratum';
-    const percent = Math.round((position / questionScreens) * 100);
-    const englishFallback =
-        lang === 'en' && (screen.kind === 'A' || screen.kind === 'B') && data.characteristics.some((c) => c.name.en === null);
+    const answered = screenDone(screen);
+    const questionScreen = screen.kind === 'A' || screen.kind === 'B';
+    const showProgress = questionScreen || screen.kind === 'review';
+    const remainingMinutes = Math.ceil(((questionScreens - answeredScreens) * NOMINAL_MINUTES) / questionScreens);
+    const withNav = !listOpen && (questionScreen || screen.kind === 'stratum');
+    const percent = Math.round((answeredScreens / questionScreens) * 100);
+    const toReview = returnToReview && complete && screen.kind !== 'review';
+    const englishFallback = lang === 'en' && questionScreen && data.characteristics.some((c) => c.name.en === null);
+    const scaleLabel = (value: number | undefined) => (value === undefined ? t('list.statuses.todo') : t(`scale.${value}`));
+
+    const listGroups: ListGroup[] = [
+        ...(data.needsStratum
+            ? [
+                  {
+                      key: 'stratum',
+                      title: '',
+                      items: [
+                          {
+                              key: 'stratum',
+                              label: t('list.stratum'),
+                              status: draft.stratumId ? ('done' as const) : ('todo' as const),
+                              statusText: draft.stratumId ? t('list.statuses.done') : t('list.statuses.todo'),
+                              current: screen.kind === 'stratum',
+                              onSelect: () => jump(stepOf('stratum')),
+                          },
+                      ],
+                  },
+              ]
+            : []),
+        {
+            key: 'A',
+            title: t('list.partA'),
+            items: data.characteristics.map((c, index) => {
+                const target = stepOf('A', index);
+                const value = draft.answers[c.id];
+                const done = c.id in draft.answers;
+                return {
+                    key: c.id,
+                    label: `${index + 1}. ${pick(c.name, lang)}`,
+                    status: done ? ('done' as const) : ('todo' as const),
+                    statusText: !done ? t('list.statuses.todo') : value === null ? t('partA.dontKnow') : t('list.statuses.done'),
+                    current: screen.kind === 'A' && screen.index === index,
+                    disabled: !complete && target > firstOpen,
+                    onSelect: () => jump(target),
+                };
+            }),
+        },
+        {
+            key: 'B',
+            title: t('list.partB'),
+            items: data.climateScreens.map((items, index) => {
+                const target = stepOf('B', index);
+                const count = items.filter((i) => draft.climate[i.id] !== undefined).length;
+                return {
+                    key: `b-${index}`,
+                    label: t('list.screen', { current: index + 1, count: items.length }),
+                    status: count === items.length ? ('done' as const) : count > 0 ? ('partial' as const) : ('todo' as const),
+                    statusText:
+                        count === items.length
+                            ? t('list.statuses.done')
+                            : count > 0
+                              ? t('list.statuses.partial', { answered: count, total: items.length })
+                              : t('list.statuses.todo'),
+                    current: screen.kind === 'B' && screen.index === index,
+                    disabled: !complete && target > firstOpen,
+                    onSelect: () => jump(target),
+                };
+            }),
+        },
+    ];
 
     return (
         <div className={`sv-page ${withNav ? 'sv-with-nav' : ''}`}>
@@ -319,7 +394,7 @@ function Survey({
                     {t('offline.banner')}
                 </p>
             ) : null}
-            {position > 0 ? (
+            {showProgress && !listOpen ? (
                 <div className="sv-progress">
                     <div
                         className="sv-bar"
@@ -331,15 +406,50 @@ function Survey({
                     >
                         <div style={{ width: `${percent}%` }} />
                     </div>
-                    <p className="sv-muted" data-testid="survey-remaining">
-                        {remainingMinutes >= 1 ? t('remaining', { minutes: remainingMinutes }) : t('remainingLessThanOne')}
-                    </p>
+                    <div className="sv-progress-row">
+                        <p className="sv-muted" data-testid="survey-remaining">
+                            {complete
+                                ? t('allAnswered')
+                                : remainingMinutes >= 1
+                                  ? t('remaining', { minutes: remainingMinutes })
+                                  : t('remainingLessThanOne')}
+                        </p>
+                        <button
+                            type="button"
+                            className="sv-link sv-small"
+                            onClick={() => setListOpen(true)}
+                            data-testid="survey-open-list"
+                        >
+                            {t('list.open')}
+                        </button>
+                    </div>
                 </div>
             ) : null}
             {englishFallback ? <p className="sv-muted">{t('contentInIndonesian')}</p> : null}
 
             <main className="sv-main">
-                {screen.kind === 'language' ? (
+                {listOpen ? (
+                    <QuestionList
+                        title={t('list.title')}
+                        closeLabel={t('list.close')}
+                        groups={listGroups}
+                        onClose={() => setListOpen(false)}
+                        footer={
+                            complete ? (
+                                <button
+                                    type="button"
+                                    className="sv-button sv-primary"
+                                    onClick={() => go(reviewStep)}
+                                    data-testid="question-list-review"
+                                >
+                                    {t('list.review')}
+                                </button>
+                            ) : null
+                        }
+                    />
+                ) : null}
+
+                {!listOpen && screen.kind === 'language' ? (
                     <section className="sv-stack" data-testid="survey-language">
                         <p className="sv-eyebrow">{data.organization}</p>
                         <h1>{t('heading')}</h1>
@@ -359,7 +469,7 @@ function Survey({
                     </section>
                 ) : null}
 
-                {screen.kind === 'consent' ? (
+                {!listOpen && screen.kind === 'consent' ? (
                     <section className="sv-stack">
                         <h1>{t('consent.title')}</h1>
                         <div className="sv-consent" data-testid="survey-consent">
@@ -388,7 +498,7 @@ function Survey({
                     </section>
                 ) : null}
 
-                {screen.kind === 'stratum' ? (
+                {!listOpen && screen.kind === 'stratum' ? (
                     <fieldset className="sv-stack">
                         <legend>
                             <h1>{t('stratum.title')}</h1>
@@ -407,12 +517,14 @@ function Survey({
                     </fieldset>
                 ) : null}
 
-                {screen.kind === 'intro' ? (
+                {!listOpen && screen.kind === 'intro' ? (
                     <section className="sv-stack">
                         <h1>{t('intro.title')}</h1>
-                        <p>{t('intro.partA', { count: data.characteristics.length })}</p>
-                        <p>{t('intro.partB', { count: data.climateScreens.flat().length })}</p>
-                        <p>{t('intro.honest')}</p>
+                        <ul className="sv-list">
+                            <li>{t('intro.partA', { count: data.characteristics.length })}</li>
+                            <li>{t('intro.partB', { count: data.climateScreens.flat().length })}</li>
+                            <li>{t('intro.change')}</li>
+                        </ul>
                         <p className="sv-muted">{t('intro.anonymous')}</p>
                         <button
                             type="button"
@@ -425,7 +537,7 @@ function Survey({
                     </section>
                 ) : null}
 
-                {screen.kind === 'A'
+                {!listOpen && screen.kind === 'A'
                     ? (() => {
                           const c = data.characteristics[screen.index] as SurveyData['characteristics'][number];
                           const value = c.id in draft.answers ? draft.answers[c.id] : undefined;
@@ -459,7 +571,7 @@ function Survey({
                       })()
                     : null}
 
-                {screen.kind === 'B' ? (
+                {!listOpen && screen.kind === 'B' ? (
                     <section key={screen.index} className="sv-stack" data-testid="survey-climate">
                         <div>
                             <p className="sv-eyebrow">
@@ -487,10 +599,62 @@ function Survey({
                     </section>
                 ) : null}
 
-                {screen.kind === 'review' ? (
+                {!listOpen && screen.kind === 'review' ? (
                     <section className="sv-stack" data-testid="survey-review">
                         <h1>{t('review.title')}</h1>
                         <p>{t('review.body')}</p>
+                        {data.needsStratum ? (
+                            <ReviewRow
+                                title={t('review.stratum')}
+                                value={data.strata.find((s) => s.id === draft.stratumId)?.name ?? t('list.statuses.todo')}
+                                editLabel={t('review.edit')}
+                                editAria={t('review.editLabel', { label: t('review.stratum') })}
+                                onEdit={() => jump(stepOf('stratum'))}
+                            />
+                        ) : null}
+                        <details className="sv-details" data-testid="survey-review-a">
+                            <summary>{t('review.partA', { count: data.characteristics.length })}</summary>
+                            <ol className="sv-qlist">
+                                {data.characteristics.map((c, index) => {
+                                    const value = draft.answers[c.id];
+                                    const chosen = c.statements.find((st) => st.id === value);
+                                    const label = `${index + 1}. ${pick(c.name, lang)}`;
+                                    return (
+                                        <li key={c.id}>
+                                            <ReviewRow
+                                                title={label}
+                                                value={chosen ? pick(chosen.text, lang) : t('partA.dontKnow')}
+                                                editLabel={t('review.edit')}
+                                                editAria={t('review.editLabel', { label })}
+                                                onEdit={() => jump(stepOf('A', index))}
+                                            />
+                                        </li>
+                                    );
+                                })}
+                            </ol>
+                        </details>
+                        <details className="sv-details" data-testid="survey-review-b">
+                            <summary>{t('review.partB', { count: data.climateScreens.flat().length })}</summary>
+                            <ol className="sv-qlist">
+                                {data.climateScreens.flatMap((items, index) =>
+                                    items.map((item) => {
+                                        const label = pick(item.text, lang);
+                                        return (
+                                            <li key={item.id}>
+                                                <ReviewRow
+                                                    title={label}
+                                                    value={scaleLabel(draft.climate[item.id])}
+                                                    editLabel={t('review.edit')}
+                                                    editAria={t('review.editLabel', { label })}
+                                                    onEdit={() => jump(stepOf('B', index))}
+                                                    strongValue
+                                                />
+                                            </li>
+                                        );
+                                    }),
+                                )}
+                            </ol>
+                        </details>
                         {send === 'waiting' ? (
                             <p role="status" className="sv-notice" data-testid="survey-waiting">
                                 {t('offline.waiting')}
@@ -500,7 +664,7 @@ function Survey({
                             type="button"
                             className="sv-button sv-primary"
                             onClick={() => void submit()}
-                            disabled={send === 'sending'}
+                            disabled={send === 'sending' || !complete}
                             data-testid="survey-submit"
                         >
                             {send === 'sending'
@@ -509,20 +673,12 @@ function Survey({
                                   ? t('offline.retry')
                                   : t('review.submit')}
                         </button>
-                        <button
-                            type="button"
-                            className="sv-button sv-secondary"
-                            onClick={() => go(step - 1)}
-                            disabled={send === 'sending'}
-                        >
-                            {t('nav.back')}
-                        </button>
                     </section>
                 ) : null}
             </main>
 
             {withNav ? (
-                <nav className="sv-nav" aria-label={t('progress', { percent })}>
+                <nav className="sv-nav" aria-label={t('nav.label')}>
                     <div>
                         <button type="button" className="sv-button sv-secondary" onClick={() => go(step - 1)}>
                             {t('nav.back')}
@@ -530,12 +686,19 @@ function Survey({
                         <button
                             type="button"
                             className="sv-button sv-primary"
-                            onClick={() => go(step + 1)}
+                            onClick={() => {
+                                if (toReview) {
+                                    setReturnToReview(false);
+                                    go(reviewStep);
+                                } else {
+                                    go(step + 1);
+                                }
+                            }}
                             disabled={!answered}
                             aria-describedby={answered ? undefined : 'answer-first'}
                             data-testid="survey-next"
                         >
-                            {t('nav.next')}
+                            {toReview ? t('nav.toReview') : t('nav.next')}
                         </button>
                     </div>
                     {!answered ? (
@@ -572,6 +735,34 @@ function Choice({
             <span aria-hidden className="sv-dot" />
             <span>{children}</span>
         </label>
+    );
+}
+
+function ReviewRow({
+    title,
+    value,
+    editLabel,
+    editAria,
+    onEdit,
+    strongValue,
+}: {
+    title: string;
+    value: string;
+    editLabel: string;
+    editAria: string;
+    onEdit: () => void;
+    strongValue?: boolean;
+}) {
+    return (
+        <div className="sv-review-row" data-testid="survey-review-row">
+            <div>
+                <p className="sv-strong sv-clamp">{title}</p>
+                <p className={strongValue ? 'sv-answer sv-strong' : 'sv-answer sv-clamp'}>{value}</p>
+            </div>
+            <button type="button" className="sv-link sv-small" aria-label={editAria} onClick={onEdit}>
+                {editLabel}
+            </button>
+        </div>
     );
 }
 

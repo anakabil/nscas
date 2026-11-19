@@ -11,8 +11,10 @@ void createInertiaApp({
     title: (title) => (title ? `${title} | ${appName}` : appName),
     layout: (name) => {
         switch (true) {
-            // Halaman galat berdiri sendiri: juga tampil untuk pengunjung yang belum masuk.
+            // Halaman galat berdiri sendiri: juga tampil untuk pengunjung yang belum masuk. Halaman kamera observasi
+            // memakai kerangka ringkas sendiri agar jendela bidik leluasa di telepon.
             case name === 'error':
+            case name === 'observations/capture':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;

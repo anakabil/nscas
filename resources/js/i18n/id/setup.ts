@@ -62,7 +62,7 @@ export const setup = {
         chooseOrganization: 'Pilih organisasi',
     },
     units: {
-        intro: 'Susun struktur unit secara bertingkat, misalnya kantor pusat, divisi, lalu proyek. Koordinat dan radius proyek dipakai untuk observasi digital di lapangan.',
+        intro: 'Susun unit bertingkat, misalnya kantor pusat, divisi, lalu proyek. Koordinat dan radius proyek dipakai untuk observasi lapangan.',
         name: 'Nama unit',
         type: 'Jenis',
         parent: 'Unit induk',
@@ -82,7 +82,7 @@ export const setup = {
         afterLock: 'Unit masih dapat ditambah setelah parameter dikunci, misalnya bila ada proyek baru selama pengumpulan data.',
     },
     strata: {
-        intro: 'Lima strata bawaan disiapkan dari instrumen. Isi jumlah pekerja setiap strata, yaitu rata-rata jumlah pekerja dalam setahun, termasuk pekerja alih daya, harian, dan subkontraktor.',
+        intro: 'Isi jumlah pekerja setiap strata, yaitu rata-rata setahun, termasuk pekerja alih daya, harian, dan subkontraktor.',
         code: 'Kode',
         name: 'Nama strata',
         group: 'Kelompok',
@@ -100,7 +100,7 @@ export const setup = {
         sampleNote: 'Mengubah strata atau jumlah pekerja membatalkan hasil kalkulator sampel yang sudah disimpan.',
     },
     parameters: {
-        intro: 'Parameter bawaan berasal dari versi instrumen. Sesuaikan bila perlu sebelum asesmen dikunci. Setelah dikunci, nilai di halaman ini dibaca dari salinan yang tersimpan saat penguncian.',
+        intro: 'Sesuaikan bila perlu sebelum asesmen dikunci. Setelah dikunci, nilai tidak dapat diubah.',
         layerWeights: 'Bobot lapisan',
         perception: 'Persepsi',
         evidence: 'Bukti objektif',
@@ -198,7 +198,7 @@ export const setup = {
         roundingNote: 'Semua hasil dibulatkan ke atas.',
     },
     team: {
-        intro: 'Asesor utama dan asesor ditugaskan per asesmen. Hanya staf Nusa Safety yang aktif yang dapat ditugaskan. Setiap karakteristik kelak dinilai oleh dua asesor, sehingga tim paling sedikit dua orang.',
+        intro: 'Hanya staf Nusa Safety yang aktif dapat ditugaskan. Tim paling sedikit dua asesor karena setiap karakteristik dinilai dua orang.',
         name: 'Nama',
         email: 'Surel',
         role: 'Peran dalam asesmen',
@@ -216,7 +216,7 @@ export const setup = {
             'Anggota yang ditugaskan setelah kalibrasi perlu dicatat kehadirannya pada kalibrasi berikutnya di halaman Komunikasi awal.',
     },
     kickoff: {
-        intro: 'Kesiapan organisasi dan tim sebelum pengukuran: pimpinan menyatakan komitmen, pekerja menerima penjelasan tujuan dan jaminan kerahasiaan, dan seluruh asesor menyamakan cara menilai.',
+        intro: 'Sebelum pengukuran: pimpinan menyatakan komitmen, pekerja menerima penjelasan dan jaminan kerahasiaan, dan asesor menyamakan cara menilai.',
         leadershipTitle: 'Komitmen pimpinan',
         leadershipHint:
             'Pernyataan pimpinan tertinggi dalam lingkup asesmen bahwa pengukuran didukung dan hasilnya akan ditindaklanjuti.',
@@ -353,7 +353,7 @@ export const setup = {
         empty: 'Belum ada pengguna di organisasi ini.',
         addTitle: 'Tambah pengguna',
         addIntro:
-            'Pengguna baru menerima kata sandi sementara yang wajib diganti saat masuk pertama. Sampaikan kata sandi itu secara langsung kepada pengguna, bukan lewat grup pesan.',
+            'Kata sandi sementara wajib diganti saat masuk pertama. Sampaikan langsung kepada pengguna, bukan lewat grup pesan.',
         rolesHint: 'Pilih peran secara sadar. Tidak ada peran yang terpilih otomatis.',
         addSubmit: 'Tambah pengguna',
         editTitle: 'Ubah pengguna',

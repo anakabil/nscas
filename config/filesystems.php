@@ -56,7 +56,8 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
+            // Galat penyimpanan objek dilaporkan, bukan diam-diam menghasilkan false (bukti dan observasi, fase R5).
+            'throw' => true,
             'report' => false,
         ],
 

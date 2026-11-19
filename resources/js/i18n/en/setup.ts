@@ -61,7 +61,7 @@ export const setup = {
         chooseOrganization: 'Choose an organisation',
     },
     units: {
-        intro: 'Arrange units in a hierarchy, for example head office, divisions, then projects. Project coordinates and radius are used for digital field observation.',
+        intro: 'Arrange units in a hierarchy, for example head office, divisions, then projects. Project coordinates and radius are used for field observation.',
         name: 'Unit name',
         type: 'Type',
         parent: 'Parent unit',
@@ -82,7 +82,7 @@ export const setup = {
             'Units can still be added after the parameters are locked, for example when a new project starts during data collection.',
     },
     strata: {
-        intro: 'Five default strata are prepared from the instrument. Fill in the number of workers in each stratum, namely the average number of workers over a year, including outsourced, daily, and subcontractor workers.',
+        intro: 'Fill in the number of workers in each stratum, as a yearly average, including outsourced, daily, and subcontractor workers.',
         code: 'Code',
         name: 'Stratum name',
         group: 'Group',
@@ -100,7 +100,7 @@ export const setup = {
         sampleNote: 'Changing strata or numbers of workers invalidates the saved sample calculator result.',
     },
     parameters: {
-        intro: 'Default parameters come from the instrument version. Adjust them if needed before the assessment is locked. After locking, the values on this page are read from the copy stored at the time of locking.',
+        intro: 'Adjust them if needed before the assessment is locked. After locking, the values cannot be changed.',
         layerWeights: 'Layer weights',
         perception: 'Perception',
         evidence: 'Objective evidence',
@@ -199,7 +199,7 @@ export const setup = {
         roundingNote: 'All results are rounded up.',
     },
     team: {
-        intro: 'The lead assessor and assessors are assigned per assessment. Only active Nusa Safety staff can be assigned. Each characteristic will be rated by two assessors, so the team needs at least two people.',
+        intro: 'Only active Nusa Safety staff can be assigned. The team needs at least two assessors because each characteristic is rated by two people.',
         name: 'Name',
         email: 'Email',
         role: 'Role in the assessment',
@@ -217,7 +217,7 @@ export const setup = {
             'Members assigned after calibration need their attendance recorded at the next calibration on the Kick-off page.',
     },
     kickoff: {
-        intro: 'Organisational and team readiness before measurement: leadership states its commitment, workers receive an explanation of the purpose and the confidentiality guarantee, and all assessors align how they rate.',
+        intro: 'Before measurement: leadership states its commitment, workers receive an explanation and the confidentiality guarantee, and assessors align how they rate.',
         leadershipTitle: 'Leadership commitment',
         leadershipHint:
             'A statement by the most senior leader within the assessment scope that the measurement is supported and its results will be followed up.',
@@ -354,7 +354,7 @@ export const setup = {
         empty: 'There are no users in this organisation yet.',
         addTitle: 'Add a user',
         addIntro:
-            'New users receive a temporary password that must be changed at first sign-in. Give the password to the user directly, not through a messaging group.',
+            'The temporary password must be changed at first sign-in. Give it to the user directly, not through a messaging group.',
         rolesHint: 'Choose roles deliberately. No role is selected automatically.',
         addSubmit: 'Add user',
         editTitle: 'Edit user',

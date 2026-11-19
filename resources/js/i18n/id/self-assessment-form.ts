@@ -4,32 +4,43 @@
 export const selfAssessmentForm = {
     heading: 'Penilaian mandiri budaya keselamatan dan kesehatan kerja (K3)',
     identified: {
-        title: 'Penilaian mandiri ini teridentifikasi',
-        body: 'Nama dan jabatan Anda tersimpan bersama jawaban. Penilaian mandiri menjadi bahan pertanggungjawaban: asesor Nusa Safety menelusuri alasan dan bukti yang Anda berikan, lalu mengonfirmasinya dalam wawancara atau diskusi. Karena itu penilaian ini tidak anonim, berbeda dengan survei pekerja.',
-        access: 'Jawaban dapat dibaca asesor Nusa Safety dan administrator asesmen di organisasi Anda, dan tidak digabung dengan jawaban survei pekerja.',
+        title: 'Penilaian ini tidak anonim',
+        body: 'Nama dan jabatan Anda tersimpan bersama jawaban. Asesor Nusa Safety akan menelusuri alasan dan bukti Anda, lalu mengonfirmasinya dalam wawancara atau diskusi.',
+        access: 'Jawaban dapat dibaca asesor Nusa Safety dan administrator asesmen organisasi Anda, terpisah dari survei pekerja.',
     },
     profile: {
         title: 'Identitas pengisi',
         name: 'Nama lengkap',
         position: 'Jabatan',
-        save: 'Simpan identitas',
-        saved: 'Identitas tersimpan.',
     },
     start: 'Mulai penilaian',
+    resume: 'Lanjutkan penilaian',
+    progress: '{done} dari {total} karakteristik lengkap',
+    progressShort: '{done} dari {total} lengkap',
+    evidenceVersion: 'versi {version}',
     characteristic: {
         label: 'Karakteristik {current} dari {total}',
-        instruction: 'Pilih satu pernyataan yang paling menggambarkan keadaan organisasi Anda saat ini.',
+        instruction: 'Pilih satu pernyataan yang paling sesuai dengan keadaan organisasi Anda saat ini.',
         justification: 'Alasan',
-        justificationHint:
-            'Jelaskan dasar pilihan Anda, misalnya praktik, data, atau kejadian yang mendukung. Minimal {min} karakter.',
+        justificationHint: 'Tuliskan dasar pilihan Anda, misalnya praktik, data, atau kejadian. Minimal {min} karakter.',
         counter: '{count} dari minimal {min} karakter',
         evidence: 'Bukti pendukung',
-        noEvidence:
-            'Belum ada bukti yang ditautkan. Anda tetap dapat melanjutkan, tetapi asesor akan menilai tanpa bukti pendukung.',
-        noEvidenceUploaded:
-            'Bukti dokumen dapat ditautkan setelah modul Bukti tersedia. Jelaskan dasar penilaian Anda pada kolom alasan.',
+        evidenceHint: 'Centang bukti yang mendukung pilihan Anda.',
+        evidenceNone: 'Belum ada bukti di modul Bukti. Jelaskan dasar penilaian Anda pada kolom alasan.',
+        evidenceNoneMapped: 'Belum ada bukti yang dipetakan ke karakteristik ini.',
+        evidenceOther: 'Bukti lain ({count})',
     },
-    jump: 'Lompat ke karakteristik',
+    list: {
+        open: 'Daftar karakteristik',
+        title: 'Daftar karakteristik',
+        close: 'Tutup',
+        statuses: {
+            done: 'Lengkap',
+            partial: 'Belum lengkap',
+            todo: 'Belum diisi',
+        },
+        review: 'Periksa dan kirim',
+    },
     nav: {
         previous: 'Sebelumnya',
         saveNext: 'Simpan dan lanjut',
@@ -40,15 +51,17 @@ export const selfAssessmentForm = {
     review: {
         title: 'Periksa sebelum mengirim',
         complete: 'Semua karakteristik sudah lengkap.',
-        incomplete: '{count} karakteristik belum lengkap:',
+        incomplete: '{count} karakteristik belum lengkap. Ketuk Ubah untuk melengkapinya.',
         reasons: {
             LEVEL: 'belum memilih pernyataan',
             JUSTIFICATION: 'alasan kurang dari {min} karakter',
         },
+        withoutEvidence: '{count} karakteristik belum ditautkan ke bukti. Asesor akan menilainya tanpa bukti pendukung.',
         warning: 'Setelah dikirim, jawaban terkunci dan tidak dapat diubah.',
         submit: 'Kirim penilaian mandiri',
         submitting: 'Mengirim',
         edit: 'Ubah',
+        editLabel: 'Ubah {label}',
     },
     submitted: {
         title: 'Penilaian mandiri sudah dikirim',

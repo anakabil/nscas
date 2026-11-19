@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Characteristic;
 use App\Models\ClimateDimension;
+use App\Models\EvidenceRequirement;
 use App\Models\InstrumentVersion;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,10 @@ class InstrumentVersionSeeder extends Seeder
                     'text_id' => $level['statement'],
                     'text_en' => $level['statementEn'] ?? null,
                 ]);
+            }
+            // Butir daftar periksa bukti (fase R5, docs/01 M5).
+            foreach (array_values($c['evidenceExamples'] ?? []) as $i => $description) {
+                EvidenceRequirement::create(['characteristic_id' => $characteristic->id, 'position' => $i + 1, 'description' => (string) $description]);
             }
         }
     }

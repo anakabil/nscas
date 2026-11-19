@@ -32,6 +32,12 @@ class Characteristic extends Model
         return ['is_contextual' => 'boolean', 'position' => 'integer', 'target_respondents' => 'array', 'evidence_examples' => 'array'];
     }
 
+    /** @return HasMany<EvidenceRequirement, $this> */
+    public function evidenceRequirements(): HasMany
+    {
+        return $this->hasMany(EvidenceRequirement::class)->orderBy('position');
+    }
+
     /** @return HasMany<LevelStatement, $this> */
     public function statements(): HasMany
     {

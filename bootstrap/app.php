@@ -60,7 +60,8 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($status === 419) {
                 return back()->with('status', 'session-expired');
             }
-            if (! in_array($status, [403, 404, 409, 429, 500, 503], true) || ($status === 500 && config('app.debug'))) {
+            // Permintaan JSON (unggah bukti dan observasi, survei) menerima galat JSON apa adanya.
+            if ($request->expectsJson() || ! in_array($status, [403, 404, 409, 429, 500, 503], true) || ($status === 500 && config('app.debug'))) {
                 return $response;
             }
 

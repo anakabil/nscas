@@ -4,31 +4,43 @@
 export const selfAssessmentForm = {
     heading: 'Occupational safety and health (OSH) culture self-assessment',
     identified: {
-        title: 'This self-assessment is identified',
-        body: 'Your name and position are stored with your answers. The self-assessment is a matter of accountability: Nusa Safety assessors trace the reasons and evidence you give and confirm them in interviews or discussions. It is therefore not anonymous, unlike the worker survey.',
-        access: 'Your answers can be read by Nusa Safety assessors and the assessment administrator in your organisation, and are not combined with the worker survey answers.',
+        title: 'This assessment is not anonymous',
+        body: 'Your name and position are stored with your answers. Nusa Safety assessors will trace your reasons and evidence and confirm them in interviews or discussions.',
+        access: 'Your answers can be read by Nusa Safety assessors and the assessment administrator in your organisation, separately from the worker survey.',
     },
     profile: {
         title: 'About you',
         name: 'Full name',
         position: 'Position',
-        save: 'Save details',
-        saved: 'Details saved.',
     },
     start: 'Start the assessment',
+    resume: 'Continue the assessment',
+    progress: '{done} of {total} characteristics complete',
+    progressShort: '{done} of {total} complete',
+    evidenceVersion: 'version {version}',
     characteristic: {
         label: 'Characteristic {current} of {total}',
-        instruction: 'Choose the one statement that best describes your organisation today.',
+        instruction: 'Choose the one statement that best matches your organisation today.',
         justification: 'Reason',
-        justificationHint:
-            'Explain the basis for your choice, for example practices, data, or events that support it. At least {min} characters.',
+        justificationHint: 'Write the basis for your choice, for example practices, data, or events. At least {min} characters.',
         counter: '{count} of at least {min} characters',
         evidence: 'Supporting evidence',
-        noEvidence: 'No evidence linked yet. You can continue, but the assessors will rate this without supporting evidence.',
-        noEvidenceUploaded:
-            'Documents can be linked once the Evidence module is available. Explain the basis of your rating in the reason field.',
+        evidenceHint: 'Tick the evidence that supports your choice.',
+        evidenceNone: 'There is no evidence in the Evidence module yet. Explain the basis of your rating in the reason field.',
+        evidenceNoneMapped: 'No evidence is mapped to this characteristic yet.',
+        evidenceOther: 'Other evidence ({count})',
     },
-    jump: 'Go to characteristic',
+    list: {
+        open: 'Characteristic list',
+        title: 'Characteristic list',
+        close: 'Close',
+        statuses: {
+            done: 'Complete',
+            partial: 'Incomplete',
+            todo: 'Not started',
+        },
+        review: 'Review and send',
+    },
     nav: {
         previous: 'Previous',
         saveNext: 'Save and continue',
@@ -39,15 +51,18 @@ export const selfAssessmentForm = {
     review: {
         title: 'Review before sending',
         complete: 'All characteristics are complete.',
-        incomplete: '{count} characteristics are not complete:',
+        incomplete: '{count} characteristics are not complete. Tap Edit to complete them.',
         reasons: {
             LEVEL: 'no statement chosen',
             JUSTIFICATION: 'reason shorter than {min} characters',
         },
+        withoutEvidence:
+            '{count} characteristics are not linked to evidence. The assessors will rate them without supporting evidence.',
         warning: 'Once sent, the answers are locked and cannot be changed.',
         submit: 'Send self-assessment',
         submitting: 'Sending',
         edit: 'Edit',
+        editLabel: 'Edit {label}',
     },
     submitted: {
         title: 'Self-assessment sent',

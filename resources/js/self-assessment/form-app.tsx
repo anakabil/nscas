@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { selfAssessmentForm as en } from '@/i18n/en/self-assessment-form';
 import { selfAssessmentForm as id } from '@/i18n/id/self-assessment-form';
+import { QuestionList } from '../survey/question-list';
+import type { ListGroup } from '../survey/question-list';
 
 // Formulir penilaian mandiri (docs/01 M4), dibawa dari v1 src/app/sa/[token]/self-assessment-form.tsx: satu
 // karakteristik per layar, draf disimpan ke server setiap kali berpindah layar, lalu dikirim sekali setelah semua
@@ -11,6 +13,7 @@ type Text = { id: string; en: string | null };
 type Tree = { [key: string]: string | Tree };
 type Answer = { statementId: string | null; justification: string; evidenceIds: string[] };
 type Characteristic = { id: string; code: string; name: Text; statements: { id: string; text: Text }[]; answer: Answer };
+type Evidence = { id: string; title: string; version: number; characteristicIds: string[] };
 
 export type FormData = {
     organization: string;
@@ -19,6 +22,7 @@ export type FormData = {
     submittedAt: string | null;
     minLength: number;
     maxLength: number;
+    evidence: Evidence[];
     characteristics: Characteristic[];
     profileUrl: string;
     answerUrl: string;
@@ -88,6 +92,10 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
     );
     const [saved, setSaved] = useState<Record<string, Answer>>(answers);
     const [profile, setProfile] = useState(data.profile);
+    const [savedProfile, setSavedProfile] = useState(data.profile);
+    const [listOpen, setListOpen] = useState(false);
+    // Setelah berpindah dari ringkasan, tombol utama membawa kembali ke ringkasan.
+    const [returnToReview, setReturnToReview] = useState(false);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
@@ -162,7 +170,13 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
             return true;
         }
         setBusy(true);
-        const result = await call(data.answerUrl, 'PUT', { characteristicId: current.id, ...answer });
+        // Bukti yang sudah dihapus dari modul Bukti tidak ikut dikirim.
+        const available = new Set(data.evidence.map((e) => e.id));
+        const result = await call(data.answerUrl, 'PUT', {
+            characteristicId: current.id,
+            ...answer,
+            evidenceIds: answer.evidenceIds.filter((id) => available.has(id)),
+        });
         setBusy(false);
         if (!result.ok) {
             setError(result.error ?? 'INVALID_INPUT');
@@ -179,9 +193,21 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
         if (!(await persist())) {
             return;
         }
+        setListOpen(false);
         setIndex(next);
         window.scrollTo({ top: 0 });
     };
+
+    const statusOf = (c: Characteristic): 'done' | 'partial' | 'todo' => {
+        const a = answers[c.id] as Answer;
+        if (a.statementId && length(a.justification) >= data.minLength) {
+            return 'done';
+        }
+        return a.statementId || a.justification.trim() !== '' ? 'partial' : 'todo';
+    };
+    const doneCount = data.characteristics.filter((c) => statusOf(c) === 'done').length;
+    const firstIncomplete = data.characteristics.findIndex((c) => statusOf(c) !== 'done');
+    const started = data.characteristics.some((c) => statusOf(c) !== 'todo');
 
     const missing = data.characteristics
         .map((c) => {
@@ -194,6 +220,68 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
         })
         .filter((m) => m.reasons.length > 0);
 
+    const availableEvidence = new Set(data.evidence.map((e) => e.id));
+    const withoutEvidence = data.characteristics.filter(
+        (c) => !(answers[c.id] as Answer).evidenceIds.some((id) => availableEvidence.has(id)),
+    ).length;
+
+    const jump = (to: number) => {
+        setReturnToReview(index === total);
+        void goTo(to);
+    };
+
+    const listGroups: ListGroup[] = [
+        {
+            key: 'characteristics',
+            title: '',
+            items: data.characteristics.map((c, i) => {
+                const status = statusOf(c);
+                return {
+                    key: c.id,
+                    label: `${c.code} ${pick(c.name, lang)}`,
+                    status,
+                    statusText: t(`list.statuses.${status}`),
+                    current: i === index,
+                    onSelect: () => jump(i),
+                };
+            }),
+        },
+    ];
+
+    const progress = (
+        <div className="sv-stack sv-tight">
+            <div
+                className="sv-bar"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={total}
+                aria-valuenow={doneCount}
+                aria-label={t('progress', { done: doneCount, total })}
+            >
+                <div style={{ width: `${(doneCount / total) * 100}%` }} />
+            </div>
+            <div className="sv-progress-row">
+                <p className="sv-muted" data-testid="sa-progress">
+                    {t('progressShort', { done: doneCount, total })}
+                </p>
+                <button
+                    type="button"
+                    className="sv-link sv-small"
+                    onClick={() => setListOpen(true)}
+                    disabled={busy}
+                    data-testid="sa-open-list"
+                >
+                    {t('list.open')}
+                </button>
+            </div>
+            {notice ? (
+                <p role="status" className="sv-ok-text sv-note" data-testid="sa-notice">
+                    {notice}
+                </p>
+            ) : null}
+        </div>
+    );
+
     const update = (patch: Partial<Answer>) => {
         if (!current) {
             return;
@@ -202,25 +290,67 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
         setNotice(null);
     };
 
+    const startForm = async () => {
+        setError(null);
+        if (profile.name !== savedProfile.name || profile.position !== savedProfile.position) {
+            setBusy(true);
+            const result = await call(data.profileUrl, 'PUT', profile);
+            setBusy(false);
+            if (!result.ok) {
+                setError(result.error ?? 'INVALID_INPUT');
+                return;
+            }
+            setSavedProfile(profile);
+        }
+        void goTo(firstIncomplete === -1 ? total : firstIncomplete);
+    };
+
+    const submit = async () => {
+        setBusy(true);
+        setError(null);
+        const result = await call(data.submitUrl, 'POST');
+        setBusy(false);
+        if (result.ok) {
+            setSubmittedAt(new Date().toISOString());
+            window.scrollTo({ top: 0 });
+            return;
+        }
+        setError(result.error ?? 'INVALID_INPUT');
+    };
+
     return (
         <div className="sv-page">
             {header}
             <main className="sv-main">
                 <div className="sv-stack">
-                    <p className="sv-eyebrow">{data.organization}</p>
                     {error ? (
                         <p role="alert" className="sv-alert" data-testid="sa-error">
                             {t(`errors.${error}`)}
                         </p>
                     ) : null}
-                    {notice ? (
-                        <p role="status" className="sv-ok" data-testid="sa-notice">
-                            {notice}
-                        </p>
+                    {listOpen ? (
+                        <QuestionList
+                            title={t('list.title')}
+                            closeLabel={t('list.close')}
+                            groups={listGroups}
+                            onClose={() => setListOpen(false)}
+                            footer={
+                                <button
+                                    type="button"
+                                    className="sv-button sv-primary"
+                                    onClick={() => jump(total)}
+                                    disabled={busy}
+                                    data-testid="question-list-review"
+                                >
+                                    {t('list.review')}
+                                </button>
+                            }
+                        />
                     ) : null}
 
-                    {index === -1 ? (
+                    {!listOpen && index === -1 ? (
                         <>
+                            <p className="sv-eyebrow">{data.organization}</p>
                             <h1>{t('heading')}</h1>
                             <section className="sv-identified" data-testid="sa-identified">
                                 <h2>{t('identified.title')}</h2>
@@ -229,17 +359,9 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
                             </section>
                             <form
                                 className="sv-stack"
-                                onSubmit={async (e) => {
+                                onSubmit={(e) => {
                                     e.preventDefault();
-                                    setError(null);
-                                    setBusy(true);
-                                    const result = await call(data.profileUrl, 'PUT', profile);
-                                    setBusy(false);
-                                    if (result.ok) {
-                                        setNotice(t('profile.saved'));
-                                    } else {
-                                        setError(result.error ?? 'INVALID_INPUT');
-                                    }
+                                    void startForm();
                                 }}
                             >
                                 <h2>{t('profile.title')}</h2>
@@ -249,6 +371,7 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
                                         className="sv-input"
                                         value={profile.name}
                                         onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                                        autoComplete="name"
                                         required
                                         minLength={2}
                                         maxLength={200}
@@ -260,125 +383,125 @@ export function SelfAssessmentApp({ data }: { data: FormData }) {
                                         className="sv-input"
                                         value={profile.position}
                                         onChange={(e) => setProfile({ ...profile, position: e.target.value })}
+                                        autoComplete="organization-title"
                                         required
                                         minLength={2}
                                         maxLength={200}
                                     />
                                 </label>
-                                <button type="submit" className="sv-button sv-secondary" disabled={busy}>
-                                    {t('profile.save')}
-                                </button>
-                                <button
-                                    type="button"
-                                    className="sv-button sv-primary"
-                                    onClick={() => void goTo(0)}
-                                    disabled={busy}
-                                    data-testid="sa-start"
-                                >
-                                    {t('start')}
+                                {started ? <p className="sv-muted">{t('progress', { done: doneCount, total })}</p> : null}
+                                <button type="submit" className="sv-button sv-primary" disabled={busy} data-testid="sa-start">
+                                    {busy ? t('nav.saving') : started ? t('resume') : t('start')}
                                 </button>
                             </form>
                         </>
                     ) : null}
 
-                    {current ? (
-                        <CharacteristicStep
-                            key={current.id}
-                            t={t}
-                            lang={lang}
-                            characteristic={current}
-                            characteristics={data.characteristics}
-                            position={index + 1}
-                            total={total}
-                            minLength={data.minLength}
-                            maxLength={data.maxLength}
-                            answer={answers[current.id] as Answer}
-                            onChange={update}
-                            onJump={(i) => void goTo(i)}
-                        />
+                    {!listOpen && current ? (
+                        <>
+                            {progress}
+                            <CharacteristicStep
+                                key={current.id}
+                                t={t}
+                                lang={lang}
+                                characteristic={current}
+                                position={index + 1}
+                                total={total}
+                                minLength={data.minLength}
+                                maxLength={data.maxLength}
+                                answer={answers[current.id] as Answer}
+                                evidence={data.evidence}
+                                onChange={update}
+                            />
+                            <div className="sv-row">
+                                <button
+                                    type="button"
+                                    className="sv-button sv-secondary"
+                                    onClick={() => void goTo(index - 1)}
+                                    disabled={busy}
+                                >
+                                    {t('nav.previous')}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="sv-button sv-primary"
+                                    onClick={() => {
+                                        const target = returnToReview || index + 1 >= total ? total : index + 1;
+                                        setReturnToReview(false);
+                                        void goTo(target);
+                                    }}
+                                    disabled={busy}
+                                    data-testid="sa-next"
+                                >
+                                    {busy
+                                        ? t('nav.saving')
+                                        : returnToReview || index + 1 >= total
+                                          ? t('nav.saveReview')
+                                          : t('nav.saveNext')}
+                                </button>
+                            </div>
+                        </>
                     ) : null}
 
-                    {current ? (
-                        <div className="sv-row">
-                            <button
-                                type="button"
-                                className="sv-button sv-secondary"
-                                onClick={() => void goTo(index - 1)}
-                                disabled={busy}
-                            >
-                                {t('nav.previous')}
-                            </button>
-                            <button
-                                type="button"
-                                className="sv-button sv-primary"
-                                onClick={() => void goTo(index + 1)}
-                                disabled={busy}
-                                data-testid="sa-next"
-                            >
-                                {busy ? t('nav.saving') : index + 1 < total ? t('nav.saveNext') : t('nav.saveReview')}
-                            </button>
-                        </div>
-                    ) : null}
-
-                    {index === total ? (
+                    {!listOpen && index === total ? (
                         <section className="sv-stack" data-testid="sa-review">
+                            {progress}
                             <h1>{t('review.title')}</h1>
                             {missing.length === 0 ? (
                                 <p className="sv-ok">{t('review.complete')}</p>
                             ) : (
-                                <>
-                                    <p className="sv-alert" data-testid="sa-missing" data-count={missing.length}>
-                                        {t('review.incomplete', { count: missing.length })}
-                                    </p>
-                                    <ul className="sv-list">
-                                        {missing.map((m) => (
-                                            <li key={m.characteristic.id}>
-                                                <span className="sv-strong">
-                                                    {m.characteristic.code} {pick(m.characteristic.name, lang)}:
-                                                </span>{' '}
-                                                {m.reasons
-                                                    .map((r) => t(`review.reasons.${r}`, { min: data.minLength }))
-                                                    .join(', ')}{' '}
-                                                <button
-                                                    type="button"
-                                                    className="sv-link sv-inline"
-                                                    onClick={() => void goTo(data.characteristics.indexOf(m.characteristic))}
-                                                >
-                                                    {t('review.edit')}
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </>
+                                <p className="sv-alert" data-testid="sa-missing" data-count={missing.length}>
+                                    {t('review.incomplete', { count: missing.length })}
+                                </p>
                             )}
+                            <ol className="sv-qlist">
+                                {data.characteristics.map((c, i) => {
+                                    const a = answers[c.id] as Answer;
+                                    const chosen = c.statements.find((st) => st.id === a.statementId);
+                                    const reasons = missing.find((m) => m.characteristic.id === c.id)?.reasons ?? [];
+                                    const label = `${c.code} ${pick(c.name, lang)}`;
+                                    return (
+                                        <li key={c.id} className="sv-review-row sv-review-card" data-testid="sa-review-row">
+                                            <div>
+                                                <p className="sv-strong">{label}</p>
+                                                {chosen ? <p className="sv-answer sv-clamp">{pick(chosen.text, lang)}</p> : null}
+                                                {statusOf(c) === 'todo' ? (
+                                                    <p className="sv-warn-text">{t('list.statuses.todo')}</p>
+                                                ) : reasons.length > 0 ? (
+                                                    <p className="sv-warn-text">
+                                                        {reasons
+                                                            .map((r) => t(`review.reasons.${r}`, { min: data.minLength }))
+                                                            .join(', ')}
+                                                    </p>
+                                                ) : null}
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className="sv-link sv-small"
+                                                aria-label={t('review.editLabel', { label })}
+                                                onClick={() => jump(i)}
+                                                disabled={busy}
+                                            >
+                                                {t('review.edit')}
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ol>
+                            {data.evidence.length > 0 && withoutEvidence > 0 ? (
+                                <p className="sv-muted" data-testid="sa-without-evidence">
+                                    {t('review.withoutEvidence', { count: withoutEvidence })}
+                                </p>
+                            ) : null}
                             <p>{t('review.warning')}</p>
                             <button
                                 type="button"
                                 className="sv-button sv-primary"
                                 disabled={busy || missing.length > 0}
                                 data-testid="sa-submit"
-                                onClick={async () => {
-                                    setBusy(true);
-                                    setError(null);
-                                    const result = await call(data.submitUrl, 'POST');
-                                    setBusy(false);
-                                    if (result.ok) {
-                                        setSubmittedAt(new Date().toISOString());
-                                        window.scrollTo({ top: 0 });
-                                        return;
-                                    }
-                                    setError(result.error ?? 'INVALID_INPUT');
-                                }}
+                                onClick={() => void submit()}
                             >
                                 {busy ? t('review.submitting') : t('review.submit')}
-                            </button>
-                            <button
-                                type="button"
-                                className="sv-button sv-secondary"
-                                onClick={() => void goTo(total - 1)}
-                                disabled={busy}
-                            >
-                                {t('nav.previous')}
                             </button>
                         </section>
                     ) : null}
@@ -392,40 +515,28 @@ function CharacteristicStep({
     t,
     lang,
     characteristic,
-    characteristics,
     position,
     total,
     minLength,
     maxLength,
     answer,
+    evidence,
     onChange,
-    onJump,
 }: {
     t: ReturnType<typeof translator>;
     lang: Lang;
     characteristic: Characteristic;
-    characteristics: Characteristic[];
     position: number;
     total: number;
     minLength: number;
     maxLength: number;
     answer: Answer;
+    evidence: Evidence[];
     onChange: (patch: Partial<Answer>) => void;
-    onJump: (index: number) => void;
 }) {
     const count = length(answer.justification);
     return (
         <div className="sv-stack" data-testid="sa-characteristic" data-code={characteristic.code}>
-            <label className="sv-field">
-                <span>{t('jump')}</span>
-                <select className="sv-input" value={position - 1} onChange={(e) => onJump(Number(e.target.value))}>
-                    {characteristics.map((c, i) => (
-                        <option key={c.id} value={i}>
-                            {c.code} {pick(c.name, lang)}
-                        </option>
-                    ))}
-                </select>
-            </label>
             <fieldset className="sv-stack">
                 <legend>
                     <span className="sv-eyebrow" data-testid="sa-position">
@@ -464,10 +575,72 @@ function CharacteristicStep({
                     {t('characteristic.counter', { count, min: minLength })}
                 </span>
             </label>
-            <section className="sv-stack">
-                <h2>{t('characteristic.evidence')}</h2>
-                <p className="sv-muted">{t('characteristic.noEvidenceUploaded')}</p>
-            </section>
+            <EvidencePicker t={t} characteristic={characteristic} evidence={evidence} answer={answer} onChange={onChange} />
         </div>
+    );
+}
+
+/** Bukti dari modul Bukti yang dapat ditautkan; bukti yang dipetakan ke karakteristik ini tampil lebih dulu. */
+function EvidencePicker({
+    t,
+    characteristic,
+    evidence,
+    answer,
+    onChange,
+}: {
+    t: ReturnType<typeof translator>;
+    characteristic: Characteristic;
+    evidence: Evidence[];
+    answer: Answer;
+    onChange: (patch: Partial<Answer>) => void;
+}) {
+    const mapped = evidence.filter((e) => e.characteristicIds.includes(characteristic.id));
+    const others = evidence.filter((e) => !e.characteristicIds.includes(characteristic.id));
+    const toggle = (id: string) =>
+        onChange({
+            evidenceIds: answer.evidenceIds.includes(id)
+                ? answer.evidenceIds.filter((x) => x !== id)
+                : [...answer.evidenceIds, id],
+        });
+    const list = (items: Evidence[]) => (
+        <div className="sv-stack sv-tight">
+            {items.map((e) => (
+                <label key={e.id} className={`sv-card sv-card-compact ${answer.evidenceIds.includes(e.id) ? 'sv-checked' : ''}`}>
+                    <input
+                        type="checkbox"
+                        className="sv-check"
+                        checked={answer.evidenceIds.includes(e.id)}
+                        onChange={() => toggle(e.id)}
+                        data-testid="sa-evidence"
+                    />
+                    <span>
+                        {e.title}
+                        {e.version > 1 ? (
+                            <span className="sv-muted"> ({t('evidenceVersion', { version: e.version })})</span>
+                        ) : null}
+                    </span>
+                </label>
+            ))}
+        </div>
+    );
+
+    return (
+        <section className="sv-stack">
+            <h2>{t('characteristic.evidence')}</h2>
+            {evidence.length === 0 ? (
+                <p className="sv-muted">{t('characteristic.evidenceNone')}</p>
+            ) : (
+                <>
+                    <p className="sv-muted">{t('characteristic.evidenceHint')}</p>
+                    {mapped.length > 0 ? list(mapped) : <p className="sv-muted">{t('characteristic.evidenceNoneMapped')}</p>}
+                    {others.length > 0 ? (
+                        <details className="sv-details">
+                            <summary>{t('characteristic.evidenceOther', { count: others.length })}</summary>
+                            <div className="sv-details-body">{list(others)}</div>
+                        </details>
+                    ) : null}
+                </>
+            )}
+        </section>
     );
 }

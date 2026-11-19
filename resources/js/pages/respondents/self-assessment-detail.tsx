@@ -19,6 +19,7 @@ type Detail = {
         statement: string | null;
         justification: string | null;
         evidenceCount: number;
+        evidence: { title: string; version: number }[];
     }[];
 };
 
@@ -71,9 +72,15 @@ export default function SelfAssessmentDetail(props: CollectionCommon & { detail:
                         ) : null}
                         <p className="text-xs text-muted-foreground">
                             {t('selfAssessments.detail.evidence')}:{' '}
-                            {r.evidenceCount === 0
+                            {r.evidence.length === 0
                                 ? t('selfAssessments.detail.noEvidence')
-                                : t('selfAssessments.detail.evidenceCount', { count: r.evidenceCount })}
+                                : r.evidence
+                                      .map((e) =>
+                                          e.version > 1
+                                              ? `${e.title} (${t('selfAssessments.detail.version', { version: e.version })})`
+                                              : e.title,
+                                      )
+                                      .join('; ')}
                         </p>
                     </Panel>
                 ))}

@@ -7,6 +7,7 @@ use App\Domain\Respondents\SurveyWindow;
 use App\Models\AccessToken;
 use App\Models\Assessment;
 use App\Models\Characteristic;
+use App\Models\EvidenceItem;
 use App\Models\SelfAssessment;
 use App\Models\Unit;
 use App\Services\Respondents\SurveyLinks;
@@ -111,6 +112,10 @@ final class SelfAssessmentAdmin
         $sa = SelfAssessment::where('assessment_id', $assessment->id)->with(['unit:id,name', 'answers'])->findOrFail($id);
         $answers = $sa->answers->keyBy('characteristic_id');
         $characteristics = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->with('statements')->get();
+        // Judul bukti yang ditautkan (fase R5); bukti yang kemudian dihapus tetap disebut agar jejak penilaian utuh.
+        $evidence = EvidenceItem::where('assessment_id', $assessment->id)
+            ->whereIn('id', $sa->answers->flatMap(fn ($a) => $a->evidence_ids ?? [])->unique()->values()->all())
+            ->get(['id', 'title', 'version'])->keyBy('id');
 
         return [
             'id' => $sa->id,
@@ -119,7 +124,7 @@ final class SelfAssessmentAdmin
             'unit' => $sa->unit->name,
             'status' => $sa->status,
             'submittedAt' => $sa->submitted_at?->toIso8601String(),
-            'rows' => $characteristics->map(function (Characteristic $c) use ($answers) {
+            'rows' => $characteristics->map(function (Characteristic $c) use ($answers, $evidence) {
                 $answer = $answers->get($c->id);
                 $level = $answer?->level;
 
@@ -130,6 +135,10 @@ final class SelfAssessmentAdmin
                     'statement' => $level === null ? null : $c->statements->firstWhere('level', $level)?->text_id,
                     'justification' => $answer?->justification ?: null,
                     'evidenceCount' => count($answer?->evidence_ids ?? []),
+                    'evidence' => array_values(array_filter(array_map(
+                        fn (string $id) => $evidence->has($id) ? ['title' => $evidence[$id]->title, 'version' => $evidence[$id]->version] : null,
+                        $answer?->evidence_ids ?? [],
+                    ))),
                 ];
             })->all(),
         ];

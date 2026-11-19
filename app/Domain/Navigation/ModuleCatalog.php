@@ -40,8 +40,8 @@ final class ModuleCatalog
             new Module('qr', Stage::DataCollection, 'respondents/qr', [Role::LeadAssessor, Role::ClientAdmin], 'R2', ready: true),
             new Module('participation', Stage::DataCollection, 'participation', $read(Resource::TokensAndParticipation), 'R2', ready: true),
             new Module('selfAssessments', Stage::DataCollection, 'self-assessments', $read(Resource::SelfAssessments), 'R4', ready: true),
-            new Module('evidence', Stage::DataCollection, 'evidence', $read(Resource::EvidenceAndObservations), 'R5'),
-            new Module('observations', Stage::DataCollection, 'observations', $read(Resource::EvidenceAndObservations), 'R5'),
+            new Module('evidence', Stage::DataCollection, 'evidence', $read(Resource::EvidenceAndObservations), 'R5', ready: true),
+            new Module('observations', Stage::DataCollection, 'observations', $read(Resource::EvidenceAndObservations), 'R5', ready: true),
 
             // Tahap 3. Validasi dan triangulasi
             new Module('dataQuality', Stage::Validation, 'data-quality', $read(Resource::RawSurveyAnswers), 'R6'),

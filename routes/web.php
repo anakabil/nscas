@@ -3,8 +3,11 @@
 use App\Http\Controllers\AccountAreaController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AssessmentTransitionController;
+use App\Http\Controllers\Evidence\EvidenceController;
+use App\Http\Controllers\Files\UploadRelayController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewAssessmentController;
+use App\Http\Controllers\Observations\ObservationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\Respondents\ParticipationController;
 use App\Http\Controllers\Respondents\QrController;
@@ -113,7 +116,26 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::get('self-assessments/{selfAssessment}', [SelfAssessmentController::class, 'show'])->whereAlphaNumeric('selfAssessment')->name('self-assessments.show');
         Route::post('self-assessments/{selfAssessment}/revoke', [SelfAssessmentController::class, 'revoke'])->whereAlphaNumeric('selfAssessment')->name('self-assessments.revoke');
         Route::post('self-assessments/{selfAssessment}/reissue', [SelfAssessmentController::class, 'reissue'])->whereAlphaNumeric('selfAssessment')->name('self-assessments.reissue');
+
+        // Fase R5: bukti dokumen (docs/01 M5).
+        Route::get('evidence', [EvidenceController::class, 'index'])->name('evidence.index');
+        Route::post('evidence/uploads', [EvidenceController::class, 'grant'])->middleware('throttle:60,1')->name('evidence.uploads');
+        Route::post('evidence', [EvidenceController::class, 'store'])->middleware('throttle:60,1')->name('evidence.store');
+        Route::put('evidence/{item}/links', [EvidenceController::class, 'updateLinks'])->whereAlphaNumeric('item')->name('evidence.links');
+        Route::delete('evidence/{item}', [EvidenceController::class, 'destroy'])->whereAlphaNumeric('item')->name('evidence.destroy');
+        Route::get('evidence/{item}/download', [EvidenceController::class, 'download'])->whereAlphaNumeric('item')->name('evidence.download');
+
+        // Fase R5: observasi lapangan (docs/01 M6).
+        Route::get('observations', [ObservationController::class, 'index'])->name('observations.index');
+        Route::post('observations/windows', [ObservationController::class, 'storeWindow'])->name('observations.windows.store');
+        Route::get('observations/captures/{capture}/file', [ObservationController::class, 'file'])->whereAlphaNumeric('capture')->name('observations.captures.file');
+        Route::get('observations/{window}/capture', [ObservationController::class, 'capture'])->whereAlphaNumeric('window')->name('observations.capture');
+        Route::post('observations/{window}/captures/uploads', [ObservationController::class, 'grant'])->whereAlphaNumeric('window')->middleware('throttle:60,1')->name('observations.captures.uploads');
+        Route::post('observations/{window}/captures', [ObservationController::class, 'store'])->whereAlphaNumeric('window')->middleware('throttle:60,1')->name('observations.captures.store');
     });
+
+    // Penerima unggahan saat penyimpanan memakai disk lokal; dengan disk s3 peramban mengunggah langsung (fase R5).
+    Route::put('uploads/{upload}', UploadRelayController::class)->whereAlphaNumeric('upload')->middleware('throttle:60,1')->name('uploads.relay');
 
     Route::get('assessments/{assessment}/{path}', [AssessmentController::class, 'module'])
         ->where('path', '[a-z][a-z-]*(/[a-z-]+)?')

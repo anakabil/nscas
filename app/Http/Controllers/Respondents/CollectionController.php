@@ -12,13 +12,21 @@ use App\Http\Presenters\AssessmentPresenter;
 use App\Models\Assessment;
 
 /**
- * Dasar halaman tahap 2: responden, kode QR, partisipasi (fase R2), dan penilaian mandiri (fase R4). Hak buka mengikuti katalog modul (matriks
+ * Dasar halaman tahap 2: responden, kode QR, partisipasi (fase R2), penilaian mandiri (fase R4), serta bukti dan
+ * observasi (fase R5). Hak buka mengikuti katalog modul (matriks
  * docs/04); hak ubah diperiksa terpisah pada setiap aksi. Distribusi terbuka setelah parameter dikunci dan selama
  * pengumpulan data.
  */
 abstract class CollectionController extends SetupController
 {
-    private const TABS = ['respondents' => 'respondents', 'qr' => 'respondents/qr', 'participation' => 'participation', 'selfAssessments' => 'self-assessments'];
+    private const TABS = [
+        'respondents' => 'respondents',
+        'qr' => 'respondents/qr',
+        'participation' => 'participation',
+        'selfAssessments' => 'self-assessments',
+        'evidence' => 'evidence',
+        'observations' => 'observations',
+    ];
 
     /**
      * @param  list<Role>  $roles

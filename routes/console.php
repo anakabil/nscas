@@ -14,3 +14,5 @@ Schedule::command('nscas:participation-snapshot')->dailyAt('23:00')->timezone('A
 // Fase R3 (docs/02 bagian 4): urutan fisik baris jawaban diacak setiap malam sebelum cadangan pukul 01.30 WIB (deploy/digitalocean), agar
 // tabel dan cadangan tidak mengikuti urutan pengiriman.
 Schedule::command('nscas:shuffle-survey-rows')->dailyAt('00:45')->timezone('Asia/Jakarta')->withoutOverlapping();
+// Fase R5 (docs/02 bagian 5): izin unggah yang tidak diselesaikan dihapus beserta berkasnya.
+Schedule::command('nscas:prune-uploads')->hourly()->withoutOverlapping();
