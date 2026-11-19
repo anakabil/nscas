@@ -1,62 +1,44 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+/.phpunit.cache
+/bootstrap/ssr
 /node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/resources/js/actions
+/resources/js/routes
+/resources/js/wayfinder
+/vendor
 .DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Codespaces uji coba: log dan berkas akun berisi kata sandi (docs/09)
-/.codespace/
-
-# env files: rahasia tidak pernah dikomit, hanya .env.example
 .env
-.env.*
-!.env.example
-!.env.production.example
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# prisma client hasil generate
-/src/generated/
-
-# playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-
-# data uji e2e (memuat rahasia TOTP uji)
-/tests/e2e/.fixtures.json
-
-# token survei demo untuk uji beban (scripts/demo.ts --tokens-out)
-/.demo/
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/auth.json
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+/.agents
+/.amp
+/.claude
+/.codex
+/.cursor
+/.factory
+/.grok
+/.junie
+/.kiro
+/.pi
+/.mcp.json
+/AGENTS.md
+/boost.json
+/opencode.json
+/opencode.jsonc
