@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0, R1, dan R2)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R3)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -70,10 +70,14 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `unit_qr_codes` | Kode QR per unit, strata opsional, hash kode, batas penerbitan, aktif atau tidak | R2. Kode baru untuk unit dan strata yang sama menonaktifkan kode lama |
 | `unit_assignments` | Penugasan koordinator unit pada unit asesmen | R2. Cakupan koordinator: unit yang ditugaskan beserta unit di bawahnya |
 | `participation_snapshots` | Jumlah mentah populasi, token, dan selesai per hari | R2. Diambil pukul 23.00 WIB; ambang sel diterapkan saat ditampilkan |
+| `characteristics`, `level_statements` | Karakteristik per versi instrumen beserta lima pernyataan berjenjang (teks Indonesia, teks Inggris bila tersedia) | R3. Disalin sekali per versi dari `instrument_versions.content`; tidak diubah setelah dipakai |
+| `climate_dimensions`, `climate_items` | Dimensi dan butir skala iklim, termasuk penanda butir terbalik | R3. Dari `seed/skala-iklim-draf.json` (status draf) |
+| `survey_responses` | Asesmen, unit, strata, versi instrumen, bahasa, tanggal kirim (WIB, tanpa jam), rentang durasi, tanda mutu, status dikeluarkan dari analisis | R3. Anonim (aturan 2): UUID versi 4 acak, tanpa cap waktu, tanpa kolom atau kunci asing ke token dan daftar responden |
+| `characteristic_answers`, `climate_answers` | Tingkat per karakteristik (kosong untuk Tidak tahu) dan nilai 1 sampai 5 per butir iklim | R3. UUID versi 4 acak; urutan fisik baris diacak setiap malam (`nscas:shuffle-survey-rows`) |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
-Isi instrumen (aspek, karakteristik, pernyataan) pada fase R1 disimpan sebagai JSON di `instrument_versions.content`. Tabel ternormalisasinya dibuat pada fase R3, saat jawaban survei memerlukan kunci asing ke karakteristik.
+Isi instrumen disimpan sebagai JSON di `instrument_versions.content` (fase R1) dan disalin ke tabel ternormalisasi pada fase R3, karena jawaban survei merujuk karakteristik dan butir iklim dengan kunci asing.
 
 ### 3.2 Tabel yang dibangun pada fase berikutnya
 
@@ -81,7 +85,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R3 | `aspects`, `characteristics`, `statements`, `survey_responses`, `survey_answers` |
 | R4 | `self_assessments`, `self_assessment_answers` |
 | R5 | `evidence_items`, `evidence_versions`, `observation_windows`, `observations` |
 | R6 | `validation_sessions`, `validation_ratings`, `validation_plans` |
@@ -92,13 +95,13 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 ## 4. Desain anonimitas survei
 
-Tujuan: tidak seorang pun, termasuk Nusa Safety, dapat mengetahui jawaban seorang responden tertentu. Rancangan ini dibawa utuh dari versi 1 dan wajib dibuktikan dengan tes pada fase R3.
+Tujuan: tidak seorang pun, termasuk Nusa Safety, dapat mengetahui jawaban seorang responden tertentu. Rancangan ini dibawa utuh dari versi 1 dan dibuktikan dengan tes fase R3 (`tests/Feature/Survey/SurveyAnonymityTest.php` dan `SurveySubmissionTest.php`). Urutan fisik baris jawaban di basis data juga diacak setiap malam sebelum cadangan dibuat, agar urutan pengiriman tidak dapat dicocokkan dengan waktu selesai token.
 
 1. Token mentah hanya ada di tautan. Basis data menyimpan hash token.
 2. Saat survei dikirim, dalam satu transaksi: token ditandai selesai, dan jawaban baru dibuat dengan unit dan strata yang disalin dari token, tanpa kolom apa pun yang merujuk token atau daftar responden.
 3. Jawaban hanya menyimpan tanggal kirim tanpa jam, dan durasi dalam rentang, agar tidak dapat dicocokkan dengan waktu selesai token.
 4. Waktu selesai, waktu buka pertama, dan waktu persetujuan pada token dibulatkan ke jam. Pengiriman survei tidak menulis jejak audit.
-5. Alamat IP tidak disimpan untuk rute survei. Pembatas laju memakai hash alamat IP berumur pendek di memori.
+5. Alamat IP tidak disimpan untuk rute survei: rute itu tidak memulai sesi, tidak menulis log aplikasi, dan tidak menulis jejak audit. Pembatas laju memakai HMAC alamat IP dengan kunci aplikasi dan tanggal, sehingga tidak dapat dibalik dan berganti setiap hari; penghitungnya hanya hidup satu menit di cache aplikasi.
 6. Draf jawaban hanya disimpan di perangkat responden, bukan di server.
 7. Unit dengan kurang dari 5 respons digabungkan ke unit induknya pada setiap tampilan dan ekspor.
 8. Log aplikasi dan log server web tidak mencatat isi permintaan maupun alamat lengkap rute survei.

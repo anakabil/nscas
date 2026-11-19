@@ -74,4 +74,9 @@ class SurveyAnonymityTest extends TestCase
             $this->assertDoesNotMatchRegularExpression('/Audit::|Log::|logger\(|info\(|console\.(log|info|warn|error|debug)/', $content, $file);
         }
     }
+
+    public function test_physical_row_order_can_be_rewritten_in_random_key_order(): void
+    {
+        $this->artisan('nscas:shuffle-survey-rows')->assertSuccessful();
+    }
 }

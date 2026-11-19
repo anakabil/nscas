@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Domain\Access\Role;
 use App\Domain\Setup\EditableParameters;
+use App\Domain\Survey\SurveyRules;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Models\AccessToken;
 use App\Models\Assessment;
@@ -11,6 +12,7 @@ use App\Models\InstrumentVersion;
 use App\Models\Organization;
 use App\Models\ParticipationSnapshot;
 use App\Models\RosterEntry;
+use App\Models\SurveyResponse;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\AssessmentSetup;
@@ -20,6 +22,7 @@ use Carbon\CarbonImmutable;
 use Database\Seeders\InstrumentVersionSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -110,10 +113,14 @@ class DemoDataCommand extends Command
         }
 
         // Fase R2: daftar responden, token, kode QR, dan partisipasi untuk asesmen yang sudah melewati penguncian.
+        // Fase R3: satu jawaban survei anonim untuk setiap token contoh yang sudah selesai.
         foreach ($plan as [$organization, $name, $status]) {
             $assessment = Assessment::where('organization_id', $organization->id)->where('name', $name)->first();
             if ($assessment !== null && $status !== AssessmentStatus::Draft && $assessment->roster()->doesntExist()) {
                 $this->respondents($assessment, $accounts['CLIENT_ADMIN'], $accounts['UNIT_COORDINATOR'], $status);
+            }
+            if ($assessment !== null && $status !== AssessmentStatus::Draft && ! SurveyResponse::where('assessment_id', $assessment->id)->exists()) {
+                $this->answers($assessment);
             }
         }
         Auth::forgetUser();
@@ -265,5 +272,56 @@ class DemoDataCommand extends Command
         }
         $assessment->forceFill(['status' => $final])->save();
         Auth::setUser(User::where('email', 'asesor.utama@contoh.test')->firstOrFail());
+    }
+
+    /**
+     * Jawaban survei fiktif untuk token contoh yang selesai, dengan pola yang masuk akal untuk dianalisis pada fase
+     * berikutnya: manajemen menilai sedikit lebih tinggi daripada pekerja lapangan (kesenjangan persepsi), sebagian
+     * kecil "Tidak tahu", dan durasi kebanyakan 10 sampai 20 menit. Angka acak memakai benih tetap agar hasilnya sama
+     * setiap kali data contoh dibuat.
+     */
+    private function answers(Assessment $assessment): void
+    {
+        mt_srand(crc32($assessment->name));
+        $characteristics = DB::table('characteristics')->where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->pluck('id');
+        $items = DB::table('climate_items')->join('climate_dimensions', 'climate_dimensions.id', '=', 'climate_items.climate_dimension_id')
+            ->where('climate_dimensions.instrument_version_id', $assessment->instrument_version_id)->pluck('climate_items.reverse_coded', 'climate_items.id');
+        $groups = $assessment->strata()->pluck('group', 'id')->map(fn ($g) => $g instanceof \BackedEnum ? $g->value : $g);
+        $base = ['MANAGEMENT' => 3.4, 'SUPERVISORY' => 3.0, 'FIELD' => 2.6];
+        $buckets = ['FROM_5_TO_10', 'FROM_10_TO_15', 'FROM_10_TO_15', 'FROM_15_TO_20', 'FROM_15_TO_20', 'OVER_20'];
+        $clamp = fn (float $v): int => (int) max(1, min(5, round($v)));
+
+        $tokens = AccessToken::where('assessment_id', $assessment->id)->whereNotNull('completed_at')->whereNotNull('stratum_id')->get(['unit_id', 'stratum_id', 'completed_at']);
+        foreach ($tokens->chunk(200) as $chunk) {
+            $responses = $levels = $climate = [];
+            foreach ($chunk as $token) {
+                $id = SurveyResponse::randomId();
+                $mean = $base[$groups[$token->stratum_id] ?? 'FIELD'] ?? 2.8;
+                $person = (mt_rand() / mt_getrandmax() - 0.5) * 1.2;
+                $responses[] = [
+                    'id' => $id, 'assessment_id' => $assessment->id, 'unit_id' => $token->unit_id, 'stratum_id' => $token->stratum_id,
+                    'instrument_version_id' => $assessment->instrument_version_id, 'language' => mt_rand(1, 20) === 1 ? 'en' : 'id',
+                    'submitted_on' => SurveyRules::wibDate($token->completed_at), 'duration_bucket' => $buckets[mt_rand(0, 5)],
+                    'quality_flags' => '[]',
+                ];
+                foreach ($characteristics as $k => $characteristicId) {
+                    $noise = (mt_rand() / mt_getrandmax() - 0.5) * 1.6 + ($k % 3 - 1) * 0.3;
+                    $levels[] = ['id' => SurveyResponse::randomId(), 'survey_response_id' => $id, 'characteristic_id' => $characteristicId,
+                        'level' => mt_rand(1, 14) === 1 ? null : $clamp($mean + $person + $noise)];
+                }
+                foreach ($items as $itemId => $reverse) {
+                    $agree = $mean + 0.6 + $person + (mt_rand() / mt_getrandmax() - 0.5) * 1.8;
+                    $climate[] = ['id' => SurveyResponse::randomId(), 'survey_response_id' => $id, 'climate_item_id' => $itemId,
+                        'value' => $clamp($reverse ? 6 - $agree : $agree)];
+                }
+            }
+            DB::table('survey_responses')->insert($responses);
+            foreach (array_chunk($levels, 2000) as $rows) {
+                DB::table('characteristic_answers')->insert($rows);
+            }
+            foreach (array_chunk($climate, 2000) as $rows) {
+                DB::table('climate_answers')->insert($rows);
+            }
+        }
     }
 }

@@ -45,7 +45,7 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 
 ## 4. Yang dapat dicoba pada versi ini
 
-Versi 2 saat ini berada di akhir fase R2 (responden, undangan, kode QR, dan partisipasi). Yang sudah dapat dicoba:
+Versi 2 saat ini berada di akhir fase R3 (survei responden). Yang sudah dapat dicoba:
 
 1. Halaman masuk, pilihan bahasa Indonesia dan Inggris (tersimpan di akun), dan pengaturan ulang kata sandi melalui kotak surat uji.
 2. Dasbor progres pengukuran di beranda, untuk akun pengelola sistem, asesor utama, asesor, dan administrator klien. Dasbor diperbarui otomatis setiap 60 detik.
@@ -57,10 +57,11 @@ Versi 2 saat ini berada di akhir fase R2 (responden, undangan, kode QR, dan part
    - Kode QR, dengan akun administrator klien: buat kode untuk satu unit, cetak lembar A4, lalu pindai kode dari telepon untuk melihat halaman responden.
    - Partisipasi, dengan akun mana pun yang berhak: tabel per strata dan unit, angka di bawah 5 yang disembunyikan, dan perkembangan harian.
    - Akun koordinator unit hanya melihat Divisi Gedung beserta proyek di bawahnya.
-7. Pengingat survei dapat dicoba tanpa menunggu pukul 08.00 WIB dengan perintah `php artisan nscas:survey-reminders` di terminal; surelnya masuk ke kotak surat uji.
-8. Tampilan di telepon. Buka alamat yang sama dari peramban telepon.
+7. Survei responden di telepon: dengan akun administrator klien, terbitkan ulang tautan seorang responden di halaman Responden (tombol putar ulang), lalu buka tautannya di peramban telepon; atau pindai kode QR yang baru dibuat. Isi survei sampai selesai. Coba juga mematikan sambungan data sebelum menekan Kirim: jawaban terkirim otomatis begitu sambungan kembali, dan angka di halaman Partisipasi bertambah. Tautan yang sama tidak dapat dipakai dua kali.
+8. Pengingat survei dapat dicoba tanpa menunggu pukul 08.00 WIB dengan perintah `php artisan nscas:survey-reminders` di terminal; surelnya masuk ke kotak surat uji.
+9. Tampilan konsol di telepon. Buka alamat yang sama dari peramban telepon.
 
-Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R3 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang. Tautan survei sudah dapat dibuka, tetapi formulir survei baru dibangun pada fase R3.
+Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R4 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
 
 Di lingkungan ini verifikasi dua langkah tidak diwajibkan, agar keenam akun contoh dapat langsung dicoba. Untuk mencoba alur wajibnya, buka berkas `.env` di codespace, ubah `NSCAS_ENFORCE_TWO_FACTOR=false` menjadi `true`, lalu jalankan `bash .devcontainer/start.sh --restart` di terminal. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator. Di produksi nilai ini wajib `true`.
 

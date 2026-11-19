@@ -100,8 +100,9 @@ Akun contoh
   koordinator@contoh.test     Koordinator unit, PT Konstruksi Contoh
   eksekutif@contoh.test       Pemirsa eksekutif, PT Konstruksi Contoh
 
-Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Tahap 1 (perencanaan) serta halaman Responden,
-Kode QR, dan Partisipasi sudah dapat dipakai. Halaman yang bertanda fase R3 dan seterusnya baru berisi penjelasan.
+Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Tahap 1 (perencanaan), halaman Responden,
+Kode QR, dan Partisipasi, serta survei responden di telepon sudah dapat dipakai. Halaman yang bertanda fase R4 dan
+seterusnya baru berisi penjelasan.
 Undangan dan pengingat survei tidak terkirim ke luar; bukalah kotak surat uji (Mailpit) untuk melihatnya.
 EOF
   )

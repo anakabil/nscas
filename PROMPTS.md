@@ -17,8 +17,8 @@ Cara membangun ulang sebuah modul:
 | R0 | Fondasi: Laravel, autentikasi, peran, isolasi tenant, jejak audit, alur enam tahap, mesin penilaian, beranda, tema, logo, paket penempatan | Semua | Selesai |
 | R1 | Administrasi dan konfigurasi asesmen, dasbor progres di beranda | 1 | Selesai |
 | R2 | Responden, undangan, kode QR, partisipasi | 2 | Selesai |
-| R3 | Survei responden | 2 | Berikutnya |
-| R4 | Penilaian mandiri manajemen | 2 | |
+| R3 | Survei responden | 2 | Selesai |
+| R4 | Penilaian mandiri manajemen | 2 | Berikutnya |
 | R5 | Bukti dokumen dan observasi lapangan | 2 | |
 | R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | |
 | R7 | Penilaian asesor dan rapat panel | 4 | |
@@ -54,7 +54,7 @@ Dasbor dibangun pada fase R1 dengan ukuran tahap perencanaan, kesiapan menuju st
 | Fase | Ukuran yang ditambahkan |
 |---|---|
 | R2 (selesai) | Responden terdaftar dan token terbit; survei selesai dibanding sasaran kalkulator sampel; jumlah strata di bawah ambang partisipasi minimum |
-| R3 | Survei masuk per hari; angka per unit diperbarui per jam dan disembunyikan bila kurang dari 5 orang (aturan 3) |
+| R3 (selesai) | Survei selesai dihitung dari token secara langsung pada dasbor dan halaman Partisipasi, per unit dan strata, dengan jumlah di bawah ambang sel disembunyikan; tren harian dari cuplikan pukul 23.00 WIB |
 | R4 | Penilaian mandiri manajemen yang selesai |
 | R5 | Dokumen bukti per tema; proyek yang sudah diobservasi dibanding sasaran |
 | R6 | Wawancara dan diskusi kelompok terarah dibanding sasaran; status mutu data |
@@ -75,7 +75,10 @@ Rujukan versi 1: `src/lib/respondents`, `src/app/(console)/assessments/[id]/resp
 5. Transisi LOCKED ke DATA_COLLECTION.
 6. Daftar responden mencakup semua orang yang bekerja di bawah tanggung jawab organisasi: pekerja sendiri, alih daya, harian, dan subkontraktor. Jumlah pekerja `M` untuk kalkulator sampel memakai rata-rata setahun (`docs/13` bagian 3.5 dan V14).
 
-## R3. Survei responden
+## R3. Survei responden (selesai)
+
+Hasil: tabel instrumen ternormalisasi per versi (18 karakteristik dengan 90 pernyataan berjenjang, 7 dimensi dan 21 butir skala iklim dari `seed/skala-iklim-draf.json`); tabel jawaban anonim dengan UUID versi 4 acak, tanggal kirim WIB tanpa jam, rentang durasi lima menit, dan tanpa kolom maupun kunci asing ke token atau daftar responden; halaman survei sebagai paket peramban tersendiri tanpa kode konsol (sekitar 78 KB terkompresi) dengan alur bahasa, persetujuan, strata pilihan untuk token kode QR, bagian A dengan urutan pernyataan acak tetap per responden tanpa tingkatnya, bagian B, tinjauan, dan kirim; draf di IndexedDB dan kirim ulang otomatis saat sambungan kembali; pengiriman dalam satu transaksi dengan token dikunci, waktu token dibulatkan ke jam, tanda mutu POLA_SERAGAM, TERLALU_CEPAT, BANYAK_TIDAK_TAHU, tanpa jejak audit, log, maupun alamat IP; pembatas laju dengan HMAC harian alamat IP yang hidup satu menit; pengacakan urutan fisik baris jawaban setiap malam sebelum cadangan; data contoh jawaban. Tes: `tests/Unit/Domain/Survey`, `tests/Feature/Survey` (anonimitas skema dan kode, token sekali pakai, penolakan, strata kode QR, tanda mutu, muatan di bawah 350 KB).
+
 
 Rujukan versi 1: `src/app/s/[token]`, `src/lib/survey`, `docs/arsip-v1/02` bagian 4.
 
