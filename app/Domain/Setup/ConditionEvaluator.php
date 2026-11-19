@@ -8,7 +8,7 @@ use App\Domain\Workflow\Transition;
 
 /**
  * Pemeriksa syarat transisi status (docs/01 bagian 3, App\Domain\Workflow\Workflow). Fase R1 memeriksa syarat tahap
- * perencanaan; syarat tahap lain bernilai null sampai modulnya dibangun.
+ * perencanaan, fase R2 syarat dimulainya pengumpulan data; syarat tahap lain bernilai null sampai modulnya dibangun.
  */
 final class ConditionEvaluator
 {
@@ -71,6 +71,8 @@ final class ConditionEvaluator
             'sample_plan_calculated' => $facts->samplePlanSaved,
             'kickoff_communicated' => $facts->kickoffComplete,
             'assessors_calibrated' => $facts->calibrationComplete,
+            'roster_imported' => $facts->rosterCount >= 1,
+            'tokens_issued' => $facts->activeSurveyTokens >= 1,
             default => null,
         };
     }

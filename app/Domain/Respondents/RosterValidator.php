@@ -110,11 +110,13 @@ final class RosterValidator
      * @param  array<string, array{id: string, isContractor: bool}>  $strata  Kunci normalizeKey(kode) dan normalizeKey(nama).
      * @param  list<string>|null  $unitScope  Id unit yang boleh diimpor (koordinator unit); null untuk semua unit.
      * @param  list<string>  $existingEmployeeNos  Nomor induk yang sudah terdaftar, huruf kecil.
-     * @param  list<string>  $existingEmails  Surel yang sudah terdaftar, huruf kecil.
+     * @param  list<string>  $existingEmails  Kunci surel yang sudah terdaftar, dibentuk dengan $emailKey.
+     * @param  (\Closure(string): string)|null  $emailKey  Pembentuk kunci pembanding surel (huruf kecil); bawaan surel itu sendiri.
      * @return array{missingColumns: list<string>, totalRows: int, tooManyRows: bool, valid: list<array<string, mixed>>, errors: list<array{row: int, column: string|null, code: string}>}
      */
-    public static function validate(array $rows, array $units, array $strata, ?array $unitScope, array $existingEmployeeNos, array $existingEmails): array
+    public static function validate(array $rows, array $units, array $strata, ?array $unitScope, array $existingEmployeeNos, array $existingEmails, ?\Closure $emailKey = null): array
     {
+        $emailKey ??= static fn (string $email): string => $email;
         $header = $rows[0] ?? [];
         ['columns' => $columns, 'missing' => $missing] = self::mapHeader($header);
         if ($missing !== []) {
@@ -192,7 +194,7 @@ final class RosterValidator
                     $add('email', 'EMAIL_INVALID');
                 } elseif (isset($seenMails[$email])) {
                     $add('email', 'DUPLICATE_IN_FILE');
-                } elseif (isset($existingMails[$email])) {
+                } elseif (isset($existingMails[$emailKey($email)])) {
                     $add('email', 'ALREADY_REGISTERED');
                 }
                 $seenMails[$email] = true;

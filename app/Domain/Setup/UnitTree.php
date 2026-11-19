@@ -66,4 +66,34 @@ final class UnitTree
 
         return false;
     }
+
+    /**
+     * Unit-unit ini beserta seluruh unit di bawahnya (cakupan koordinator unit).
+     *
+     * @param  list<array{id: string, parentId: string|null}>  $units
+     * @param  list<string>  $roots
+     * @return list<string>
+     */
+    public static function withDescendants(array $units, array $roots): array
+    {
+        $children = [];
+        foreach ($units as $unit) {
+            if ($unit['parentId'] !== null) {
+                $children[$unit['parentId']][] = $unit['id'];
+            }
+        }
+        $known = array_fill_keys(array_column($units, 'id'), true);
+        $out = [];
+        $stack = array_values(array_filter($roots, static fn (string $id): bool => isset($known[$id])));
+        while ($stack !== []) {
+            $id = array_pop($stack);
+            if (isset($out[$id])) {
+                continue;
+            }
+            $out[$id] = true;
+            array_push($stack, ...($children[$id] ?? []));
+        }
+
+        return array_keys($out);
+    }
 }

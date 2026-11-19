@@ -33,6 +33,10 @@ final class SetupFactsCollector
             'units',
             'strata',
             'strata as strata_without_population_count' => fn ($q) => $q->where('population', '<=', 0),
+            'roster',
+            // Hanya hitungan dari token, tidak pernah dari tabel jawaban (docs/02 bagian 4).
+            'tokens as active_survey_tokens_count' => fn ($q) => $q->where('kind', 'SURVEY')->whereNull('revoked_at'),
+            'tokens as completed_surveys_count' => fn ($q) => $q->where('kind', 'SURVEY')->whereNotNull('completed_at'),
         ]);
         $assessments->loadSum('strata as strata_population_sum', 'population');
         $assessments->loadMissing(['team', 'instrumentVersion']);
@@ -57,6 +61,9 @@ final class SetupFactsCollector
                     $team->pluck('user_id')->map(fn ($id) => (int) $id)->values()->all(),
                 ),
                 workers: (int) $assessment->strata_population_sum,
+                rosterCount: (int) $assessment->roster_count,
+                activeSurveyTokens: (int) $assessment->active_survey_tokens_count,
+                completedSurveys: (int) $assessment->completed_surveys_count,
             );
         }
 

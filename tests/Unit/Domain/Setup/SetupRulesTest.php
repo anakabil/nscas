@@ -132,12 +132,35 @@ class SetupRulesTest extends TestCase
         $this->assertSame('team', $results[4]->module);
     }
 
+    public function test_data_collection_needs_a_roster_and_issued_survey_tokens(): void
+    {
+        $toCollection = Workflow::next(AssessmentStatus::Locked);
+        $none = ConditionEvaluator::evaluate($toCollection, $this->completeFacts());
+        $this->assertSame([['roster_imported', false, 'respondents'], ['tokens_issued', false, 'respondents']], array_map(fn ($r) => [$r->key, $r->met, $r->module], $none));
+        $this->assertFalse(ConditionEvaluator::allowed($none));
+
+        $ready = ConditionEvaluator::evaluate($toCollection, new SetupFacts(rosterCount: 120, activeSurveyTokens: 1));
+        $this->assertTrue(ConditionEvaluator::allowed($ready));
+    }
+
     public function test_conditions_of_modules_not_yet_built_are_unknown_and_block_the_transition(): void
     {
-        $results = ConditionEvaluator::evaluate(Workflow::next(AssessmentStatus::Locked), $this->completeFacts());
+        $results = ConditionEvaluator::evaluate(Workflow::next(AssessmentStatus::DataCollection), $this->completeFacts());
 
-        $this->assertSame([null, null], array_map(fn ($r) => $r->met, $results));
+        $this->assertContains(null, array_map(fn ($r) => $r->met, $results));
         $this->assertFalse(ConditionEvaluator::allowed($results));
+    }
+
+    public function test_unit_scope_includes_every_unit_below_the_assigned_ones(): void
+    {
+        $units = [
+            ['id' => 'hq', 'parentId' => null], ['id' => 'div', 'parentId' => 'hq'],
+            ['id' => 'p1', 'parentId' => 'div'], ['id' => 'p2', 'parentId' => 'div'], ['id' => 'other', 'parentId' => 'hq'],
+        ];
+
+        $this->assertEqualsCanonicalizing(['div', 'p1', 'p2'], UnitTree::withDescendants($units, ['div']));
+        $this->assertEqualsCanonicalizing(['p1', 'other'], UnitTree::withDescendants($units, ['p1', 'other', 'tidak-ada']));
+        $this->assertSame([], UnitTree::withDescendants($units, []));
     }
 
     public function test_kickoff_needs_leadership_commitment_and_worker_briefing(): void

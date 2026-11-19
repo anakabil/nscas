@@ -23,5 +23,8 @@ final readonly class SetupFacts
         public bool $kickoffComplete = false,
         public bool $calibrationComplete = false,
         public int $workers = 0,
+        public int $rosterCount = 0,
+        public int $activeSurveyTokens = 0,
+        public int $completedSurveys = 0,
     ) {}
 }

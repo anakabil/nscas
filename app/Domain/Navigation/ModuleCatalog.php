@@ -36,9 +36,9 @@ final class ModuleCatalog
             new Module('kickoff', Stage::Planning, 'setup/kickoff', [...$assessors, Role::ClientAdmin], 'R1', ready: true),
 
             // Tahap 2. Pengumpulan data
-            new Module('respondents', Stage::DataCollection, 'respondents', $read(Resource::Roster), 'R2'),
-            new Module('qr', Stage::DataCollection, 'respondents/qr', [Role::LeadAssessor, Role::ClientAdmin], 'R2'),
-            new Module('participation', Stage::DataCollection, 'participation', $read(Resource::TokensAndParticipation), 'R2'),
+            new Module('respondents', Stage::DataCollection, 'respondents', $read(Resource::Roster), 'R2', ready: true),
+            new Module('qr', Stage::DataCollection, 'respondents/qr', [Role::LeadAssessor, Role::ClientAdmin], 'R2', ready: true),
+            new Module('participation', Stage::DataCollection, 'participation', $read(Resource::TokensAndParticipation), 'R2', ready: true),
             new Module('selfAssessments', Stage::DataCollection, 'self-assessments', $read(Resource::SelfAssessments), 'R4'),
             new Module('evidence', Stage::DataCollection, 'evidence', $read(Resource::EvidenceAndObservations), 'R5'),
             new Module('observations', Stage::DataCollection, 'observations', $read(Resource::EvidenceAndObservations), 'R5'),
