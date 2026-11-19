@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 dan R1)
+### 3.1 Tabel yang sudah ada (fase R0, R1, dan R2)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -61,10 +61,15 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `organizations` | Nusa Safety (`is_operator`) dan organisasi klien, `legal_name`, `sector`, `is_active` | Kunci ULID |
 | `memberships` | Peran pengguna di satu organisasi | Peran operator hanya sah di organisasi operator. Peran tidak pernah diisi otomatis |
 | `instrument_versions` | Kode versi, status terbit, parameter bawaan (`default_parameters`), isi instrumen (`content`) | Dimuat dari `seed/` oleh `InstrumentVersionSeeder` (R1). Versi yang sudah ada tidak diubah |
-| `assessments` | Organisasi, nama, lingkup, periode, sasaran tingkat, status, versi instrumen, `parameter_draft`, teks persetujuan dua bahasa, status perjanjian pemrosesan data, komunikasi awal (`kickoff`), kalibrasi asesor (`calibration`), `parameter_snapshot`, `locked_at`, `locked_by` | Kunci ULID; status mengikuti `AssessmentStatus`. Setelah LOCKED hanya snapshot yang dibaca (aturan 5) |
+| `assessments` | Organisasi, nama, lingkup, periode, sasaran tingkat, status, versi instrumen, `parameter_draft`, teks persetujuan dua bahasa, status perjanjian pemrosesan data, komunikasi awal (`kickoff`), kalibrasi asesor (`calibration`), `parameter_snapshot`, `locked_at`, `locked_by`, jendela survei (`survey_opens_at`, `survey_closes_at`, disimpan UTC, diisi dalam WIB) | Kunci ULID; status mengikuti `AssessmentStatus`. Setelah LOCKED hanya snapshot yang dibaca (aturan 5) |
 | `units` | Unit bertingkat (kantor pusat, divisi, proyek, cabang), koordinat dan radius proyek | Unit induk tidak dapat dihapus selama memiliki unit di bawahnya |
 | `strata` | Kode, nama, kelompok, jumlah pekerja (rata-rata setahun), penyedia jasa | Kode unik per asesmen. Tidak dapat diubah setelah dikunci |
 | `assessment_team_members` | Asesor utama dan asesor per asesmen | Akses asesor hanya ke asesmen yang ditugaskan. Paling sedikit dua orang sebelum dikunci |
+| `roster_entries` | Daftar responden: unit, strata, nama, nomor induk, surel dan telepon (terenkripsi kunci aplikasi), `email_hash` (HMAC, untuk mencegah duplikat), status penyedia jasa | R2. Tidak pernah dirujuk jawaban survei (aturan 2). Impor hanya bila seluruh baris valid |
+| `access_tokens` | Hash SHA-256 token survei, unit, strata (kosong untuk kode QR sampai responden memilih), kanal (EMAIL, LINK, QR), waktu terbit, buka, persetujuan, selesai, dicabut beserta alasannya, jumlah pengingat | R2. Token mentah hanya ada di tautan dan surel. Partisipasi dihitung dari `completed_at` di sini |
+| `unit_qr_codes` | Kode QR per unit, strata opsional, hash kode, batas penerbitan, aktif atau tidak | R2. Kode baru untuk unit dan strata yang sama menonaktifkan kode lama |
+| `unit_assignments` | Penugasan koordinator unit pada unit asesmen | R2. Cakupan koordinator: unit yang ditugaskan beserta unit di bawahnya |
+| `participation_snapshots` | Jumlah mentah populasi, token, dan selesai per hari | R2. Diambil pukul 23.00 WIB; ambang sel diterapkan saat ditampilkan |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
@@ -76,7 +81,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R2 | `roster_entries`, `access_tokens`, `survey_windows`, `qr_codes`, `participation_snapshots` |
 | R3 | `aspects`, `characteristics`, `statements`, `survey_responses`, `survey_answers` |
 | R4 | `self_assessments`, `self_assessment_answers` |
 | R5 | `evidence_items`, `evidence_versions`, `observation_windows`, `observations` |

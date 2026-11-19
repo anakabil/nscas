@@ -208,7 +208,9 @@ class RespondentAccessAndParticipationTest extends TestCase
         // Dasbor beranda memakai ambang yang sama.
         $this->actingAs($this->lead)->get(route('home'))->assertInertia(fn (Assert $page) => $page
             ->where('dashboard.rows.0.participation.completed', ['value' => 9, 'suppressed' => false])
-            ->where('dashboard.rows.0.participation.tokens', 16));
+            ->where('dashboard.rows.0.participation.tokens', 16)
+            // Populasi strata uji 100 sampai 500, sehingga kelima strata masih di bawah 30 persen.
+            ->where('dashboard.rows.0.participation.strataBelowMinimum', 5));
     }
 
     public function test_reminders_rotate_unopened_tokens_and_ask_opened_ones_to_continue(): void

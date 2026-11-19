@@ -4,7 +4,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
 <body style="margin:0;padding:24px 12px;background:#fefaf4">
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#1a1a1a;max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #cdbfad;border-radius:12px;padding:28px">
-    <p style="margin:0 0 20px"><img src="{{ $message->embed($logo) }}" alt="NSCAS Nusa Safety" width="240" style="display:block;width:240px;height:auto;border:0"></p>
+    <p style="margin:0 0 20px"><img src="{{ $message->embed($logo) }}" alt="NSCAS Nusa Safety" width="200" style="display:block;width:200px;height:auto;border:0"></p>
     @foreach ($sections as $i => $s)
         @if ($i > 0)
             <hr style="border:none;border-top:1px solid #cdbfad;margin:28px 0">

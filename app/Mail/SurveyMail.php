@@ -37,7 +37,7 @@ class SurveyMail extends Mailable
         return new Content(
             view: 'mail.survey',
             text: 'mail.survey-text',
-            with: ['sections' => [$this->section('id'), $this->section('en')], 'logo' => public_path('brand/logo-long-color.png')],
+            with: ['sections' => [$this->section('id'), $this->section('en')], 'logo' => public_path('brand/nscas-logo-480.png')],
         );
     }
 

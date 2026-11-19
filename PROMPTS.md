@@ -16,8 +16,8 @@ Cara membangun ulang sebuah modul:
 |---|---|---|---|
 | R0 | Fondasi: Laravel, autentikasi, peran, isolasi tenant, jejak audit, alur enam tahap, mesin penilaian, beranda, tema, logo, paket penempatan | Semua | Selesai |
 | R1 | Administrasi dan konfigurasi asesmen, dasbor progres di beranda | 1 | Selesai |
-| R2 | Responden, undangan, kode QR, partisipasi | 2 | Berikutnya |
-| R3 | Survei responden | 2 | |
+| R2 | Responden, undangan, kode QR, partisipasi | 2 | Selesai |
+| R3 | Survei responden | 2 | Berikutnya |
 | R4 | Penilaian mandiri manajemen | 2 | |
 | R5 | Bukti dokumen dan observasi lapangan | 2 | |
 | R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | |
@@ -53,7 +53,7 @@ Dasbor dibangun pada fase R1 dengan ukuran tahap perencanaan, kesiapan menuju st
 
 | Fase | Ukuran yang ditambahkan |
 |---|---|
-| R2 | Responden terdaftar dan tautan terbit; partisipasi per strata dibanding sasaran kalkulator sampel; penanda strata di bawah 30 persen |
+| R2 (selesai) | Responden terdaftar dan token terbit; survei selesai dibanding sasaran kalkulator sampel; jumlah strata di bawah ambang partisipasi minimum |
 | R3 | Survei masuk per hari; angka per unit diperbarui per jam dan disembunyikan bila kurang dari 5 orang (aturan 3) |
 | R4 | Penilaian mandiri manajemen yang selesai |
 | R5 | Dokumen bukti per tema; proyek yang sudah diobservasi dibanding sasaran |
@@ -61,7 +61,10 @@ Dasbor dibangun pada fase R1 dengan ukuran tahap perencanaan, kesiapan menuju st
 | R7 | Sub-tema yang sudah dinilai dua asesor; rapat panel |
 | R9 | Rencana aksi berjalan dan yang melewati tenggat |
 
-## R2. Responden, undangan, kode QR, dan partisipasi
+## R2. Responden, undangan, kode QR, dan partisipasi (selesai)
+
+Hasil: impor daftar responden dari .xlsx atau CSV dengan pratinjau, galat per baris, dan penyimpanan hanya bila seluruh baris valid (templat Excel dengan daftar pilihan unit dan strata); kontak responden terenkripsi; tautan survei yang ditampilkan sekali dan diunduh sebagai CSV, dengan hanya hash token tersimpan; undangan surel lewat antrean yang membuat token saat surel dikirim dan mencabutnya bila pengiriman gagal; pengingat pukul 08.00 WIB paling banyak tiga kali dengan jarak tiga hari, dengan rotasi token yang belum dibuka; pencabutan dan penerbitan ulang; kode QR per unit dan strata dengan batas penerbitan, pemakaian ulang token pada perangkat yang sama, dan lembar A4 siap cetak; jendela survei dalam WIB; penugasan koordinator unit dengan cakupan unit di bawahnya; partisipasi per strata dan unit dengan ambang sel serta penanda strata di bawah ambang, dan cuplikan harian pukul 23.00 WIB; halaman publik `/q` dan `/s` tanpa sesi sehingga alamat IP responden tidak tersimpan (formulir survei menyusul di R3); syarat `roster_imported` dan `tokens_issued` untuk LOCKED ke DATA_COLLECTION; dasbor beranda menampilkan survei selesai terhadap sasaran. Surel memakai Hostinger Mail `admin@nusasafety.co.id` (keputusan pemilik proyek, fase R2; `docs/08` bagian 9, `docs/04` bagian 1.2). Tes: `tests/Unit/Domain/Respondents`, `tests/Feature/Respondents`, termasuk impor 3.000 baris di bawah 30 detik.
+
 
 Rujukan versi 1: `src/lib/respondents`, `src/app/(console)/assessments/[id]/respondents`, `participation`, `src/lib/jobs/invitations.ts`, `reminders.ts`, `src/app/q`.
 

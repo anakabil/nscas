@@ -302,6 +302,14 @@ function StageProgressCell({ row }: { row: DashboardRow }) {
         <div className="space-y-1.5" data-testid="participation-cell">
             <p className="numeral text-sm text-foreground">{label}</p>
             {p.rateOfTarget !== null ? <Bar value={Math.min(1, p.rateOfTarget)} label={label} /> : null}
+            {p.tokens > 0 && p.strataBelowMinimum > 0 ? (
+                <p className="text-xs text-gold-deep">
+                    {t('dashboard.participation.strataBelow', {
+                        count: p.strataBelowMinimum,
+                        min: `${Math.round(p.minParticipation * 100)}%`,
+                    })}
+                </p>
+            ) : null}
             <p className="numeral text-xs text-muted-foreground">
                 {t('dashboard.participation.distribution', {
                     roster: number(p.roster, locale),

@@ -1,6 +1,7 @@
 import { router, useForm } from '@inertiajs/react';
 import { Copy, Download, FileSpreadsheet, Mail, RotateCcw, Search, Send, ShieldOff, UserMinus } from 'lucide-react';
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import RespondentController from '@/actions/App/Http/Controllers/Respondents/RespondentController';
 import { CollectionShell } from '@/components/nscas/collection-shell';
 import type { CollectionCommon } from '@/components/nscas/collection-shell';
@@ -728,7 +729,7 @@ function RosterTable(props: Props) {
                             {props.roster.rows.map((r) => (
                                 <tr key={r.id}>
                                     <td className="py-2 pr-3">
-                                        <p className="font-medium text-ink">{r.fullName}</p>
+                                        <p className="font-medium whitespace-nowrap text-ink">{r.fullName}</p>
                                         {r.employeeNo ? <p className="text-xs text-muted-foreground">{r.employeeNo}</p> : null}
                                     </td>
                                     <td className="py-2 pr-3">{r.unit}</td>
@@ -745,12 +746,11 @@ function RosterTable(props: Props) {
                                     <td className="py-2 pr-3">{t(`respondents.table.tokenStates.${r.tokenState}`)}</td>
                                     {props.can.distribute ? (
                                         <td className="py-2">
-                                            <div className="flex flex-wrap gap-1">
+                                            {/* Tombol ikon agar baris tetap ringkas; nama tindakan ada pada label dan petunjuk. */}
+                                            <div className="flex gap-1 whitespace-nowrap">
                                                 {r.tokenState === 'ISSUED' ? (
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        variant="ghost"
+                                                    <IconAction
+                                                        label={t('respondents.table.revoke')}
                                                         onClick={() => {
                                                             if (window.confirm(t('respondents.table.confirmRevoke'))) {
                                                                 act(RespondentController.revoke.url({ assessment, entry: r.id }));
@@ -758,13 +758,10 @@ function RosterTable(props: Props) {
                                                         }}
                                                     >
                                                         <ShieldOff aria-hidden />
-                                                        {t('respondents.table.revoke')}
-                                                    </Button>
+                                                    </IconAction>
                                                 ) : null}
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    variant="ghost"
+                                                <IconAction
+                                                    label={t('respondents.table.reissueLink')}
                                                     onClick={() =>
                                                         act(RespondentController.reissue.url({ assessment, entry: r.id }), {
                                                             channel: 'LINK',
@@ -772,13 +769,10 @@ function RosterTable(props: Props) {
                                                     }
                                                 >
                                                     <RotateCcw aria-hidden />
-                                                    {t('respondents.table.reissueLink')}
-                                                </Button>
+                                                </IconAction>
                                                 {r.email ? (
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        variant="ghost"
+                                                    <IconAction
+                                                        label={t('respondents.table.reissueEmail')}
                                                         onClick={() =>
                                                             act(RespondentController.reissue.url({ assessment, entry: r.id }), {
                                                                 channel: 'EMAIL',
@@ -786,8 +780,7 @@ function RosterTable(props: Props) {
                                                         }
                                                     >
                                                         <Mail aria-hidden />
-                                                        {t('respondents.table.reissueEmail')}
-                                                    </Button>
+                                                    </IconAction>
                                                 ) : null}
                                             </div>
                                         </td>
@@ -824,5 +817,13 @@ function RosterTable(props: Props) {
                 </div>
             ) : null}
         </Panel>
+    );
+}
+
+function IconAction({ label, onClick, children }: { label: string; onClick: () => void; children: ReactNode }) {
+    return (
+        <Button type="button" size="icon" variant="ghost" className="size-8" aria-label={label} title={label} onClick={onClick}>
+            {children}
+        </Button>
     );
 }

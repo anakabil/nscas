@@ -26,6 +26,17 @@ Selama syarat 1 sampai 3 belum terpenuhi, server DigitalOcean hanya boleh dipaka
 
 Catatan untuk penasihat hukum. Uraian ini adalah pembacaan praktisi K3 atas ketentuan pelindungan data, bukan pendapat hukum. Rumusan adendum dan dasar transfer sebaiknya ditinjau penasihat hukum perusahaan.
 
+### 1.2 Subprosesor
+
+Pihak yang menerima data pribadi responden atas nama Nusa Safety. Daftar ini dicantumkan pada perjanjian pemrosesan data; penambahan subprosesor memerlukan persetujuan tertulis klien (CLAUDE.md aturan 7).
+
+| Subprosesor | Data yang diterima | Keperluan | Lokasi | Status |
+|---|---|---|---|---|
+| DigitalOcean | Seluruh data aplikasi: daftar responden (kontak terenkripsi), token, jawaban, bukti, cadangan terenkripsi | Server, basis data, penyimpanan berkas | Singapura (`sgp1`) | Keputusan pemilik proyek, 19 November 2026 |
+| Hostinger (Hostinger Mail, kotak surat `admin@nusasafety.co.id`) | Nama dan alamat surel responden, tautan survei pribadi, nama organisasi | Pengiriman undangan dan pengingat survei, serta surel akun pengguna | Lokasi server surel dicatat dari hPanel sebelum undangan pertama | Keputusan pemilik proyek, fase R2 |
+
+Surel undangan tidak memuat gambar dari server luar dan tidak memakai pelacak pembukaan. Nomor telepon responden tidak dikirim ke pihak mana pun; pada fase R2 nomor itu hanya disimpan terenkripsi untuk dipakai koordinator.
+
 ## 2. Matriks hak akses
 
 Tanda: B = baca, U = ubah, X = tidak ada akses.

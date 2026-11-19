@@ -64,7 +64,7 @@ MAIL_HOST=127.0.0.1
 MAIL_PORT=1025
 MAIL_USERNAME=null
 MAIL_PASSWORD=null
-MAIL_FROM_ADDRESS="noreply@nusasafety.co.id"
+MAIL_FROM_ADDRESS="admin@nusasafety.co.id"
 MAIL_FROM_NAME="NSCAS Uji Coba"
 
 VITE_APP_NAME=NSCAS
@@ -100,8 +100,9 @@ Akun contoh
   koordinator@contoh.test     Koordinator unit, PT Konstruksi Contoh
   eksekutif@contoh.test       Pemirsa eksekutif, PT Konstruksi Contoh
 
-Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Halaman yang bertanda fase R2 dan seterusnya
-baru berisi penjelasan, karena modulnya belum dibangun ulang.
+Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Tahap 1 (perencanaan) serta halaman Responden,
+Kode QR, dan Partisipasi sudah dapat dipakai. Halaman yang bertanda fase R3 dan seterusnya baru berisi penjelasan.
+Undangan dan pengingat survei tidak terkirim ke luar; bukalah kotak surat uji (Mailpit) untuk melihatnya.
 EOF
   )
 }

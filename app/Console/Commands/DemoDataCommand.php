@@ -5,11 +5,18 @@ namespace App\Console\Commands;
 use App\Domain\Access\Role;
 use App\Domain\Setup\EditableParameters;
 use App\Domain\Workflow\AssessmentStatus;
+use App\Models\AccessToken;
 use App\Models\Assessment;
 use App\Models\InstrumentVersion;
 use App\Models\Organization;
+use App\Models\ParticipationSnapshot;
+use App\Models\RosterEntry;
+use App\Models\Unit;
 use App\Models\User;
 use App\Services\AssessmentSetup;
+use App\Services\Respondents\RespondentDistribution;
+use App\Services\Respondents\SurveyLinks;
+use Carbon\CarbonImmutable;
 use Database\Seeders\InstrumentVersionSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
@@ -101,6 +108,14 @@ class DemoDataCommand extends Command
                 $assessment->refresh()->forceFill(['status' => $status])->save();
             }
         }
+
+        // Fase R2: daftar responden, token, kode QR, dan partisipasi untuk asesmen yang sudah melewati penguncian.
+        foreach ($plan as [$organization, $name, $status]) {
+            $assessment = Assessment::where('organization_id', $organization->id)->where('name', $name)->first();
+            if ($assessment !== null && $status !== AssessmentStatus::Draft && $assessment->roster()->doesntExist()) {
+                $this->respondents($assessment, $accounts['CLIENT_ADMIN'], $accounts['UNIT_COORDINATOR'], $status);
+            }
+        }
         Auth::forgetUser();
 
         $this->info('Data contoh siap. Akun (kata sandi sama untuk semua):');
@@ -155,5 +170,100 @@ class DemoDataCommand extends Command
             'briefing' => ['date' => '2026-07-28', 'channels' => ['SAFETY_TALK', 'NOTICE_BOARD'], 'note' => 'Tujuan pengukuran dan jaminan kerahasiaan jawaban.'],
         ]);
         $setup->recordCalibration($fresh, ['date' => '2026-07-29', 'note' => 'Pembahasan contoh bukti tiap aspek.', 'attendees' => [$lead->id, $assessor->id]]);
+    }
+
+    /**
+     * Daftar responden fiktif skala klien pertama, token, kode QR, penyelesaian survei, dan cuplikan harian. Nama dan
+     * surel dibuat dari daftar kata, bukan data orang sungguhan. Tingkat penyelesaian dibedakan per strata agar
+     * halaman partisipasi menampilkan strata yang memenuhi dan yang di bawah ambang.
+     */
+    private function respondents(Assessment $assessment, User $admin, User $coordinator, AssessmentStatus $final): void
+    {
+        $collecting = $final === AssessmentStatus::DataCollection;
+        $first = ['Agus', 'Budi', 'Citra', 'Dewi', 'Eko', 'Fajar', 'Gita', 'Hadi', 'Indah', 'Joko', 'Kartika', 'Lukman', 'Maya', 'Nur', 'Oki', 'Putri', 'Rizky', 'Sinta', 'Teguh', 'Wahyu', 'Yanti', 'Zainal'];
+        $last = ['Santoso', 'Wijaya', 'Lestari', 'Saputra', 'Hidayat', 'Kurniawan', 'Pratiwi', 'Setiawan', 'Nugroho', 'Rahmawati', 'Siregar', 'Harahap', 'Gunawan', 'Utami', 'Purnomo'];
+        $units = Unit::where('assessment_id', $assessment->id)->orderBy('name')->get();
+        $strata = $assessment->strata()->orderBy('code')->get();
+        // Orang terdaftar per strata (sebagian pekerja penyedia jasa memakai kode QR), dan bagian yang menyelesaikan survei.
+        $plan = $collecting
+            ? ['S1' => [14, 0.79], 'S2' => [96, 0.58], 'S3' => [300, 0.47], 'S4' => [900, 0.24], 'S5' => [1100, 0.36]]
+            : ['S1' => [14, 0.86], 'S2' => [90, 0.71], 'S3' => [180, 0.62], 'S4' => [400, 0.55], 'S5' => [500, 0.48]];
+
+        $rows = [['Nama', 'Nomor induk', 'Surel', 'Telepon', 'Unit', 'Strata', 'Penyedia jasa']];
+        $n = 0;
+        foreach ($strata as $stratum) {
+            for ($i = 0; $i < ($plan[$stratum->code][0] ?? 0); $i++, $n++) {
+                $name = $first[$n % count($first)].' '.$last[intdiv($n, count($first)) % count($last)];
+                $withEmail = $stratum->code !== 'S5' || $n % 3 === 0;
+                $rows[] = [
+                    $name, sprintf('NS-%05d', $n + 1),
+                    $withEmail ? sprintf('pekerja%05d@contoh.test', $n + 1) : '',
+                    $n % 4 === 0 ? sprintf('0812%08d', $n + 1) : '',
+                    $units[$n % $units->count()]->name, $stratum->code, '',
+                ];
+            }
+        }
+        $path = tempnam(sys_get_temp_dir(), 'demo-roster-').'.csv';
+        file_put_contents($path, implode("\n", array_map(fn ($r) => implode(';', $r), $rows))."\n");
+
+        Auth::setUser($admin);
+        $assessment->forceFill(['status' => AssessmentStatus::DataCollection])->save();
+        $service = app(RespondentDistribution::class);
+        $service->import($assessment, $path, null, true, Role::ClientAdmin);
+        @unlink($path);
+        $service->setWindow(
+            $assessment,
+            CarbonImmutable::parse($collecting ? '2026-11-10 08:00' : '2026-09-01 08:00', 'Asia/Jakarta'),
+            CarbonImmutable::parse($collecting ? '2026-12-15 17:00' : '2026-10-15 17:00', 'Asia/Jakarta'),
+            Role::ClientAdmin,
+        );
+        $division = $units->firstWhere('name', 'Divisi Gedung');
+        // Koordinator contoh hanya anggota PT Konstruksi Contoh.
+        if ($division !== null && $coordinator->memberships()->where('organization_id', $assessment->organization_id)->exists()) {
+            $service->assignCoordinator($assessment, $coordinator->id, $division->id, Role::ClientAdmin);
+        }
+        $toll = $units->firstWhere('name', 'Proyek Jalan Tol Semarang') ?? $units->first();
+        $service->createQr($assessment, $toll->id, null, 400, Role::ClientAdmin);
+        $qr = $assessment->qrCodes()->where('is_active', true)->firstOrFail();
+
+        // Token dibuat langsung (tanpa surel terkirim) agar data contoh tidak mengantre surel sungguhan.
+        $opens = $assessment->fresh()->survey_opens_at;
+        $now = now();
+        $span = max(1, (int) $opens->diffInHours($collecting ? $now : $opens->copy()->addDays(40)));
+        foreach (RosterEntry::where('assessment_id', $assessment->id)->orderBy('employee_no')->get() as $k => $entry) {
+            $token = SurveyLinks::issue($assessment, [
+                'unit_id' => $entry->unit_id, 'stratum_id' => $entry->stratum_id, 'roster_entry_id' => $entry->id,
+                'channel' => $entry->email === null ? 'LINK' : 'EMAIL',
+            ])['token'];
+            $rate = $plan[$strata->firstWhere('id', $entry->stratum_id)->code][1];
+            // Penyelesaian tersebar sepanjang jendela survei, dibulatkan ke jam seperti aplikasi sungguhan.
+            if (($k * 7919 % 1000) / 1000 < $rate) {
+                $at = $opens->copy()->addHours(($k * 37) % $span)->startOfHour();
+                $token->forceFill(['issued_at' => $opens, 'first_opened_at' => $at, 'consent_at' => $at, 'completed_at' => $at])->save();
+            } else {
+                $token->forceFill(['issued_at' => $opens])->save();
+            }
+        }
+        // Pekerja penyedia jasa lewat kode QR, memilih strata S5 sendiri.
+        $s5 = $strata->firstWhere('code', 'S5');
+        for ($q = 0; $q < 140; $q++) {
+            $token = SurveyLinks::issue($assessment, ['unit_id' => $qr->unit_id, 'stratum_id' => $q < 120 ? $s5?->id : null, 'unit_qr_code_id' => $qr->id, 'channel' => 'QR'])['token'];
+            $at = $opens->copy()->addHours(($q * 53) % $span)->startOfHour();
+            $token->forceFill($q < 95 ? ['issued_at' => $at, 'first_opened_at' => $at, 'consent_at' => $at, 'completed_at' => $at] : ['issued_at' => $at])->save();
+        }
+
+        // Cuplikan harian dari jumlah selesai sampai hari itu.
+        $population = (int) $strata->sum('population');
+        $lastDay = CarbonImmutable::parse($collecting ? $now : $opens->copy()->addDays(40))->setTimezone('Asia/Jakarta')->startOfDay();
+        for ($day = CarbonImmutable::parse($opens)->setTimezone('Asia/Jakarta')->startOfDay(); $day <= $lastDay; $day = $day->addDay()) {
+            $end = $day->endOfDay()->utc();
+            $completed = AccessToken::where('assessment_id', $assessment->id)->where('completed_at', '<=', $end)->count();
+            ParticipationSnapshot::updateOrCreate(
+                ['assessment_id' => $assessment->id, 'taken_on' => $day->toDateString()],
+                ['data' => ['population' => $population, 'issued' => AccessToken::where('assessment_id', $assessment->id)->where('issued_at', '<=', $end)->whereNull('revoked_at')->count(), 'completed' => $completed, 'strata' => []]],
+            );
+        }
+        $assessment->forceFill(['status' => $final])->save();
+        Auth::setUser(User::where('email', 'asesor.utama@contoh.test')->firstOrFail());
     }
 }

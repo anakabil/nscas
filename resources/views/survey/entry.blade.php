@@ -16,7 +16,7 @@
         body { margin: 0; background: #fefaf4; color: #1a1a1a; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
         main { max-width: 560px; margin: 0 auto; padding: 32px 16px 48px; }
         .card { background: #fff; border: 1px solid #cdbfad; border-radius: 14px; padding: 24px; }
-        img { display: block; width: 200px; height: auto; margin-bottom: 20px; }
+        img { display: block; width: 180px; height: auto; margin-bottom: 20px; }
         h1 { font-size: 20px; line-height: 1.35; color: #691b2e; margin: 0 0 12px; }
         p { margin: 0 0 12px; }
         .muted { color: #3b3431; font-size: 14px; }
@@ -27,7 +27,7 @@
 <body>
 <main>
     <div class="card">
-        <img src="/brand/logo-long-color.png" alt="NSCAS Nusa Safety" width="200">
+        <img src="/brand/nscas-logo-480.png" alt="NSCAS Nusa Safety" width="180">
         @foreach (['id', 'en'] as $i => $locale)
             @if ($i > 0)
                 <hr>

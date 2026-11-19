@@ -45,16 +45,22 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 
 ## 4. Yang dapat dicoba pada versi ini
 
-Versi 2 saat ini berada di akhir fase R1 (administrasi dan konfigurasi asesmen). Yang sudah dapat dicoba:
+Versi 2 saat ini berada di akhir fase R2 (responden, undangan, kode QR, dan partisipasi). Yang sudah dapat dicoba:
 
 1. Halaman masuk, pilihan bahasa Indonesia dan Inggris (tersimpan di akun), dan pengaturan ulang kata sandi melalui kotak surat uji.
 2. Dasbor progres pengukuran di beranda, untuk akun pengelola sistem, asesor utama, asesor, dan administrator klien. Dasbor diperbarui otomatis setiap 60 detik.
 3. Organisasi dan pengguna: menambah organisasi klien, membuat akun dengan kata sandi sementara, mengubah peran, dan menonaktifkan akun. Coba dengan akun pengelola sistem atau administrator klien.
 4. Asesmen baru dengan akun asesor utama, lalu tujuh halaman tahap Perencanaan: rincian, unit, strata, parameter, kalkulator sampel, tim asesor, serta komunikasi awal dan kalibrasi.
 5. Mengubah status asesmen dari Draf ke Pengaturan lengkap, lalu ke Parameter terkunci, di pusat asesmen. Setelah terkunci, parameter tidak dapat diubah lagi.
-6. Tampilan di telepon. Buka alamat yang sama dari peramban telepon.
+6. Tahap 2 pada asesmen contoh "Kantor Pusat 2026" (sekitar 2.400 responden fiktif dengan partisipasi yang sudah berjalan):
+   - Responden dan undangan, dengan akun administrator klien: unduh templat Excel, isi beberapa baris, periksa lalu simpan; terbitkan tautan dan unduh CSV-nya; kirim undangan, lalu lihat surelnya di kotak surat uji (Mailpit); cabut dan terbitkan ulang token seorang responden; ubah jendela survei.
+   - Kode QR, dengan akun administrator klien: buat kode untuk satu unit, cetak lembar A4, lalu pindai kode dari telepon untuk melihat halaman responden.
+   - Partisipasi, dengan akun mana pun yang berhak: tabel per strata dan unit, angka di bawah 5 yang disembunyikan, dan perkembangan harian.
+   - Akun koordinator unit hanya melihat Divisi Gedung beserta proyek di bawahnya.
+7. Pengingat survei dapat dicoba tanpa menunggu pukul 08.00 WIB dengan perintah `php artisan nscas:survey-reminders` di terminal; surelnya masuk ke kotak surat uji.
+8. Tampilan di telepon. Buka alamat yang sama dari peramban telepon.
 
-Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R2 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
+Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R3 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang. Tautan survei sudah dapat dibuka, tetapi formulir survei baru dibangun pada fase R3.
 
 Di lingkungan ini verifikasi dua langkah tidak diwajibkan, agar keenam akun contoh dapat langsung dicoba. Untuk mencoba alur wajibnya, buka berkas `.env` di codespace, ubah `NSCAS_ENFORCE_TWO_FACTOR=false` menjadi `true`, lalu jalankan `bash .devcontainer/start.sh --restart` di terminal. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator. Di produksi nilai ini wajib `true`.
 
@@ -96,7 +102,7 @@ Cara lain yang paling bersih: hapus codespace, lalu buat yang baru (bagian 2).
 | `.devcontainer/compose.yaml` | Tiga layanan dalam satu ruang jaringan: ruang kerja (PHP dan Node), PostgreSQL 16, dan Mailpit |
 | `.devcontainer/Dockerfile` | Image ruang kerja: PHP 8.3 dengan ekstensi yang sama dengan image produksi, Node 22, dan klien PostgreSQL |
 | `.devcontainer/setup.sh` | Penyiapan sekali: dependensi, `.env` dengan kunci acak, migrasi, data contoh dengan kata sandi acak, build aset |
-| `.devcontainer/start.sh` | Setiap codespace menyala: menyelaraskan alamat publik, lalu menyalakan aplikasi dan worker antrean |
+| `.devcontainer/start.sh` | Setiap codespace menyala: menyelaraskan alamat publik, lalu menyalakan aplikasi, worker antrean, dan penjadwal |
 | `.devcontainer/ports.sh` | Membuka port 8000 untuk umum dengan GitHub CLI |
 | `.devcontainer/update.sh` | Memperbarui codespace ke versi terbaru di GitHub |
 

@@ -6,7 +6,9 @@ use App\Domain\Access\Role;
 use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\Kickoff;
 use App\Domain\Setup\SetupFacts;
+use App\Models\AccessToken;
 use App\Models\Assessment;
+use App\Services\Respondents\ParticipationReport;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -39,7 +41,11 @@ final class SetupFactsCollector
             'tokens as completed_surveys_count' => fn ($q) => $q->where('kind', 'SURVEY')->whereNotNull('completed_at'),
         ]);
         $assessments->loadSum('strata as strata_population_sum', 'population');
-        $assessments->loadMissing(['team', 'instrumentVersion']);
+        $assessments->loadMissing(['team', 'instrumentVersion', 'strata']);
+        // Survei selesai per strata untuk semua asesmen sekaligus, dari token (bukan dari jawaban).
+        $completedByStratum = AccessToken::whereIn('assessment_id', $assessments->modelKeys())
+            ->where('kind', 'SURVEY')->whereNotNull('completed_at')->whereNotNull('stratum_id')
+            ->selectRaw('stratum_id, count(*) as n')->groupBy('stratum_id')->pluck('n', 'stratum_id');
 
         $facts = [];
         foreach ($assessments as $assessment) {
@@ -64,6 +70,8 @@ final class SetupFactsCollector
                 rosterCount: (int) $assessment->roster_count,
                 activeSurveyTokens: (int) $assessment->active_survey_tokens_count,
                 completedSurveys: (int) $assessment->completed_surveys_count,
+                strataBelowMinimum: $assessment->strata->filter(fn ($s) => $s->population > 0
+                    && ((int) ($completedByStratum[$s->id] ?? 0)) / $s->population < ParticipationReport::thresholds($assessment)[1])->count(),
             );
         }
 

@@ -82,6 +82,8 @@ final class ProgressPresenter
                 'tokens' => $facts->activeSurveyTokens,
                 'completed' => $completed,
                 'minCell' => $minCell,
+                'strataBelowMinimum' => $facts->strataBelowMinimum,
+                'minParticipation' => ParticipationReport::thresholds($assessment)[1],
                 'rateOfTarget' => $completed['suppressed'] || ! $surveyTarget ? null : $facts->completedSurveys / $surveyTarget,
             ],
         ];

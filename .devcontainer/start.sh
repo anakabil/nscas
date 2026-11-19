@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Menyalakan aplikasi (php artisan serve) dan worker antrean di Codespaces (docs/09). Dijalankan setiap kali codespace
+# Menyalakan aplikasi (php artisan serve), worker antrean, dan penjadwal di Codespaces (docs/09). Dijalankan setiap kali codespace
 # menyala (postStartCommand) dan di akhir setup.sh. Aman dijalankan ulang kapan saja dari terminal.
 # Pilihan --restart mematikan aplikasi dan worker lebih dulu, misalnya setelah .env diubah.
 # Log aplikasi dan worker ada di .codespace/logs; galat aplikasi di storage/logs/laravel.log.
@@ -37,6 +37,12 @@ if pgrep -f "artisan queue:work" >/dev/null; then
   echo "Worker sudah berjalan."
 else
   setsid nohup php artisan queue:work --tries=3 --sleep=3 >>"$LOG_DIR/worker.log" 2>&1 </dev/null &
+fi
+# Penjadwal: pengingat survei pukul 08.00 WIB dan cuplikan partisipasi pukul 23.00 WIB (routes/console.php).
+if pgrep -f "artisan schedule:work" >/dev/null; then
+  echo "Penjadwal sudah berjalan."
+else
+  setsid nohup php artisan schedule:work >>"$LOG_DIR/scheduler.log" 2>&1 </dev/null &
 fi
 
 for _ in $(seq 1 60); do

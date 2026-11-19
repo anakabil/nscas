@@ -63,7 +63,7 @@ export function CollectionShell({
             ? t('collection.notYet')
             : common.distribution === 'closed'
               ? t('collection.closed')
-              : !canEdit
+              : !canEdit && module !== 'participation'
                 ? t('collection.readOnly')
                 : null;
     const survey = common.window;

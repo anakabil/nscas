@@ -148,14 +148,29 @@ Pada tata letak A, skrip membuat cadangan basis data sebelum migrasi. `rollback`
 4. Aktifkan jadwal: `sudo systemctl enable --now nscas-backup.timer`. Cadangan berjalan setiap hari pukul 01.30 WIB, dienkripsi sebelum menyentuh disk, dan disimpan 30 hari.
 5. Uji pemulihan setiap bulan dari laptop administrator: `AGE_IDENTITY_FILE=nscas-backup.key backup.sh restore-test latest`. Cadangan yang belum pernah diuji pemulihannya belum dapat disebut cadangan.
 
-## 9. Surel keluar
+## 9. Surel keluar: Hostinger Mail
 
-DigitalOcean menutup port SMTP dari Droplet secara bawaan. Undangan survei dan pengaturan ulang kata sandi memerlukan penyedia surel yang menerima sambungan pada port lain, atau permintaan pembukaan port kepada DigitalOcean. Dua hal yang perlu diperhatikan:
+Keputusan pemilik proyek (fase R2): undangan survei, pengingat, dan pengaturan ulang kata sandi dikirim dari kotak surat resmi Nusa Safety di Hostinger Mail, `admin@nusasafety.co.id`, lewat SMTP. Aplikasi tidak memakai API Hostinger; yang dipakai hanya protokol SMTP standar, sehingga penyedia dapat diganti tanpa mengubah kode.
 
-1. Penyedia surel menerima alamat surel responden, sehingga lokasinya termasuk lokasi pemrosesan data pribadi dan harus tercantum pada perjanjian pemrosesan data.
-2. Domain pengirim perlu rekaman SPF dan DKIM agar undangan tidak masuk ke folder sampah.
+| Variabel | Nilai |
+|---|---|
+| `MAIL_MAILER` | `smtp` |
+| `MAIL_SCHEME` | `smtps` (port 465, TLS langsung); kosongkan bila memakai port 587 dengan STARTTLS |
+| `MAIL_HOST` | `smtp.hostinger.com` |
+| `MAIL_PORT` | `465` (atau `587`) |
+| `MAIL_USERNAME` | `admin@nusasafety.co.id` |
+| `MAIL_PASSWORD` | kata sandi kotak surat dari hPanel; diisi hanya di `/opt/nscas/.env`, tidak pernah di repositori atau percakapan |
+| `MAIL_FROM_ADDRESS` | `admin@nusasafety.co.id`, sama dengan kotak surat yang masuk |
 
-Pilihan penyedia surel belum diputuskan dan menjadi keputusan pemilik proyek sebelum fase R2.
+Langkah sebelum undangan pertama:
+
+1. DigitalOcean menutup port SMTP keluar (25, 465, 587) dari Droplet secara bawaan. Ajukan pembukaan blokir lewat tiket dukungan DigitalOcean dengan menjelaskan pemakaian: surel transaksional undangan survei ke pekerja klien, bukan surel massal pemasaran. Setelah disetujui, periksa dari server: `nc -vz smtp.hostinger.com 465`. Bila permintaan ditolak, jalan keluarnya adalah penyedia surel transaksional yang menerima port lain atau API HTTP; itu berarti subprosesor baru dan memerlukan persetujuan tertulis (CLAUDE.md aturan 7).
+2. Periksa di hPanel bahwa domain `nusasafety.co.id` memiliki rekaman SPF yang memuat server Hostinger, DKIM aktif, dan rekaman DMARC. Tanpa ketiganya undangan mudah masuk ke folder sampah.
+3. Periksa batas pengiriman harian paket Hostinger Mail. Undangan untuk 3.000 pekerja dan pengingatnya dapat melampaui batas harian paket kecil. Pekerja antrean mengirim satu surel per pekerjaan dan mengulang dua kali dengan jeda bila gagal, sehingga undangan yang tertahan akan terkirim kemudian; bila batasnya lebih kecil dari jumlah undangan, kirim undangan per unit dalam beberapa hari.
+4. Catat lokasi server surel Hostinger untuk akun ini (tertera di hPanel) dan cantumkan Hostinger sebagai subprosesor pada perjanjian pemrosesan data (`docs/04` bagian 1.2).
+5. Uji dengan butir 10 daftar periksa bagian 12, lalu kirim satu undangan ke alamat sendiri dari halaman Responden pada asesmen uji.
+
+Cara kerja di aplikasi: undangan dan pengingat dikirim oleh layanan `worker` (antrean basis data), sedangkan pengingat harian pukul 08.00 WIB dan cuplikan partisipasi pukul 23.00 WIB dijadwalkan oleh layanan `scheduler`. Token survei dibuat saat surel dikirim dan dicabut bila pengiriman gagal, sehingga token mentah tidak pernah tersimpan. Logo di badan surel disematkan sebagai lampiran, bukan dimuat dari server lain, sehingga pembukaan surel tidak dapat dilacak.
 
 ## 10. Pemantauan
 
@@ -189,6 +204,6 @@ Pilihan penyedia surel belum diputuskan dan menjadi keputusan pemilik proyek seb
 | 7 | Halaman Status sistem menunjukkan semua komponen berfungsi | Buka halaman Status sistem |
 | 8 | Cadangan berjalan dan satu uji pemulihan berhasil | `systemctl list-timers nscas-backup.timer` dan hasil `restore-test` |
 | 9 | Peringatan pemantauan dan pemeriksaan ketersediaan aktif | Panel DigitalOcean |
-| 10 | Surel uji terkirim dan tidak masuk folder sampah | Kirim pengaturan ulang kata sandi ke alamat sendiri |
+| 10 | Surel uji dari `admin@nusasafety.co.id` terkirim dan tidak masuk folder sampah | Kirim pengaturan ulang kata sandi ke alamat sendiri, lalu periksa hasil SPF, DKIM, dan DMARC pada kepala surel |
 | 11 | Uji beban fase R12 lulus pada ukuran server yang dipakai | Laporan uji |
 | 12 | `deploy.sh rollback` pernah dicoba di server uji | Catatan administrator |

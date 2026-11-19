@@ -89,5 +89,6 @@ stop_app() {
   pkill -f "artisan serve" 2>/dev/null || true
   pkill -f "Illuminate/Foundation/resources/server.php" 2>/dev/null || true
   pkill -f "artisan queue:work" 2>/dev/null || true
+  pkill -f "artisan schedule:work" 2>/dev/null || true
   sleep 2
 }

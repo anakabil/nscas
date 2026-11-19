@@ -26,5 +26,6 @@ final readonly class SetupFacts
         public int $rosterCount = 0,
         public int $activeSurveyTokens = 0,
         public int $completedSurveys = 0,
+        public int $strataBelowMinimum = 0,
     ) {}
 }

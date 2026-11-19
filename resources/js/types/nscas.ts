@@ -76,6 +76,8 @@ export type AssessmentProgress = {
         tokens: number;
         completed: { value: number | null; suppressed: boolean };
         minCell: number;
+        strataBelowMinimum: number;
+        minParticipation: number;
         rateOfTarget: number | null;
     };
 };
