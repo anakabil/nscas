@@ -21,8 +21,8 @@ class SamplingController extends SetupController
     {
         $roles = $this->pageRoles($request, $assessment, 'sampling');
         $locked = $assessment->status->parametersLocked();
-        $draft = $locked ? ($assessment->parameter_snapshot['parameters'] ?? []) : ($assessment->parameter_draft ?? []);
-        $plan = $locked ? ($assessment->parameter_snapshot['samplePlan'] ?? null) : ($draft['samplePlan'] ?? null);
+        $draft = ($locked ? ($assessment->parameter_snapshot['parameters'] ?? null) : null) ?? $assessment->parameter_draft ?? [];
+        $plan = $locked ? ($assessment->parameter_snapshot['samplePlan'] ?? $draft['samplePlan'] ?? null) : ($draft['samplePlan'] ?? null);
         $units = $assessment->units()->get(['type']);
 
         return Inertia::render('setup/sampling', [

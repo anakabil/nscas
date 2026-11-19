@@ -214,7 +214,10 @@ export function ProgressDashboard({ dashboard }: { dashboard: Dashboard }) {
                                         <p className="text-xs text-muted-foreground">{row.organization}</p>
                                         <p className="font-medium text-ink">{row.name}</p>
                                         <p className="numeral mt-1 text-xs text-muted-foreground">
-                                            {formatDate(row.periodStart, locale)} · {formatDate(row.periodEnd, locale)}
+                                            {t('assessments.periodRange', {
+                                                start: formatDate(row.periodStart, locale),
+                                                end: formatDate(row.periodEnd, locale),
+                                            })}
                                         </p>
                                         <p className="numeral mt-1 text-xs text-muted-foreground">
                                             {[

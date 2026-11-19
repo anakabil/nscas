@@ -45,15 +45,16 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 
 ## 4. Yang dapat dicoba pada versi ini
 
-Versi 2 saat ini berada di akhir fase R0 (fondasi). Yang sudah dapat dicoba:
+Versi 2 saat ini berada di akhir fase R1 (administrasi dan konfigurasi asesmen). Yang sudah dapat dicoba:
 
-1. Halaman masuk, pilihan bahasa Indonesia dan Inggris, dan pengaturan ulang kata sandi melalui kotak surat uji.
-2. Beranda yang berbeda untuk setiap jenis akun, beserta tahap asesmen yang sedang berjalan.
-3. Pusat asesmen dan halaman ringkasan lima asesmen contoh pada tahap yang berbeda.
-4. Pengaturan akun: profil, kata sandi, dan verifikasi dua langkah.
-5. Tampilan di telepon. Buka alamat yang sama dari peramban telepon.
+1. Halaman masuk, pilihan bahasa Indonesia dan Inggris (tersimpan di akun), dan pengaturan ulang kata sandi melalui kotak surat uji.
+2. Dasbor progres pengukuran di beranda, untuk akun pengelola sistem, asesor utama, asesor, dan administrator klien. Dasbor diperbarui otomatis setiap 60 detik.
+3. Organisasi dan pengguna: menambah organisasi klien, membuat akun dengan kata sandi sementara, mengubah peran, dan menonaktifkan akun. Coba dengan akun pengelola sistem atau administrator klien.
+4. Asesmen baru dengan akun asesor utama, lalu tujuh halaman tahap Perencanaan: rincian, unit, strata, parameter, kalkulator sampel, tim asesor, serta komunikasi awal dan kalibrasi.
+5. Mengubah status asesmen dari Draf ke Pengaturan lengkap, lalu ke Parameter terkunci, di pusat asesmen. Setelah terkunci, parameter tidak dapat diubah lagi.
+6. Tampilan di telepon. Buka alamat yang sama dari peramban telepon.
 
-Halaman yang bertanda fase R1 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
+Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R2 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
 
 Di lingkungan ini verifikasi dua langkah tidak diwajibkan, agar keenam akun contoh dapat langsung dicoba. Untuk mencoba alur wajibnya, buka berkas `.env` di codespace, ubah `NSCAS_ENFORCE_TWO_FACTOR=false` menjadi `true`, lalu jalankan `bash .devcontainer/start.sh --restart` di terminal. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator. Di produksi nilai ini wajib `true`.
 

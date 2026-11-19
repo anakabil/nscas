@@ -100,7 +100,7 @@ Akun contoh
   koordinator@contoh.test     Koordinator unit, PT Konstruksi Contoh
   eksekutif@contoh.test       Pemirsa eksekutif, PT Konstruksi Contoh
 
-Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Halaman yang bertanda fase R1 dan seterusnya
+Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Halaman yang bertanda fase R2 dan seterusnya
 baru berisi penjelasan, karena modulnya belum dibangun ulang.
 EOF
   )

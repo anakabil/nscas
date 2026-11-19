@@ -15,8 +15,8 @@ Cara membangun ulang sebuah modul:
 | Fase | Isi | Tahap penilaian | Status |
 |---|---|---|---|
 | R0 | Fondasi: Laravel, autentikasi, peran, isolasi tenant, jejak audit, alur enam tahap, mesin penilaian, beranda, tema, logo, paket penempatan | Semua | Selesai |
-| R1 | Administrasi dan konfigurasi asesmen | 1 | Berikutnya |
-| R2 | Responden, undangan, kode QR, partisipasi | 2 | |
+| R1 | Administrasi dan konfigurasi asesmen, dasbor progres di beranda | 1 | Selesai |
+| R2 | Responden, undangan, kode QR, partisipasi | 2 | Berikutnya |
 | R3 | Survei responden | 2 | |
 | R4 | Penilaian mandiri manajemen | 2 | |
 | R5 | Bukti dokumen dan observasi lapangan | 2 | |
@@ -32,7 +32,9 @@ Cara membangun ulang sebuah modul:
 
 Hasil: kerangka Laravel 13 dengan Inertia React; masuk dan verifikasi dua langkah tanpa pendaftaran publik; peran dan matriks hak akses (`app/Domain/Access`); alur enam tahap dan dua belas status (`app/Domain/Workflow`); katalog modul dan penyusun menu (`app/Domain/Navigation`); mesin penilaian, kalkulator sampel, dan statistik mutu data (`app/Domain/Scoring`) yang lolos seluruh fixture; penjaga akses asesmen dan jejak audit hanya-tambah; beranda dengan menu menurut tahap dan menurut jenis akun; tema Monokrom Perak dan Emas; logo; paket penempatan DigitalOcean.
 
-## R1. Administrasi dan konfigurasi asesmen
+## R1. Administrasi dan konfigurasi asesmen (selesai)
+
+Hasil: organisasi dan pengguna (kata sandi sementara yang wajib diganti, peran dipilih secara eksplisit, akun dinonaktifkan bukan dihapus); asesmen baru oleh asesor utama; tujuh halaman tahap 1 (rincian, unit bertingkat dengan koordinat proyek, strata dan jumlah pekerja, parameter dengan teks persetujuan yang menyebut lokasi data dan status perjanjian pemrosesan data, kalkulator sampel di server, tim asesor paling sedikit dua orang, komunikasi awal dan kalibrasi asesor); pemeriksa syarat dan tombol ubah status DRAFT ke CONFIGURED ke LOCKED dengan snapshot parameter; perubahan setelah terkunci ditolak 409; bahasa antarmuka tersimpan di akun; dasbor progres pengukuran di beranda untuk pengelola sistem, asesor, dan administrator klien (keputusan pemilik proyek, 19 November 2026), diperbarui otomatis setiap 60 detik. Tes: `tests/Unit/Domain/Setup`, `tests/Unit/Domain/ProgressCalculatorTest.php`, `tests/Feature/Setup`.
 
 Rujukan versi 1: `src/app/(console)/orgs`, `src/app/(console)/assessments/new`, `src/app/(console)/assessments/[id]/setup`, `src/lib/assessments`, `prisma/schema.prisma`, `prisma/seeding.ts`.
 
@@ -44,6 +46,20 @@ Rujukan versi 1: `src/app/(console)/orgs`, `src/app/(console)/assessments/new`, 
 6. Pilihan bahasa pengguna disimpan di akun.
 
 Selesai bila: seorang asesor utama dapat membuat asesmen dari nol sampai terkunci; parameter tidak dapat diubah setelah terkunci (tes); peran lain ditolak sesuai matriks (tes).
+
+## Dasbor progres beranda (lintas fase)
+
+Dasbor dibangun pada fase R1 dengan ukuran tahap perencanaan, kesiapan menuju status berikutnya, jadwal, dan penanda perhatian (`App\Domain\Progress`, `App\Http\Presenters\ProgressPresenter`). Setiap fase berikutnya menambah ukurannya sendiri ke dasbor dan mengisi pemeriksaan syarat transisinya di `App\Domain\Setup\ConditionEvaluator`:
+
+| Fase | Ukuran yang ditambahkan |
+|---|---|
+| R2 | Responden terdaftar dan tautan terbit; partisipasi per strata dibanding sasaran kalkulator sampel; penanda strata di bawah 30 persen |
+| R3 | Survei masuk per hari; angka per unit diperbarui per jam dan disembunyikan bila kurang dari 5 orang (aturan 3) |
+| R4 | Penilaian mandiri manajemen yang selesai |
+| R5 | Dokumen bukti per tema; proyek yang sudah diobservasi dibanding sasaran |
+| R6 | Wawancara dan diskusi kelompok terarah dibanding sasaran; status mutu data |
+| R7 | Sub-tema yang sudah dinilai dua asesor; rapat panel |
+| R9 | Rencana aksi berjalan dan yang melewati tenggat |
 
 ## R2. Responden, undangan, kode QR, dan partisipasi
 

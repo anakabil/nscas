@@ -6,6 +6,7 @@ use App\Domain\Setup\ConsentTemplate;
 use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\EditableParameters;
 use App\Models\Assessment;
+use App\Models\InstrumentVersion;
 use App\Services\AssessmentSetup;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,9 +25,10 @@ class ParameterController extends SetupController
     {
         $roles = $this->pageRoles($request, $assessment, 'parameters');
         $locked = $assessment->status->parametersLocked();
-        $draft = $locked
-            ? ($assessment->parameter_snapshot['parameters'] ?? [])
-            : ($assessment->parameter_draft ?? EditableParameters::draftFromDefaults($assessment->instrumentVersion->default_parameters));
+        // Setelah dikunci nilai dibaca dari snapshot; asesmen tanpa snapshot (data lama) memakai draf atau bawaan.
+        $draft = ($locked ? ($assessment->parameter_snapshot['parameters'] ?? null) : null)
+            ?? $assessment->parameter_draft
+            ?? EditableParameters::draftFromDefaults($this->defaults($assessment));
         $months = (int) ($draft['retention']['rawDataMonths'] ?? 36);
         $organization = $assessment->organization->name;
 
@@ -48,6 +50,13 @@ class ParameterController extends SetupController
                 'signedOn' => $assessment->dpa_signed_on?->toDateString(),
             ],
         ]);
+    }
+
+    /** @return array<string, mixed> */
+    private function defaults(Assessment $assessment): array
+    {
+        return ($assessment->instrumentVersion ?? InstrumentVersion::where('status', 'PUBLISHED')->latest('published_at')->firstOrFail())
+            ->default_parameters;
     }
 
     public function update(Request $request, Assessment $assessment, AssessmentSetup $setup): RedirectResponse

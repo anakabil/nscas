@@ -53,17 +53,22 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0)
+### 3.1 Tabel yang sudah ada (fase R0 dan R1)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
-| `users` | Akun, hash kata sandi, rahasia verifikasi dua langkah (terenkripsi), `is_super_admin`, `is_active` | Akun dinonaktifkan, bukan dihapus |
-| `organizations` | Nusa Safety (`is_operator`) dan organisasi klien | Kunci ULID |
-| `memberships` | Peran pengguna di satu organisasi | Peran operator hanya sah di organisasi operator |
-| `assessments` | Organisasi, nama, periode, sasaran tingkat, status, versi instrumen, `parameter_snapshot`, `locked_at` | Kunci ULID; status mengikuti `AssessmentStatus` |
-| `assessment_team_members` | Asesor utama dan asesor per asesmen | Akses asesor hanya ke asesmen yang ditugaskan |
+| `users` | Akun, hash kata sandi, rahasia verifikasi dua langkah (terenkripsi), `is_super_admin`, `is_active`, `locale`, `must_change_password` | Akun dinonaktifkan, bukan dihapus. Akun dari administrator wajib mengganti kata sandi sementara (R1) |
+| `organizations` | Nusa Safety (`is_operator`) dan organisasi klien, `legal_name`, `sector`, `is_active` | Kunci ULID |
+| `memberships` | Peran pengguna di satu organisasi | Peran operator hanya sah di organisasi operator. Peran tidak pernah diisi otomatis |
+| `instrument_versions` | Kode versi, status terbit, parameter bawaan (`default_parameters`), isi instrumen (`content`) | Dimuat dari `seed/` oleh `InstrumentVersionSeeder` (R1). Versi yang sudah ada tidak diubah |
+| `assessments` | Organisasi, nama, lingkup, periode, sasaran tingkat, status, versi instrumen, `parameter_draft`, teks persetujuan dua bahasa, status perjanjian pemrosesan data, komunikasi awal (`kickoff`), kalibrasi asesor (`calibration`), `parameter_snapshot`, `locked_at`, `locked_by` | Kunci ULID; status mengikuti `AssessmentStatus`. Setelah LOCKED hanya snapshot yang dibaca (aturan 5) |
+| `units` | Unit bertingkat (kantor pusat, divisi, proyek, cabang), koordinat dan radius proyek | Unit induk tidak dapat dihapus selama memiliki unit di bawahnya |
+| `strata` | Kode, nama, kelompok, jumlah pekerja (rata-rata setahun), penyedia jasa | Kode unik per asesmen. Tidak dapat diubah setelah dikunci |
+| `assessment_team_members` | Asesor utama dan asesor per asesmen | Akses asesor hanya ke asesmen yang ditugaskan. Paling sedikit dua orang sebelum dikunci |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
+
+Isi instrumen (aspek, karakteristik, pernyataan) pada fase R1 disimpan sebagai JSON di `instrument_versions.content`. Tabel ternormalisasinya dibuat pada fase R3, saat jawaban survei memerlukan kunci asing ke karakteristik.
 
 ### 3.2 Tabel yang dibangun pada fase berikutnya
 
@@ -71,9 +76,8 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R1 | `units`, `strata`, `instrument_versions`, `aspects`, `characteristics`, `statements`, `kickoff_records` |
 | R2 | `roster_entries`, `access_tokens`, `survey_windows`, `qr_codes`, `participation_snapshots` |
-| R3 | `survey_responses`, `survey_answers` |
+| R3 | `aspects`, `characteristics`, `statements`, `survey_responses`, `survey_answers` |
 | R4 | `self_assessments`, `self_assessment_answers` |
 | R5 | `evidence_items`, `evidence_versions`, `observation_windows`, `observations` |
 | R6 | `validation_sessions`, `validation_ratings`, `validation_plans` |
