@@ -24,10 +24,24 @@ export default function SystemStatus({ checks, checkedAt }: { checks: Check[]; c
                 </header>
                 <ul className="grid gap-4 sm:grid-cols-3">
                     {checks.map((check) => (
-                        <li key={check.key} className="frame-silver rounded-xl p-6" data-testid={`status-${check.key}`} data-ok={check.ok}>
+                        <li
+                            key={check.key}
+                            className="frame-silver rounded-xl p-6"
+                            data-testid={`status-${check.key}`}
+                            data-ok={check.ok}
+                        >
                             <p className="text-sm text-muted-foreground">{t(`systemStatus.${check.key}`)}</p>
-                            <p className={cn('mt-2 flex items-center gap-2 text-lg font-semibold', check.ok ? 'text-success' : 'text-destructive')}>
-                                {check.ok ? <CircleCheck aria-hidden className="size-5" /> : <CircleX aria-hidden className="size-5" />}
+                            <p
+                                className={cn(
+                                    'mt-2 flex items-center gap-2 text-lg font-semibold',
+                                    check.ok ? 'text-success' : 'text-destructive',
+                                )}
+                            >
+                                {check.ok ? (
+                                    <CircleCheck aria-hidden className="size-5" />
+                                ) : (
+                                    <CircleX aria-hidden className="size-5" />
+                                )}
                                 {t(check.ok ? 'systemStatus.ok' : 'systemStatus.fail')}
                             </p>
                         </li>

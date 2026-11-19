@@ -22,7 +22,11 @@ export default function AssessmentShow({ assessment }: { assessment: AssessmentM
                             <ul className="grid gap-x-8 gap-y-2.5 text-sm sm:grid-cols-2">
                                 {assessment.next.conditions.map((condition) => (
                                     <li key={condition} className="flex items-start gap-2.5">
-                                        <Circle aria-hidden className="mt-0.5 size-4 shrink-0 text-silver-dim" strokeWidth={1.5} />
+                                        <Circle
+                                            aria-hidden
+                                            className="mt-0.5 size-4 shrink-0 text-silver-dim"
+                                            strokeWidth={1.5}
+                                        />
                                         <span>{t(`conditions.${condition}`)}</span>
                                     </li>
                                 ))}
@@ -37,7 +41,11 @@ export default function AssessmentShow({ assessment }: { assessment: AssessmentM
                 </section>
 
                 <section className="space-y-6" data-testid="menu-by-stage">
-                    <SectionHeading eyebrow={t('hub.progressTitle')} title={t('home.byStageTitle')} intro={t('home.byStageIntro')} />
+                    <SectionHeading
+                        eyebrow={t('hub.progressTitle')}
+                        title={t('home.byStageTitle')}
+                        intro={t('home.byStageIntro')}
+                    />
                     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {assessment.stages.map((stage) => (
                             <StageCard key={stage.key} stage={stage} />

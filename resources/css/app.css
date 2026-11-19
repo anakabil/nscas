@@ -16,8 +16,7 @@
  * nyaman dibaca lama dan terbaca di bawah sinar matahari di lokasi proyek.
  */
 @theme {
-    --font-sans:
-        'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --font-sans: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
     --font-display: 'Playfair Display Variable', ui-serif, Georgia, 'Times New Roman', serif;
 
     --radius-lg: var(--radius);
@@ -111,7 +110,7 @@
     }
 
     body {
-        @apply bg-background text-foreground font-sans antialiased;
+        @apply bg-background font-sans text-foreground antialiased;
         font-feature-settings: 'ss01', 'cv11';
     }
 
@@ -145,7 +144,14 @@
 
     .hairline-silver {
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--silver-dim) 20%, var(--silver-bright) 50%, var(--silver-dim) 80%, transparent);
+        background: linear-gradient(
+            90deg,
+            transparent,
+            var(--silver-dim) 20%,
+            var(--silver-bright) 50%,
+            var(--silver-dim) 80%,
+            transparent
+        );
     }
 
     /* Teks emas logam, hanya untuk bidang gelap. */

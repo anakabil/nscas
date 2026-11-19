@@ -147,7 +147,10 @@ export function TaskTile({ module }: { module: ModuleLink }) {
             href={module.href}
             className="group flex h-full items-start gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:border-gold/70 focus-visible:border-gold/70"
         >
-            <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-obsidian text-silver-bright">
+            <span
+                aria-hidden
+                className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-obsidian text-silver-bright"
+            >
                 {Icon ? <Icon className="size-5" strokeWidth={1.5} /> : null}
             </span>
             <span className="min-w-0 flex-1 space-y-1">
@@ -185,7 +188,13 @@ export function AccountTile({ item }: { item: AccountMenuItem }) {
 }
 
 /** Penanda kemajuan enam ruas. Di bidang gelap: selesai perak, berjalan emas, berikutnya samar. */
-export function StageMeter({ stages, tone = 'dark' }: { stages: Pick<StageGroup, 'number' | 'state'>[]; tone?: 'dark' | 'light' }) {
+export function StageMeter({
+    stages,
+    tone = 'dark',
+}: {
+    stages: Pick<StageGroup, 'number' | 'state'>[];
+    tone?: 'dark' | 'light';
+}) {
     const palette =
         tone === 'dark'
             ? { done: 'bg-silver', current: 'bg-gold', upcoming: 'bg-white/15' }

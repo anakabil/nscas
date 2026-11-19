@@ -50,7 +50,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                             >
                                 <item.icon aria-hidden className="size-4" strokeWidth={1.5} />
                                 {item.label}
-                                {item.active ? <span aria-hidden className="absolute inset-x-3 -bottom-[13px] h-px bg-gold" /> : null}
+                                {item.active ? (
+                                    <span aria-hidden className="absolute inset-x-3 -bottom-[13px] h-px bg-gold" />
+                                ) : null}
                             </Link>
                         ))}
                     </nav>
@@ -70,10 +72,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                     <Menu aria-hidden className="size-4 md:hidden" strokeWidth={1.5} />
                                     <span className="hidden max-w-[11rem] truncate md:inline">{user.name}</span>
                                     <span className="md:hidden">{t('nav.menu')}</span>
-                                    <ChevronDown aria-hidden className="size-4 text-white/60 transition-transform group-open:rotate-180" />
+                                    <ChevronDown
+                                        aria-hidden
+                                        className="size-4 text-white/60 transition-transform group-open:rotate-180"
+                                    />
                                 </summary>
                                 <div className="absolute right-0 z-30 mt-2 w-64 rounded-xl border border-border bg-card p-2 text-card-foreground shadow-xl">
-                                    <p className="px-3 pt-2 pb-3 text-xs text-muted-foreground">{t('nav.signedInAs', { name: user.name })}</p>
+                                    <p className="px-3 pt-2 pb-3 text-xs text-muted-foreground">
+                                        {t('nav.signedInAs', { name: user.name })}
+                                    </p>
                                     <nav aria-label={t('nav.menu')} className="flex flex-col md:hidden">
                                         {items.map((item) => (
                                             <Link
@@ -87,7 +94,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                             </Link>
                                         ))}
                                     </nav>
-                                    <Link href="/settings/profile" className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted">
+                                    <Link
+                                        href="/settings/profile"
+                                        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
+                                    >
                                         <ShieldCheck aria-hidden className="size-4 text-silver-dim" strokeWidth={1.5} />
                                         {t('nav.account')}
                                     </Link>

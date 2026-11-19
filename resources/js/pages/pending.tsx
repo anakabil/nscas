@@ -13,9 +13,16 @@ export default function Pending({ area, buildPhase }: { area: string; buildPhase
         <>
             <Head title={title} />
             <Container className="py-14">
-                <article className="frame-silver mx-auto max-w-2xl rounded-2xl p-8 sm:p-10" data-testid="pending-page" data-area={area}>
+                <article
+                    className="frame-silver mx-auto max-w-2xl rounded-2xl p-8 sm:p-10"
+                    data-testid="pending-page"
+                    data-area={area}
+                >
                     <div className="flex items-start gap-5">
-                        <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-obsidian text-silver-bright">
+                        <span
+                            aria-hidden
+                            className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-obsidian text-silver-bright"
+                        >
                             {Icon ? <Icon className="size-6" strokeWidth={1.5} /> : null}
                         </span>
                         <div className="space-y-2">
@@ -28,8 +35,13 @@ export default function Pending({ area, buildPhase }: { area: string; buildPhase
                         <h2 className="text-sm font-semibold">{t('pending.title')}</h2>
                         <PhaseTag phase={buildPhase} />
                     </div>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t('pending.body', { area: title, phase: buildPhase })}</p>
-                    <Link href="/home" className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-obsidian hover:underline">
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                        {t('pending.body', { area: title, phase: buildPhase })}
+                    </p>
+                    <Link
+                        href="/home"
+                        className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-obsidian hover:underline"
+                    >
                         <ArrowLeft aria-hidden className="size-4" />
                         {t('pending.back')}
                     </Link>

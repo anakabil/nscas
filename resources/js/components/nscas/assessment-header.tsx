@@ -11,7 +11,10 @@ export function AssessmentHeader({ assessment, back }: { assessment: AssessmentM
     return (
         <section className="bg-obsidian-dial text-white">
             <Container className="space-y-6 py-10">
-                <Link href={back.href} className="inline-flex items-center gap-2 text-sm font-medium text-white/65 hover:text-white">
+                <Link
+                    href={back.href}
+                    className="inline-flex items-center gap-2 text-sm font-medium text-white/65 hover:text-white"
+                >
                     <ArrowLeft aria-hidden className="size-4" />
                     {back.label}
                 </Link>

@@ -1,363 +1,190 @@
-# 08. Panduan Penempatan Produksi
+# 08. Penempatan di DigitalOcean (Singapura)
 
-Panduan ini menjelaskan langkah menempatkan NSCAS di satu VPS Ubuntu 24.04 LTS yang berlokasi di pusat data Indonesia, sesuai docs/02 bagian 7. Semua perintah dijalankan oleh administrator di server produksi. Berkas yang dipakai sudah tersedia di repositori:
+Panduan ini menjelaskan cara memasang NSCAS versi 2 di DigitalOcean wilayah Singapura (`sgp1`). Panduan versi 1 untuk VPS berpusat data Indonesia tersimpan di riwayat Git pada komit `8ad6b3d`.
+
+Semua langkah dijalankan oleh pemilik akun DigitalOcean atau administrator yang ditunjuk. Tidak ada langkah di panduan ini yang dijalankan otomatis dari repositori.
+
+## 1. Sebelum mulai
+
+### 1.1 Syarat lokasi data
+
+DigitalOcean tidak memiliki pusat data di Indonesia. Sebelum ada data responden nyata di server ini, syarat pada `docs/04` bagian 1.1 wajib terpenuhi: persetujuan tertulis klien atas lokasi Singapura, perjanjian pemrosesan data yang menyebut lokasi dan penyedia, dan dasar transfer data ke luar negeri yang terdokumentasi. Sebelum itu, server hanya boleh dipakai untuk uji coba dengan data buatan.
+
+### 1.2 Berkas yang tersedia
 
 | Berkas | Fungsi |
 |---|---|
-| `Dockerfile` | Image bertahap untuk aplikasi dan worker (image sama, perintah berbeda), termasuk Chromium headless untuk PDF |
-| `docker-compose.prod.yml` | Aplikasi (3 replika), worker, PostgreSQL bervolume persisten, MinIO, Caddy, serta layanan sekali jalan `migrate`, `minio-init`, dan `backup` |
-| `Caddyfile` | TLS otomatis untuk `nscas.nusasafety.co.id` dan domain berkas, HTTP/3, header keamanan, penyeimbang beban, tanpa log rute bertoken |
-| `.env.production.example` | Templat seluruh variabel lingkungan produksi |
-| `ops/minio/minio-init.sh` | Bucket privat dan akses khusus aplikasi |
-| `ops/backup/` | Image cadangan, `backup.sh` (pg_dump terenkripsi age ke penyimpanan objek kedua, simpan 30 hari), `restore-test.sh` dan `checks.sql` (uji pemulihan) |
-| `ops/systemd/` | Timer cadangan harian pukul 01.30 WIB |
-| `ops/maintenance/shuffle-survey-rows.sql` | Pengacakan urutan fisik baris jawaban survei setelah survei ditutup (docs/06 R1) |
-
-Penulisan `<...>` berarti nilai yang harus diganti. Contoh perintah memakai pengguna `nscas` dan direktori `/opt/nscas`.
-
-## 1. Prasyarat
-
-1. VPS di pusat data Indonesia, misalnya Biznet Gio, IDCloudHost, AWS wilayah Jakarta (`ap-southeast-3`), atau Google Cloud wilayah Jakarta (`asia-southeast2`). Lokasi ini wajib sesuai komitmen proposal (CLAUDE.md aturan 7). Spesifikasi minimum adalah 4 vCPU, 8 GB RAM, dan SSD 160 GB, karena uji beban docs/07 memakai sekitar 300 MB per replika aplikasi. Pilih paket dengan enkripsi disk di tingkat penyedia (docs/04 bagian 4). Bila penyedia tidak menyediakannya, pasang disk data terpisah terenkripsi LUKS untuk `/var/lib/docker`, dengan konsekuensi kata sandi pembuka harus dimasukkan setiap kali server dinyalakan ulang.
-2. Penyimpanan objek kedua untuk cadangan. Gunakan penyedia atau wilayah yang berbeda dari VPS, tetap di Indonesia, kompatibel S3, dengan enkripsi sisi server aktif. Siapkan satu bucket (misalnya `nscas-backup`), kunci akses yang hanya berlaku untuk bucket itu, dan aturan siklus hidup yang menghapus objek setelah 35 hari sebagai pengaman kedua.
-3. Layanan SMTP berlokasi di Indonesia untuk undangan dan pengingat.
-4. Akses DNS domain `nusasafety.co.id` (saat ini dikelola di Hostinger).
-5. Pengelola kata sandi perusahaan untuk menyimpan rahasia dan kunci privat cadangan.
-
-## 2. DNS
-
-Buat dua rekaman A (dan AAAA bila VPS memiliki IPv6) yang menunjuk ke alamat IP publik VPS:
-
-| Nama | Jenis | Nilai |
-|---|---|---|
-| `nscas` | A | `<IP VPS>` |
-| `berkas.nscas` | A | `<IP VPS>` |
-
-Periksa dari laptop sebelum melanjutkan, karena Caddy memerlukan DNS yang benar untuk menerbitkan sertifikat:
-
-```bash
-dig +short nscas.nusasafety.co.id
-dig +short berkas.nscas.nusasafety.co.id
-```
-
-## 3. Login pertama dan pengguna non-root
-
-Masuk sebagai root atau pengguna bawaan penyedia, lalu perbarui sistem dan buat pengguna `nscas`:
-
-```bash
-apt update && apt full-upgrade -y
-timedatectl set-timezone Asia/Jakarta
-adduser nscas
-usermod -aG sudo nscas
-install -d -m 700 -o nscas -g nscas /home/nscas/.ssh
-cp /root/.ssh/authorized_keys /home/nscas/.ssh/authorized_keys
-chown nscas:nscas /home/nscas/.ssh/authorized_keys && chmod 600 /home/nscas/.ssh/authorized_keys
-```
-
-Dari laptop, pastikan dapat masuk sebagai `nscas` dengan kunci SSH sebelum menutup sesi root:
-
-```bash
-ssh nscas@<IP VPS>
-```
-
-Matikan login root dan login dengan kata sandi:
-
-```bash
-sudo tee /etc/ssh/sshd_config.d/10-nscas.conf > /dev/null <<'EOF'
-PermitRootLogin no
-PasswordAuthentication no
-KbdInteractiveAuthentication no
-AllowUsers nscas
-EOF
-sudo sshd -t && sudo systemctl reload ssh
-```
-
-## 4. Firewall
-
-```bash
-sudo ufw default deny incoming
-sudo ufw default allow outgoing
-sudo ufw limit OpenSSH
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 443/udp
-sudo ufw enable
-sudo ufw status verbose
-```
-
-Port yang dibuka Docker melewati aturan masukan ufw. Karena itu, hanya layanan `caddy` yang boleh memiliki `ports` di `docker-compose.prod.yml`. Jangan pernah menambahkan `ports` untuk `postgres` atau `minio`. Bila konsol MinIO atau basis data perlu diakses, gunakan terowongan SSH, misalnya `ssh -L 5433:<IP kontainer postgres>:5432 nscas@<IP VPS>`.
-
-Pasang juga fail2ban; jail SSH aktif secara bawaan di Ubuntu:
-
-```bash
-sudo apt install -y fail2ban
-sudo systemctl enable --now fail2ban
-```
-
-## 5. Pembaruan keamanan otomatis
-
-```bash
-sudo apt install -y unattended-upgrades apt-listchanges
-sudo dpkg-reconfigure -plow unattended-upgrades
-sudo tee /etc/apt/apt.conf.d/52nscas-unattended > /dev/null <<'EOF'
-Unattended-Upgrade::Remove-Unused-Dependencies "true";
-Unattended-Upgrade::Automatic-Reboot "true";
-Unattended-Upgrade::Automatic-Reboot-Time "03:00";
-EOF
-sudo unattended-upgrade --dry-run --debug | tail -5
-```
-
-Mulai ulang otomatis pukul 03.00 WIB berada di luar jam kerja dan setelah cadangan harian pukul 01.30 WIB. Selama jendela survei besar, pertimbangkan menunda mulai ulang dengan `Automatic-Reboot "false"` lalu memulai ulang secara terjadwal.
-
-## 6. Docker Engine
-
-Pasang dari repositori resmi Docker:
-
-```bash
-sudo apt install -y ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
-  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-sudo tee /etc/docker/daemon.json > /dev/null <<'EOF'
-{ "live-restore": true, "log-driver": "json-file", "log-opts": { "max-size": "20m", "max-file": "5" } }
-EOF
-sudo systemctl restart docker
-sudo usermod -aG docker nscas
-```
-
-Keluar lalu masuk kembali agar keanggotaan grup `docker` berlaku. Keanggotaan grup ini setara dengan akses root, jadi hanya berikan kepada administrator.
-
-## 7. Kode aplikasi
-
-Gunakan deploy key GitHub yang hanya bisa membaca, lalu ambil versi rilis yang sudah lulus seluruh tes:
-
-```bash
-sudo install -d -o nscas -g nscas /opt/nscas
-git clone git@github.com:anakabil/nscas.git /opt/nscas
-cd /opt/nscas
-git checkout <tag rilis>
-```
-
-## 8. Rahasia dan variabel lingkungan
-
-```bash
-cd /opt/nscas
-cp .env.production.example .env.production
-chmod 600 .env.production
-openssl rand -base64 32   # AUTH_SECRET
-openssl rand -base64 32   # DATA_ENCRYPTION_KEY
-openssl rand -hex 24      # POSTGRES_PASSWORD, MINIO_ROOT_PASSWORD, S3_SECRET_ACCESS_KEY, SEED_ADMIN_PASSWORD
-openssl rand -hex 10      # MINIO_ROOT_USER, S3_ACCESS_KEY_ID
-nano .env.production
-```
-
-Isi seluruh variabel sesuai komentar di templat.
-
-- `DOMAIN` diisi `nscas.nusasafety.co.id` dan `STORAGE_DOMAIN` diisi `berkas.nscas.nusasafety.co.id`.
-- `MONITORING_IPS` diisi alamat layanan pemantau.
-- Nilai SMTP diisi sesuai penyedia surel di Indonesia.
-
-Simpan salinan `DATA_ENCRYPTION_KEY` dan `AUTH_SECRET` di pengelola kata sandi perusahaan. Bila `DATA_ENCRYPTION_KEY` hilang, kontak responden terenkripsi dan rahasia verifikasi dua langkah tidak dapat dibuka, bahkan dari cadangan.
-
-## 9. Membangun image dan menyiapkan basis data
-
-```bash
-cd /opt/nscas
-export COMPOSE="docker compose -f docker-compose.prod.yml --env-file .env.production"
-$COMPOSE --profile tools build
-$COMPOSE up -d postgres minio
-$COMPOSE run --rm minio-init
-$COMPOSE run --rm migrate
-$COMPOSE run --rm migrate prisma db seed
-```
-
-Seed membuat pengguna SUPER_ADMIN pertama dan instrumen NS-SCML-1.0, tanpa organisasi atau data demo. Setelah seed selesai, hapus nilai `SEED_ADMIN_PASSWORD` dari `.env.production`. Saat administrator pertama kali masuk, halaman Asesmen menampilkan panduan "Mulai pengukuran": organisasi klien, asesor utama, lalu asesmen.
-
-Jangan menjalankan `npm run demo` di produksi. Skrip demo memang tidak dimasukkan ke image.
-
-## 10. Menjalankan aplikasi
-
-```bash
-$COMPOSE up -d
-$COMPOSE ps
-$COMPOSE logs --tail 50 app worker caddy
-```
-
-Status yang diharapkan: tiga replika `app` sehat, `worker` mencetak "Worker NSCAS berjalan.", dan `caddy` sudah memperoleh sertifikat untuk kedua domain.
-
-## 11. Pemeriksaan setelah penempatan
-
-```bash
-curl -sI https://nscas.nusasafety.co.id/login | grep -iE "^HTTP|strict-transport|content-security|x-frame|x-content"
-curl -sI https://nscas.nusasafety.co.id/s/contoh | grep -i referrer-policy      # harus no-referrer
-curl -s -o /dev/null -w "%{http_code}\n" https://nscas.nusasafety.co.id/health  # 404 dari luar alamat pemantau
-curl -s -o /dev/null -w "%{http_code}\n" http://nscas.nusasafety.co.id/login    # 308 ke HTTPS
-$COMPOSE exec caddy sh -c 'grep -c "\"uri\":\"/s/" /data/logs/access.log'      # harus 0
-```
-
-Lanjutkan dengan pemeriksaan berikut:
-
-1. Uji TLS di SSL Labs untuk kedua domain. Sasarannya peringkat A dengan TLS 1.2 ke atas (docs/04 bagian 4).
-2. Masuk sebagai SUPER_ADMIN dan segera aktifkan verifikasi dua langkah. Simpan kode cadangannya di pengelola kata sandi.
-3. Buat akun lead assessor dan asesor, lalu buat organisasi klien PT Adhi Karya (Persero) Tbk.
-4. Lakukan uji asap: unggah satu bukti PDF (memastikan URL bertanda tangan ke `berkas.nscas.nusasafety.co.id` dan CORS bekerja), susun satu versi laporan pada asesmen uji (memastikan Chromium di worker merender PDF), dan kirim satu undangan uji ke surel internal.
-5. Jalankan uji beban k6 dari mesin terpisah sebelum survei pertama klien dibuka. Ikuti docs/07 bagian 8 dengan `BASE_URL=https://nscas.nusasafety.co.id` pada asesmen uji.
-
-## 12. Cadangan harian dan uji pemulihan
-
-### 12.1 Kunci enkripsi
-
-Buat pasangan kunci age di laptop administrator, bukan di server:
-
-```bash
-age-keygen -o nscas-backup.key
-grep "public key" nscas-backup.key
-```
-
-Simpan `nscas-backup.key` di pengelola kata sandi perusahaan dan satu salinan luring, dengan akses dua orang. Isi `BACKUP_AGE_RECIPIENT` di `.env.production` dengan kunci publik (diawali `age1`), lalu isi juga variabel `BACKUP_S3_*`. Server hanya memegang kunci publik, sehingga pihak yang menguasai server tidak dapat membuka cadangan.
-
-### 12.2 Timer harian
-
-```bash
-sudo cp /opt/nscas/ops/systemd/nscas-backup.service /opt/nscas/ops/systemd/nscas-backup.timer /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now nscas-backup.timer
-sudo systemctl start nscas-backup.service
-journalctl -u nscas-backup.service -n 30 --no-pager
-systemctl list-timers nscas-backup.timer
-```
-
-Setiap malam skrip mengalirkan `pg_dump` langsung ke `age` lalu ke bucket cadangan dengan nama `db/<tahun>/<bulan>/nscas-<waktu>.dump.age`. Cadangan yang lebih tua dari 30 hari dihapus. Berkas bukti dan rekaman disalin ke `objects/` dengan mode mirror, sehingga berkas yang dimusnahkan (docs/04 bagian 7) ikut terhapus di salinan. Data mentah yang dimusnahkan masih ada di cadangan basis data paling lama 30 hari, lalu hilang bersama habisnya masa simpan cadangan. Catat hal ini di berita acara pemusnahan bila klien menanyakannya.
-
-### 12.3 Uji pemulihan bulanan
-
-Jalankan setiap bulan di laptop administrator yang memegang kunci privat, bukan di server produksi:
-
-```bash
-cd nscas
-docker build -t nscas-backup ops/backup
-chmod 644 nscas-backup.key   # dibaca pengguna postgres di dalam kontainer; hapus salinan ini setelah uji
-docker run --rm \
-  -e BACKUP_S3_ENDPOINT=<endpoint> -e BACKUP_S3_ACCESS_KEY_ID=<kunci baca> -e BACKUP_S3_SECRET_ACCESS_KEY=<rahasia> \
-  -e BACKUP_S3_BUCKET=nscas-backup -e AGE_IDENTITY=/run/nscas-backup.key \
-  -v "$PWD/nscas-backup.key:/run/nscas-backup.key:ro" \
-  --entrypoint nscas-restore-test nscas-backup
-```
-
-Skrip mengunduh cadangan terbaru, membuka enkripsinya, dan memulihkannya ke PostgreSQL sementara. Setelah itu `ops/backup/checks.sql` memeriksa migrasi, pemicu hanya-tambah, jumlah baris utama, dan waktu catatan audit terakhir. Hasil yang diharapkan diakhiri baris "LULUS". Catat hasilnya:
-
-| Tanggal | Cadangan yang diuji | Migrasi | Audit terakhir | Hasil | Pelaksana |
-|---|---|---|---|---|---|
-| | | | | | |
-
-## 13. Pemeliharaan rutin
-
-| Kapan | Tindakan | Perintah atau rujukan |
-|---|---|---|
-| Setelah setiap jendela survei ditutup | Acak urutan fisik baris jawaban survei (docs/06 R1) | `$COMPOSE exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -f -' < ops/maintenance/shuffle-survey-rows.sql` |
-| Harian, otomatis | Cadangan | Timer `nscas-backup.timer` |
-| Mingguan, otomatis | Penandaan masa simpan data mentah | Worker, `retention.scan` Senin 06.00 WIB |
-| Mingguan | Periksa log, ruang disk, dan status layanan | `$COMPOSE ps`, `df -h`, `docker system df` |
-| Bulanan | Uji pemulihan | Langkah 12.3 |
-| Bulanan | Perbarui image dasar PostgreSQL, MinIO, Caddy, dan Node.js | `$COMPOSE pull` lalu langkah 14 |
-| Sesuai kebutuhan | Pemusnahan data mentah setelah konfirmasi klien | Halaman Retensi data (SUPER_ADMIN), docs/04 bagian 7 |
-
-Pantau `https://nscas.nusasafety.co.id/health` dari alamat di `MONITORING_IPS` setiap menit, dengan peringatan ke tim bila status bukan 200. Sertifikat TLS diperbarui otomatis oleh Caddy.
-
-## 14. Memperbarui versi dan rollback
-
-Lakukan pembaruan di luar jendela survei aktif.
-
-```bash
-cd /opt/nscas
-sudo systemctl start nscas-backup.service      # cadangan tepat sebelum migrasi
-git fetch --tags && git checkout <tag baru>
-sed -i "s/^NSCAS_VERSION=.*/NSCAS_VERSION=<tag baru>/" .env.production
-$COMPOSE --profile tools build
-$COMPOSE run --rm migrate
-$COMPOSE up -d
-$COMPOSE ps
-```
-
-Migrasi basis data hanya bergerak maju. Rollback kode dilakukan dengan `git checkout <tag sebelumnya>`, mengembalikan `NSCAS_VERSION`, lalu `$COMPOSE up -d`, selama migrasi versi baru tidak mengubah struktur yang dipakai versi lama. Bila struktur berubah, pulihkan cadangan yang dibuat tepat sebelum migrasi ke basis data baru. Lakukan ini hanya setelah memastikan tidak ada data baru yang hilang, dan catat kejadiannya.
-
-Untuk menambah replika aplikasi selama survei besar, ubah `APP_REPLICAS` lalu jalankan `$COMPOSE up -d app`. Pastikan nilai replika dikali `DATABASE_POOL_MAX`, ditambah worker, tetap di bawah `max_connections` 150.
-
-## 15. Daftar periksa sebelum survei pertama klien
-
-Butir operasional docs/06 yang harus diperiksa di server:
-
-| Butir docs/06 | Pemeriksaan | Selesai |
-|---|---|---|
-| 1.2 Lokasi data | VPS, penyimpanan cadangan, dan SMTP berada di Indonesia; bukti lokasi dari penyedia diarsipkan | |
-| 4.1 TLS dan HSTS | Langkah 11, SSL Labs peringkat A | |
-| 4.3 Enkripsi disk | Konfirmasi tertulis penyedia atau LUKS | |
-| 4.4 Cadangan terenkripsi | Langkah 12, satu uji pemulihan LULUS | |
-| R1 Urutan baris | Prosedur langkah 13 dipahami tim | |
-| R3 dan R4 Batas laju | `SURVEY_RATE_LIMIT_PER_MINUTE=600` dengan 3 replika | |
-| R5 Log rute bertoken | Pemeriksaan log langkah 11 menghasilkan 0 | |
-| R7 `/health` | 404 dari luar alamat pemantau | |
-| R8 CORS dan enkripsi penyimpanan | Unggah bukti dari peramban berhasil; enkripsi sisi server aktif di bucket cadangan | |
-| R9 Telemetri | `NEXT_TELEMETRY_DISABLED=1` sudah ada di image | |
-| Rahasia | `.env.production` ber-mode 600; `DATA_ENCRYPTION_KEY`, `AUTH_SECRET`, dan kunci age tersimpan di pengelola kata sandi | |
-| Akun | SUPER_ADMIN, lead assessor, dan asesor sudah mengaktifkan verifikasi dua langkah | |
-| Uji beban | k6 dari mesin terpisah memenuhi sasaran docs/07 | |
-
-## 16. Catatan verifikasi saat penyusunan (Fase 16)
-
-Berkas penempatan diuji di lingkungan pengembangan, bukan di server produksi:
-
-- `next build` dan pemasangan dependensi produksi berjalan di dalam Docker.
-- Tumpukan `docker-compose.prod.yml` dijalankan lengkap dengan dua replika aplikasi di belakang Caddy (domain `localhost`, sertifikat internal Caddy). Yang terbukti bekerja:
-  - migrasi, seed, dan inisialisasi MinIO;
-  - masuk SUPER_ADMIN beserta pendaftaran verifikasi dua langkah;
-  - header keamanan, `Referrer-Policy: no-referrer` pada rute survei, dan pengalihan HTTP ke HTTPS;
-  - `/health` dijawab 404 dari luar;
-  - tidak ada log akses untuk `/s/*`;
-  - worker berjalan.
-- Skrip cadangan dan uji pemulihan dijalankan nyata terhadap basis data demo dan MinIO pengembangan: cadangan terenkripsi age terunggah, mirror berkas berhasil, dan uji pemulihan LULUS.
-- `ops/maintenance/shuffle-survey-rows.sql` diuji pada basis data demo.
-- `Caddyfile` lolos `caddy validate` dan `caddy fmt`.
-
-Yang belum dapat diverifikasi karena kebijakan jaringan lingkungan pengembangan memblokir repositori paket Debian dan Alpine:
-
-1. Lapisan Chromium di `Dockerfile` (`playwright-core install --with-deps`). PDF laporan di image produksi belum diuji.
-2. Build `ops/backup/Dockerfile` (`apk add age minio-client`).
-3. Penerbitan sertifikat Let's Encrypt dan pengiriman SMTP nyata.
-
-Ketiganya terperiksa pada langkah 9 sampai 12 di server.
-
-## 17. Penempatan di VPS Hostinger tanpa sesi SSH
-
-Bagian ini mencatat jalur penempatan di VPS Hostinger pusat data Jakarta (kode `dci`), yang disiapkan pada 24 Oktober 2026. Penempatan ini ditunda sampai klien memberi kepastian. Selama itu uji coba memakai GitHub Codespaces (docs/09).
-
-### 17.1 Berkas
-
-| Berkas | Fungsi |
+| `Dockerfile` | Membangun satu image berisi aplikasi dan server web FrankenPHP |
+| `docker-compose.prod.yml` | Layanan produksi: `app` (web), `worker` (antrean), `scheduler` (penjadwal), `migrate`, dan `postgres` pada profil `single` |
+| `docker-compose.yml` | Layanan pengembangan saja: PostgreSQL, MinIO, Mailpit |
+| `deploy/digitalocean/cloud-init.yaml` | Penyiapan Droplet saat pertama menyala |
+| `deploy/digitalocean/deploy.sh` | Memasang versi baru, memeriksa kesehatan, dan mengembalikan versi sebelumnya |
+| `deploy/digitalocean/backup.sh` | Cadangan harian terenkripsi dan uji pemulihan (tata letak A) |
+| `deploy/digitalocean/.env.production.example` | Templat variabel produksi tanpa nilai rahasia |
+
+### 1.3 Status verifikasi
+
+| Pemeriksaan | Hasil |
 |---|---|
-| `ops/hostinger/post-install.sh` | Mengunduh repositori pada commit tertentu ke `/opt/nscas`, lalu menjalankan `bootstrap.sh`. Dapat diunggah sebagai post-install script Hostinger, atau dijalankan dari terminal hPanel. |
-| `ops/hostinger/bootstrap.sh` | Langkah 3 sampai 11 panduan ini: paket sistem, pembaruan otomatis, Docker, firewall, pengguna `nscas`, rahasia acak di `.env.production`, build, migrasi, seed, menjalankan aplikasi, dan menunggu sertifikat TLS. Aman dijalankan ulang. Rahasia dibuat di server dan tidak pernah dicetak ke log. Kata sandi SUPER_ADMIN awal disimpan di `/root/nscas-admin-awal.txt` (hanya root). Kemajuan ringkas ada di `/var/log/nscas/langkah.log`, keluaran lengkap di `/var/log/nscas/bootstrap.log`. |
+| Sintaks `deploy.sh` dan `backup.sh` | Lulus (`bash -n`) |
+| Berkas `cloud-init.yaml` dan kedua berkas compose | Sah; `docker compose config` lulus untuk keduanya |
+| Dockerfile | Lulus pemeriksaan `docker buildx build --check` tanpa peringatan |
+| Membangun image penuh dan menjalankannya | Belum. Lingkungan penyusunan membatasi akses jaringan dari dalam proses build, sehingga tidak dapat diuji di sana |
+| Penempatan ke Droplet sungguhan | Belum. Tidak ada akun DigitalOcean yang dipakai saat penyusunan |
 
-### 17.2 Langkah
+Karena dua butir terakhir belum diuji, penempatan pertama harus diperlakukan sebagai uji: pakai tata letak A dengan data buatan, dan jalankan daftar periksa bagian 12 sebelum dipakai klien.
 
-1. Beli VPS di hPanel: KVM 4 (4 vCPU, 16 GB RAM, 200 GB), lokasi Indonesia (Jakarta), sistem operasi Ubuntu 24.04 with Docker. Matikan pemindai Monarx (layanan pihak ketiga, CLAUDE.md aturan 7).
-2. Di zona DNS `nusasafety.co.id`, hapus rekaman ALIAS `nscas` yang mengarah ke CDN web hosting, lalu buat rekaman A `nscas` dan `berkas.nscas` ke IP VPS (bagian 2).
-3. Buka terminal VPS di hPanel, lalu jalankan dengan `<ref>` berupa commit yang akan dipasang:
+## 2. Tiga tata letak
 
-   ```bash
-   curl -fsSL -o /root/nscas-post-install.sh https://raw.githubusercontent.com/anakabil/nscas/<ref>/ops/hostinger/post-install.sh
-   systemd-run --unit nscas-bootstrap --setenv=NSCAS_REF=<ref> --setenv=NSCAS_ADMIN_EMAIL=admin@nusasafety.co.id bash /root/nscas-post-install.sh
-   tail -f /var/log/nscas/langkah.log
-   ```
+Server aplikasi tidak menyimpan keadaan. Sesi, cache, dan antrean ada di PostgreSQL, dan berkas ada di penyimpanan objek. Karena itu ukuran server dapat dinaikkan, dan jumlah server dapat ditambah, tanpa mengubah aplikasi. Inilah yang dimaksud elastis.
 
-   `systemd-run` menjaga pemasangan tetap berjalan walaupun terminal peramban tertutup. Pemasangan selesai bila log menampilkan `NSCAS_BOOTSTRAP_DONE`.
-4. Baca kata sandi awal dengan `cat /root/nscas-admin-awal.txt`. Ikuti instruksi di berkas itu: ganti kata sandi, aktifkan verifikasi dua langkah, simpan `DATA_ENCRYPTION_KEY` dan `AUTH_SECRET` di pengelola kata sandi perusahaan, lalu hapus berkasnya.
-5. Lanjutkan bagian 11 (pemeriksaan setelah penempatan), bagian 12 (cadangan), dan bagian 15 (daftar periksa sebelum survei pertama).
+| Tata letak | Susunan | Dipakai untuk | Cara menambah kapasitas |
+|---|---|---|---|
+| A. Satu Droplet | Aplikasi, antrean, penjadwal, dan PostgreSQL dalam satu Droplet | Uji coba dan demo dengan data buatan | Ubah ukuran Droplet (resize) |
+| B. Produksi awal | Satu Droplet untuk aplikasi; DigitalOcean Managed PostgreSQL; Spaces untuk berkas | Pengukuran sungguhan sampai sekitar 3.000 responden | Ubah ukuran Droplet dan basis data secara terpisah |
+| C. Produksi elastis | Load Balancer di depan beberapa Droplet web dalam Autoscale Pool; satu Droplet untuk antrean dan penjadwal; Managed PostgreSQL; Spaces | Banyak klien atau jendela survei bersamaan | Pool menambah dan mengurangi Droplet web menurut beban |
 
-### 17.3 Catatan dari percobaan 24 Oktober 2026
+```
+Tata letak A                  Tata letak B                       Tata letak C
 
-1. Pembuatan post-install script melalui API Hostinger ditolak dengan HTTP 403. Pembelian VPS melalui API berhenti pada status `payment_initiated` dan tidak pernah menjadi langganan, sehingga pembelian sebaiknya dilakukan langsung di hPanel.
-2. Sebelum data responden sungguhan masuk, tiga hal wajib dipastikan secara tertulis kepada Hostinger: enkripsi disk VPS di tingkat penyedia (docs/04 bagian 4), lokasi penyimpanan cadangan mingguan VPS (CLAUDE.md aturan 7), dan lokasi server surel bila SMTP Hostinger dipakai untuk undangan.
-3. `ops/hostinger/bootstrap.sh` belum pernah dijalankan di VPS sungguhan. Yang sudah diuji baru tata tulis skrip dan fungsi pengisian rahasianya.
+Internet                      Internet                           Internet
+   |                             |                                  |
+Droplet                       Droplet                           Load Balancer (TLS)
+ - app (TLS otomatis)          - app (TLS otomatis)              /      |      \
+ - worker                      - worker                       web     web     web   (Autoscale Pool)
+ - scheduler                   - scheduler                       \      |      /
+ - postgres                        |          \                Droplet kerja: worker, scheduler
+                              Managed          Spaces               |             \
+                              PostgreSQL                        Managed            Spaces
+                                                                PostgreSQL
+```
+
+Urutan yang disarankan: mulai dari A untuk uji coba, pindah ke B sebelum pengukuran pertama, dan pindah ke C hanya bila uji beban atau pemakaian nyata menunjukkan satu Droplet tidak cukup.
+
+## 3. Ukuran server
+
+Angka berikut adalah titik awal untuk lingkup 3.000 responden dengan sekitar 300 pengisian survei bersamaan. Angka ini belum diuji pada versi 2. Uji beban dijadwalkan pada fase R12, dan ukuran final ditetapkan dari hasilnya.
+
+| Komponen | Uji coba (A) | Produksi awal (B) |
+|---|---|---|
+| Droplet aplikasi | 2 vCPU, 4 GB memori | 4 vCPU, 8 GB memori |
+| Basis data | Di dalam Droplet | Managed PostgreSQL 2 vCPU, 4 GB memori, dengan simpul cadangan bila anggaran memungkinkan |
+| Penyimpanan berkas | Belum diperlukan | Satu bucket Spaces privat |
+| Cadangan | `backup.sh` ke bucket Spaces terpisah | Cadangan harian dan pemulihan ke titik waktu bawaan Managed PostgreSQL |
+
+Harga DigitalOcean berubah dari waktu ke waktu. Periksa halaman harga resminya saat membuat sumber daya; panduan ini sengaja tidak mencantumkan harga.
+
+## 4. Tata letak A, langkah demi langkah
+
+1. Di panel DigitalOcean, tambahkan kunci SSH milik administrator pada menu Settings, Security.
+2. Buat Droplet: wilayah Singapore (SGP1), Ubuntu 24.04 LTS, ukuran sesuai bagian 3, pilih kunci SSH tadi, dan aktifkan Monitoring.
+3. Pada kolom User data, tempel seluruh isi `deploy/digitalocean/cloud-init.yaml`. Berkas ini tidak memuat rahasia.
+4. Tunggu sekitar lima menit. Server memperbarui paket, memasang Docker, membuat pengguna `deploy`, mematikan login kata sandi dan login root, menyalakan firewall (hanya port 22, 80, 443), fail2ban, dan pembaruan keamanan otomatis.
+5. Arahkan DNS: buat rekaman A untuk `nscas.nusasafety.co.id` ke alamat IP Droplet. Tunggu sampai `dig +short nscas.nusasafety.co.id` menampilkan alamat itu.
+6. Masuk ke server: `ssh deploy@<alamat IP>`. Pastikan berkas `/var/lib/nscas-bootstrap.done` ada. Bila belum, baca `/var/log/nscas-bootstrap.log`.
+7. Ambil kode: `git clone https://github.com/anakabil/nscas.git /opt/nscas/app`.
+8. Siapkan variabel: `cp /opt/nscas/app/deploy/digitalocean/.env.production.example /opt/nscas/.env`, lalu `chmod 600 /opt/nscas/.env`, lalu isi dengan `nano /opt/nscas/.env`.
+
+| Variabel | Isi pada tata letak A |
+|---|---|
+| `APP_KEY` | Hasil `echo "base64:$(openssl rand -base64 32)"`. Simpan salinannya di pengelola kata sandi |
+| `APP_URL` | `https://nscas.nusasafety.co.id` |
+| `SERVER_NAME` | `nscas.nusasafety.co.id` |
+| `COMPOSE_PROFILES` | `single` |
+| `DB_HOST`, `DB_PORT`, `DB_SSLMODE` | `postgres`, `5432`, `prefer` |
+| `DB_DATABASE`, `DB_USERNAME` | `nscas`, `nscas` |
+| `DB_PASSWORD` | Kata sandi acak panjang, misalnya hasil `openssl rand -base64 24` |
+| `MAIL_*` | Lihat bagian 9 |
+
+9. Pasang: `/opt/nscas/app/deploy/digitalocean/deploy.sh deploy`. Skrip memeriksa berkas variabel, membangun image, menjalankan migrasi, menyalakan layanan, dan menunggu sampai sehat. Bila gagal, skrip mengembalikan versi sebelumnya dan menampilkan sebabnya.
+10. Isi data awal: `deploy.sh artisan db:seed --force`. Perintah ini hanya membuat organisasi Nusa Safety, tanpa akun.
+11. Buat pengelola sistem pertama: `deploy.sh artisan nscas:create-admin nama@nusasafety.co.id`. Kata sandi acak tampil satu kali di terminal. Catat, lalu segera masuk, ganti kata sandi, dan aktifkan verifikasi dua langkah.
+12. Periksa: buka `https://nscas.nusasafety.co.id`. Sertifikat TLS diterbitkan otomatis oleh server web saat domain pertama kali diakses. Halaman Status sistem harus menunjukkan basis data dan antrean berfungsi.
+
+## 5. Tata letak B
+
+Sama dengan tata letak A, dengan perbedaan berikut.
+
+1. Buat Managed PostgreSQL versi 16 di wilayah SGP1. Pada Trusted sources, izinkan hanya Droplet aplikasi. Buat basis data dan pengguna `nscas`.
+2. Buat bucket Spaces privat di SGP1, dan kunci akses yang dibatasi hanya untuk bucket itu.
+3. Di `/opt/nscas/.env`: kosongkan `COMPOSE_PROFILES`; isi `DB_HOST`, `DB_PORT` (biasanya 25060), `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` dari halaman basis data; biarkan `DB_SSLMODE=require`.
+4. Variabel `AWS_*` untuk Spaces diisi sekarang, tetapi `FILESYSTEM_DISK` tetap `local` sampai modul bukti dan laporan dibangun (fase R5 dan R10). Pada fase R0 aplikasi belum menyimpan berkas.
+5. Cadangan memakai fitur Managed PostgreSQL. `backup.sh` otomatis tidak melakukan apa pun pada tata letak ini.
+
+Pindah dari A ke B: buat cadangan dengan `backup.sh`, pulihkan ke Managed PostgreSQL dengan `pg_restore`, ubah variabel `DB_*`, lalu jalankan `deploy.sh deploy`.
+
+## 6. Tata letak C
+
+1. Siapkan tata letak B lebih dulu dan pastikan berjalan baik.
+2. Buat Load Balancer di SGP1 dengan sertifikat TLS untuk domain, meneruskan HTTPS 443 ke port 80 Droplet (yang dipetakan ke port 8080 di dalam kontainer), dengan pemeriksaan kesehatan ke `/up`.
+3. Pada Droplet web: `SERVER_NAME=:8080`, `TRUSTED_PROXIES` diisi rentang alamat VPC, `NSCAS_SERVICES=app`, dan `NSCAS_SKIP_MIGRATE=1`.
+4. Satu Droplet kerja menjalankan `NSCAS_SERVICES="worker scheduler"` dan menjalankan migrasi. Penjadwal hanya boleh berjalan di satu server.
+5. Buat Autoscale Pool dari citra Droplet web dengan batas minimal dua dan batas maksimal sesuai anggaran. Semua server memakai `APP_KEY` yang sama.
+6. Arahkan DNS ke Load Balancer, lalu tutup port 80 dan 443 Droplet dari internet dengan Cloud Firewall sehingga hanya Load Balancer yang dapat menjangkaunya.
+
+Tata letak ini memerlukan image yang dibangun sekali dan ditarik oleh semua server (variabel `NSCAS_IMAGE`). Rinciannya disusun pada fase R12 bersama uji beban.
+
+## 7. Memperbarui versi dan kembali ke versi sebelumnya
+
+| Keperluan | Perintah di server |
+|---|---|
+| Memasang versi baru | `deploy.sh deploy <tag atau cabang>` |
+| Melihat versi aktif dan keadaan layanan | `deploy.sh status` |
+| Kembali ke versi sebelum penempatan terakhir | `deploy.sh rollback` |
+| Menjalankan perintah aplikasi | `deploy.sh artisan <perintah>` |
+| Membaca log | `deploy.sh compose logs --tail 200 app` |
+
+Pada tata letak A, skrip membuat cadangan basis data sebelum migrasi. `rollback` mengembalikan image aplikasi, tetapi tidak membatalkan migrasi basis data. Bila sebuah versi mengubah skema dan harus dibatalkan, pulihkan basis data dari cadangan yang dibuat sebelum penempatan itu.
+
+## 8. Cadangan dan uji pemulihan (tata letak A)
+
+1. Di laptop administrator, buat pasangan kunci: `age-keygen -o nscas-backup.key`. Simpan berkas kunci privat di luar server, di dua tempat aman. Tanpa kunci ini cadangan tidak dapat dibuka.
+2. Buat bucket Spaces khusus cadangan dan kunci akses yang dibatasi untuk bucket itu.
+3. Di server, buat `/opt/nscas/backup.env` dengan izin 600, berisi `BACKUP_AGE_RECIPIENT` (kunci publik), `BACKUP_S3_BUCKET`, `BACKUP_S3_ACCESS_KEY`, dan `BACKUP_S3_SECRET_KEY`.
+4. Aktifkan jadwal: `sudo systemctl enable --now nscas-backup.timer`. Cadangan berjalan setiap hari pukul 01.30 WIB, dienkripsi sebelum menyentuh disk, dan disimpan 30 hari.
+5. Uji pemulihan setiap bulan dari laptop administrator: `AGE_IDENTITY_FILE=nscas-backup.key backup.sh restore-test latest`. Cadangan yang belum pernah diuji pemulihannya belum dapat disebut cadangan.
+
+## 9. Surel keluar
+
+DigitalOcean menutup port SMTP dari Droplet secara bawaan. Undangan survei dan pengaturan ulang kata sandi memerlukan penyedia surel yang menerima sambungan pada port lain, atau permintaan pembukaan port kepada DigitalOcean. Dua hal yang perlu diperhatikan:
+
+1. Penyedia surel menerima alamat surel responden, sehingga lokasinya termasuk lokasi pemrosesan data pribadi dan harus tercantum pada perjanjian pemrosesan data.
+2. Domain pengirim perlu rekaman SPF dan DKIM agar undangan tidak masuk ke folder sampah.
+
+Pilihan penyedia surel belum diputuskan dan menjadi keputusan pemilik proyek sebelum fase R2.
+
+## 10. Pemantauan
+
+1. Aktifkan pemantauan Droplet dan buat peringatan untuk pemakaian prosesor di atas 80 persen, memori di atas 85 persen, dan disk di atas 80 persen.
+2. Buat pemeriksaan ketersediaan (uptime check) ke `https://nscas.nusasafety.co.id/up` dengan pemberitahuan ke surel administrator.
+3. Periksa halaman Status sistem di aplikasi setelah setiap penempatan.
+4. Server memulai ulang sendiri pukul 03.00 WIB bila pembaruan keamanan memerlukannya. Selama jendela survei besar, matikan mulai ulang otomatis sesuai catatan di `cloud-init.yaml`, lalu mulai ulang secara terjadwal.
+
+## 11. Keputusan teknis yang perlu diketahui
+
+| Keputusan | Alasan | Konsekuensi |
+|---|---|---|
+| Server web FrankenPHP di dalam image aplikasi | Satu kontainer melayani HTTP dan menerbitkan sertifikat TLS otomatis | Tidak perlu Nginx atau Certbot terpisah |
+| Kontainer berjalan sebagai pengguna biasa, tanpa hak tambahan | Membatasi dampak bila aplikasi dibobol | Port di dalam kontainer 8080 dan 8443, dipetakan ke 80 dan 443 |
+| PostgreSQL pada tata letak A tidak membuka port ke luar | Basis data tidak dapat dijangkau dari internet | Akses basis data hanya lewat server |
+| Rahasia hanya di `/opt/nscas/.env` dengan izin 600 | Tidak ada rahasia di image atau repositori | Berkas ini harus ikut dicadangkan secara aman oleh administrator |
+| Cadangan dienkripsi dengan kunci publik | Server tidak dapat membuka cadangannya sendiri | Kunci privat wajib disimpan di luar server |
+| Pengguna `deploy` dapat memakai sudo tanpa kata sandi | Login hanya dengan kunci SSH; memudahkan pemeliharaan | Kunci SSH administrator harus dijaga seperti kata sandi utama |
+| Akun pengelola pertama dibuat dengan perintah, bukan dari berkas | Tidak ada kata sandi awal yang tersimpan di mana pun | Kata sandi tampil satu kali di terminal |
+
+## 12. Daftar periksa sebelum dipakai klien
+
+| No. | Butir | Cara memeriksa |
+|---|---|---|
+| 1 | Syarat lokasi data pada `docs/04` bagian 1.1 terpenuhi | Dokumen persetujuan klien tersimpan |
+| 2 | Alamat memakai HTTPS dan sertifikat sah | Buka alamat di peramban |
+| 3 | `APP_DEBUG=false` dan `NSCAS_ENFORCE_TWO_FACTOR=true` | Baca `/opt/nscas/.env` |
+| 4 | Login kata sandi dan login root lewat SSH tertolak | `ssh root@<alamat IP>` gagal |
+| 5 | Hanya port 22, 80, 443 yang terbuka | `sudo ufw status` |
+| 6 | Pengelola sistem sudah mengganti kata sandi dan mengaktifkan verifikasi dua langkah | Masuk ke aplikasi |
+| 7 | Halaman Status sistem menunjukkan semua komponen berfungsi | Buka halaman Status sistem |
+| 8 | Cadangan berjalan dan satu uji pemulihan berhasil | `systemctl list-timers nscas-backup.timer` dan hasil `restore-test` |
+| 9 | Peringatan pemantauan dan pemeriksaan ketersediaan aktif | Panel DigitalOcean |
+| 10 | Surel uji terkirim dan tidak masuk folder sampah | Kirim pengaturan ulang kata sandi ke alamat sendiri |
+| 11 | Uji beban fase R12 lulus pada ukuran server yang dipakai | Laporan uji |
+| 12 | `deploy.sh rollback` pernah dicoba di server uji | Catatan administrator |

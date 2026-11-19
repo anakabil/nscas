@@ -51,8 +51,12 @@ export default function AuthLayout({
                         <div className="frame-silver rounded-2xl p-7 shadow-[0_24px_60px_-40px_rgb(17_17_19/0.45)] sm:p-9">
                             {title ? (
                                 <div className="mb-7 space-y-2">
-                                    <h1 className="font-display text-[1.7rem] leading-tight font-semibold text-obsidian">{title}</h1>
-                                    {description ? <p className="text-sm leading-relaxed text-muted-foreground">{description}</p> : null}
+                                    <h1 className="font-display text-[1.7rem] leading-tight font-semibold text-obsidian">
+                                        {title}
+                                    </h1>
+                                    {description ? (
+                                        <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
+                                    ) : null}
                                 </div>
                             ) : null}
                             {children}

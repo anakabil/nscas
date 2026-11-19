@@ -1,12 +1,6 @@
 // Bentuk data yang dikirim App\Http\Presenters\AssessmentPresenter dan pengendali beranda.
 
-export type RoleCode =
-    | 'SUPER_ADMIN'
-    | 'LEAD_ASSESSOR'
-    | 'ASSESSOR'
-    | 'CLIENT_ADMIN'
-    | 'UNIT_COORDINATOR'
-    | 'EXECUTIVE_VIEWER';
+export type RoleCode = 'SUPER_ADMIN' | 'LEAD_ASSESSOR' | 'ASSESSOR' | 'CLIENT_ADMIN' | 'UNIT_COORDINATOR' | 'EXECUTIVE_VIEWER';
 
 export type StageState = 'done' | 'current' | 'upcoming';
 

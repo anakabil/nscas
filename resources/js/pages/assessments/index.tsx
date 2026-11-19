@@ -17,7 +17,10 @@ export default function AssessmentsIndex({ assessments }: { assessments: Assessm
                 </header>
                 <div className="hairline-silver" />
                 {assessments.length === 0 ? (
-                    <p className="frame-silver rounded-xl p-8 text-center text-sm text-muted-foreground" data-testid="assessments-empty">
+                    <p
+                        className="frame-silver rounded-xl p-8 text-center text-sm text-muted-foreground"
+                        data-testid="assessments-empty"
+                    >
                         {t('assessments.empty')}
                     </p>
                 ) : (
@@ -36,7 +39,9 @@ export default function AssessmentsIndex({ assessments }: { assessments: Assessm
                                         <div>
                                             <dt className="text-xs text-muted-foreground">{t('assessments.stage')}</dt>
                                             <dd className="font-semibold">
-                                                {assessment.stage ? t('home.stageLine', { number: assessment.stage }) : t('home.closedLine')}
+                                                {assessment.stage
+                                                    ? t('home.stageLine', { number: assessment.stage })
+                                                    : t('home.closedLine')}
                                             </dd>
                                         </div>
                                         <div>
@@ -59,7 +64,10 @@ export default function AssessmentsIndex({ assessments }: { assessments: Assessm
                                     </dl>
                                     <span className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-obsidian">
                                         {t('assessments.open')}
-                                        <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
+                                        <ArrowRight
+                                            aria-hidden
+                                            className="size-4 transition-transform group-hover:translate-x-0.5"
+                                        />
                                     </span>
                                 </Link>
                             </li>

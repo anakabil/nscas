@@ -22,9 +22,16 @@ export default function AssessmentModule({ assessment, module }: Props) {
             <Head title={`${title} · ${assessment.name}`} />
             <AssessmentHeader assessment={assessment} back={{ href: assessment.href, label: t('module.backToHub') }} />
             <Container className="py-12">
-                <article className="frame-silver mx-auto max-w-2xl rounded-2xl p-8 sm:p-10" data-testid="module-page" data-module={module.key}>
+                <article
+                    className="frame-silver mx-auto max-w-2xl rounded-2xl p-8 sm:p-10"
+                    data-testid="module-page"
+                    data-module={module.key}
+                >
                     <div className="flex items-start gap-5">
-                        <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-obsidian text-silver-bright">
+                        <span
+                            aria-hidden
+                            className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-obsidian text-silver-bright"
+                        >
                             {Icon ? <Icon className="size-6" strokeWidth={1.5} /> : null}
                         </span>
                         <div className="space-y-2">
@@ -47,7 +54,10 @@ export default function AssessmentModule({ assessment, module }: Props) {
                             {t('module.pendingBody', { module: title, phase: module.buildPhase })}
                         </p>
                     </div>
-                    <Link href={assessment.href} className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-obsidian hover:underline">
+                    <Link
+                        href={assessment.href}
+                        className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-obsidian hover:underline"
+                    >
                         <ArrowLeft aria-hidden className="size-4" />
                         {t('module.backToHub')}
                     </Link>

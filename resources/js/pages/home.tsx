@@ -36,7 +36,10 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                         <dl className="flex flex-wrap gap-x-10 gap-y-4 pt-2 text-sm">
                             <div>
                                 <dt className="eyebrow text-white/45">{t('home.roleLabel')}</dt>
-                                <dd className="mt-1.5 inline-flex items-center gap-2 rounded-full border border-gold/50 px-3 py-1 font-semibold text-gold-soft" data-testid="persona-role">
+                                <dd
+                                    className="mt-1.5 inline-flex items-center gap-2 rounded-full border border-gold/50 px-3 py-1 font-semibold text-gold-soft"
+                                    data-testid="persona-role"
+                                >
                                     <span aria-hidden className="size-1.5 rounded-full bg-gold" />
                                     {t(`roles.${roleKey}.name`)}
                                 </dd>
@@ -44,16 +47,21 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                             {persona.organizations.length > 0 ? (
                                 <div>
                                     <dt className="eyebrow text-white/45">{t('home.organizationLabel')}</dt>
-                                    <dd className="mt-1.5 py-1 font-medium text-silver-bright">{persona.organizations.join(', ')}</dd>
+                                    <dd className="mt-1.5 py-1 font-medium text-silver-bright">
+                                        {persona.organizations.join(', ')}
+                                    </dd>
                                 </div>
                             ) : null}
                         </dl>
                     </div>
 
                     {selected ? (
-                        <div className="rounded-2xl border border-white/12 bg-white/[0.045] p-6 backdrop-blur-sm" data-testid="selected-assessment">
+                        <div
+                            className="rounded-2xl border border-white/12 bg-white/[0.045] p-6 backdrop-blur-sm"
+                            data-testid="selected-assessment"
+                        >
                             <p className="eyebrow text-white/45">{t('home.selectedLabel')}</p>
-                            <p className="font-display mt-3 text-2xl leading-snug font-semibold">{selected.name}</p>
+                            <p className="mt-3 font-display text-2xl leading-snug font-semibold">{selected.name}</p>
                             <p className="mt-1 text-sm text-white/65">{selected.organization}</p>
                             <div className="mt-5 space-y-2.5">
                                 <div className="flex items-baseline justify-between gap-3 text-sm">
@@ -85,7 +93,11 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                     <section className="frame-silver rounded-xl p-8 text-center" data-testid="home-empty">
                         <h2 className="font-display text-2xl font-semibold text-obsidian">{t('home.emptyTitle')}</h2>
                         <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                            {persona.primaryRole === null ? t('roles.none.task') : operator ? t('home.emptyOperator') : t('home.emptyClient')}
+                            {persona.primaryRole === null
+                                ? t('roles.none.task')
+                                : operator
+                                  ? t('home.emptyOperator')
+                                  : t('home.emptyClient')}
                         </p>
                     </section>
                 ) : null}
@@ -123,7 +135,10 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                             {assessments.map((assessment) => {
                                 const shown = assessment.id === selected?.id;
                                 return (
-                                    <li key={assessment.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-6">
+                                    <li
+                                        key={assessment.id}
+                                        className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-6"
+                                    >
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate font-semibold text-foreground">{assessment.name}</p>
                                             <p className="mt-0.5 text-xs text-muted-foreground">
@@ -136,8 +151,12 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                                             </p>
                                         </div>
                                         <p className="text-sm font-medium text-charcoal sm:w-44">
-                                            {assessment.stage ? t('home.stageLine', { number: assessment.stage }) : t('home.closedLine')}
-                                            <span className="block text-xs font-normal text-muted-foreground">{t(`statuses.${assessment.status}`)}</span>
+                                            {assessment.stage
+                                                ? t('home.stageLine', { number: assessment.stage })
+                                                : t('home.closedLine')}
+                                            <span className="block text-xs font-normal text-muted-foreground">
+                                                {t(`statuses.${assessment.status}`)}
+                                            </span>
                                         </p>
                                         <Link
                                             href={`/home?assessment=${assessment.id}`}
@@ -145,7 +164,9 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                                             aria-current={shown ? 'true' : undefined}
                                             className={cn(
                                                 'inline-flex shrink-0 items-center justify-center rounded-md border px-3 py-2 text-sm font-semibold transition-colors',
-                                                shown ? 'border-gold/60 bg-gold/15 text-gold-deep' : 'border-border hover:border-silver-dim',
+                                                shown
+                                                    ? 'border-gold/60 bg-gold/15 text-gold-deep'
+                                                    : 'border-border hover:border-silver-dim',
                                             )}
                                         >
                                             {shown ? t('home.shown') : t('home.showOnHome')}

@@ -9,8 +9,7 @@ export const core = {
         owner: 'PT Nusa Rendra Jayatama (Nusa Safety)',
         notCertification:
             'NSCAS results are an internal measurement and diagnosis that use the Safety Culture Ladder framework as a reference. They are not a certificate or an official Safety Culture Ladder statement issued by a certification body recognised by NEN.',
-        rebuildNotice:
-            'NSCAS is being rebuilt. Pages marked with a phase are not available yet and will open in stages.',
+        rebuildNotice: 'NSCAS is being rebuilt. Pages marked with a phase are not available yet and will open in stages.',
         skipToContent: 'Skip to page content',
     },
     nav: {
@@ -161,8 +160,7 @@ export const core = {
         closedLine: 'Assessment closed',
         openHub: 'Open assessment hub',
         byStageTitle: 'Main menu by assessment stage',
-        byStageIntro:
-            'A safety culture assessment runs in six stages. The pages shown in each stage match your account type.',
+        byStageIntro: 'A safety culture assessment runs in six stages. The pages shown in each stage match your account type.',
         byRoleTitle: 'Your main tasks as {role}',
         byRoleIntro: 'The pages your account type uses most often in this assessment.',
         accountTitle: 'Account menu',

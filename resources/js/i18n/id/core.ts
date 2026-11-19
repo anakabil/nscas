@@ -10,8 +10,7 @@ export const core = {
         owner: 'PT Nusa Rendra Jayatama (Nusa Safety)',
         notCertification:
             'Hasil NSCAS merupakan pengukuran dan diagnosis internal yang menggunakan kerangka Safety Culture Ladder sebagai rujukan, dan bukan sertifikat maupun pernyataan resmi Safety Culture Ladder yang diterbitkan lembaga sertifikasi yang diakui NEN.',
-        rebuildNotice:
-            'NSCAS sedang dibangun ulang. Halaman yang bertanda fase belum dapat dipakai dan akan dibuka bertahap.',
+        rebuildNotice: 'NSCAS sedang dibangun ulang. Halaman yang bertanda fase belum dapat dipakai dan akan dibuka bertahap.',
         skipToContent: 'Langsung ke isi halaman',
     },
     nav: {
@@ -178,8 +177,7 @@ export const core = {
         buildPhase: 'Fase {phase}',
         buildPhaseHint: 'Halaman ini dibangun ulang pada fase {phase}',
         emptyTitle: 'Belum ada asesmen',
-        emptyOperator:
-            'Asesmen dibuat oleh asesor utama untuk organisasi klien. Setelah dibuat, menu enam tahap tampil di sini.',
+        emptyOperator: 'Asesmen dibuat oleh asesor utama untuk organisasi klien. Setelah dibuat, menu enam tahap tampil di sini.',
         emptyClient: 'Organisasi Anda belum memiliki asesmen yang berjalan. Hubungi asesor utama Nusa Safety.',
         methodTitle: 'Enam tahap penilaian',
     },

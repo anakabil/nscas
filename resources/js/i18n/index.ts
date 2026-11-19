@@ -30,9 +30,7 @@ export function translator(locale: Locale): Translate {
         if (!values) {
             return template;
         }
-        return template.replace(/\{(\w+)\}/g, (match, name: string) =>
-            name in values ? String(values[name]) : match,
-        );
+        return template.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
     };
 }
 

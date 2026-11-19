@@ -28,14 +28,18 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                             aria-current={path === item.href ? 'page' : undefined}
                             className={cn(
                                 'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                                path === item.href ? 'bg-obsidian text-white' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                path === item.href
+                                    ? 'bg-obsidian text-white'
+                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                             )}
                         >
                             {item.label}
                         </Link>
                     ))}
                 </nav>
-                <section className="max-w-xl flex-1 space-y-12 rounded-xl border border-border bg-card p-6 sm:p-8">{children}</section>
+                <section className="max-w-xl flex-1 space-y-12 rounded-xl border border-border bg-card p-6 sm:p-8">
+                    {children}
+                </section>
             </div>
         </Container>
     );
