@@ -36,11 +36,13 @@ use Illuminate\Support\Carbon;
  * @property array<string, mixed>|null $calibration
  * @property Carbon|null $locked_at
  * @property int|null $locked_by
+ * @property Carbon|null $survey_opens_at
+ * @property Carbon|null $survey_closes_at
  */
 #[Fillable([
     'organization_id', 'name', 'scope_type', 'period_start', 'period_end', 'target_level', 'status', 'created_by',
     'instrument_version_id', 'parameter_draft', 'consent_text_id', 'consent_text_en', 'dpa_status', 'dpa_reference',
-    'dpa_signed_on', 'kickoff', 'calibration',
+    'dpa_signed_on', 'kickoff', 'calibration', 'survey_opens_at', 'survey_closes_at',
 ])]
 class Assessment extends Model
 {
@@ -64,6 +66,8 @@ class Assessment extends Model
             'dpa_signed_on' => 'date',
             'kickoff' => 'array',
             'calibration' => 'array',
+            'survey_opens_at' => 'datetime',
+            'survey_closes_at' => 'datetime',
         ];
     }
 
@@ -95,6 +99,30 @@ class Assessment extends Model
     public function strata(): HasMany
     {
         return $this->hasMany(Stratum::class)->orderBy('code');
+    }
+
+    /** @return HasMany<RosterEntry, $this> */
+    public function roster(): HasMany
+    {
+        return $this->hasMany(RosterEntry::class);
+    }
+
+    /** @return HasMany<AccessToken, $this> */
+    public function tokens(): HasMany
+    {
+        return $this->hasMany(AccessToken::class);
+    }
+
+    /** @return HasMany<UnitQrCode, $this> */
+    public function qrCodes(): HasMany
+    {
+        return $this->hasMany(UnitQrCode::class);
+    }
+
+    /** @return HasMany<UnitAssignment, $this> */
+    public function unitAssignments(): HasMany
+    {
+        return $this->hasMany(UnitAssignment::class);
     }
 
     public function stage(): ?Stage
