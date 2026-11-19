@@ -23,14 +23,14 @@ export default function AssessmentModule({ assessment, module }: Props) {
             <AssessmentHeader assessment={assessment} back={{ href: assessment.href, label: t('module.backToHub') }} />
             <Container className="py-12">
                 <article
-                    className="frame-silver mx-auto max-w-2xl rounded-lg p-8 sm:p-10"
+                    className="frame-hairline mx-auto max-w-2xl rounded-lg p-8 sm:p-10"
                     data-testid="module-page"
                     data-module={module.key}
                 >
                     <div className="flex items-start gap-5">
                         <span
                             aria-hidden
-                            className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-obsidian text-silver-bright"
+                            className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-maroon text-parchment"
                         >
                             {Icon ? <Icon className="size-6" strokeWidth={1.5} /> : null}
                         </span>
@@ -40,11 +40,11 @@ export default function AssessmentModule({ assessment, module }: Props) {
                                     ? t('module.stageLabel', { number: stage.number, stage: t(`stages.${stage.key}.title`) })
                                     : t('module.crossStageLabel')}
                             </p>
-                            <h2 className="font-display text-[1.85rem] leading-tight text-obsidian">{title}</h2>
+                            <h2 className="font-display text-[1.85rem] leading-tight text-ink">{title}</h2>
                             <p className="text-sm text-muted-foreground">{t(`modules.${module.key}.hint`)}</p>
                         </div>
                     </div>
-                    <div className="hairline-silver my-7" />
+                    <div className="hairline-taupe my-7" />
                     <div className="space-y-3">
                         <div className="flex items-center gap-3">
                             <h3 className="text-sm font-semibold text-foreground">{t('module.pendingTitle')}</h3>
@@ -56,7 +56,7 @@ export default function AssessmentModule({ assessment, module }: Props) {
                     </div>
                     <Link
                         href={assessment.href}
-                        className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-obsidian hover:underline"
+                        className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-ink hover:underline"
                     >
                         <ArrowLeft aria-hidden className="size-4" />
                         {t('module.backToHub')}

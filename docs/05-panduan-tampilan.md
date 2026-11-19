@@ -2,39 +2,40 @@
 
 Tema versi 1 (biru batu) diarsipkan di `docs/arsip-v1/05-panduan-tampilan-v1.md`.
 
-## 1. Tema Monokrom Perak dan Emas
+## 1. Tema Marun dan Emas
 
-NSCAS adalah instrumen ukur. Tampilannya meminjam bahasa alat ukur presisi: bidang hitam, garis logam tipis, dan satu aksen emas. Kesan mewah datang dari proporsi, ruang kosong, dan huruf, bukan dari efek.
+Tema diturunkan dari logo NSCAS milik Nusa Safety (19 November 2026): marun, hitam, emas, dan krem. Tema sebelumnya, Monokrom Perak dan Emas, tidak dipakai lagi. Kesan mewah datang dari proporsi, ruang kosong, dan huruf, bukan dari efek.
 
 ### 1.1 Warna
 
-Token ada di `resources/css/app.css` dan dipakai lewat kelas Tailwind (`bg-obsidian`, `text-gold-deep`, dan seterusnya).
+Token ada di `resources/css/app.css` dan dipakai lewat kelas Tailwind (`bg-maroon`, `text-gold-deep`, dan seterusnya). Kontrasnya dijaga tes `ThemeContrastTest`.
 
 | Token | Kode | Pemakaian |
 |---|---|---|
-| `obsidian` | `#0B0B0C` | Kepala halaman, panel identitas, kotak ikon aktif, tombol utama |
-| `graphite` | `#17171A` | Gradasi bidang gelap |
-| `charcoal` | `#26262B` | Ikon dan teks sekunder di bidang terang |
-| `silver-dim` | `#8D9299` | Garis logam, ikon pendukung |
-| `silver` | `#C7CAD0` | Bingkai, angka besar hiasan, teks di bidang gelap |
-| `silver-bright` | `#E9EAEC` | Ikon dan teks di bidang gelap |
-| `background` | `#F5F5F6` | Latar halaman kerja |
-| `card` | `#FFFFFF` | Kartu |
-| `muted-foreground` | `#5B5B63` | Teks pendukung (kontras 6,6 banding 1 di atas putih) |
-| `border` | `#DCDCE0` | Garis tepi |
-| `gold` | `#D4AF37` | Aksen di bidang gelap, garis tahap berjalan, cincin fokus |
-| `gold-soft` | `#E6CF8B` | Teks kecil di bidang gelap |
-| `gold-deep` | `#84681A` | Satu-satunya emas untuk teks di bidang terang (kontras 5,3 banding 1 di atas putih; 4,8 di atas latar halaman) |
+| `maroon` | `#691B2E` | Warna merek dari logo: tombol utama, kotak ikon, garis navigasi aktif |
+| `maroon-deep`, `maroon-ink` | `#4A1220`, `#2C0A13` | Gradasi bidang identitas (beranda, kepala asesmen, panel masuk, halaman galat) |
+| `maroon-soft` | `#F4E7E7` | Latar lembut bernada marun |
+| `ink` | `#1A1A1A` | Hitam logo: judul dan teks utama |
+| `charcoal` | `#3B3431` | Teks sekunder yang tegas |
+| `cream` | `#FEFAF4` | Krem latar logo: teks di bidang marun |
+| `parchment` | `#F4ECDF` | Teks dan ikon di bidang marun |
+| `taupe`, `taupe-dim` | `#CDBFAD`, `#8C8073` | Garis, bingkai, angka hiasan, ikon pendukung |
+| `background`, `card` | `#F7F2EA`, `#FFFDF9` | Latar halaman dan kartu |
+| `muted-foreground` | `#5F564E` | Teks pendukung (kontras 7,1 banding 1 di kartu) |
+| `gold` | `#CBA35A` | Emas logo: aksen di bidang marun, tahap yang sedang berjalan |
+| `gold-soft` | `#E5CD98` | Teks kecil emas di bidang marun |
+| `gold-deep` | `#86652A` | Satu-satunya emas untuk teks di bidang terang |
 | `success` | `#2F6B4F` | Tahap selesai, pemeriksaan berhasil |
-| `destructive` | `#9B2C2C` | Galat, pemeriksaan gagal |
+| `destructive` | `#B42318` | Galat; sengaja lebih terang dan lebih jingga daripada marun agar tidak tertukar dengan warna merek |
 
 Aturan warna:
 
-1. Emas adalah aksen. Dalam satu layar, emas menandai paling banyak satu hal utama: tahap yang sedang berjalan.
-2. Emas `#D4AF37` tidak dipakai untuk teks di bidang terang karena kontrasnya kurang. Pakai `gold-deep`.
-3. Bidang gelap dipakai untuk bingkai: kepala halaman, kepala asesmen, panel halaman masuk, halaman galat. Bidang kerja tetap terang agar nyaman dibaca lama dan terbaca di lokasi proyek.
-4. Tidak ada mode gelap terpisah. Satu tema yang dirancang lebih mudah dijaga mutunya.
-5. Gradasi lima tingkat kematangan memakai abu ke hitam (`level-1` sampai `level-5`); emas hanya untuk tingkat kelima atau sasaran yang tercapai.
+1. Marun adalah warna merek, emas adalah aksen. Dalam satu layar, emas menandai paling banyak satu hal utama: tahap yang sedang berjalan.
+2. Emas `#CBA35A` tidak dipakai untuk teks di bidang terang. Pakai `gold-deep`.
+3. Bidang marun dipakai untuk bingkai identitas. Kepala halaman berwarna kartu terang agar logo tampil dengan warna aslinya. Bidang kerja tetap terang agar nyaman dibaca lama dan terbaca di lokasi proyek.
+4. Merah galat tidak boleh diganti marun, dan marun tidak boleh dipakai untuk pesan galat.
+5. Tidak ada mode gelap terpisah.
+6. Gradasi lima tingkat kematangan memakai krem ke marun (`level-1` sampai `level-5`); emas hanya untuk sasaran yang tercapai.
 
 ### 1.2 Huruf
 
@@ -61,19 +62,19 @@ Label kecil berhuruf besar dengan jarak lebar memakai kelas `eyebrow`, didahului
 
 | Kelas | Tampilan | Pemakaian |
 |---|---|---|
-| `bg-obsidian-dial` | Bidang hitam dengan lingkar ukur samar dan kilau emas di satu sudut, digambar dengan gradien CSS | Kepala beranda, kepala asesmen, panel masuk |
-| `frame-silver` | Kartu dengan garis tepi gradasi perak | Kartu tahap, kartu isi |
+| `bg-maroon-dial` | Bidang marun bergradasi dengan kilau emas di satu sudut dan garis anak tangga yang sangat samar, digambar dengan gradien CSS | Kepala beranda, kepala asesmen, panel masuk, halaman galat |
+| `frame-hairline` | Kartu dengan garis tepi gradasi taupe hangat | Kartu tahap, kartu isi |
 | `frame-gold` | Kartu dengan garis tepi gradasi emas | Hanya kartu tahap yang sedang berjalan |
-| `hairline-silver`, `hairline-gold` | Garis tipis yang memudar di kedua ujung | Pemisah |
-| `text-gold-metal`, `text-silver-metal` | Teks bergradasi logam | Hanya di bidang gelap, untuk momen merek |
-| `frame-obsidian` | Bingkai ganda tipis di bidang gelap: garis luar perak samar, garis dalam emas sangat halus | Panel asesmen yang ditampilkan di beranda |
-| `rule-ornament` | Garis rambut perak dengan belah ketupat emas di tengah | Satu kali per bagian besar, misalnya panel halaman masuk |
+| `hairline-taupe`, `hairline-gold` | Garis tipis yang memudar di kedua ujung | Pemisah |
+| `text-gold-metal` | Teks bergradasi emas | Hanya di bidang marun, untuk momen merek |
+| `frame-maroon` | Bingkai ganda tipis di bidang marun: garis luar krem samar, garis dalam emas sangat halus | Panel asesmen yang ditampilkan di beranda |
+| `rule-ornament` | Garis rambut taupe dengan belah ketupat emas di tengah | Satu kali per bagian besar, misalnya panel halaman masuk |
 
-Sudut kartu dan tombol sengaja kecil (`--radius` 0,375 rem) untuk kesan presisi dan resmi. Ikon tahap pada kartu ditempatkan di dalam lingkaran bergaris perak; tahap yang berjalan memakai lingkaran hitam dengan cincin emas.
+Sudut kartu dan tombol sengaja kecil (`--radius` 0,375 rem) untuk kesan presisi dan resmi. Ikon tahap pada kartu ditempatkan di dalam lingkaran bergaris taupe; tahap yang berjalan memakai lingkaran marun dengan cincin emas.
 
 ### 1.4 Logo dan ikon
 
-Logo NSCAS (Dial Lima Busur) ada di `resources/js/components/brand/nscas-mark.tsx`. Makna, aturan pakai, dan daftar berkasnya ada di `docs/11` bagian 3. Logo Nusa Safety tetap dipakai apa adanya dari `public/brand/logo-long-color.png`.
+Logo NSCAS (perisai dan lima anak tangga emas) dipasang lewat komponen `resources/js/components/brand/nscas-mark.tsx` dari berkas `public/brand`. Makna, aturan pakai, dan daftar berkasnya ada di `docs/11` bagian 3.
 
 Ikon enam tahap memakai set khusus di `components/icons/stage-icons.tsx`: garis mengikuti warna teks, satu unsur emas. Ikon 25 halaman kerja dan 6 menu akun memakai set khusus dengan gaya yang sama di `components/icons/module-icons.tsx`, mengikuti konsep `docs/11` bagian 5. Ikon garis Lucide hanya dipakai untuk penunjuk kecil antarmuka (panah, centang, menu). Semua ikon bersifat hiasan dan selalu didampingi nama.
 

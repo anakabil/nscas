@@ -28,14 +28,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="flex min-h-screen flex-col">
             <a
                 href="#content"
-                className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-obsidian"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink"
             >
                 {t('app.skipToContent')}
             </a>
-            <header className="bg-obsidian text-white">
-                <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+            <header className="border-b border-border bg-card text-ink">
+                <div className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
                     <Link href="/home" className="shrink-0" aria-label={`${t('app.name')}, ${t('nav.home')}`}>
-                        <NscasLockup name={t('app.name')} byline={t('app.byline')} size="sm" />
+                        <NscasLockup label={t('app.name')} className="h-11 w-auto" />
                     </Link>
                     <nav aria-label={t('nav.main')} className="hidden items-center gap-1 md:flex">
                         {items.map((item) => (
@@ -45,13 +45,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                 aria-current={item.active ? 'page' : undefined}
                                 className={cn(
                                     'relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                                    item.active ? 'text-white' : 'text-white/65 hover:text-white',
+                                    item.active ? 'text-ink' : 'text-muted-foreground hover:text-ink',
                                 )}
                             >
                                 <item.icon aria-hidden className="size-4" strokeWidth={1.5} />
                                 {item.label}
                                 {item.active ? (
-                                    <span aria-hidden className="absolute inset-x-3 -bottom-[13px] h-px bg-gold" />
+                                    <span aria-hidden className="absolute inset-x-3 -bottom-[17px] h-[2px] bg-maroon" />
                                 ) : null}
                             </Link>
                         ))}
@@ -61,20 +61,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                             type="button"
                             onClick={() => switchLocale(other)}
                             lang={other}
-                            className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-white/65 transition-colors hover:text-white sm:flex"
+                            className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-ink sm:flex"
                         >
                             <Languages aria-hidden className="size-4" strokeWidth={1.5} />
                             {t('nav.switchTo')}
                         </button>
                         {user ? (
                             <details className="group relative">
-                                <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-white/15 px-3 py-2 text-sm font-medium text-white transition-colors hover:border-white/35 [&::-webkit-details-marker]:hidden">
+                                <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-medium text-ink transition-colors hover:border-taupe-dim [&::-webkit-details-marker]:hidden">
                                     <Menu aria-hidden className="size-4 md:hidden" strokeWidth={1.5} />
                                     <span className="hidden max-w-[11rem] truncate md:inline">{user.name}</span>
                                     <span className="md:hidden">{t('nav.menu')}</span>
                                     <ChevronDown
                                         aria-hidden
-                                        className="size-4 text-white/60 transition-transform group-open:rotate-180"
+                                        className="size-4 text-muted-foreground transition-transform group-open:rotate-180"
                                     />
                                 </summary>
                                 <div className="absolute right-0 z-30 mt-2 w-64 rounded-lg border border-border bg-card p-2 text-card-foreground shadow-xl">
@@ -89,7 +89,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                                 aria-current={item.active ? 'page' : undefined}
                                                 className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
                                             >
-                                                <item.icon aria-hidden className="size-4 text-silver-dim" strokeWidth={1.5} />
+                                                <item.icon aria-hidden className="size-4 text-taupe-dim" strokeWidth={1.5} />
                                                 {item.label}
                                             </Link>
                                         ))}
@@ -98,7 +98,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                         href="/settings/profile"
                                         className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
                                     >
-                                        <ShieldCheck aria-hidden className="size-4 text-silver-dim" strokeWidth={1.5} />
+                                        <ShieldCheck aria-hidden className="size-4 text-taupe-dim" strokeWidth={1.5} />
                                         {t('nav.account')}
                                     </Link>
                                     <button
@@ -107,7 +107,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                         lang={other}
                                         className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-muted sm:hidden"
                                     >
-                                        <Languages aria-hidden className="size-4 text-silver-dim" strokeWidth={1.5} />
+                                        <Languages aria-hidden className="size-4 text-taupe-dim" strokeWidth={1.5} />
                                         {t('nav.switchTo')}
                                     </button>
                                     <div className="my-2 h-px bg-border" />
@@ -117,7 +117,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                                         as="button"
                                         className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-muted"
                                     >
-                                        <LogOut aria-hidden className="size-4 text-silver-dim" strokeWidth={1.5} />
+                                        <LogOut aria-hidden className="size-4 text-taupe-dim" strokeWidth={1.5} />
                                         {t('nav.logout')}
                                     </Link>
                                 </div>
@@ -125,7 +125,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                         ) : null}
                     </div>
                 </div>
-                <div className="hairline-gold opacity-60" />
             </header>
             <main id="content" className="flex-1">
                 {children}

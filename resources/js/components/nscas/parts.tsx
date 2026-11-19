@@ -21,7 +21,7 @@ export function SectionHeading({ eyebrow, title, intro }: { eyebrow?: string; ti
                     {eyebrow}
                 </p>
             ) : null}
-            <h2 className="font-display text-[1.75rem] leading-[1.15] text-obsidian sm:text-[2.15rem]">{title}</h2>
+            <h2 className="font-display text-[1.75rem] leading-[1.15] text-ink sm:text-[2.15rem]">{title}</h2>
             {intro ? <p className="max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground">{intro}</p> : null}
         </header>
     );
@@ -75,7 +75,7 @@ export function ModuleRow({ module }: { module: ModuleLink }) {
                 href={module.href}
                 className="group flex items-center gap-3 rounded-md px-2 py-2 text-sm transition-colors hover:bg-muted focus-visible:bg-muted"
             >
-                {Icon ? <Icon aria-hidden className="size-4 shrink-0 text-silver-dim" strokeWidth={1.5} /> : null}
+                {Icon ? <Icon aria-hidden className="size-4 shrink-0 text-taupe-dim" strokeWidth={1.5} /> : null}
                 <span className="min-w-0 flex-1 truncate font-medium text-foreground">{t(`modules.${module.key}.title`)}</span>
                 {module.ready ? (
                     <ArrowRight
@@ -101,7 +101,7 @@ export function StageCard({ stage }: { stage: StageGroup }) {
             data-state={stage.state}
             className={cn(
                 'flex h-full flex-col rounded-lg bg-card p-7',
-                current ? 'frame-gold shadow-[0_18px_40px_-24px_rgb(138_109_27/0.55)]' : 'frame-silver',
+                current ? 'frame-gold shadow-[0_18px_40px_-24px_rgb(134_101_42/0.45)]' : 'frame-hairline',
                 stage.state === 'upcoming' && 'opacity-[0.93]',
             )}
         >
@@ -111,8 +111,8 @@ export function StageCard({ stage }: { stage: StageGroup }) {
                     className={cn(
                         'flex size-12 items-center justify-center rounded-full border',
                         current
-                            ? 'border-gold/70 bg-obsidian text-silver-bright shadow-[inset_0_0_0_3px_var(--obsidian),inset_0_0_0_4px_rgb(212_175_55/0.35)]'
-                            : 'border-silver bg-card text-charcoal',
+                            ? 'border-gold/70 bg-maroon text-parchment shadow-[inset_0_0_0_3px_var(--maroon),inset_0_0_0_4px_rgb(203_163_90/0.35)]'
+                            : 'border-taupe bg-card text-charcoal',
                     )}
                 >
                     <Icon className="size-[1.375rem]" accent={current ? 'var(--gold)' : 'var(--gold-deep)'} />
@@ -121,7 +121,7 @@ export function StageCard({ stage }: { stage: StageGroup }) {
                     aria-hidden
                     className={cn(
                         'font-display text-5xl leading-none font-normal tabular-nums',
-                        current ? 'text-gold' : 'text-silver',
+                        current ? 'text-gold' : 'text-taupe',
                     )}
                 >
                     {String(stage.number).padStart(2, '0')}
@@ -129,7 +129,7 @@ export function StageCard({ stage }: { stage: StageGroup }) {
             </div>
             <div className="mt-5 space-y-2">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                    <h3 className="font-display text-[1.375rem] leading-tight text-obsidian">
+                    <h3 className="font-display text-[1.375rem] leading-tight text-ink">
                         <span className="sr-only">{stage.number}. </span>
                         {t(`stages.${stage.key}.title`)}
                     </h3>
@@ -137,7 +137,7 @@ export function StageCard({ stage }: { stage: StageGroup }) {
                 </div>
                 <p className="text-sm leading-relaxed text-muted-foreground">{t(`stages.${stage.key}.summary`)}</p>
             </div>
-            <div className={cn('my-4', current ? 'hairline-gold' : 'hairline-silver')} />
+            <div className={cn('my-4', current ? 'hairline-gold' : 'hairline-taupe')} />
             {stage.modules.length > 0 ? (
                 <ul className="-mx-2 space-y-0.5">
                     {stage.modules.map((module) => (
@@ -162,7 +162,7 @@ export function TaskTile({ module }: { module: ModuleLink }) {
         >
             <span
                 aria-hidden
-                className="flex size-11 shrink-0 items-center justify-center rounded-md bg-obsidian text-silver-bright shadow-[inset_0_0_0_1px_rgb(212_175_55/0.35)]"
+                className="flex size-11 shrink-0 items-center justify-center rounded-md bg-maroon text-parchment shadow-[inset_0_0_0_1px_rgb(203_163_90/0.35)]"
             >
                 {Icon ? <Icon className="size-5" strokeWidth={1.5} /> : null}
             </span>
@@ -186,11 +186,11 @@ export function AccountTile({ item }: { item: AccountMenuItem }) {
     return (
         <Link
             href={item.path}
-            className="group flex h-full items-start gap-4 rounded-lg border border-border bg-card p-5 transition-colors duration-200 hover:border-silver-dim focus-visible:border-silver-dim"
+            className="group flex h-full items-start gap-4 rounded-lg border border-border bg-card p-5 transition-colors duration-200 hover:border-taupe-dim focus-visible:border-taupe-dim"
         >
             <span
                 aria-hidden
-                className="flex size-11 shrink-0 items-center justify-center rounded-full border border-silver bg-card text-charcoal"
+                className="flex size-11 shrink-0 items-center justify-center rounded-full border border-taupe bg-card text-charcoal"
             >
                 {Icon ? <Icon className="size-5" strokeWidth={1.5} /> : null}
             </span>
@@ -217,7 +217,7 @@ export function StageMeter({
 }) {
     const palette =
         tone === 'dark'
-            ? { done: 'bg-silver', current: 'bg-gold', upcoming: 'bg-white/15' }
+            ? { done: 'bg-taupe', current: 'bg-gold', upcoming: 'bg-white/15' }
             : { done: 'bg-charcoal', current: 'bg-gold', upcoming: 'bg-border' };
     return (
         <div aria-hidden className="flex gap-1.5">

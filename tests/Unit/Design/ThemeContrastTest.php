@@ -56,15 +56,18 @@ class ThemeContrastTest extends TestCase
         yield 'teks utama di latar halaman' => ['foreground', 'background', 4.5];
         yield 'teks pendukung di kartu' => ['muted-foreground', 'card', 4.5];
         yield 'teks pendukung di latar halaman' => ['muted-foreground', 'background', 4.5];
-        yield 'teks tombol utama' => ['primary-foreground', 'primary', 4.5];
+        yield 'teks tombol utama marun' => ['primary-foreground', 'primary', 4.5];
+        yield 'marun sebagai teks di latar halaman' => ['maroon', 'background', 4.5];
         yield 'emas tua untuk teks di bidang terang' => ['gold-deep', 'card', 4.5];
         yield 'emas tua di latar halaman' => ['gold-deep', 'background', 4.5];
-        yield 'emas di bidang gelap' => ['gold', 'obsidian', 4.5];
-        yield 'emas pucat di bidang gelap' => ['gold-soft', 'obsidian', 4.5];
-        yield 'perak di bidang gelap' => ['silver', 'obsidian', 4.5];
-        yield 'perak tua sebagai ikon di bidang gelap' => ['silver-dim', 'obsidian', 3.0];
+        yield 'emas di bidang marun' => ['gold', 'maroon-deep', 4.5];
+        yield 'emas pucat di bidang marun' => ['gold-soft', 'maroon-deep', 4.5];
+        yield 'krem perkamen di bidang marun' => ['parchment', 'maroon-deep', 4.5];
+        yield 'taupe di bidang marun' => ['taupe', 'maroon-deep', 4.5];
+        yield 'taupe tua sebagai ikon di kartu' => ['taupe-dim', 'card', 3.0];
         yield 'teks berhasil di kartu' => ['success', 'card', 4.5];
         yield 'teks galat di kartu' => ['destructive', 'card', 4.5];
+        yield 'galat berbeda jelas dari marun merek' => ['destructive', 'maroon', 1.3];
         yield 'cincin fokus di kartu' => ['ring', 'card', 3.0];
         yield 'garis masukan di kartu' => ['input', 'card', 1.5];
     }

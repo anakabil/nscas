@@ -19,7 +19,7 @@ export default function SystemStatus({ checks, checkedAt }: { checks: Check[]; c
             <Head title={t('systemStatus.title')} />
             <Container className="space-y-8 py-10">
                 <header className="space-y-2">
-                    <h1 className="font-display text-[2.25rem] leading-tight text-obsidian sm:text-[2.6rem]">
+                    <h1 className="font-display text-[2.25rem] leading-tight text-ink sm:text-[2.6rem]">
                         {t('systemStatus.title')}
                     </h1>
                     <p className="text-sm text-muted-foreground">{t('systemStatus.intro')}</p>
@@ -28,7 +28,7 @@ export default function SystemStatus({ checks, checkedAt }: { checks: Check[]; c
                     {checks.map((check) => (
                         <li
                             key={check.key}
-                            className="frame-silver rounded-lg p-6"
+                            className="frame-hairline rounded-lg p-6"
                             data-testid={`status-${check.key}`}
                             data-ok={check.ok}
                         >

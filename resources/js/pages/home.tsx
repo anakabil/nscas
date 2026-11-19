@@ -40,7 +40,7 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
         <>
             <Head title={t('home.title')} />
 
-            <section className="bg-obsidian-dial text-white">
+            <section className="bg-maroon-dial text-white">
                 <Container className="grid gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-end lg:py-16">
                     <div className="space-y-6">
                         <p className="eyebrow flex items-center gap-3 text-gold">
@@ -65,16 +65,14 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                             {persona.organizations.length > 0 ? (
                                 <div>
                                     <dt className="eyebrow text-white/45">{t('home.organizationLabel')}</dt>
-                                    <dd className="mt-1.5 py-1 font-medium text-silver-bright">
-                                        {persona.organizations.join(', ')}
-                                    </dd>
+                                    <dd className="mt-1.5 py-1 font-medium text-parchment">{persona.organizations.join(', ')}</dd>
                                 </div>
                             ) : null}
                         </dl>
                     </div>
 
                     {selected ? (
-                        <div className="frame-obsidian rounded-lg p-7" data-testid="selected-assessment">
+                        <div className="frame-maroon rounded-lg p-7" data-testid="selected-assessment">
                             <p className="eyebrow text-white/50">{t('home.selectedLabel')}</p>
                             <p className="mt-3 font-display text-[1.6rem] leading-snug">{selected.name}</p>
                             <p className="mt-1 text-sm text-white/65">{selected.organization}</p>
@@ -89,7 +87,7 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                             </div>
                             <Link
                                 href={selected.href}
-                                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gradient-to-b from-white to-silver-bright px-4 py-3 text-sm font-semibold tracking-[0.02em] text-obsidian shadow-[inset_0_-1px_0_rgb(141_146_153/0.6)] transition-colors hover:to-silver"
+                                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gradient-to-b from-white to-parchment px-4 py-3 text-sm font-semibold tracking-[0.02em] text-ink shadow-[inset_0_-1px_0_rgb(140_128_115/0.6)] transition-colors hover:to-taupe"
                             >
                                 {t('home.openHub')}
                                 <ArrowRight aria-hidden className="size-4" />
@@ -105,8 +103,8 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
 
             <Container className="space-y-16 py-12">
                 {selected === null ? (
-                    <section className="frame-silver rounded-lg p-10 text-center" data-testid="home-empty">
-                        <h2 className="font-display text-[1.75rem] text-obsidian">{t('home.emptyTitle')}</h2>
+                    <section className="frame-hairline rounded-lg p-10 text-center" data-testid="home-empty">
+                        <h2 className="font-display text-[1.75rem] text-ink">{t('home.emptyTitle')}</h2>
                         <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
                             {persona.primaryRole === null
                                 ? t('roles.none.task')
@@ -184,7 +182,7 @@ export default function Home({ persona, accountMenu, assessments, selected }: Pr
                                                 'inline-flex shrink-0 items-center justify-center gap-2 rounded-sm border px-3.5 py-2 text-[0.8125rem] font-semibold transition-colors',
                                                 shown
                                                     ? 'border-gold/60 bg-gold/10 text-gold-deep'
-                                                    : 'border-border text-charcoal hover:border-obsidian hover:text-obsidian',
+                                                    : 'border-border text-charcoal hover:border-maroon hover:text-maroon',
                                             )}
                                         >
                                             {shown ? t('home.shown') : t('home.showOnHome')}

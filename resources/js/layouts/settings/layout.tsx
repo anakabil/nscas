@@ -15,12 +15,10 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     return (
         <Container className="py-10">
             <header className="space-y-2">
-                <h1 className="font-display text-[2.25rem] leading-tight text-obsidian sm:text-[2.6rem]">
-                    {t('settingsNav.title')}
-                </h1>
+                <h1 className="font-display text-[2.25rem] leading-tight text-ink sm:text-[2.6rem]">{t('settingsNav.title')}</h1>
                 <p className="text-sm text-muted-foreground">{t('settingsNav.description')}</p>
             </header>
-            <div className="hairline-silver my-6" />
+            <div className="hairline-taupe my-6" />
             <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
                 <nav aria-label={t('settingsNav.title')} className="flex gap-1 lg:w-48 lg:flex-col">
                     {items.map((item) => (
@@ -31,7 +29,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                             className={cn(
                                 'rounded-md px-3 py-2 text-sm font-medium transition-colors',
                                 path === item.href
-                                    ? 'bg-obsidian text-white'
+                                    ? 'bg-maroon text-parchment'
                                     : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                             )}
                         >

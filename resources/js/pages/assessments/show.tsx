@@ -14,20 +14,16 @@ export default function AssessmentShow({ assessment }: { assessment: AssessmentM
             <Head title={assessment.name} />
             <AssessmentHeader assessment={assessment} back={{ href: '/home', label: t('hub.backToHome') }} />
             <Container className="space-y-14 py-12">
-                <section className="frame-silver rounded-lg p-7 sm:p-9" data-testid="next-step">
+                <section className="frame-hairline rounded-lg p-7 sm:p-9" data-testid="next-step">
                     {assessment.next ? (
                         <div className="space-y-4">
-                            <h2 className="font-display text-[1.5rem] leading-tight text-obsidian">
+                            <h2 className="font-display text-[1.5rem] leading-tight text-ink">
                                 {t('hub.nextTitle', { status: t(`statuses.${assessment.next.to}`) })}
                             </h2>
                             <ul className="grid gap-x-8 gap-y-2.5 text-sm sm:grid-cols-2">
                                 {assessment.next.conditions.map((condition) => (
                                     <li key={condition} className="flex items-start gap-2.5">
-                                        <Circle
-                                            aria-hidden
-                                            className="mt-0.5 size-4 shrink-0 text-silver-dim"
-                                            strokeWidth={1.5}
-                                        />
+                                        <Circle aria-hidden className="mt-0.5 size-4 shrink-0 text-taupe-dim" strokeWidth={1.5} />
                                         <span>{t(`conditions.${condition}`)}</span>
                                     </li>
                                 ))}

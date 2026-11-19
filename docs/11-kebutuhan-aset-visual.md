@@ -4,35 +4,32 @@ Dokumen ini adalah daftar nama, konsep, dan warna untuk logo, ikon, ilustrasi, d
 
 ## 1. Arah visual
 
-Nama arah visual: Monokrom Perak dan Emas. Gagasan dasarnya, NSCAS adalah instrumen ukur yang presisi, sehingga tampilannya meminjam bahasa jam tangan mekanis dan alat ukur: bidang hitam, garis logam tipis, dan satu aksen emas.
+Nama arah visual: Marun dan Emas, diturunkan dari logo NSCAS (bagian 3). Arah sebelumnya, Monokrom Perak dan Emas, tidak dipakai lagi. Untuk aset baru, kata "perak" dan "bidang gelap" pada tabel di bawah bagian ini dibaca sebagai taupe dan bidang marun.
 
 ### 1.1 Palet
 
 | Nama | Kode | Peran | Boleh untuk teks |
 |---|---|---|---|
-| Obsidian | `#0B0B0C` | Bidang gelap utama: kepala halaman, panel identitas, sampul | Sebagai latar |
-| Grafit | `#17171A` | Gradasi bidang gelap | Sebagai latar |
-| Arang | `#26262B` | Garis ikon di bidang terang, bidang sekunder gelap | Ya, di bidang terang |
-| Perak tua | `#8D9299` | Garis logam, ikon pendukung | Tidak, kontras kurang |
-| Perak | `#C7CAD0` | Garis ikon di bidang gelap, bingkai logam | Ya, di bidang gelap |
-| Perak terang | `#E9EAEC` | Kilau logam, ikon di bidang gelap | Ya, di bidang gelap |
-| Putih | `#FFFFFF` | Bidang kerja, kartu | Ya, di bidang gelap |
-| Abu kabut | `#F5F5F6` | Latar halaman | Sebagai latar |
-| Emas | `#D4AF37` | Aksen tunggal: tahap berjalan, unsur kunci ikon, busur kelima logo | Ya, hanya di bidang gelap |
-| Emas pucat | `#E6CF8B` | Kilau emas, teks kecil di bidang gelap | Ya, hanya di bidang gelap |
-| Emas tua | `#84681A` | Emas untuk bidang terang | Ya, di bidang terang (kontras 5,3 banding 1 di atas putih; 4,8 di atas latar halaman) |
+| Marun | `#691B2E` | Warna merek: tombol utama, bidang identitas, unsur kuat ikon | Ya, di bidang terang |
+| Marun tua | `#4A1220` ke `#2C0A13` | Gradasi bidang identitas, sampul | Sebagai latar |
+| Hitam | `#1A1A1A` | Judul, teks utama, garis ikon di bidang terang | Ya, di bidang terang |
+| Taupe | `#CDBFAD` | Bingkai, garis, angka hiasan | Ya, di bidang marun |
+| Taupe tua | `#8C8073` | Ikon pendukung | Tidak, kontras kurang |
+| Perkamen | `#F4ECDF` | Teks dan ikon di bidang marun | Ya, di bidang marun |
+| Krem | `#FEFAF4` | Latar logo, teks di bidang marun | Ya, di bidang marun |
+| Latar halaman | `#F7F2EA` | Latar bidang kerja | Sebagai latar |
+| Emas | `#CBA35A` | Aksen tunggal: tahap berjalan, unsur kunci ikon, tangga logo | Ya, hanya di bidang marun |
+| Emas pucat | `#E5CD98` | Kilau emas, teks kecil di bidang marun | Ya, hanya di bidang marun |
+| Emas tua | `#86652A` | Emas untuk bidang terang | Ya (kontras 5,3 banding 1 di kartu; 4,8 di latar halaman) |
 
-Gradasi logam, dipakai hemat:
-
-1. Emas: `#F3DFA2` ke `#D4AF37` ke `#9C7A1E`, arah diagonal.
-2. Perak: `#FFFFFF` ke `#C7CAD0` ke `#8D9299`, arah tegak.
+Gradasi emas, dipakai hemat: `#F1DCAA` ke `#CBA35A` ke `#A07B35`, arah diagonal.
 
 ### 1.2 Aturan gaya
 
 1. Dua dimensi dan datar. Kesan mewah datang dari proporsi, garis tipis yang rapi, dan ruang kosong, bukan dari efek tiga dimensi, kilap berlebihan, atau bayangan tebal.
 2. Emas adalah aksen, bukan warna dasar. Dalam satu gambar, luas emas paling banyak sekitar 10 persen. Satu ikon hanya memiliki satu unsur emas.
 3. Tanpa teks, huruf, atau angka di dalam gambar. Tulisan dipasang di antarmuka agar dapat diterjemahkan dan tetap tajam.
-4. Tanpa bentuk tangga, segel, medali, pita, stempel, atau karangan daun. Bentuk itu dapat dikira tanda sertifikasi, padahal NSCAS adalah pengukuran internal.
+4. Tanpa segel, medali, pita, stempel, atau karangan daun. Bentuk itu dapat dikira tanda sertifikasi, padahal NSCAS adalah pengukuran internal. Tangga hanya muncul di logo resmi; ilustrasi lain tidak menambah tangga.
 5. Huruf antarmuka: Bodoni Moda untuk judul dan tulisan merek, Instrument Sans untuk teks. Keduanya dipasang lokal (docs/05 bagian 1.2).
 
 ### 1.3 Aturan K3 untuk gambar yang memuat pekerja
@@ -48,13 +45,13 @@ Setiap gambar pekerja wajib lolos daftar periksa berikut sebelum dipakai. Dasarn
 | 5 | Pekerja laki-laki dan perempuan; sebagian pekerja perempuan berhijab di bawah helm |
 | 6 | Wajah disederhanakan sehingga tidak menyerupai orang nyata |
 
-Dalam palet ini, rompi digambar perak terang dengan pita pemantul emas pucat, dan helm putih atau emas pucat. Warna jingga dan kuning terang tidak dipakai agar gambar tetap monokrom.
+Dalam palet ini, rompi digambar perkamen atau taupe dengan pita pemantul emas pucat, dan helm putih atau emas pucat. Warna jingga dan kuning terang tidak dipakai agar gambar tetap selaras dengan palet marun dan emas.
 
 ## 2. Status aset
 
 | Kelompok | Jumlah | Status |
 |---|---|---|
-| Logo NSCAS (bagian 3) | 6 berkas | Sudah dibuat sebagai vektor dan terpasang; menunggu persetujuan pemilik merek |
+| Logo NSCAS (bagian 3) | 6 kelompok berkas | Logo resmi dari pemilik merek, sudah dijadikan vektor dan terpasang |
 | Ikon tahap (bagian 4) | 6 | Sudah dibuat sebagai vektor dan terpasang |
 | Ikon halaman kerja dan akun (bagian 5) | 31 | Sudah dibuat sebagai vektor dan terpasang (`module-icons.tsx`); prompt di tabel tetap berlaku bila ingin versi bergambar |
 | Lencana tingkat kematangan (bagian 6) | 5 | Perlu dibuat |
@@ -62,55 +59,39 @@ Dalam palet ini, rompi digambar perak terang dengan pita pemantul emas pucat, da
 
 ## 3. Logo NSCAS
 
-### 3.1 Konsep: Dial Lima Busur
+### 3.1 Logo resmi
 
-| Unsur | Makna | Warna |
+Logo diserahkan pemilik merek pada 19 November 2026 dan menggantikan rancangan sebelumnya (Dial Lima Busur). Berkas asli disimpan di `resources/brand/nscas-logo-source.webp`.
+
+| Unsur | Warna | Makna |
 |---|---|---|
-| Lima busur pada lengkung 270 derajat | Lima tingkat kematangan budaya K3, dibaca searah jarum jam seperti alat ukur | Busur 1 sampai 4 perak yang makin terang: `#8D9299`, `#A7ACB3`, `#C3C7CC`, `#E2E4E7` |
-| Busur kelima | Tujuan pengukuran, yaitu budaya yang matang | Gradasi emas |
-| Garis skala halus di luar busur | Ketelitian dan keterukuran | Putih 38 persen di bidang gelap; hitam 38 persen di bidang terang |
-| Monogram N berserif di tengah | Nusa Safety sebagai pemilik metode | Putih `#F4F4F5` di bidang gelap; `#111113` di bidang terang |
-| Lengkung terbuka di bawah | Pengukuran yang belum selesai: budaya selalu dapat ditingkatkan | Tanpa warna |
-
-Di bidang terang, urutan perak dibalik (makin gelap) agar busur keempat tetap paling kuat: `#B9BDC3`, `#9A9FA6`, `#7B8087`, `#5B6067`.
+| Perisai dua bagian | Marun `#691B2E` dan hitam `#1A1A1A` | Perlindungan pekerja dan organisasi |
+| Lima anak tangga | Emas `#CBA35A` | Lima tingkat kematangan budaya K3 yang dinaiki bertahap |
+| Lekuk di bawah tangga | Marun | Dukungan yang menopang pertumbuhan |
+| Tulisan NSCAS | Hitam, huruf tanpa kait tebal | Nama aplikasi |
+| Nama lengkap | Marun, huruf kapital berjarak | Nusa Safety Culture Assessment System |
+| Latar | Krem `#FEFAF4` | Warna dasar tema |
 
 ### 3.2 Berkas
 
-| ID | Berkas | Isi | Pemakaian |
-|---|---|---|---|
-| L01 | `public/brand/nscas-mark-dark.svg` | Simbol lengkap dengan garis skala, untuk bidang gelap | Sampul laporan, panel halaman masuk, presentasi |
-| L02 | `public/brand/nscas-mark-light.svg` | Simbol lengkap untuk bidang terang | Kop dokumen, laporan |
-| L03 | `public/favicon.svg`, `public/favicon.ico` | Lima busur tebal tanpa monogram di persegi membulat hitam | Ikon tab peramban, 16 sampai 48 piksel |
-| L04 | `public/apple-touch-icon.png` | Simbol tanpa garis skala di bidang hitam penuh | Layar utama telepon, 180 piksel |
-| L05 | `public/brand/nscas-app-icon-192.png`, `-512.png` | Sama dengan L04; simbol di zona aman 80 persen | Ikon aplikasi yang dapat dipasang |
-| L06 | Komponen `NscasLockup` | Simbol, tulisan NSCAS berhuruf Bodoni Moda berjarak lebar, dan baris "oleh Nusa Safety" berwarna emas | Kepala halaman, halaman masuk, surel |
+Semua berkas vektor adalah hasil penelusuran per warna dari berkas asli (`scripts/brand/trace_logo.py` lalu `scripts/brand/compose_logo.py`, memakai potrace). Jalankan ulang kedua skrip bila logo berubah.
 
-Tulisan NSCAS selalu berupa teks, bukan gambar. Sumber vektornya ada di `resources/js/components/brand/nscas-mark.tsx`.
+| Kode | Berkas | Isi | Pemakaian |
+|---|---|---|---|
+| L01 | `public/brand/nscas-logo.svg` | Logo lengkap berwarna, dengan nama lengkap | Dokumen, laporan, halaman terang lebar |
+| L02 | `public/brand/nscas-logo-reversed.svg` | Logo lengkap untuk bidang marun atau hitam: perisai dan tulisan krem, tangga dan nama lengkap emas | Panel halaman masuk |
+| L03 | `public/brand/nscas-lockup.svg`, `nscas-lockup-reversed.svg` | Simbol dan tulisan NSCAS tanpa nama lengkap | Kepala halaman, ukuran kecil |
+| L04 | `public/brand/nscas-mark.svg`, `nscas-mark-reversed.svg` | Simbol perisai saja | Halaman galat, favikon |
+| L05 | `public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png`, `public/brand/nscas-app-icon-192.png`, `nscas-app-icon-512.png` | Ikon peramban dan aplikasi, simbol di atas krem | Tab peramban, layar utama telepon |
+| L06 | `public/brand/nscas-logo.png`, `nscas-logo-cream.png` | Logo lengkap raster lebar 1.200 piksel, transparan dan berlatar krem | Kepala surel, berkas presentasi |
 
 ### 3.3 Aturan pakai
 
-1. Ruang bebas di sekeliling simbol paling sedikit selebar satu busur.
-2. Ukuran terkecil simbol lengkap 32 piksel. Di bawah itu pakai L03.
-3. Simbol tidak diputar, tidak diberi bayangan, dan warnanya tidak diganti.
-4. Logo NSCAS melengkapi logo Nusa Safety (`public/brand/logo-long-color.png`), bukan menggantikannya. Logo perusahaan tidak diubah.
-
-### 3.4 Prompt bila ingin menjelajahi variasi
-
-```
-minimal luxury logo mark for a precision measurement instrument, a 270 degree open dial made of five thin separate arc segments, four segments in graduated brushed silver from dark to bright and the fifth segment in gold, fine watch dial tick marks outside the arcs, an elegant high contrast serif capital letter N in the center, flat vector, on pure black #0B0B0C background, perfectly symmetric, generous margin, no text other than the single letter N, no gradients except subtle metallic, no 3D, no shadow, no mockup
-```
-
-Prompt negatif:
-
-```
-ladder, staircase, steps, certificate seal, ribbon, medal, stamp, laurel wreath, shield crest, hard hat clipart, medical cross, globe, 3D render, glossy, bevel, emboss, mockup, photo, extra letters, words
-```
-
-### 3.5 Yang masih perlu diputuskan
-
-1. Persetujuan akhir oleh pemilik merek.
-2. Perapian oleh desainer dan pemeriksaan kemiripan dengan merek lain.
-3. Pendaftaran merek NSCAS ke Direktorat Jenderal Kekayaan Intelektual sesuai Undang-Undang Nomor 20 Tahun 2016. Repositori kode bersifat publik, sehingga logo sudah dapat dilihat umum.
+1. Logo berwarna hanya di atas latar terang (krem, putih, kartu). Di atas marun atau hitam pakai versi `reversed`.
+2. Nama lengkap di bawah tulisan hanya dipakai bila lebar logo paling sedikit 280 piksel; di bawah itu pakai versi tanpa nama lengkap.
+3. Ruang bebas di sekitar logo paling sedikit setinggi satu anak tangga.
+4. Jangan mengubah warna, merenggangkan, atau menambah bayangan.
+5. Logo menggambarkan anak tangga kematangan. Jangan menempatkannya berdampingan dengan kata "tersertifikasi", nomor tangga Safety Culture Ladder, atau logo NEN, agar tidak terbaca sebagai tanda sertifikasi (CLAUDE.md, aturan 8).
 
 ## 4. Ikon enam tahap penilaian
 

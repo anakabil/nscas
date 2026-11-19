@@ -16,10 +16,11 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 /*
- * Tema NSCAS v2 "Monokrom Perak dan Emas" (docs/05 bagian 1).
- * Dasar hitam, putih, dan abu; perak untuk garis dan permukaan logam; emas hanya sebagai aksen.
- * Bidang gelap dipakai untuk bingkai (kepala halaman, panel identitas); bidang kerja tetap terang agar
- * nyaman dibaca lama dan terbaca di bawah sinar matahari di lokasi proyek.
+ * Tema NSCAS "Marun dan Emas" (docs/05 bagian 1), diturunkan dari logo NSCAS milik Nusa Safety:
+ * marun #691B2E, hitam #1A1A1A, emas #CBA35A, dan krem #FEFAF4.
+ * Marun adalah warna merek: tombol utama dan bidang identitas (beranda, kepala asesmen, panel masuk).
+ * Hitam untuk teks dan judul. Emas hanya aksen. Bidang kerja krem terang agar nyaman dibaca lama dan
+ * terbaca di bawah sinar matahari di lokasi proyek.
  */
 @theme {
     --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
@@ -49,60 +50,72 @@
     --color-input: var(--input);
     --color-ring: var(--ring);
 
-    /* Warna merek */
-    --color-obsidian: var(--obsidian);
-    --color-graphite: var(--graphite);
+    /* Warna merek dari logo */
+    --color-maroon: var(--maroon);
+    --color-maroon-deep: var(--maroon-deep);
+    --color-maroon-ink: var(--maroon-ink);
+    --color-maroon-soft: var(--maroon-soft);
+    --color-ink: var(--ink);
     --color-charcoal: var(--charcoal);
-    --color-silver: var(--silver);
-    --color-silver-bright: var(--silver-bright);
-    --color-silver-dim: var(--silver-dim);
+    --color-cream: var(--cream);
+    --color-parchment: var(--parchment);
+    --color-taupe: var(--taupe);
+    --color-taupe-dim: var(--taupe-dim);
     --color-gold: var(--gold);
     --color-gold-soft: var(--gold-soft);
     --color-gold-deep: var(--gold-deep);
     --color-success: var(--success);
     --color-warning: var(--warning);
 
-    /* Gradasi lima tingkat kematangan: abu ke hitam, dengan emas khusus untuk sasaran tercapai. */
-    --color-level-1: #d4d4d8;
-    --color-level-2: #a1a1aa;
-    --color-level-3: #71717a;
-    --color-level-4: #3f3f46;
-    --color-level-5: #111113;
+    /* Gradasi lima tingkat kematangan: krem ke marun, dengan emas khusus untuk sasaran tercapai. */
+    --color-level-1: #eadfd0;
+    --color-level-2: #d2b9a6;
+    --color-level-3: #a9776f;
+    --color-level-4: #82364a;
+    --color-level-5: #691b2e;
 }
 
 :root {
-    --obsidian: #0b0b0c;
-    --graphite: #17171a;
-    --charcoal: #26262b;
-    --silver: #c7cad0;
-    --silver-bright: #e9eaec;
-    --silver-dim: #8d9299;
-    --gold: #d4af37;
-    --gold-soft: #e6cf8b;
-    /* Emas tua: satu-satunya emas yang boleh dipakai untuk teks di bidang terang (kontras 5,3 banding 1 di atas putih; 4,8 di atas latar halaman). */
-    --gold-deep: #84681a;
+    /* Marun logo dan turunannya untuk bidang gelap. */
+    --maroon: #691b2e;
+    --maroon-deep: #4a1220;
+    --maroon-ink: #2c0a13;
+    --maroon-soft: #f4e7e7;
+    /* Hitam logo untuk teks dan judul. */
+    --ink: #1a1a1a;
+    --charcoal: #3b3431;
+    /* Krem latar logo dan nada hangat pendampingnya. */
+    --cream: #fefaf4;
+    --parchment: #f4ecdf;
+    --taupe: #cdbfad;
+    --taupe-dim: #8c8073;
+    /* Emas logo; untuk teks di bidang terang pakai emas tua (kontras 5,3 banding 1 di kartu, 4,8 di latar). */
+    --gold: #cba35a;
+    --gold-soft: #e5cd98;
+    --gold-deep: #86652a;
     --success: #2f6b4f;
-    --warning: #84681a;
+    --warning: #86652a;
 
-    --background: #f5f5f6;
-    --foreground: #111113;
-    --card: #ffffff;
-    --card-foreground: #111113;
-    --popover: #ffffff;
-    --popover-foreground: #111113;
-    --primary: #111113;
-    --primary-foreground: #fafafa;
-    --secondary: #ececee;
-    --secondary-foreground: #18181b;
-    --muted: #f0f0f2;
-    --muted-foreground: #5b5b63;
-    --accent: #ececee;
-    --accent-foreground: #111113;
-    --destructive: #9b2c2c;
+    --background: #f7f2ea;
+    --foreground: #1a1a1a;
+    --card: #fffdf9;
+    --card-foreground: #1a1a1a;
+    --popover: #fffdf9;
+    --popover-foreground: #1a1a1a;
+    --primary: #691b2e;
+    --primary-foreground: #fefaf4;
+    --secondary: #efe7da;
+    --secondary-foreground: #1a1a1a;
+    --muted: #f2ebe0;
+    --muted-foreground: #5f564e;
+    --accent: #efe7da;
+    --accent-foreground: #1a1a1a;
+    /* Merah galat sengaja lebih terang dan lebih jingga daripada marun merek agar tidak tertukar. */
+    --destructive: #b42318;
     --destructive-foreground: #ffffff;
-    --border: #dcdce0;
-    --input: #c4c4ca;
-    --ring: #b08d2e;
+    --border: #e5dccf;
+    --input: #b9aa96;
+    --ring: #9a7428;
     /* Sudut sengaja kecil: kesan presisi dan resmi, bukan bulat seperti aplikasi konsumen. */
     --radius: 0.375rem;
 }
@@ -135,7 +148,7 @@
 
     ::selection {
         background: var(--gold-soft);
-        color: var(--obsidian);
+        color: var(--ink);
     }
 }
 
@@ -195,12 +208,12 @@
         background: linear-gradient(
                 90deg,
                 transparent,
-                var(--silver) 18%,
-                var(--silver) 44%,
+                var(--taupe) 18%,
+                var(--taupe) 44%,
                 transparent 46%,
                 transparent 54%,
-                var(--silver) 56%,
-                var(--silver) 82%,
+                var(--taupe) 56%,
+                var(--taupe) 82%,
                 transparent
             )
             center / 100% 1px no-repeat;
@@ -213,18 +226,18 @@
         top: 50%;
         width: 6px;
         height: 6px;
-        background: linear-gradient(135deg, #f3dfa2, var(--gold) 55%, #9c7a1e);
+        background: linear-gradient(135deg, #f1dcaa, var(--gold) 55%, #a07b35);
         transform: translate(-50%, -50%) rotate(45deg);
     }
 
-    /* Bingkai ganda tipis di bidang gelap: garis luar perak samar dan garis dalam emas yang sangat halus. */
-    .frame-obsidian {
-        border: 1px solid rgb(255 255 255 / 0.1);
+    /* Bingkai ganda tipis di bidang marun: garis luar krem samar dan garis dalam emas yang sangat halus. */
+    .frame-maroon {
+        border: 1px solid rgb(254 250 244 / 0.14);
         box-shadow:
-            inset 0 0 0 4px rgb(11 11 12 / 0.6),
-            inset 0 0 0 5px rgb(212 175 55 / 0.16),
-            0 30px 60px -40px rgb(0 0 0 / 0.8);
-        background: linear-gradient(160deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.015) 55%);
+            inset 0 0 0 4px rgb(44 10 19 / 0.55),
+            inset 0 0 0 5px rgb(203 163 90 / 0.24),
+            0 30px 60px -40px rgb(20 4 8 / 0.85);
+        background: linear-gradient(160deg, rgb(254 250 244 / 0.08), rgb(254 250 244 / 0.02) 55%);
     }
 
     /* Garis tipis emas yang memudar di kedua ujung. */
@@ -233,58 +246,43 @@
         background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold-soft) 50%, var(--gold) 80%, transparent);
     }
 
-    .hairline-silver {
+    .hairline-taupe {
         height: 1px;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            var(--silver-dim) 20%,
-            var(--silver-bright) 50%,
-            var(--silver-dim) 80%,
-            transparent
-        );
+        background: linear-gradient(90deg, transparent, var(--taupe) 20%, var(--taupe) 80%, transparent);
     }
 
     /* Teks emas logam, hanya untuk bidang gelap. */
     .text-gold-metal {
-        background: linear-gradient(135deg, #f3dfa2 0%, var(--gold) 45%, #b8962e 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }
-
-    /* Teks perak logam, hanya untuk bidang gelap. */
-    .text-silver-metal {
-        background: linear-gradient(180deg, #ffffff 0%, var(--silver) 60%, var(--silver-dim) 100%);
+        background: linear-gradient(135deg, #f1dcaa 0%, var(--gold) 45%, #a07b35 100%);
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
     }
 
     /*
-     * Bidang hitam dengan lingkar ukur samar, menggemakan logo dial. Digambar dengan gradien CSS, tanpa berkas
-     * gambar, sehingga tidak menambah muatan halaman.
+     * Bidang marun identitas: gradasi marun ke marun tua, kilau emas lembut di satu sudut, dan garis anak tangga
+     * yang sangat samar, menggemakan tangga emas pada logo. Digambar dengan gradien CSS, tanpa berkas gambar.
      */
-    .bg-obsidian-dial {
-        background-color: var(--obsidian);
+    .bg-maroon-dial {
+        background-color: var(--maroon-deep);
         background-image:
-            radial-gradient(circle at 85% -10%, rgb(212 175 55 / 0.14), transparent 42%),
-            repeating-radial-gradient(circle at 85% -10%, transparent 0 46px, rgb(255 255 255 / 0.035) 46px 47px),
-            linear-gradient(180deg, var(--graphite), var(--obsidian));
+            radial-gradient(circle at 88% -12%, rgb(203 163 90 / 0.2), transparent 45%),
+            repeating-linear-gradient(-28deg, transparent 0 38px, rgb(255 255 255 / 0.028) 38px 39px),
+            linear-gradient(160deg, var(--maroon) 0%, var(--maroon-deep) 48%, var(--maroon-ink) 100%);
     }
 
-    /* Bingkai logam tipis: perak di bidang terang. */
-    .frame-silver {
+    /* Bingkai tipis bernada hangat di bidang terang. */
+    .frame-hairline {
         border: 1px solid transparent;
         background:
             linear-gradient(var(--card), var(--card)) padding-box,
-            linear-gradient(145deg, #ffffff, var(--silver) 35%, var(--silver-dim) 70%, var(--silver-bright)) border-box;
+            linear-gradient(145deg, #ffffff, var(--taupe) 40%, #b9aa96 70%, var(--parchment)) border-box;
     }
 
     .frame-gold {
         border: 1px solid transparent;
         background:
             linear-gradient(var(--card), var(--card)) padding-box,
-            linear-gradient(145deg, #f3dfa2, var(--gold) 40%, #9c7a1e 75%, var(--gold-soft)) border-box;
+            linear-gradient(145deg, #f1dcaa, var(--gold) 40%, #a07b35 75%, var(--gold-soft)) border-box;
     }
 }

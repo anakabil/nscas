@@ -12,15 +12,15 @@ export default function AssessmentsIndex({ assessments }: { assessments: Assessm
             <Head title={t('assessments.title')} />
             <Container className="space-y-8 py-10">
                 <header className="space-y-2">
-                    <h1 className="font-display text-[2.25rem] leading-tight text-obsidian sm:text-[2.6rem]">
+                    <h1 className="font-display text-[2.25rem] leading-tight text-ink sm:text-[2.6rem]">
                         {t('assessments.title')}
                     </h1>
                     <p className="text-sm text-muted-foreground">{t('assessments.intro')}</p>
                 </header>
-                <div className="hairline-silver" />
+                <div className="hairline-taupe" />
                 {assessments.length === 0 ? (
                     <p
-                        className="frame-silver rounded-lg p-8 text-center text-sm text-muted-foreground"
+                        className="frame-hairline rounded-lg p-8 text-center text-sm text-muted-foreground"
                         data-testid="assessments-empty"
                     >
                         {t('assessments.empty')}
@@ -31,11 +31,11 @@ export default function AssessmentsIndex({ assessments }: { assessments: Assessm
                             <li key={assessment.id}>
                                 <Link
                                     href={assessment.href}
-                                    className="group frame-silver flex h-full flex-col gap-4 rounded-lg p-6 transition-shadow hover:shadow-[0_18px_40px_-28px_rgb(17_17_19/0.5)]"
+                                    className="group frame-hairline flex h-full flex-col gap-4 rounded-lg p-6 transition-shadow hover:shadow-[0_18px_40px_-28px_rgb(26_26_26/0.5)]"
                                 >
                                     <div className="space-y-1">
                                         <p className="eyebrow text-gold-deep">{assessment.organization}</p>
-                                        <p className="font-display text-[1.4rem] leading-snug text-obsidian">{assessment.name}</p>
+                                        <p className="font-display text-[1.4rem] leading-snug text-ink">{assessment.name}</p>
                                     </div>
                                     <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
                                         <div>
@@ -64,7 +64,7 @@ export default function AssessmentsIndex({ assessments }: { assessments: Assessm
                                             <dd>{t(`roles.${assessment.role ?? 'none'}.name`)}</dd>
                                         </div>
                                     </dl>
-                                    <span className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-obsidian">
+                                    <span className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-ink">
                                         {t('assessments.open')}
                                         <ArrowRight
                                             aria-hidden

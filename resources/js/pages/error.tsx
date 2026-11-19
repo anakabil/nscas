@@ -10,16 +10,13 @@ export default function ErrorPage({ status }: { status: number }) {
     return (
         <>
             <Head title={t(`errors.${code}.title`)} />
-            <main className="bg-obsidian-dial flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center text-white">
-                <NscasMark detailed className="w-28" />
-                <p className="mt-8 font-display text-8xl font-normal text-silver tabular-nums">{status}</p>
+            <main className="bg-maroon-dial flex min-h-screen flex-col items-center justify-center px-6 py-16 text-center text-white">
+                <NscasMark tone="reversed" className="w-24" />
+                <p className="mt-8 font-display text-8xl font-normal text-taupe tabular-nums">{status}</p>
                 <h1 className="mt-4 font-display text-[2.25rem] leading-tight">{t(`errors.${code}.title`)}</h1>
                 <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70">{t(`errors.${code}.body`)}</p>
                 <div className="hairline-gold my-8 w-40" />
-                <a
-                    href="/"
-                    className="rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-obsidian hover:bg-silver-bright"
-                >
+                <a href="/" className="rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-ink hover:bg-parchment">
                     {t('errors.back')}
                 </a>
             </main>

@@ -9,7 +9,7 @@ export function AssessmentHeader({ assessment, back }: { assessment: AssessmentM
     const t = useT();
     const locale = useLocale();
     return (
-        <section className="bg-obsidian-dial text-white">
+        <section className="bg-maroon-dial text-white">
             <Container className="space-y-7 py-12">
                 <Link
                     href={back.href}
