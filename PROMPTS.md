@@ -25,8 +25,8 @@ Cara membangun ulang sebuah modul:
 | R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | Selesai |
 | R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | Selesai |
 | R10 | Laporan dan komunikasi hasil | 5 | Selesai |
-| R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | Berikutnya |
-| R12 | Uji menyeluruh, uji beban, penempatan produksi | Lintas tahap | |
+| R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | Selesai |
+| R12 | Uji menyeluruh, uji beban, penempatan produksi | Lintas tahap | Berikutnya |
 
 ## R0. Fondasi (selesai)
 
@@ -192,7 +192,10 @@ Rujukan versi 1: `src/lib/report`, `src/lib/jobs/report-render.ts`.
 
 Laporan lengkap, ringkasan eksekutif, dan pernyataan hasil dalam HTML siap cetak dan PDF; penomoran versi; tanda tangan asesor utama; parameter penilaian di lampiran. Ringkasan hasil untuk pekerja (`docs/12` temuan T5).
 
-## R11. Privasi, retensi, jejak audit, dan pemeriksaan keamanan
+## R11. Privasi, retensi, jejak audit, dan pemeriksaan keamanan (selesai)
+
+Hasil: halaman Jejak audit per asesmen (lintas tahap) dengan penyaring kategori dan tanggal, isi perubahan untuk pengelola sistem dan asesor utama, ringkasan untuk administrator klien, serta ekspor CSV oleh asesor utama yang menetralkan sel rumus dan tercatat sebagai `audit.export`. Peristiwa akses dicatat (masuk, gagal masuk, penguncian, keluar, sesi berakhir, kata sandi, verifikasi dua langkah) dan dua puluh terakhir tampil di Status sistem. Penguncian 5 kali gagal masuk dalam 15 menit hanya menghitung kegagalan; sesi berakhir 8 jam sejak masuk untuk semua pengguna dan 30 menit tanpa aktivitas untuk pengguna Nusa Safety, dengan pesan di halaman masuk; pilihan "ingat saya" dihapus. Masa simpan dihitung dari laporan lengkap final (atau hasil yang ditetapkan) dengan lama dari parameter terkunci; tugas mingguan `nscas:retention-check` menandai dan memberi tahu pengelola sistem. Halaman Retensi data (hanya pengelola sistem) menjalankan pemusnahan untuk asesmen Diarsipkan yang masa simpannya berakhir, setelah konfirmasi tertulis klien: data mentah dihapus dalam satu transaksi bersama berita acara dan perpindahan ke PURGED, berkas dihapus dari penyimpanan objek, dan PDF berita acara dibuat sekali; pemicu menolak perubahan dan penghapusan berita acara. Hasil final, laporan, dan jejak audit tetap tersedia. Pemeriksaan keamanan menghasilkan `docs/14` dengan 28 butir; dua temuan langsung diperbaiki, yaitu hash kata sandi kini argon2id sesuai `docs/04` dan audit kerentanan pustaka (`composer audit`, `npm audit`) masuk CI. Larastan tingkat 5 dipasang di CI tanpa memblokir karena paketnya tidak dapat diunduh di lingkungan pengembangan. Tes: `tests/Feature/Security`, `tests/Unit/Domain/RetentionRulesTest.php`, `tests/Unit/Domain/AuditCsvTest.php`.
+
 
 Rujukan versi 1: `src/lib/retention`, `src/lib/jobs/destruction.ts`, `src/lib/audit-trail`, `docs/arsip-v1/06`.
 

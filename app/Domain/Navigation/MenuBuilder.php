@@ -107,7 +107,7 @@ final class MenuBuilder
             $items[] = ['key' => 'organizations', 'path' => '/organizations', 'ready' => true, 'buildPhase' => 'R1'];
         }
         if ($has(Role::SuperAdmin)) {
-            $items[] = ['key' => 'retention', 'path' => '/retention', 'ready' => false, 'buildPhase' => 'R11'];
+            $items[] = ['key' => 'retention', 'path' => '/retention', 'ready' => true, 'buildPhase' => 'R11'];
             $items[] = ['key' => 'systemStatus', 'path' => '/system-status', 'ready' => true, 'buildPhase' => 'R0'];
         }
         $items[] = ['key' => 'account', 'path' => '/settings/profile', 'ready' => true, 'buildPhase' => 'R0'];

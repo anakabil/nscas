@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 sampai R10)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R11)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -100,7 +100,8 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `monitoring_reviews` | Tinjauan pemantauan per triwulan, dengan penanda tinjauan penutup | R9. Syarat `monitoring_closed` |
 | `reports` | Versi laporan per jenis (FULL, EXECUTIVE_SUMMARY, STATEMENT, WORKER_SUMMARY): potret isi, bahasa, status, penanda tangan, kunci dan SHA-256 PDF | R10. Pemicu `report_guard` menolak perubahan isi, perubahan versi bertanda tangan (kecuali kunci PDF yang diisi sekali), dan penghapusan |
 | `result_communications` | Penyampaian hasil kepada pekerja: tanggal, saluran, sasaran, perkiraan jangkauan, catatan | R10. Syarat `results_communicated` bersama ringkasan pekerja bertanda tangan |
-| `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
+| `destruction_records` | Berita acara pemusnahan data mentah: waktu, pelaksana, nomor, tanggal, dan penanda tangan surat konfirmasi klien, saksi, catatan, rincian jumlah per jenis data, banyak berkas, waktu selesai penghapusan berkas, kunci dan SHA-256 PDF | R11. Satu per asesmen; pemicu `destruction_record_guard` menolak penghapusan dan perubahan isi. `assessments.retention_flagged_at` menandai masa simpan yang berakhir |
+| `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE. Peristiwa akses (`auth.*`) dicatat tanpa asesmen sejak fase R11 |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
 Isi instrumen disimpan sebagai JSON di `instrument_versions.content` (fase R1) dan disalin ke tabel ternormalisasi pada fase R3, karena jawaban survei merujuk karakteristik dan butir iklim dengan kunci asing.

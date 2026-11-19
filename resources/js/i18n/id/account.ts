@@ -19,8 +19,9 @@ export const account = {
             heading: 'Masuk ke akun Anda',
             description: 'Masukkan alamat surel dan kata sandi akun Anda.',
             forgotPassword: 'Lupa kata sandi?',
-            remember: 'Ingat saya',
             submit: 'Masuk',
+            sessionExpired: 'Sesi Anda berakhir setelah 8 jam. Silakan masuk kembali.',
+            sessionIdle: 'Sesi Anda berakhir karena tidak ada aktivitas selama 30 menit. Silakan masuk kembali.',
         },
         forgotPassword: {
             title: 'Lupa kata sandi',

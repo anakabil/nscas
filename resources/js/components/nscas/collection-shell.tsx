@@ -103,26 +103,29 @@ export function CollectionShell({
             />
             <Container className="py-10">
                 <div className="space-y-8" data-testid="collection-page" data-module={module}>
-                    {/* Satu baris yang dapat digeser di layar sempit agar tab tidak memakan ruang isi; melipat di layar lebar. */}
-                    <nav
-                        ref={nav}
-                        aria-label={t('collection.navTitle')}
-                        className="relative -mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto border-b border-border px-4 pb-4 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
-                    >
-                        {common.tabs.map((tab) => (
-                            <Link
-                                key={tab.key}
-                                href={tab.href}
-                                aria-current={tab.key === module ? 'page' : undefined}
-                                className={cn(
-                                    'shrink-0 rounded-md px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors',
-                                    tab.key === module ? 'bg-maroon text-parchment' : 'text-foreground hover:bg-muted',
-                                )}
-                            >
-                                {t(`modules.${tab.key}.title`)}
-                            </Link>
-                        ))}
-                    </nav>
+                    {/* Satu baris yang dapat digeser di layar sempit agar tab tidak memakan ruang isi; melipat di layar lebar.
+                        Tidak ditampilkan bila hanya ada satu tab. */}
+                    {common.tabs.length > 1 ? (
+                        <nav
+                            ref={nav}
+                            aria-label={t('collection.navTitle')}
+                            className="relative -mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto border-b border-border px-4 pb-4 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
+                        >
+                            {common.tabs.map((tab) => (
+                                <Link
+                                    key={tab.key}
+                                    href={tab.href}
+                                    aria-current={tab.key === module ? 'page' : undefined}
+                                    className={cn(
+                                        'shrink-0 rounded-md px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors',
+                                        tab.key === module ? 'bg-maroon text-parchment' : 'text-foreground hover:bg-muted',
+                                    )}
+                                >
+                                    {t(`modules.${tab.key}.title`)}
+                                </Link>
+                            ))}
+                        </nav>
+                    ) : null}
                     <header className="flex items-start gap-5">
                         <span
                             aria-hidden

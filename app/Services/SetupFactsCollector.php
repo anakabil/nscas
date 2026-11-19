@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Domain\Access\Role;
 use App\Domain\ActionPlan\ActionPlanRules;
 use App\Domain\Panel\PanelRules;
+use App\Domain\Retention\RetentionRules;
 use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\Kickoff;
 use App\Domain\Setup\SetupFacts;
@@ -15,6 +16,7 @@ use App\Models\AccessToken;
 use App\Models\ActionItem;
 use App\Models\Assessment;
 use App\Models\AssessmentReview;
+use App\Models\DestructionRecord;
 use App\Models\EvidenceRating;
 use App\Models\EvidenceReview;
 use App\Models\MonitoringReview;
@@ -27,6 +29,7 @@ use App\Models\StratumJustification;
 use App\Models\ValidationSession;
 use App\Services\Evidence\EvidenceService;
 use App\Services\Respondents\ParticipationReport;
+use App\Services\Retention\RetentionService;
 use App\Services\Scoring\ScoringService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +104,8 @@ final class SetupFactsCollector
         // Fase R10: versi final per jenis laporan dan catatan komunikasi hasil.
         $finalReports = Report::whereIn('assessment_id', $ids)->where('status', 'FINAL')->get(['assessment_id', 'kind'])->groupBy('assessment_id');
         $communicated = ResultCommunication::whereIn('assessment_id', $ids)->pluck('assessment_id')->flip();
+        // Fase R11: berita acara pemusnahan.
+        $destroyed = DestructionRecord::whereIn('assessment_id', $ids)->pluck('assessment_id')->flip();
 
         $facts = [];
         foreach ($assessments as $assessment) {
@@ -169,6 +174,9 @@ final class SetupFactsCollector
                 ),
                 finalReportSigned: ($finalReports[$assessment->id] ?? collect())->contains('kind', 'FULL'),
                 resultsCommunicated: ($finalReports[$assessment->id] ?? collect())->contains('kind', 'WORKER_SUMMARY') && $communicated->has($assessment->id),
+                retentionExpired: $assessment->status->position() >= AssessmentStatus::Archived->position()
+                    && RetentionRules::expired(RetentionService::schedule($assessment)['dueAt'], now()),
+                destructionRecorded: $destroyed->has($assessment->id),
             );
         }
 

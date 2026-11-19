@@ -217,11 +217,6 @@ export const core = {
         crossStageLabel: 'Halaman lintas tahap',
         backToHub: 'Kembali ke pusat asesmen',
     },
-    pending: {
-        title: 'Halaman ini sedang dibangun ulang',
-        body: 'Halaman {area} dijadwalkan dibangun ulang pada fase {phase}.',
-        back: 'Kembali ke beranda',
-    },
     systemStatus: {
         title: 'Status sistem',
         intro: 'Hasil pemeriksaan komponen sistem. Halaman ini tidak memuat data asesmen.',

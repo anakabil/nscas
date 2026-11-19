@@ -54,5 +54,8 @@ final readonly class SetupFacts
         // Fase R10: laporan lengkap ditandatangani dan hasil dikomunikasikan kepada pekerja.
         public bool $finalReportSigned = false,
         public bool $resultsCommunicated = false,
+        // Fase R11: masa simpan data mentah berakhir dan berita acara pemusnahan dibuat.
+        public bool $retentionExpired = false,
+        public bool $destructionRecorded = false,
     ) {}
 }

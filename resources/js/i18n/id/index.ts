@@ -6,6 +6,7 @@ import { report } from './report';
 import { respondents } from './respondents';
 import { results } from './results';
 import { scoring } from './scoring';
+import { security } from './security';
 import { setup } from './setup';
 import { validation } from './validation';
 
@@ -20,4 +21,5 @@ export const id = {
     ...results,
     ...actionPlan,
     ...report,
+    ...security,
 };

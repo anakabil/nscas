@@ -64,3 +64,14 @@ jobs:
 
       - name: Run CI Checks
         run: composer ci:check
+
+      # Fase R11: kerentanan pustaka yang dipakai di produksi (docs/14 butir K14).
+      - name: Dependency audit
+        run: |
+          composer audit --no-interaction --locked
+          npm audit --omit=dev --audit-level=high
+
+      # Analisis statis PHP dengan Larastan (fase R11). Belum memblokir sampai temuan pertama ditinjau.
+      - name: Static analysis
+        continue-on-error: true
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=github

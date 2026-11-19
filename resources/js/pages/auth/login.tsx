@@ -3,7 +3,6 @@ import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
@@ -16,8 +15,12 @@ type Props = {
     canResetPassword: boolean;
 };
 
+// Status sesi berakhir dikirim sebagai kunci oleh EnforceSessionLimits; status lain sudah berupa kalimat.
+const SESSION_STATUS = ['sessionExpired', 'sessionIdle'];
+
 export default function Login({ status, canResetPassword }: Props) {
     const t = useT();
+    const sessionEnded = status !== undefined && SESSION_STATUS.includes(status);
 
     return (
         <>
@@ -62,11 +65,6 @@ export default function Login({ status, canResetPassword }: Props) {
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
-                                <Checkbox id="remember" name="remember" tabIndex={3} />
-                                <Label htmlFor="remember">{t('auth.login.remember')}</Label>
-                            </div>
-
                             <Button
                                 type="submit"
                                 className="mt-4 w-full"
@@ -82,7 +80,19 @@ export default function Login({ status, canResetPassword }: Props) {
                 )}
             </Form>
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            {status && (
+                <div
+                    role="status"
+                    className={
+                        sessionEnded
+                            ? 'mb-4 rounded-md border border-gold/50 bg-gold/10 px-3 py-2 text-center text-sm text-ink'
+                            : 'mb-4 text-center text-sm font-medium text-green-600'
+                    }
+                    data-testid="login-status"
+                >
+                    {sessionEnded ? t(`auth.login.${status}`) : status}
+                </div>
+            )}
         </>
     );
 }

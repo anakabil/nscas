@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnforceSessionLimits;
 use App\Http\Middleware\EnsureAccountIsUsable;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SecurityHeaders;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             SecurityHeaders::class,
+            EnforceSessionLimits::class,
             SetLocale::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

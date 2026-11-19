@@ -18,3 +18,5 @@ Schedule::command('nscas:shuffle-survey-rows')->dailyAt('00:45')->timezone('Asia
 Schedule::command('nscas:prune-uploads')->hourly()->withoutOverlapping();
 // Fase R9: pengingat tenggat rencana aksi.
 Schedule::command('nscas:action-reminders')->dailyAt('08:05')->timezone('Asia/Jakarta')->withoutOverlapping();
+// Fase R11: penanda masa simpan data mentah setiap Senin pukul 07.10 WIB (docs/04 bagian 7).
+Schedule::command('nscas:retention-check')->weeklyOn(1, '07:10')->timezone('Asia/Jakarta')->withoutOverlapping();

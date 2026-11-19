@@ -830,7 +830,10 @@ class DemoDataCommand extends Command
             $report = $service->createVersion($assessment, $lead, Role::LeadAssessor, $kind, 'id');
             $service->sign($assessment, $lead, Role::LeadAssessor, $report->id, 'Asesor utama');
         }
+        // Dicatat administrator klien sendiri agar pelaku dan perannya di jejak audit sesuai.
+        Auth::setUser($admin);
         $service->recordCommunication($assessment, $admin, Role::ClientAdmin, CarbonImmutable::parse($assessment->period_end)->addDays(25)->toDateString(),
             ['SAFETY_TALK', 'NOTICE_BOARD'], 'Seluruh pekerja kantor pusat dan proyek', 2650, 'Ringkasan dibacakan pada briefing pagi dan ditempel di papan pengumuman setiap proyek.');
+        Auth::setUser($lead);
     }
 }

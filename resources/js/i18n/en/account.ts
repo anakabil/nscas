@@ -17,8 +17,9 @@ export const account = {
             heading: 'Sign in to your account',
             description: 'Enter your email address and password to sign in.',
             forgotPassword: 'Forgot your password?',
-            remember: 'Remember me',
             submit: 'Sign in',
+            sessionExpired: 'Your session ended after 8 hours. Please sign in again.',
+            sessionIdle: 'Your session ended after 30 minutes without activity. Please sign in again.',
         },
         forgotPassword: {
             title: 'Forgot password',

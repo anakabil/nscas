@@ -81,6 +81,10 @@ return [
         'REPORT_CLOSED' => 'Reports cannot be changed at this assessment status.',
         'REPORT_SIGNED' => 'This version has already been signed.',
         'REPORT_NOT_LATEST' => 'Only the latest version can be signed.',
+        'ALREADY_DESTROYED' => 'The raw data of this assessment has already been destroyed.',
+        'RETENTION_ACTIVE' => 'The raw data retention period of this assessment has not ended yet.',
+        'ARCHIVE_FIRST' => 'Change the assessment status to Archived before destruction.',
+        'MINUTES_PDF_UNAVAILABLE' => 'The record PDF cannot be produced on this server yet. Open the record, then print or save it as PDF from the browser.',
         'PDF_UNAVAILABLE' => 'PDF cannot be produced on this server yet. Open the report, then print or save it as PDF from the browser.',
     ],
     'sessionLabels' => [

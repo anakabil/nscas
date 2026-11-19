@@ -45,7 +45,7 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 
 ## 4. Yang dapat dicoba pada versi ini
 
-Versi 2 saat ini berada di akhir fase R10 (laporan dan komunikasi hasil). Yang sudah dapat dicoba:
+Versi 2 saat ini berada di akhir fase R11 (privasi, retensi, jejak audit, dan keamanan). Yang sudah dapat dicoba:
 
 1. Halaman masuk, pilihan bahasa Indonesia dan Inggris (tersimpan di akun), dan pengaturan ulang kata sandi melalui kotak surat uji.
 2. Dasbor progres pengukuran di beranda, untuk akun pengelola sistem, asesor utama, asesor, dan administrator klien. Dasbor diperbarui otomatis setiap 60 detik.
@@ -72,9 +72,12 @@ Versi 2 saat ini berada di akhir fase R10 (laporan dan komunikasi hasil). Yang s
 14. Dasbor hasil pada asesmen "2025" dengan akun administrator klien atau peninjau eksekutif: kartu indeks dan tingkat, batang per aspek dan karakteristik, peta warna per strata dan unit, analisis kepekaan bobot, dan tombol Unduh Excel. Akun koordinator unit hanya melihat unitnya pada peta per unit. Perbandingan antarperiode ada di tahap 6.
 15. Rencana aksi pada asesmen "2025": halaman Kesenjangan dan rencana aksi memuat kesenjangan berurutan dengan analisis penyebab dan tindakan; halaman Pemantauan rencana aksi di tahap 6 memuat kemajuan per triwulan, verifikasi asesor, dan tinjauan triwulan. Pengingat tenggat dapat dicoba dengan `php artisan nscas:action-reminders`; surelnya masuk ke kotak surat uji.
 16. Laporan pada asesmen "2025": buka Pratinjau setiap jenis laporan, buka versi yang sudah ditandatangani, dan unduh PDF-nya (PDF dibuat Chromium di codespace bila `PDF_CHROMIUM_EXECUTABLE` diisi; bila kosong, cetak dari peramban). Halaman Komunikasi hasil memuat catatan penyampaian kepada pekerja.
-17. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
+17. Jejak audit pada asesmen mana pun, dari pusat asesmen (Lintas tahap): saring menurut kategori dan tanggal, buka Rincian perubahan, dan unduh CSV dengan akun asesor utama. Akun administrator klien melihat ringkasan tanpa isi perubahan.
+18. Dengan akun pengelola sistem: halaman Retensi data memuat masa simpan setiap asesmen yang hasilnya sudah ditetapkan; tombol pemusnahan baru muncul untuk asesmen Diarsipkan yang masa simpannya berakhir, sehingga pada data contoh baru berupa daftar. Halaman Status sistem memuat dua puluh peristiwa akses terakhir. Tugas penanda masa simpan dapat dicoba dengan `php artisan nscas:retention-check`.
+19. Keamanan masuk: lima kali salah kata sandi mengunci akun selama 15 menit. Akun Nusa Safety (pengelola sistem, asesor utama, asesor) keluar otomatis setelah 30 menit tanpa aktivitas, dan semua akun setelah 8 jam.
+20. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
 
-Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Halaman yang bertanda fase R11 dan seterusnya baru berisi penjelasan, karena modulnya belum dibangun ulang.
+Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Seluruh modul sudah dibangun ulang; fase R12 berisi uji menyeluruh dan persiapan penempatan.
 
 Di lingkungan ini verifikasi dua langkah tidak diwajibkan, agar keenam akun contoh dapat langsung dicoba. Untuk mencoba alur wajibnya, buka berkas `.env` di codespace, ubah `NSCAS_ENFORCE_TWO_FACTOR=false` menjadi `true`, lalu jalankan `bash .devcontainer/start.sh --restart` di terminal. Siapkan aplikasi autentikator di telepon, misalnya Google Authenticator atau Microsoft Authenticator. Di produksi nilai ini wajib `true`.
 

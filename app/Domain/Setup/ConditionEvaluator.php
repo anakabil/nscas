@@ -95,6 +95,8 @@ final class ConditionEvaluator
             'monitoring_closed' => $facts->monitoringClosed,
             'final_report_signed' => $facts->finalReportSigned,
             'results_communicated' => $facts->resultsCommunicated,
+            'retention_expired' => $facts->retentionExpired,
+            'destruction_record_created' => $facts->destructionRecorded,
             default => null,
         };
     }

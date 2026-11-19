@@ -1,0 +1,9 @@
+# Analisis statis PHP (fase R11, docs/04 bagian 5). Dijalankan di CI: `vendor/bin/phpstan analyse`.
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - app/
+    tmpDir: storage/framework/phpstan

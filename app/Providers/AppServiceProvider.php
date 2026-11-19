@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\RecordAccessEvents;
 use App\Services\Reports\ChromiumPdfRenderer;
 use App\Services\Reports\PdfRenderer;
 use Carbon\CarbonImmutable;
@@ -9,6 +10,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->configureSurveyRateLimits();
+        Event::subscribe(RecordAccessEvents::class);
     }
 
     /**

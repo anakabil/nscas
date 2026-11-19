@@ -115,7 +115,9 @@ return [
     */
 
     'limiters' => [
-        'login' => 'login',
+        // null: penguncian berjalan di alur masuk Fortify (App\Auth\LoginLockout), yang hanya menghitung
+        // percobaan gagal; pembatas berbasis rute akan ikut menghitung masuk yang berhasil.
+        'login' => null,
         'two-factor' => 'two-factor',
     ],
 

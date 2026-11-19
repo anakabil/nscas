@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountAreaController;
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\AssessmentTransitionController;
+use App\Http\Controllers\Audit\AuditTrailController;
 use App\Http\Controllers\Evidence\EvidenceController;
 use App\Http\Controllers\Files\UploadRelayController;
 use App\Http\Controllers\HomeController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Results\MonitoringController;
 use App\Http\Controllers\Results\ReportController;
 use App\Http\Controllers\Results\ResultsController;
 use App\Http\Controllers\Results\TrendController;
+use App\Http\Controllers\RetentionController;
 use App\Http\Controllers\Scoring\PanelController;
 use App\Http\Controllers\Scoring\ScoringController;
 use App\Http\Controllers\Setup\DetailsController;
@@ -204,6 +206,9 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::get('report/versions/{report}/pdf', [ReportController::class, 'pdf'])->whereAlphaNumeric('report')->middleware('throttle:20,1')->name('report.pdf');
         Route::get('communication', [CommunicationController::class, 'index'])->name('communication.index');
         Route::post('communication', [CommunicationController::class, 'store'])->name('communication.store');
+        // Fase R11: jejak audit.
+        Route::get('audit', [AuditTrailController::class, 'index'])->name('audit.index');
+        Route::get('audit/export', [AuditTrailController::class, 'export'])->middleware('throttle:10,1')->name('audit.export');
     });
 
     // Penerima unggahan saat penyimpanan memakai disk lokal; dengan disk s3 peramban mengunggah langsung (fase R5).
@@ -221,7 +226,10 @@ Route::middleware(['auth', 'usable'])->group(function () {
     Route::put('organizations/{organization}/users/{user}', [OrganizationController::class, 'updateUser'])->name('organizations.users.update');
     Route::put('organizations/{organization}/users/{user}/active', [OrganizationController::class, 'setActive'])->name('organizations.users.active');
     Route::post('organizations/{organization}/users/{user}/password', [OrganizationController::class, 'resetPassword'])->name('organizations.users.password');
-    Route::get('retention', [AccountAreaController::class, 'pending'])->defaults('area', 'retention')->name('retention.index');
+    Route::get('retention', [RetentionController::class, 'index'])->name('retention.index');
+    Route::post('retention/{assessment}/destroy', [RetentionController::class, 'destroy'])->name('retention.destroy');
+    Route::get('retention/records/{record}', [RetentionController::class, 'show'])->whereAlphaNumeric('record')->name('retention.show');
+    Route::get('retention/records/{record}/pdf', [RetentionController::class, 'pdf'])->whereAlphaNumeric('record')->middleware('throttle:20,1')->name('retention.pdf');
     Route::get('system-status', [AccountAreaController::class, 'systemStatus'])->name('system-status');
 });
 

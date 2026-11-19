@@ -63,7 +63,7 @@ final class ModuleCatalog
             new Module('trend', Stage::Monitoring, 'trend', $read(Resource::ResultsDashboard), 'R8', ready: true),
 
             // Lintas tahap
-            new Module('audit', null, 'audit', $read(Resource::AuditTrail), 'R11'),
+            new Module('audit', null, 'audit', $read(Resource::AuditTrail), 'R11', ready: true),
         ];
     }
 

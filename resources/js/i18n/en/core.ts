@@ -210,11 +210,6 @@ export const core = {
         crossStageLabel: 'A page across stages',
         backToHub: 'Back to assessment hub',
     },
-    pending: {
-        title: 'This page is being rebuilt',
-        body: 'The {area} page is scheduled to be rebuilt in phase {phase}.',
-        back: 'Back to home',
-    },
     systemStatus: {
         title: 'System status',
         intro: 'Results of the system component checks. This page holds no assessment data.',

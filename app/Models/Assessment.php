@@ -70,6 +70,7 @@ class Assessment extends Model
             'survey_opens_at' => 'datetime',
             'survey_closes_at' => 'datetime',
             'action_plan_published_at' => 'datetime',
+            'retention_flagged_at' => 'datetime',
         ];
     }
 

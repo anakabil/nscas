@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Laravel\Fortify\Features;
 use Tests\TestCase;
 
@@ -76,17 +77,20 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_users_are_rate_limited()
+    public function test_users_are_locked_after_five_failed_attempts()
     {
         $user = User::factory()->create();
 
-        RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
+        foreach (range(1, 5) as $_) {
+            RateLimiter::hit(Str::transliterate(Str::lower($user->email).'|127.0.0.1'), 900);
+        }
 
         $response = $this->post(route('login.store'), [
             'email' => $user->email,
-            'password' => 'wrong-password',
+            'password' => 'password',
         ]);
 
-        $response->assertTooManyRequests();
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
     }
 }

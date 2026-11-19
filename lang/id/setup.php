@@ -82,6 +82,10 @@ return [
         'REPORT_CLOSED' => 'Laporan tidak dapat diubah pada status asesmen ini.',
         'REPORT_SIGNED' => 'Versi ini sudah ditandatangani.',
         'REPORT_NOT_LATEST' => 'Hanya versi terakhir yang dapat ditandatangani.',
+        'ALREADY_DESTROYED' => 'Data mentah asesmen ini sudah dimusnahkan.',
+        'RETENTION_ACTIVE' => 'Masa simpan data mentah asesmen ini belum berakhir.',
+        'ARCHIVE_FIRST' => 'Ubah status asesmen menjadi Diarsipkan sebelum pemusnahan.',
+        'MINUTES_PDF_UNAVAILABLE' => 'PDF berita acara belum dapat dibuat di server ini. Buka berita acara, lalu cetak atau simpan sebagai PDF dari peramban.',
         'PDF_UNAVAILABLE' => 'PDF belum dapat dibuat di server ini. Buka laporan, lalu cetak atau simpan sebagai PDF dari peramban.',
     ],
     'sessionLabels' => [

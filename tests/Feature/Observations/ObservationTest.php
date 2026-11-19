@@ -49,6 +49,8 @@ class ObservationTest extends TestCase
         $this->assessment = $this->lockedAssessment($this->lead, $this->assessor);
         $this->project = Unit::where('assessment_id', $this->assessment->id)->where('name', 'Proyek Gedung A')->firstOrFail();
         $this->travelTo(CarbonImmutable::parse('2026-12-01 09:00', 'Asia/Jakarta'));
+        // Sesi yang dimulai sebelum lompatan waktu sudah melewati batas 8 jam (docs/04 bagian 3).
+        $this->flushSession();
     }
 
     /** @param  array<string, mixed>  $overrides */
@@ -164,6 +166,8 @@ class ObservationTest extends TestCase
     {
         $window = $this->window();
         $this->travelTo(CarbonImmutable::parse('2026-12-01 17:00', 'Asia/Jakarta'));
+        // Sesi yang dibuka pukul 09.00 berakhir tepat 8 jam kemudian; pengguna masuk ulang.
+        $this->flushSession();
         $this->capture($this->admin, $window, null)->assertStatus(409)->assertJsonPath('code', 'OUTSIDE_WINDOW');
         $this->travelTo(CarbonImmutable::parse('2026-12-01 07:59', 'Asia/Jakarta'));
         $this->capture($this->admin, $window, null)->assertStatus(409);

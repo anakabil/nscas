@@ -66,16 +66,16 @@ Seluruh pemeriksaan dilakukan di server melalui `App\Support\AssessmentAccess::r
 
 ## 3. Autentikasi
 
-- Kata sandi minimal 12 karakter, di-hash dengan argon2id.
-- TOTP wajib untuk SUPER_ADMIN, LEAD_ASSESSOR, ASSESSOR, dan CLIENT_ADMIN. Disediakan 10 kode cadangan sekali pakai.
-- Sesi kedaluwarsa setelah 8 jam, atau setelah 30 menit tidak aktif untuk peran Nusa Safety.
-- Penguncian akun setelah 5 kali gagal masuk dalam 15 menit.
+- Kata sandi minimal 12 karakter, di-hash dengan argon2id (`config/hashing.php`, fase R11).
+- TOTP wajib untuk SUPER_ADMIN, LEAD_ASSESSOR, ASSESSOR, dan CLIENT_ADMIN. Disediakan kode pemulihan sekali pakai.
+- Sesi kedaluwarsa setelah 8 jam, atau setelah 30 menit tidak aktif untuk peran Nusa Safety (pengelola sistem dan anggota organisasi operator). Fase R11: `App\Http\Middleware\EnforceSessionLimits`; halaman masuk menjelaskan sebab sesi berakhir. Pilihan "ingat saya" dihapus karena akan melewati batas 8 jam.
+- Penguncian akun setelah 5 kali gagal masuk dalam 15 menit, per pasangan surel dan alamat IP; masuk yang berhasil tidak dihitung (`App\Auth\LoginLockout`).
 - Responden survei tidak memiliki akun; token acak 32 byte (base64url), hanya hash yang disimpan, berlaku sampai survei ditutup.
 
 ## 4. Enkripsi
 
 - TLS 1.2 ke atas melalui Caddy; HSTS aktif.
-- Kolom `emailEnc`, `phoneEnc`, `totpSecretEnc` dienkripsi AES-256-GCM dengan `DATA_ENCRYPTION_KEY` di `src/lib/privacy/crypto.ts`.
+- Surel dan nomor telepon responden, surel penilai mandiri, dan surel penanggung jawab aksi dienkripsi dengan enkripsi Laravel (AES-256-CBC dengan HMAC-SHA256, kunci `APP_KEY`). Rahasia TOTP dan kode pemulihan dienkripsi Fortify.
 - Volume basis data dan penyimpanan objek dienkripsi pada tingkat disk penyedia.
 - Cadangan basis data dienkripsi sebelum dikirim ke penyimpanan cadangan.
 
@@ -83,7 +83,7 @@ Seluruh pemeriksaan dilakukan di server melalui `App\Support\AssessmentAccess::r
 
 - Content-Security-Policy ketat tanpa skrip pihak ketiga. Tidak ada Google Analytics, Hotjar, atau sejenisnya.
 - `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer` pada rute survei agar token tidak bocor melalui perujuk.
-- Pembatas laju: masuk 10 per menit per akun; rute survei 60 permintaan per menit per hash IP; unggah 30 per menit per pengguna.
+- Pembatas laju: masuk dikunci setelah 5 kali gagal dalam 15 menit (bagian 3); halaman survei 600 permintaan dan 300 pengiriman per menit per hash IP harian, cukup longgar untuk banyak pekerja yang berbagi satu alamat di lokasi proyek; unduhan laporan dan berita acara 20 per menit; ekspor jejak audit 10 per menit.
 - Validasi jenis berkas dengan pemeriksaan isi (magic bytes), bukan hanya ekstensi. Fase R5: `App\Domain\Files\FileType`; bukti juga harus sesuai ekstensi namanya; batas 25 MB per berkas; SHA-256 dihitung server dari seluruh isi.
 - Unggah bukti dan observasi: izin unggah 60 per menit per pengguna; URL unggah bertanda tangan berlaku 15 menit dan URL unduh 5 menit; bucket privat. Berkas yang tidak pernah diselesaikan dihapus setiap jam.
 
@@ -105,6 +105,12 @@ Aksi yang wajib dicatat:
 
 Tabel `AuditLog` dilindungi pemicu PostgreSQL yang menolak UPDATE dan DELETE. Lead assessor dapat mengekspor jejak audit asesmennya ke CSV.
 
+Penerapan fase R11:
+
+- Halaman Jejak audit per asesmen (lintas tahap) untuk pengelola sistem, asesor utama, dan administrator klien, dengan penyaring kategori dan rentang tanggal WIB serta 50 catatan per halaman. Pengelola sistem dan asesor utama melihat isi perubahan; administrator klien melihat ringkasan tanpa isi perubahan dan tanpa surel pelaku.
+- Ekspor CSV oleh asesor utama: pemisah titik koma, tanda urutan bita UTF-8, urut dari yang terlama, sel yang diawali `=`, `+`, `-`, atau `@` dinetralkan, dan ekspornya sendiri tercatat sebagai `audit.export`.
+- Peristiwa akses (`auth.*`) dicatat `App\Listeners\RecordAccessEvents`. Surel yang dicoba tetapi tidak terdaftar hanya disimpan sebagai HMAC. Dua puluh peristiwa terakhir tampil di halaman Status sistem untuk pengelola sistem.
+
 ## 7. Retensi dan pemusnahan
 
 - Masa simpan data mentah bawaan 36 bulan sejak laporan final.
@@ -114,6 +120,15 @@ Tabel `AuditLog` dilindungi pemicu PostgreSQL yang menolak UPDATE dan DELETE. Le
 - Rekaman observasi memuat data pribadi: nama pengunggah, waktu, dan lokasi perangkat, serta kemungkinan wajah pekerja pada foto atau video. Rekaman tidak anonim (diberitahukan di halaman kamera), hanya dapat dilihat peran pada matriks bagian 2, dan dimusnahkan bersama data mentah asesmen.
 - Yang disimpan: hasil agregat, `ScoreRun` final, laporan final, `DestructionRecord`, dan jejak audit.
 - Berita acara pemusnahan dibuat sebagai PDF dan dicatat di `DestructionRecord`.
+
+Penerapan fase R11:
+
+- Awal masa simpan adalah waktu tanda tangan laporan lengkap final yang pertama; bila belum ada, waktu hasil ditetapkan rapat panel. Lamanya dibaca dari parameter terkunci (`retention.rawDataMonths`).
+- `php artisan nscas:retention-check` berjalan setiap Senin pukul 07.10 WIB, menandai asesmen yang melewati masa simpan (`assessments.retention_flagged_at`, audit `retention.flag`), dan mengirim surel kepada pengelola sistem.
+- Halaman Retensi data (hanya pengelola sistem; peran lain menerima 404) menampilkan masa simpan setiap asesmen. Pemusnahan hanya untuk asesmen berstatus Diarsipkan yang masa simpannya berakhir, setelah nomor dan tanggal surat konfirmasi klien, penanda tangannya, dan saksi diisi serta pernyataan tidak dapat dibatalkan dicentang.
+- Dalam satu transaksi: baris data mentah dihapus (termasuk daftar narasumber validasi dan alamat surel penanggung jawab aksi), berita acara dibuat, audit `retention.destroy` dicatat, dan status berpindah ke PURGED. Setelah itu berkas di penyimpanan objek dihapus dan PDF berita acara dibuat sekali beserta SHA-256-nya.
+- Pemicu `destruction_record_guard` menolak penghapusan berita acara dan perubahan isinya; hanya waktu selesai penghapusan berkas dan kunci PDF yang diisi sekali.
+- Jejak audit tetap disimpan dan dapat memuat nama, misalnya nama narasumber yang ditambahkan. Hal ini perlu dinyatakan dalam perjanjian pemrosesan data dengan klien (`docs/14` butir K19).
 
 ## 8. Teks persetujuan responden (templat, dapat disesuaikan sebelum dikunci)
 
