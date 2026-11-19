@@ -305,10 +305,11 @@ final class RespondentDistribution
         DB::transaction(function () use ($assessment, $opensAt, $closesAt, $actorRole) {
             $locked = $this->lockForDistribution($assessment);
             $before = ['opensAt' => $locked->survey_opens_at?->toIso8601String(), 'closesAt' => $locked->survey_closes_at?->toIso8601String()];
-            $locked->forceFill(['survey_opens_at' => $opensAt, 'survey_closes_at' => $closesAt])->save();
+            // Disimpan dalam UTC: Eloquent menulis waktu tanpa zona, sehingga waktu WIB harus dikonversi lebih dulu.
+            $locked->forceFill(['survey_opens_at' => $opensAt->utc(), 'survey_closes_at' => $closesAt->utc()])->save();
             Audit::record('assessment.survey_window', $locked, [
                 'before' => $before,
-                'after' => ['opensAt' => $opensAt->toIso8601String(), 'closesAt' => $closesAt->toIso8601String()],
+                'after' => ['opensAt' => $opensAt->utc()->toIso8601String(), 'closesAt' => $closesAt->utc()->toIso8601String()],
             ], actorRole: $actorRole);
         });
     }

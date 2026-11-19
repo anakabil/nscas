@@ -19,7 +19,7 @@ use App\Http\Controllers\Setup\TeamController;
 use App\Http\Controllers\Setup\UnitController;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SetLocale;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
@@ -40,7 +40,7 @@ Route::post('locale', function (Request $request) {
 
 // Halaman publik responden (fase R2): tanpa sesi, sehingga tidak ada baris sesi yang menyimpan alamat IP atau peramban
 // responden (aturan 2, docs/04). Formulir survei dibangun di fase R3.
-Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, ValidateCsrfToken::class, SetLocale::class, HandleInertiaRequests::class])
+Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, PreventRequestForgery::class, SetLocale::class, HandleInertiaRequests::class])
     ->middleware('throttle:60,1')
     ->group(function () {
         Route::get('q/{code}', [SurveyEntryController::class, 'qr'])->where('code', '[A-Za-z0-9_-]{1,64}')->name('survey.qr');

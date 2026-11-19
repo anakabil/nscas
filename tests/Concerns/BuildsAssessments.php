@@ -4,6 +4,7 @@ namespace Tests\Concerns;
 
 use App\Domain\Access\Role;
 use App\Domain\Setup\EditableParameters;
+use App\Domain\Workflow\AssessmentStatus;
 use App\Models\Assessment;
 use App\Models\InstrumentVersion;
 use App\Models\Organization;
@@ -87,6 +88,19 @@ trait BuildsAssessments
             'briefing' => ['date' => now()->toDateString(), 'channels' => ['SAFETY_TALK'], 'note' => 'Penjelasan tujuan dan kerahasiaan'],
         ]);
         $setup->recordCalibration($assessment, ['date' => now()->toDateString(), 'note' => null, 'attendees' => [$lead->id, $assessor->id]]);
+        Auth::logout();
+
+        return $assessment->fresh();
+    }
+
+    /** Asesmen yang perencanaannya lengkap lalu dikunci lewat transisi sungguhan, siap untuk distribusi (fase R2). */
+    protected function lockedAssessment(User $lead, User $assessor, array $overrides = []): Assessment
+    {
+        $assessment = $this->completePlanning($this->createAssessment($lead, $overrides), $lead, $assessor);
+        Auth::login($lead);
+        $setup = app(AssessmentSetup::class);
+        $setup->transition($assessment, AssessmentStatus::Configured, [Role::LeadAssessor]);
+        $setup->transition($assessment, AssessmentStatus::Locked, [Role::LeadAssessor]);
         Auth::logout();
 
         return $assessment->fresh();
