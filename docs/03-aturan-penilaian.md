@@ -72,7 +72,9 @@ min(I_a) >= L - 0,50   dan   min(F_c non-kontekstual) >= L - 1,00
 - `priorityAspect` = aspek dengan `I_a` terendah
 - `contextualIndex` = rata-rata `F_c` karakteristik kontekstual
 
-## 5. Jalur setara Safety Culture Ladder
+## 5. Jalur ambang pemenuhan (kebijakan Nusa Safety)
+
+Catatan verifikasi (`docs/13`): jalur ini berasal dari implementasi versi 1 dan memakai struktur enam aspek serta bobot poin Safety Culture Ladder edisi 2016. Ambang di tabel bawah adalah kebijakan Nusa Safety, bukan ketentuan NEN, dan tidak boleh disebut setara Safety Culture Ladder. SCL 2.0 tidak memakai poin; tangganya ditetapkan dengan penilaian warna per tema, terpisah untuk prasyarat dan perilaku. Usulan pengganti ada di `docs/13` bagian 6.3 dan menunggu keputusan pemilik proyek (D2). Sampai ada keputusan, rumus dan fixture di bawah tetap berlaku tanpa perubahan.
 
 Masukan: persentase pemenuhan `f(a, s)` per aspek `a` (A1 sampai A6) per tingkat `s` (2 sampai 5), dalam rentang 0 sampai 1.
 

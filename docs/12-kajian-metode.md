@@ -34,7 +34,7 @@ Batasan yang perlu dibaca lebih dulu:
 | Zohar (1980); Flin dkk. (2000) | Iklim keselamatan sebagai persepsi bersama; tema yang berulang antarinstrumen | Lapisan persepsi dan kesepakatan dalam kelompok |
 | Cooper (2000) | Tiga sisi budaya yang saling memengaruhi: psikologis, perilaku, situasional | Tiga lapisan data NSCAS (bagian 3.2) |
 | Hudson (2007); Parker dkk. (2006) | Lima tingkat kematangan, dari patologis sampai generatif | Skala 1 sampai 5 |
-| NEN (2023), Safety Culture Ladder 2.0 | Lima tingkat; penetapan oleh penilai independen melalui wawancara dan observasi | Kerangka rujukan tingkat; bukti lapangan wajib |
+| NEN (2023a), Safety Culture Ladder 2.0 | Lima tingkat; penetapan oleh penilai independen melalui wawancara dan observasi | Kerangka rujukan tingkat; bukti lapangan wajib |
 | IAEA (2016), Safety Reports Series No. 83 | Urutan asesmen mandiri: persiapan, pengumpulan data dengan banyak metode, analisis deskriptif lalu normatif, pelaporan dan komunikasi, tindak lanjut | Urutan enam tahap (bagian 4) |
 | Creswell dan Plano Clark (2018) | Rancangan campuran berurutan: data kuantitatif dijelaskan dengan data kualitatif | Validasi dilakukan setelah survei |
 | Denzin (1978) | Triangulasi metode, sumber, dan peneliti | Tiga lapisan, banyak strata, dua asesor dan panel |
@@ -81,7 +81,7 @@ Denzin (1978) membedakan triangulasi metode, sumber, dan peneliti. NSCAS memenuh
 | 1. Perencanaan | `DRAFT`, `CONFIGURED` | Lingkup, unit, strata, parameter, rencana sampel, tim asesor, komitmen pimpinan, komunikasi awal, kalibrasi asesor | Parameter terkunci dan rencana sampel | IAEA (2016): kesiapan organisasi dan tim; Cochran (1977) |
 | 2. Pengumpulan data | `LOCKED`, `DATA_COLLECTION` | Survei persepsi, penilaian mandiri, bukti dokumen, observasi lapangan | Data tiga lapisan | Cooper (2000); ISO 45001 klausul 5.4 |
 | 3. Validasi dan triangulasi | `VALIDATION` | Tinjauan mutu data, temuan awal, wawancara dan diskusi kelompok terarah yang diarahkan oleh temuan | Temuan deskriptif yang sudah diuji | Creswell dan Plano Clark (2018); Guldenmund (2000); Denzin (1978) |
-| 4. Penilaian dan penetapan | `SCORING`, `PANEL_REVIEW` | Penilaian dua asesor, perhitungan mesin, rapat panel | Indeks, tingkat, dan kemantapannya | IAEA (2016): analisis normatif; NEN (2023) |
+| 4. Penilaian dan penetapan | `SCORING`, `PANEL_REVIEW` | Penilaian dua asesor, perhitungan mesin, rapat panel | Indeks, tingkat, dan kemantapannya | IAEA (2016): analisis normatif; NEN (2023a) |
 | 5. Pelaporan dan rencana aksi | `ACTION_PLANNING`, `REPORTED` | Dasbor, daftar kesenjangan, rencana aksi, laporan, komunikasi hasil kepada pekerja | Laporan bertanda tangan dan rencana aksi | ISO 45001 klausul 9.3 dan 10.3; IAEA (2016) |
 | 6. Pemantauan dan perbaikan | `MONITORING` | Pemantauan rencana aksi, perbandingan antarperiode, pengukuran ulang | Bukti perbaikan berkelanjutan | PP 50/2012; ISO 45001 klausul 10.3 |
 
@@ -111,6 +111,7 @@ Setelah tahap 6, asesmen ditutup (`ARCHIVED`), dan data mentah dimusnahkan setel
 | T7 | Bobot lapisan (0,35; 0,40; 0,25) dan ambang tertulis sebagai nilai bawaan tanpa keterangan dasarnya. | Tidak ada standar yang menetapkan bobot antarmetode | Dinyatakan sebagai kebijakan penilaian Nusa Safety, dikunci per asesmen, dan dicantumkan di laporan | Dokumen ini; laporan fase R10 |
 | T8 | Rumus Slovin dipakai berdampingan dengan Cochran. | Tejada dan Punzalan (2012) | Dipertahankan karena lazim di Indonesia dan hasilnya lebih hati-hati; dasar statistiknya dijelaskan di bagian 6 | Dokumen ini |
 | T9 | Validitas dan reliabilitas instrumen belum diuji dengan data. | Nunnally dan Bernstein (1994); Sugiyono (2019) | Rencana uji instrumen pada bagian 7 | Setelah data asesmen pertama |
+| T10 | Kerangka isi dan aturan penetapan tingkat masih mengikuti SCL edisi 2016 (enam aspek, bobot poin, rata-rata tertimbang). | NEN (2023a, 2023b): lima tema, dua puluh subtema, prasyarat dan perilaku dinilai terpisah, tanpa poin, penilaian warna per tema | Instrumen versi 2 dan aturan penetapan nonkompensatoris, rinci di `docs/13` | Menunggu keputusan D1 sampai D6 di `docs/13` bagian 7 |
 
 ## 6. Kajian atas aturan penilaian
 
@@ -190,7 +191,9 @@ Kementerian Pekerjaan Umum dan Perumahan Rakyat Republik Indonesia. (2021). *Per
 
 LeBreton, J. M., & Senter, J. L. (2008). Answers to 20 questions about interrater reliability and interrater agreement. *Organizational Research Methods, 11*(4), 815-852. https://doi.org/10.1177/1094428106296642
 
-NEN. (2023). *Safety Culture Ladder 2.0* [Skema sertifikasi]. Stichting Koninklijk Nederlands Normalisatie Instituut.
+NEN. (2023a). *Safety Culture Ladder 2.0:2023* (edisi bahasa Inggris). Stichting Koninklijk Nederlands Normalisatie Instituut.
+
+NEN. (2023b). *Certification scheme SCL 2.0* (edisi bahasa Inggris). Stichting Koninklijk Nederlands Normalisatie Instituut.
 
 Nunnally, J. C., & Bernstein, I. H. (1994). *Psychometric theory* (3rd ed.). McGraw-Hill.
 

@@ -54,6 +54,7 @@ Rujukan versi 1: `src/lib/respondents`, `src/app/(console)/assessments/[id]/resp
 3. Kode QR per unit dan strata untuk pekerja tanpa surel, dengan batas pakai.
 4. Partisipasi per unit dan strata dengan penyembunyian sel di bawah 5; koordinator unit hanya melihat unitnya.
 5. Transisi LOCKED ke DATA_COLLECTION.
+6. Daftar responden mencakup semua orang yang bekerja di bawah tanggung jawab organisasi: pekerja sendiri, alih daya, harian, dan subkontraktor. Jumlah pekerja `M` untuk kalkulator sampel memakai rata-rata setahun (`docs/13` bagian 3.5 dan V14).
 
 ## R3. Survei responden
 
