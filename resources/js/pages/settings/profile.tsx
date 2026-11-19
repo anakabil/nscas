@@ -24,11 +24,7 @@ export default function Profile() {
             <h1 className="sr-only">{t('settings.profile.title')}</h1>
 
             <div className="space-y-6">
-                <Heading
-                    variant="small"
-                    title={t('settings.profile.heading')}
-                    description={t('settings.profile.description')}
-                />
+                <Heading variant="small" title={t('settings.profile.heading')} description={t('settings.profile.description')} />
 
                 <Form
                     {...ProfileController.update.form()}
@@ -40,9 +36,7 @@ export default function Profile() {
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="name">
-                                    {t('settings.profile.name')}
-                                </Label>
+                                <Label htmlFor="name">{t('settings.profile.name')}</Label>
 
                                 <Input
                                     id="name"
@@ -51,21 +45,14 @@ export default function Profile() {
                                     name="name"
                                     required
                                     autoComplete="name"
-                                    placeholder={t(
-                                        'settings.profile.namePlaceholder',
-                                    )}
+                                    placeholder={t('settings.profile.namePlaceholder')}
                                 />
 
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.name}
-                                />
+                                <InputError className="mt-2" message={errors.name} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">
-                                    {t('settings.profile.email')}
-                                </Label>
+                                <Label htmlFor="email">{t('settings.profile.email')}</Label>
 
                                 <Input
                                     id="email"
@@ -78,17 +65,11 @@ export default function Profile() {
                                     placeholder={t('settings.profile.email')}
                                 />
 
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.email}
-                                />
+                                <InputError className="mt-2" message={errors.email} />
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <Button
-                                    disabled={processing}
-                                    data-test="update-profile-button"
-                                >
+                                <Button disabled={processing} data-test="update-profile-button">
                                     {t('settings.save')}
                                 </Button>
                             </div>

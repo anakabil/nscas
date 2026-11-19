@@ -36,9 +36,7 @@ export default function Security(props: Props) {
             {twoFactorRequired && (
                 <Alert>
                     <ShieldAlert aria-hidden="true" />
-                    <AlertDescription className="text-foreground">
-                        {t('settings.twoFactorRequired')}
-                    </AlertDescription>
+                    <AlertDescription className="text-foreground">{t('settings.twoFactorRequired')}</AlertDescription>
                 </Alert>
             )}
 
@@ -54,11 +52,7 @@ export default function Security(props: Props) {
                     options={{
                         preserveScroll: true,
                     }}
-                    resetOnError={[
-                        'password',
-                        'password_confirmation',
-                        'current_password',
-                    ]}
+                    resetOnError={['password', 'password_confirmation', 'current_password']}
                     resetOnSuccess
                     onError={(errors) => {
                         if (errors.password) {
@@ -74,9 +68,7 @@ export default function Security(props: Props) {
                     {({ errors, processing }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="current_password">
-                                    {t('settings.password.current')}
-                                </Label>
+                                <Label htmlFor="current_password">{t('settings.password.current')}</Label>
 
                                 <PasswordInput
                                     id="current_password"
@@ -91,9 +83,7 @@ export default function Security(props: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">
-                                    {t('settings.password.new')}
-                                </Label>
+                                <Label htmlFor="password">{t('settings.password.new')}</Label>
 
                                 <PasswordInput
                                     id="password"
@@ -109,31 +99,22 @@ export default function Security(props: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">
-                                    {t('settings.password.confirmation')}
-                                </Label>
+                                <Label htmlFor="password_confirmation">{t('settings.password.confirmation')}</Label>
 
                                 <PasswordInput
                                     id="password_confirmation"
                                     name="password_confirmation"
                                     className="mt-1 block w-full"
                                     autoComplete="new-password"
-                                    placeholder={t(
-                                        'settings.password.confirmation',
-                                    )}
+                                    placeholder={t('settings.password.confirmation')}
                                     passwordrules={props.passwordRules}
                                 />
 
-                                <InputError
-                                    message={errors.password_confirmation}
-                                />
+                                <InputError message={errors.password_confirmation} />
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <Button
-                                    disabled={processing}
-                                    data-test="update-password-button"
-                                >
+                                <Button disabled={processing} data-test="update-password-button">
                                     {t('settings.save')}
                                 </Button>
                             </div>

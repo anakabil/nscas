@@ -22,8 +22,7 @@ export const account = {
         },
         forgotPassword: {
             title: 'Forgot password',
-            description:
-                'Enter your email address to receive a password reset link.',
+            description: 'Enter your email address to receive a password reset link.',
             submit: 'Email password reset link',
             returnTo: 'Or return to',
             returnLink: 'the sign-in page',
@@ -35,21 +34,18 @@ export const account = {
         },
         confirmPassword: {
             title: 'Confirm password',
-            description:
-                'The page you are opening is protected. Enter your password again before continuing.',
+            description: 'The page you are opening is protected. Enter your password again before continuing.',
             submit: 'Confirm password',
         },
         twoFactorChallenge: {
             title: 'Two-step verification',
             code: {
                 heading: 'Verification code',
-                description:
-                    'Enter the verification code shown by your authenticator app.',
+                description: 'Enter the verification code shown by your authenticator app.',
             },
             recovery: {
                 heading: 'Recovery code',
-                description:
-                    'Enter one of your recovery codes to confirm that this account is yours.',
+                description: 'Enter one of your recovery codes to confirm that this account is yours.',
                 placeholder: 'Enter recovery code',
             },
             submit: 'Continue',
@@ -59,8 +55,7 @@ export const account = {
         },
     },
     settings: {
-        twoFactorRequired:
-            'Your role requires two-step verification. Enable it before continuing.',
+        twoFactorRequired: 'Your role requires two-step verification. Enable it before continuing.',
         save: 'Save',
         errorTitle: 'Something went wrong.',
         profile: {
@@ -76,8 +71,7 @@ export const account = {
         },
         password: {
             heading: 'Update password',
-            description:
-                'Use a long, random password to keep your account secure.',
+            description: 'Use a long, random password to keep your account secure.',
             current: 'Current password',
             new: 'New password',
             confirmation: 'Confirm password',
@@ -92,8 +86,7 @@ export const account = {
             enable: 'Enable two-step verification',
             disable: 'Disable two-step verification',
             continueSetup: 'Continue setup',
-            loadError:
-                'Two-step verification data could not be loaded. Reload the page, then try again.',
+            loadError: 'Two-step verification data could not be loaded. Reload the page, then try again.',
         },
         twoFactorSetup: {
             enableTitle: 'Enable two-step verification',
@@ -103,8 +96,7 @@ export const account = {
             enabledDescription:
                 'Two-step verification is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
             verifyTitle: 'Check the verification code',
-            verifyDescription:
-                'Enter the {length}-digit code from your authenticator app.',
+            verifyDescription: 'Enter the {length}-digit code from your authenticator app.',
             manualEntry: 'or enter the setup key manually',
             continue: 'Continue',
             close: 'Close',

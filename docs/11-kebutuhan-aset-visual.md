@@ -20,7 +20,7 @@ Nama arah visual: Monokrom Perak dan Emas. Gagasan dasarnya, NSCAS adalah instru
 | Abu kabut | `#F5F5F6` | Latar halaman | Sebagai latar |
 | Emas | `#D4AF37` | Aksen tunggal: tahap berjalan, unsur kunci ikon, busur kelima logo | Ya, hanya di bidang gelap |
 | Emas pucat | `#E6CF8B` | Kilau emas, teks kecil di bidang gelap | Ya, hanya di bidang gelap |
-| Emas tua | `#8A6D1B` | Emas untuk bidang terang | Ya, di bidang terang (kontras 5,0 banding 1) |
+| Emas tua | `#84681A` | Emas untuk bidang terang | Ya, di bidang terang (kontras 5,3 banding 1 di atas putih; 4,8 di atas latar halaman) |
 
 Gradasi logam, dipakai hemat:
 

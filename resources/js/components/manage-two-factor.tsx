@@ -48,25 +48,15 @@ export default function ManageTwoFactor(props: Props) {
 
     return (
         <div className="space-y-6">
-            <Heading
-                variant="small"
-                title={t('settings.twoFactor.heading')}
-                description={t('settings.twoFactor.description')}
-            />
+            <Heading variant="small" title={t('settings.twoFactor.heading')} description={t('settings.twoFactor.description')} />
             {twoFactorEnabled ? (
                 <div className="flex flex-col items-start justify-start space-y-4">
-                    <p className="text-sm text-muted-foreground">
-                        {t('settings.twoFactor.enabledHelp')}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t('settings.twoFactor.enabledHelp')}</p>
 
                     <div className="relative inline">
                         <Form {...disable.form()}>
                             {({ processing }) => (
-                                <Button
-                                    variant="destructive"
-                                    type="submit"
-                                    disabled={processing}
-                                >
+                                <Button variant="destructive" type="submit" disabled={processing}>
                                     {t('settings.twoFactor.disable')}
                                 </Button>
                             )}
@@ -81,9 +71,7 @@ export default function ManageTwoFactor(props: Props) {
                 </div>
             ) : (
                 <div className="flex flex-col items-start justify-start space-y-4">
-                    <p className="text-sm text-muted-foreground">
-                        {t('settings.twoFactor.disabledHelp')}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t('settings.twoFactor.disabledHelp')}</p>
 
                     <div>
                         {hasSetupData ? (
@@ -92,10 +80,7 @@ export default function ManageTwoFactor(props: Props) {
                                 {t('settings.twoFactor.continueSetup')}
                             </Button>
                         ) : (
-                            <Form
-                                {...enable.form()}
-                                onSuccess={() => setShowSetupModal(true)}
-                            >
+                            <Form {...enable.form()} onSuccess={() => setShowSetupModal(true)}>
                                 {({ processing }) => (
                                     <Button type="submit" disabled={processing}>
                                         {t('settings.twoFactor.enable')}

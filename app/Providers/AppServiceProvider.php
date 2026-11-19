@@ -43,7 +43,8 @@ class AppServiceProvider extends ServiceProvider
                 ->letters()
                 ->numbers()
                 ->symbols()
-                ->uncompromised()
+            // Pemeriksaan "uncompromised" sengaja tidak dipakai: fitur itu memanggil layanan pihak ketiga di luar
+            // negeri dari server, sedangkan NSCAS tidak memakai layanan luar tanpa persetujuan tertulis (aturan 7).
             : null,
         );
     }

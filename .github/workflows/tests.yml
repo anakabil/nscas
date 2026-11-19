@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 'claude/**'
   pull_request:
 
 permissions:
@@ -12,6 +13,30 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
+    # PostgreSQL yang sama dengan produksi. Kredensial ini hanya hidup selama pekerjaan CI.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: nscas
+          POSTGRES_PASSWORD: ci_only
+          POSTGRES_DB: nscas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nscas"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: nscas
+      DB_USERNAME: nscas
+      DB_PASSWORD: ci_only
 
     steps:
       - name: Checkout code
@@ -30,6 +55,9 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
+
+      - name: Create test database
+        run: PGPASSWORD=ci_only createdb -h 127.0.0.1 -U nscas nscas_laravel_test
 
       - name: Setup Application
         run: composer setup

@@ -24,7 +24,7 @@ Token ada di `resources/css/app.css` dan dipakai lewat kelas Tailwind (`bg-obsid
 | `border` | `#DCDCE0` | Garis tepi |
 | `gold` | `#D4AF37` | Aksen di bidang gelap, garis tahap berjalan, cincin fokus |
 | `gold-soft` | `#E6CF8B` | Teks kecil di bidang gelap |
-| `gold-deep` | `#8A6D1B` | Satu-satunya emas untuk teks di bidang terang (kontras 5,0 banding 1) |
+| `gold-deep` | `#84681A` | Satu-satunya emas untuk teks di bidang terang (kontras 5,3 banding 1 di atas putih; 4,8 di atas latar halaman) |
 | `success` | `#2F6B4F` | Tahap selesai, pemeriksaan berhasil |
 | `destructive` | `#9B2C2C` | Galat, pemeriksaan gagal |
 

@@ -18,9 +18,7 @@ export default function ConfirmPassword() {
                 {({ processing, errors }) => (
                     <div className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="password">
-                                {t('auth.fields.password')}
-                            </Label>
+                            <Label htmlFor="password">{t('auth.fields.password')}</Label>
                             <PasswordInput
                                 id="password"
                                 name="password"
@@ -33,11 +31,7 @@ export default function ConfirmPassword() {
                         </div>
 
                         <div className="flex items-center">
-                            <Button
-                                className="w-full"
-                                disabled={processing}
-                                data-test="confirm-password-button"
-                            >
+                            <Button className="w-full" disabled={processing} data-test="confirm-password-button">
                                 {processing && <Spinner />}
                                 {t('auth.confirmPassword.submit')}
                             </Button>

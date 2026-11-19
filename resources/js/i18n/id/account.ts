@@ -16,16 +16,14 @@ export const account = {
         login: {
             title: 'Masuk',
             heading: 'Masuk ke akun Anda',
-            description:
-                'Masukkan alamat surel dan kata sandi Anda untuk masuk.',
+            description: 'Masukkan alamat surel dan kata sandi Anda untuk masuk.',
             forgotPassword: 'Lupa kata sandi?',
             remember: 'Ingat saya',
             submit: 'Masuk',
         },
         forgotPassword: {
             title: 'Lupa kata sandi',
-            description:
-                'Masukkan alamat surel Anda untuk menerima tautan pengaturan ulang kata sandi.',
+            description: 'Masukkan alamat surel Anda untuk menerima tautan pengaturan ulang kata sandi.',
             submit: 'Kirim tautan pengaturan ulang kata sandi',
             returnTo: 'Atau kembali ke',
             returnLink: 'halaman masuk',
@@ -37,21 +35,18 @@ export const account = {
         },
         confirmPassword: {
             title: 'Konfirmasi kata sandi',
-            description:
-                'Halaman yang Anda tuju dilindungi. Masukkan kembali kata sandi Anda sebelum melanjutkan.',
+            description: 'Halaman yang Anda tuju dilindungi. Masukkan kembali kata sandi Anda sebelum melanjutkan.',
             submit: 'Konfirmasi kata sandi',
         },
         twoFactorChallenge: {
             title: 'Verifikasi dua langkah',
             code: {
                 heading: 'Kode verifikasi',
-                description:
-                    'Masukkan kode verifikasi yang ditampilkan aplikasi autentikator Anda.',
+                description: 'Masukkan kode verifikasi yang ditampilkan aplikasi autentikator Anda.',
             },
             recovery: {
                 heading: 'Kode pemulihan',
-                description:
-                    'Masukkan salah satu kode pemulihan Anda untuk memastikan bahwa akun ini milik Anda.',
+                description: 'Masukkan salah satu kode pemulihan Anda untuk memastikan bahwa akun ini milik Anda.',
                 placeholder: 'Masukkan kode pemulihan',
             },
             submit: 'Lanjutkan',
@@ -61,8 +56,7 @@ export const account = {
         },
     },
     settings: {
-        twoFactorRequired:
-            'Peran Anda mewajibkan verifikasi dua langkah. Aktifkan sebelum melanjutkan.',
+        twoFactorRequired: 'Peran Anda mewajibkan verifikasi dua langkah. Aktifkan sebelum melanjutkan.',
         save: 'Simpan',
         errorTitle: 'Terjadi kesalahan.',
         profile: {
@@ -78,8 +72,7 @@ export const account = {
         },
         password: {
             heading: 'Perbarui kata sandi',
-            description:
-                'Gunakan kata sandi yang panjang dan acak agar akun Anda tetap aman.',
+            description: 'Gunakan kata sandi yang panjang dan acak agar akun Anda tetap aman.',
             current: 'Kata sandi saat ini',
             new: 'Kata sandi baru',
             confirmation: 'Konfirmasi kata sandi',
@@ -94,8 +87,7 @@ export const account = {
             enable: 'Aktifkan verifikasi dua langkah',
             disable: 'Nonaktifkan verifikasi dua langkah',
             continueSetup: 'Lanjutkan penyiapan',
-            loadError:
-                'Data verifikasi dua langkah tidak dapat dimuat. Muat ulang halaman, lalu coba lagi.',
+            loadError: 'Data verifikasi dua langkah tidak dapat dimuat. Muat ulang halaman, lalu coba lagi.',
         },
         twoFactorSetup: {
             enableTitle: 'Aktifkan verifikasi dua langkah',
@@ -105,8 +97,7 @@ export const account = {
             enabledDescription:
                 'Verifikasi dua langkah sekarang aktif. Pindai kode QR atau masukkan kunci penyiapan di aplikasi autentikator Anda.',
             verifyTitle: 'Periksa kode verifikasi',
-            verifyDescription:
-                'Masukkan kode {length} angka dari aplikasi autentikator Anda.',
+            verifyDescription: 'Masukkan kode {length} angka dari aplikasi autentikator Anda.',
             manualEntry: 'atau masukkan kunci penyiapan secara manual',
             continue: 'Lanjutkan',
             close: 'Tutup',

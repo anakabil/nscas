@@ -51,7 +51,7 @@ export default defineConfig({
         },
     },
     fmt: {
-        printWidth: 80,
+        printWidth: 130,
         tabWidth: 4,
         singleQuote: true,
         semi: true,
@@ -62,6 +62,13 @@ export default defineConfig({
             'composer.json',
             'resources/js/components/ui/*',
             'resources/views/mail/*',
+            // Data instrumen dan fixture penilaian tidak boleh diubah pemformat (CLAUDE.md aturan 1).
+            'seed/**',
+            'docs/**',
+            'deploy/**',
+            'lang/**',
+            '**/*.md',
+            'docker-compose*.yml',
         ],
         sortTailwindcss: {
             functions: ['clsx', 'cn', 'cva'],

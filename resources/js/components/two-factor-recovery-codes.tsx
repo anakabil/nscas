@@ -3,13 +3,7 @@ import { Eye, EyeOff, LockKeyhole, RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import AlertError from '@/components/alert-error';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useT } from '@/i18n';
 import { regenerateRecoveryCodes } from '@/routes/two-factor';
 
@@ -19,11 +13,7 @@ type Props = {
     errors: string[];
 };
 
-export default function TwoFactorRecoveryCodes({
-    recoveryCodesList,
-    fetchRecoveryCodes,
-    errors,
-}: Props) {
+export default function TwoFactorRecoveryCodes({ recoveryCodesList, fetchRecoveryCodes, errors }: Props) {
     const t = useT();
     const [codesAreVisible, setCodesAreVisible] = useState<boolean>(false);
     const codesSectionRef = useRef<HTMLDivElement | null>(null);
@@ -61,9 +51,7 @@ export default function TwoFactorRecoveryCodes({
                     <LockKeyhole className="size-4" aria-hidden="true" />
                     {t('settings.recoveryCodes.heading')}
                 </CardTitle>
-                <CardDescription>
-                    {t('settings.recoveryCodes.description')}
-                </CardDescription>
+                <CardDescription>{t('settings.recoveryCodes.description')}</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="flex flex-col gap-3 select-none sm:flex-row sm:items-center sm:justify-between">
@@ -73,13 +61,8 @@ export default function TwoFactorRecoveryCodes({
                         aria-expanded={codesAreVisible}
                         aria-controls="recovery-codes-section"
                     >
-                        <RecoveryCodeIconComponent
-                            className="size-4"
-                            aria-hidden="true"
-                        />
-                        {codesAreVisible
-                            ? t('settings.recoveryCodes.hide')
-                            : t('settings.recoveryCodes.show')}
+                        <RecoveryCodeIconComponent className="size-4" aria-hidden="true" />
+                        {codesAreVisible ? t('settings.recoveryCodes.hide') : t('settings.recoveryCodes.show')}
                     </Button>
 
                     {canRegenerateCodes && (
@@ -95,8 +78,7 @@ export default function TwoFactorRecoveryCodes({
                                     disabled={processing}
                                     aria-describedby="regenerate-warning"
                                 >
-                                    <RefreshCw />{' '}
-                                    {t('settings.recoveryCodes.regenerate')}
+                                    <RefreshCw /> {t('settings.recoveryCodes.regenerate')}
                                 </Button>
                             )}
                         </Form>
@@ -109,60 +91,38 @@ export default function TwoFactorRecoveryCodes({
                 >
                     <div className="mt-3 space-y-3">
                         {errors?.length ? (
-                            <AlertError
-                                errors={[t('settings.twoFactor.loadError')]}
-                            />
+                            <AlertError errors={[t('settings.twoFactor.loadError')]} />
                         ) : (
                             <>
                                 <div
                                     ref={codesSectionRef}
                                     className="grid gap-1 rounded-lg bg-muted p-4 font-mono text-sm"
                                     role="list"
-                                    aria-label={t(
-                                        'settings.recoveryCodes.listLabel',
-                                    )}
+                                    aria-label={t('settings.recoveryCodes.listLabel')}
                                 >
                                     {recoveryCodesList.length ? (
                                         recoveryCodesList.map((code, index) => (
-                                            <div
-                                                key={index}
-                                                role="listitem"
-                                                className="select-text"
-                                            >
+                                            <div key={index} role="listitem" className="select-text">
                                                 {code}
                                             </div>
                                         ))
                                     ) : (
-                                        <div
-                                            className="space-y-2"
-                                            aria-label={t(
-                                                'settings.recoveryCodes.loading',
-                                            )}
-                                        >
-                                            {Array.from(
-                                                { length: 8 },
-                                                (_, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className="h-4 animate-pulse rounded bg-muted-foreground/20"
-                                                        aria-hidden="true"
-                                                    />
-                                                ),
-                                            )}
+                                        <div className="space-y-2" aria-label={t('settings.recoveryCodes.loading')}>
+                                            {Array.from({ length: 8 }, (_, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="h-4 animate-pulse rounded bg-muted-foreground/20"
+                                                    aria-hidden="true"
+                                                />
+                                            ))}
                                         </div>
                                     )}
                                 </div>
 
                                 <div className="text-xs text-muted-foreground select-none">
                                     <p id="regenerate-warning">
-                                        {t(
-                                            'settings.recoveryCodes.usageBefore',
-                                        )}{' '}
-                                        <span className="font-bold">
-                                            {t(
-                                                'settings.recoveryCodes.regenerate',
-                                            )}
-                                        </span>{' '}
+                                        {t('settings.recoveryCodes.usageBefore')}{' '}
+                                        <span className="font-bold">{t('settings.recoveryCodes.regenerate')}</span>{' '}
                                         {t('settings.recoveryCodes.usageAfter')}
                                     </p>
                                 </div>

@@ -74,10 +74,10 @@
     --silver-dim: #8d9299;
     --gold: #d4af37;
     --gold-soft: #e6cf8b;
-    /* Emas tua: satu-satunya emas yang boleh dipakai untuk teks di bidang terang (kontras 5,0 banding 1). */
-    --gold-deep: #8a6d1b;
+    /* Emas tua: satu-satunya emas yang boleh dipakai untuk teks di bidang terang (kontras 5,3 banding 1 di atas putih; 4,8 di atas latar halaman). */
+    --gold-deep: #84681a;
     --success: #2f6b4f;
-    --warning: #8a6d1b;
+    --warning: #84681a;
 
     --background: #f5f5f6;
     --foreground: #111113;
