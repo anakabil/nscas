@@ -29,8 +29,12 @@ DigitalOcean tidak memiliki pusat data di Indonesia. Sebelum ada data responden 
 | Sintaks `deploy.sh` dan `backup.sh` | Lulus (`bash -n`) |
 | Berkas `cloud-init.yaml` dan kedua berkas compose | Sah; `docker compose config` lulus untuk keduanya |
 | Dockerfile | Lulus pemeriksaan `docker buildx build --check` tanpa peringatan |
-| Membangun image penuh dan menjalankannya | Belum. Lingkungan penyusunan membatasi akses jaringan dari dalam proses build, sehingga tidak dapat diuji di sana |
+| Membangun image penuh | Lulus (19 November 2026), dengan satu catatan. Jaringan lingkungan penyusunan menolak unduhan paket PHP dari api.github.com, sehingga folder `vendor` diisi dari salinan lokal yang sama dengan `composer.lock`. Tahap lain berjalan apa adanya: ekstensi PHP, `npm ci`, Wayfinder, dan build Vite. |
+| Menjalankan image dengan `docker-compose.prod.yml` (tata letak A, HTTP di port 80) | Lulus (19 November 2026): `app` sehat, `worker` dan `scheduler` berjalan, migrasi, seed, dan `nscas:create-admin` berhasil. Pengaturan keamanan kontainer berlaku: pengguna bukan root, semua hak dicabut, tanpa header Server. Header keamanan dan cache aset sesuai. Sebelum lulus, ditemukan satu cacat dan sudah diperbaiki, lihat catatan di bawah. |
+| Sertifikat TLS otomatis | Belum. Memerlukan domain yang mengarah ke server |
 | Penempatan ke Droplet sungguhan | Belum. Tidak ada akun DigitalOcean yang dipakai saat penyusunan |
+
+Cacat yang ditemukan saat uji menjalankan image: kontainer `app` gagal menyala dengan pesan `exec: frankenphp: Operation not permitted`. Image FrankenPHP memberi berkas programnya hak `cap_net_bind_service`, sedangkan `docker-compose.prod.yml` mencabut semua hak kontainer. Karena NSCAS hanya memakai port 8080 dan 8443, hak itu kini dicabut di `Dockerfile`. Tanpa perbaikan ini, penempatan pertama akan gagal di langkah 9 bagian 4.
 
 Karena dua butir terakhir belum diuji, penempatan pertama harus diperlakukan sebagai uji: pakai tata letak A dengan data buatan, dan jalankan daftar periksa bagian 12 sebelum dipakai klien.
 

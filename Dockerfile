@@ -214,6 +214,12 @@ fi
 exec "$@"
 EOF
 
+# Image FrankenPHP memberi berkas program hak cap_net_bind_service agar dapat membuka port di bawah 1024. NSCAS hanya
+# memakai 8080 dan 8443, dan docker-compose.prod.yml mencabut semua hak kontainer (cap_drop ALL, no-new-privileges).
+# Dengan hak berkas itu, kernel menolak menjalankan program ("exec: frankenphp: Operation not permitted"), sehingga
+# hak tersebut dicabut di sini (diuji 19 November 2026).
+RUN setcap -r /usr/local/bin/frankenphp
+
 RUN groupadd --gid 10001 nscas \
     && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /app --shell /usr/sbin/nologin nscas
 
