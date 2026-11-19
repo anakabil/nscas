@@ -1,0 +1,256 @@
+/*
+ * Gaya halaman survei responden (fase R3). Ditulis tangan tanpa Tailwind dan tanpa huruf unduhan agar muatannya kecil.
+ * Warna dari tema NSCAS (docs/05): marun #691B2E, hitam #1A1A1A, emas #CBA35A, krem #FEFAF4. Kontras tinggi dan tombol
+ * paling sedikit 48 piksel agar mudah dipakai di bawah sinar matahari dan dengan sarung tangan di lokasi proyek.
+ */
+:root {
+    --sv-maroon: #691b2e;
+    --sv-maroon-deep: #4a1220;
+    --sv-maroon-soft: #f4e7e7;
+    --sv-ink: #1a1a1a;
+    --sv-charcoal: #3b3431;
+    --sv-cream: #fefaf4;
+    --sv-parchment: #f4ecdf;
+    --sv-border: #cdbfad;
+    --sv-gold-deep: #86652a;
+    --sv-warn: #7a4a00;
+    --sv-warn-bg: #fbf0d9;
+}
+* {
+    box-sizing: border-box;
+}
+html {
+    -webkit-text-size-adjust: 100%;
+}
+body {
+    margin: 0;
+    background: var(--sv-cream);
+    color: var(--sv-ink);
+    font:
+        18px/1.55 system-ui,
+        -apple-system,
+        'Segoe UI',
+        Roboto,
+        Arial,
+        sans-serif;
+}
+h1 {
+    margin: 0;
+    font-size: 1.45rem;
+    line-height: 1.3;
+    color: var(--sv-maroon);
+}
+h2 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+p {
+    margin: 0;
+}
+button {
+    font: inherit;
+}
+.sv-page {
+    max-width: 36rem;
+    min-height: 100dvh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+.sv-with-nav {
+    padding-bottom: 6.5rem;
+}
+.sv-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0;
+}
+.sv-header img {
+    display: block;
+    width: 132px;
+    height: auto;
+}
+.sv-link {
+    min-height: 48px;
+    padding: 0 0.5rem;
+    background: none;
+    border: 0;
+    color: var(--sv-maroon);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+}
+.sv-main {
+    flex: 1;
+    padding: 1rem;
+}
+.sv-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+.sv-stack > legend {
+    display: contents;
+}
+.sv-item {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--sv-border);
+}
+.sv-eyebrow {
+    display: block;
+    color: var(--sv-gold-deep);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.sv-question {
+    display: block;
+    margin: 0.2rem 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+.sv-question-small {
+    font-size: 1.08rem;
+    font-weight: 600;
+    line-height: 1.45;
+    margin-bottom: 0.35rem;
+}
+.sv-muted {
+    color: var(--sv-charcoal);
+    font-size: 0.95rem;
+}
+.sv-strong {
+    font-weight: 600;
+}
+.sv-consent {
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid var(--sv-border);
+    border-radius: 12px;
+    white-space: pre-line;
+    font-size: 1rem;
+}
+.sv-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 56px;
+    padding: 0.9rem 1rem;
+    background: #fff;
+    border: 2px solid var(--sv-border);
+    border-radius: 12px;
+    color: var(--sv-ink);
+    text-align: left;
+    cursor: pointer;
+}
+.sv-card-compact {
+    min-height: 48px;
+    padding: 0.6rem 0.9rem;
+}
+.sv-card-light {
+    background: var(--sv-parchment);
+}
+.sv-card:has(input:focus-visible),
+.sv-card:focus-visible,
+.sv-button:focus-visible,
+.sv-link:focus-visible {
+    outline: 3px solid var(--sv-gold-deep);
+    outline-offset: 2px;
+}
+.sv-checked {
+    border-color: var(--sv-maroon);
+    background: var(--sv-maroon-soft);
+}
+.sv-dot {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.2rem;
+    border: 2px solid var(--sv-charcoal);
+    border-radius: 999px;
+}
+.sv-checked .sv-dot {
+    border-color: var(--sv-maroon);
+    background: radial-gradient(circle, var(--sv-maroon) 45%, transparent 50%);
+}
+.sv-button {
+    width: 100%;
+    min-height: 52px;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.sv-primary {
+    background: var(--sv-maroon);
+    border: 2px solid var(--sv-maroon);
+    color: #fff;
+}
+.sv-primary:disabled {
+    background: #a99a92;
+    border-color: #a99a92;
+    cursor: not-allowed;
+}
+.sv-secondary {
+    background: #fff;
+    border: 2px solid var(--sv-border);
+    color: var(--sv-ink);
+}
+.sv-notice {
+    margin: 0.75rem 1rem 0;
+    padding: 0.6rem 0.8rem;
+    background: var(--sv-warn-bg);
+    color: var(--sv-warn);
+    border-radius: 10px;
+    font-size: 0.95rem;
+}
+.sv-main .sv-notice {
+    margin: 0;
+}
+.sv-progress {
+    padding: 0.75rem 1rem 0;
+}
+.sv-bar {
+    height: 8px;
+    overflow: hidden;
+    background: var(--sv-border);
+    border-radius: 999px;
+    margin-bottom: 0.3rem;
+}
+.sv-bar > div {
+    height: 100%;
+    background: var(--sv-maroon);
+}
+.sv-nav {
+    position: fixed;
+    inset: auto 0 0 0;
+    background: var(--sv-cream);
+    border-top: 1px solid var(--sv-border);
+}
+.sv-nav > div {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+}
+.sv-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

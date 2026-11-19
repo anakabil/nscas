@@ -7,12 +7,11 @@ use App\Domain\Respondents\TokenCodec;
 use App\Models\AccessToken;
 use App\Models\Assessment;
 use App\Models\UnitQrCode;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Pintu masuk publik responden: pemindaian kode QR unit dan pembukaan tautan survei (docs/01 M2 dan M3), dibawa dari
- * v1 issueTokenFromQr. Tidak mencatat alamat IP maupun jejak audit per pemindaian; formulir survei dibangun di fase R3.
+ * Pemindaian kode QR unit (docs/01 M2), dibawa dari v1 issueTokenFromQr. Tidak mencatat alamat IP maupun jejak audit
+ * per pemindaian. Keadaan tautan dan pengiriman survei ada di App\Services\Survey\SurveyService.
  */
 final class SurveyEntry
 {
@@ -53,26 +52,5 @@ final class SurveyEntry
 
             return ['ok' => true, 'raw' => $issued['raw'], 'reused' => false];
         });
-    }
-
-    /**
-     * Keadaan tautan survei: INVALID (tidak dikenal atau dicabut), COMPLETED, CLOSED (di luar jendela survei), atau
-     * READY. Halaman ini tidak mengubah apa pun pada token; waktu buka dicatat formulir survei fase R3.
-     *
-     * @return array{state: 'INVALID'|'COMPLETED'|'CLOSED'|'READY', closesAt: Carbon|null}
-     */
-    public static function state(string $raw): array
-    {
-        $token = TokenCodec::looksValid($raw) ? AccessToken::where('token_hash', TokenCodec::hash($raw))->first(['assessment_id', 'revoked_at', 'completed_at']) : null;
-        if ($token === null || $token->revoked_at !== null) {
-            return ['state' => 'INVALID', 'closesAt' => null];
-        }
-        if ($token->completed_at !== null) {
-            return ['state' => 'COMPLETED', 'closesAt' => null];
-        }
-        $assessment = Assessment::find($token->assessment_id, ['id', 'status', 'survey_opens_at', 'survey_closes_at']);
-        $open = SurveyWindow::isOpen($assessment->status, $assessment->survey_opens_at, $assessment->survey_closes_at, now());
-
-        return ['state' => $open ? 'READY' : 'CLOSED', 'closesAt' => $assessment->survey_closes_at];
     }
 }

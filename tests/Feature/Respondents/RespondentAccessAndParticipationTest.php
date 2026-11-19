@@ -83,7 +83,7 @@ class RespondentAccessAndParticipationTest extends TestCase
         $cookie = collect($first->headers->getCookies())->first(fn ($c) => str_starts_with($c->getName(), 'nscas_qr_'));
         $this->assertNotNull($cookie);
         $this->assertTrue($cookie->isHttpOnly());
-        $this->get($first->headers->get('Location'))->assertOk()->assertSee('Tautan survei Anda berlaku');
+        $this->get($first->headers->get('Location'))->assertOk()->assertSee('id="survey-root"', false);
 
         // Perangkat yang sama memakai ulang tokennya, sehingga kuota tidak berkurang. Nilai kuki dikirim kembali apa
         // adanya (terenkripsi), seperti peramban.

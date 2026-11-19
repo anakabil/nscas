@@ -1,8 +1,16 @@
-{{-- Halaman publik responden (fase R2). Ringan, tanpa skrip, tanpa sumber pihak ketiga; dua bahasa. --}}
+{{-- Keadaan tautan atau kode QR yang tidak dapat dipakai saat ini. Ringan, tanpa skrip, tanpa sumber pihak ketiga; dua bahasa. --}}
 @php
-    $deadline = fn (string $locale) => $closesAt === null ? null : __('survey_entry.closes', [
-        'date' => $closesAt->copy()->setTimezone('Asia/Jakarta')->locale($locale)->translatedFormat($locale === 'id' ? 'j F Y, H.i' : 'j F Y, H:i').' WIB',
-    ], $locale);
+    $when = fn ($at, string $locale) => $at->copy()->setTimezone('Asia/Jakarta')->locale($locale)->translatedFormat($locale === 'id' ? 'j F Y, H.i' : 'j F Y, H:i').' WIB';
+    $schedule = function (string $locale) use ($state, $opensAt, $closesAt, $when) {
+        if ($state !== 'NOT_OPEN') {
+            return null;
+        }
+        if ($opensAt !== null && $opensAt->isFuture()) {
+            return __('survey_entry.opens', ['date' => $when($opensAt, $locale)], $locale);
+        }
+
+        return $closesAt !== null ? __('survey_entry.closes', ['date' => $when($closesAt, $locale)], $locale) : null;
+    };
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -35,10 +43,10 @@
             <section lang="{{ $locale }}">
                 <h1>{{ __('survey_entry.title', [], $locale) }}</h1>
                 <p>{{ __('survey_entry.states.'.$state, [], $locale) }}</p>
-                @if (in_array($state, ['READY', 'CLOSED'], true) && $deadline($locale))
-                    <p>{{ $deadline($locale) }}</p>
+                @if ($schedule($locale))
+                    <p>{{ $schedule($locale) }}</p>
                 @endif
-                @if ($state === 'READY')
+                @if (in_array($state, ['NOT_OPEN', 'QR_CLOSED'], true))
                     <p class="muted">{{ __('survey_entry.anonymous', [], $locale) }}</p>
                 @endif
                 <p class="muted">{{ __('survey_entry.privacy', [], $locale) }}</p>

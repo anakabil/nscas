@@ -38,13 +38,17 @@ Route::post('locale', function (Request $request) {
     return back();
 })->middleware('throttle:30,1')->name('locale.update');
 
-// Halaman publik responden (fase R2): tanpa sesi, sehingga tidak ada baris sesi yang menyimpan alamat IP atau peramban
-// responden (aturan 2, docs/04). Formulir survei dibangun di fase R3.
+// Halaman publik responden (fase R2 dan R3): tanpa sesi, sehingga tidak ada baris sesi yang menyimpan alamat IP atau
+// peramban responden (aturan 2, docs/04). Kiriman survei tidak memakai token CSRF: hak aksesnya adalah token survei.
 Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, PreventRequestForgery::class, SetLocale::class, HandleInertiaRequests::class])
-    ->middleware('throttle:60,1')
     ->group(function () {
-        Route::get('q/{code}', [SurveyEntryController::class, 'qr'])->where('code', '[A-Za-z0-9_-]{1,64}')->name('survey.qr');
-        Route::get('s/{token}', [SurveyEntryController::class, 'show'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('survey.show');
+        Route::middleware('throttle:survey')->group(function () {
+            Route::get('q/{code}', [SurveyEntryController::class, 'qr'])->where('code', '[A-Za-z0-9_-]{1,64}')->name('survey.qr');
+            Route::get('s/{token}', [SurveyEntryController::class, 'show'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('survey.show');
+            Route::post('s/{token}/open', [SurveyEntryController::class, 'open'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('survey.open');
+        });
+        Route::post('s/{token}/submit', [SurveyEntryController::class, 'submit'])->where('token', '[A-Za-z0-9_-]{1,64}')
+            ->middleware('throttle:survey-submit')->name('survey.submit');
     });
 
 Route::middleware(['auth', 'usable'])->group(function () {
