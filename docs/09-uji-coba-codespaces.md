@@ -45,7 +45,7 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 
 ## 4. Yang dapat dicoba pada versi ini
 
-Versi 2 saat ini berada di akhir fase R11 (privasi, retensi, jejak audit, dan keamanan). Yang sudah dapat dicoba:
+Versi 2 saat ini berada di akhir fase R12 (uji menyeluruh dan persiapan penempatan). Yang sudah dapat dicoba:
 
 1. Halaman masuk, pilihan bahasa Indonesia dan Inggris (tersimpan di akun), dan pengaturan ulang kata sandi melalui kotak surat uji.
 2. Dasbor progres pengukuran di beranda, untuk akun pengelola sistem, asesor utama, asesor, dan administrator klien. Dasbor diperbarui otomatis setiap 60 detik.
@@ -75,7 +75,8 @@ Versi 2 saat ini berada di akhir fase R11 (privasi, retensi, jejak audit, dan ke
 17. Jejak audit pada asesmen mana pun, dari pusat asesmen (Lintas tahap): saring menurut kategori dan tanggal, buka Rincian perubahan, dan unduh CSV dengan akun asesor utama. Akun administrator klien melihat ringkasan tanpa isi perubahan.
 18. Dengan akun pengelola sistem: halaman Retensi data memuat masa simpan setiap asesmen yang hasilnya sudah ditetapkan; tombol pemusnahan baru muncul untuk asesmen Diarsipkan yang masa simpannya berakhir, sehingga pada data contoh baru berupa daftar. Halaman Status sistem memuat dua puluh peristiwa akses terakhir. Tugas penanda masa simpan dapat dicoba dengan `php artisan nscas:retention-check`.
 19. Keamanan masuk: lima kali salah kata sandi mengunci akun selama 15 menit. Akun Nusa Safety (pengelola sistem, asesor utama, asesor) keluar otomatis setelah 30 menit tanpa aktivitas, dan semua akun setelah 8 jam.
-20. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
+20. Kamera observasi sebagai aplikasi: dengan akun administrator klien di telepon, buka alamat `/observe`. Bila hanya ada satu masa observasi terbuka, kamera langsung terbuka. Pemasangan ke layar utama memerlukan HTTPS; alamat Codespaces sudah HTTPS sehingga menu Instal aplikasi biasanya muncul.
+21. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
 
 Asesmen contoh "Divisi Infrastruktur 2026" sengaja dibiarkan setengah lengkap untuk mencoba alur perencanaan. Seluruh modul sudah dibangun ulang; fase R12 berisi uji menyeluruh dan persiapan penempatan.
 

@@ -33,6 +33,8 @@ DigitalOcean tidak memiliki pusat data di Indonesia. Sebelum ada data responden 
 | Menjalankan image dengan `docker-compose.prod.yml` (tata letak A, HTTP di port 80) | Lulus (19 November 2026): `app` sehat, `worker` dan `scheduler` berjalan, migrasi, seed, dan `nscas:create-admin` berhasil. Pengaturan keamanan kontainer berlaku: pengguna bukan root, semua hak dicabut, tanpa header Server. Header keamanan dan cache aset sesuai. Sebelum lulus, ditemukan satu cacat dan sudah diperbaiki, lihat catatan di bawah. |
 | Sertifikat TLS otomatis | Belum. Memerlukan domain yang mengarah ke server |
 | Penempatan ke Droplet sungguhan | Belum. Tidak ada akun DigitalOcean yang dipakai saat penyusunan |
+| Uji ujung ke ujung satu siklus penuh (fase R12) | Lulus di lingkungan penyusunan (`docs/15` bagian 2) |
+| Uji beban 300 responden dengan image produksi (fase R12) | Lulus di mesin 4 vCPU; pola realistis kirim p95 70 ms, pola serentak p95 3,6 detik tanpa kegagalan (`docs/15` bagian 3) |
 
 Cacat yang ditemukan saat uji menjalankan image: kontainer `app` gagal menyala dengan pesan `exec: frankenphp: Operation not permitted`. Image FrankenPHP memberi berkas programnya hak `cap_net_bind_service`, sedangkan `docker-compose.prod.yml` mencabut semua hak kontainer. Karena NSCAS hanya memakai port 8080 dan 8443, hak itu kini dicabut di `Dockerfile`. Tanpa perbaikan ini, penempatan pertama akan gagal di langkah 9 bagian 4.
 
@@ -213,6 +215,10 @@ Image produksi memasang Chromium dari repositori Debian dan menyetel `PDF_CHROMI
 2. Bila PDF gagal dibuat, periksa log kontainer aplikasi. Laporan tetap dapat dicetak dari peramban, dan pengunduhan berikutnya mencoba membuat PDF lagi.
 3. Chromium memakai sekitar 200 MB memori selama pembuatan PDF. Pada Droplet 2 GB, hindari membuat banyak PDF bersamaan.
 
+## 9c. Aplikasi kamera observasi (fase R12)
+
+Halaman kamera observasi dapat dipasang di layar utama telepon dengan alamat awal `/observe` (`public/manifest.webmanifest`, `public/sw.js`, `public/offline.html`). Pemasangan memerlukan HTTPS, sehingga hanya dapat diuji pada domain produksi. Langkah uji di telepon Android dan iPhone ada di `docs/15` bagian 4. Bila berkas PWA diubah, pengguna mendapat versi baru pada pembukaan berikutnya karena ketiganya disajikan tanpa cache.
+
 ## 10. Pemantauan
 
 1. Aktifkan pemantauan Droplet dan buat peringatan untuk pemakaian prosesor di atas 80 persen, memori di atas 85 persen, dan disk di atas 80 persen.
@@ -249,3 +255,7 @@ Image produksi memasang Chromium dari repositori Debian dan menyetel `PDF_CHROMI
 | 11 | Uji beban fase R12 lulus pada ukuran server yang dipakai | Laporan uji |
 | 12 | `deploy.sh rollback` pernah dicoba di server uji | Catatan administrator |
 | 13 | Unggah bukti dan rekaman observasi berhasil ke bucket Spaces privat, dan berkas tidak dapat dibuka tanpa masuk | Langkah 6 bagian 9a; buka alamat objek langsung di peramban, harus ditolak |
+| 14 | `HASH_DRIVER=argon2id` dan `SESSION_LIFETIME=480` di `.env` produksi | Baca `/opt/nscas/.env`; masuk lalu biarkan 30 menit dengan akun Nusa Safety, harus diminta masuk ulang |
+| 15 | Kontainer `scheduler` berjalan, termasuk `nscas:retention-check` setiap Senin | `docker compose logs scheduler`; `php artisan schedule:list` di kontainer |
+| 16 | Kamera observasi dapat dipasang dan dibuka dari layar utama telepon Android dan iPhone | Langkah `docs/15` bagian 4 |
+| 17 | Uji penetrasi pihak ketiga selesai dan temuan kritis ditutup | Laporan uji penetrasi (`docs/14` butir K28) |

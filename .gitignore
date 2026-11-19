@@ -44,3 +44,5 @@ yarn-error.log
 /opencode.json
 /opencode.jsonc
 /storage/framework/phpstan
+/test-results
+/playwright-report

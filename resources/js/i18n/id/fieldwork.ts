@@ -113,6 +113,14 @@ export const fieldwork = {
             inside: '{meters} meter dari titik proyek, akurasi {accuracy} meter',
         },
     },
+    observeLauncher: {
+        title: 'Kamera observasi',
+        intro: 'Pilih masa observasi yang sedang berjalan untuk merekam foto atau video.',
+        empty: 'Tidak ada masa observasi yang sedang terbuka untuk Anda. Asesor membuka masa observasi dari halaman Observasi lapangan.',
+        closes: 'Ditutup {time} WIB',
+        open: 'Buka kamera',
+        home: 'Beranda',
+    },
     observeApp: {
         title: 'Observasi lapangan',
         back: 'Kembali',

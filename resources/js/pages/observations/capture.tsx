@@ -3,6 +3,7 @@ import { ArrowLeft, Camera, RotateCcw, Send, Square, Video } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NscasLockup } from '@/components/brand/nscas-mark';
 import { formatWib } from '@/components/nscas/collection-shell';
+import { InstallableApp } from '@/components/nscas/installable-app';
 import { formatNumber } from '@/components/nscas/setup-shell';
 import { Button } from '@/components/ui/button';
 import { useLocale, useT } from '@/i18n';
@@ -235,6 +236,7 @@ export default function ObservationCapture(props: Props) {
     return (
         <>
             <Head title={`${t('observeApp.title')} · ${props.window.title}`} />
+            <InstallableApp />
             <div className="min-h-dvh bg-background">
                 <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
                     <NscasLockup label="NSCAS" className="w-28" />

@@ -113,6 +113,14 @@ export const fieldwork = {
             inside: '{meters} metres from the project point, accuracy {accuracy} metres',
         },
     },
+    observeLauncher: {
+        title: 'Observation camera',
+        intro: 'Choose an open observation period to record photos or videos.',
+        empty: 'No observation period is open for you. Assessors open observation periods from the Field observation page.',
+        closes: 'Closes {time} WIB',
+        open: 'Open camera',
+        home: 'Home',
+    },
     observeApp: {
         title: 'Field observation',
         back: 'Back',

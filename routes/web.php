@@ -9,6 +9,7 @@ use App\Http\Controllers\Files\UploadRelayController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewAssessmentController;
 use App\Http\Controllers\Observations\ObservationController;
+use App\Http\Controllers\Observations\ObservationLauncherController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\Respondents\ParticipationController;
 use App\Http\Controllers\Respondents\QrController;
@@ -226,6 +227,8 @@ Route::middleware(['auth', 'usable'])->group(function () {
     Route::put('organizations/{organization}/users/{user}', [OrganizationController::class, 'updateUser'])->name('organizations.users.update');
     Route::put('organizations/{organization}/users/{user}/active', [OrganizationController::class, 'setActive'])->name('organizations.users.active');
     Route::post('organizations/{organization}/users/{user}/password', [OrganizationController::class, 'resetPassword'])->name('organizations.users.password');
+    // Fase R12: pintu masuk aplikasi kamera observasi yang dipasang di layar utama telepon.
+    Route::get('observe', ObservationLauncherController::class)->name('observe.index');
     Route::get('retention', [RetentionController::class, 'index'])->name('retention.index');
     Route::post('retention/{assessment}/destroy', [RetentionController::class, 'destroy'])->name('retention.destroy');
     Route::get('retention/records/{record}', [RetentionController::class, 'show'])->whereAlphaNumeric('record')->name('retention.show');

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#691b2e" />
+        <title>Tidak ada sambungan, NSCAS</title>
+        <style>
+            body {
+                margin: 0;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #fefaf4;
+                color: #1a1a1a;
+                font:
+                    16px/1.55 system-ui,
+                    -apple-system,
+                    'Segoe UI',
+                    Roboto,
+                    sans-serif;
+            }
+            main {
+                max-width: 26rem;
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+            h1 {
+                font:
+                    1.5rem/1.25 Georgia,
+                    serif;
+                color: #691b2e;
+                margin: 0 0 0.75rem;
+            }
+            p {
+                margin: 0 0 1.25rem;
+                color: #3b3431;
+            }
+            button {
+                background: #691b2e;
+                color: #fefaf4;
+                border: 0;
+                border-radius: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                font: inherit;
+                font-weight: 600;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>Tidak ada sambungan internet</h1>
+            <p>Kamera observasi memerlukan sambungan untuk mengirim rekaman. Pindah ke tempat dengan sinyal, lalu coba lagi.</p>
+            <p lang="en">No internet connection. Move to a place with signal, then try again.</p>
+            <button type="button" onclick="location.reload()">Coba lagi</button>
+        </main>
+    </body>
+</html>

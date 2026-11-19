@@ -8,7 +8,7 @@ Hasil aplikasi ini adalah **pengukuran dan diagnosis internal**, bukan sertifika
 
 Atas keputusan pemilik proyek (19 November 2026), NSCAS dibangun ulang dengan Laravel, React, dan PostgreSQL. Implementasi versi 1 (Next.js, 16 fase selesai) dihapus dari cabang kerja dan tersimpan di riwayat Git pada komit `8ad6b3d`. Saat membangun ulang sebuah modul, baca dulu implementasi lamanya dengan `git show 8ad6b3d:<path>` (kode di `src/`, teks antarmuka di `messages/id.json` dan `messages/en.json`, tes di `tests/`): aturan bisnis dan teksnya sudah diuji dan disetujui, jadi dibawa, bukan dikarang ulang.
 
-Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progres di beranda), R2 (responden, undangan, kode QR, partisipasi; surel lewat Hostinger Mail), R3 (survei responden anonim untuk telepon), R4 (penilaian mandiri manajemen), R5 (bukti dokumen dan observasi lapangan; berkas di Spaces lewat URL bertanda tangan), R6 (mutu data, temuan awal, validasi lapangan), R7 (penilaian asesor, perhitungan nilai, rapat panel), R8 (dasbor hasil, analisis kepekaan, perbandingan antarperiode), R9 (kesenjangan, rencana aksi, pemantauan), R10 (laporan bertanda tangan, PDF, komunikasi hasil), dan R11 (jejak audit, retensi dan pemusnahan data, batas sesi, pemeriksaan keamanan) selesai. Fase berikutnya, keputusan pemilik proyek yang sudah diambil (termasuk D1 sampai D6, disetujui 19 November 2026), dan tugas di luar fase ada di `PROMPTS.md`.
+Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progres di beranda), R2 (responden, undangan, kode QR, partisipasi; surel lewat Hostinger Mail), R3 (survei responden anonim untuk telepon), R4 (penilaian mandiri manajemen), R5 (bukti dokumen dan observasi lapangan; berkas di Spaces lewat URL bertanda tangan), R6 (mutu data, temuan awal, validasi lapangan), R7 (penilaian asesor, perhitungan nilai, rapat panel), R8 (dasbor hasil, analisis kepekaan, perbandingan antarperiode), R9 (kesenjangan, rencana aksi, pemantauan), R10 (laporan bertanda tangan, PDF, komunikasi hasil), R11 (jejak audit, retensi dan pemusnahan data, batas sesi, pemeriksaan keamanan), dan R12 (uji ujung ke ujung, uji beban, kamera observasi yang dapat dipasang; penempatan menunggu syarat di `docs/15`) selesai. Fase berikutnya, keputusan pemilik proyek yang sudah diambil (termasuk D1 sampai D6, disetujui 19 November 2026), dan tugas di luar fase ada di `PROMPTS.md`.
 
 ## Baca sebelum mengerjakan apa pun
 
@@ -25,6 +25,7 @@ Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progr
 | `docs/12-kajian-metode.md` | Enam tahap penilaian dan dasar teorinya |
 | `docs/13-verifikasi-scl-2.md` | Verifikasi metode terhadap SCL 2.0:2023 dan skema sertifikasinya, peta silang, usulan aturan penetapan tingkat, keputusan D1 sampai D6 |
 | `docs/14-daftar-periksa-keamanan.md` | Daftar periksa keamanan dan privasi: 28 butir, status, bukti, tindak lanjut |
+| `docs/15-hasil-uji-r12.md` | Hasil uji ujung ke ujung, uji beban, kamera observasi, dan sisa syarat penempatan |
 | `seed/` | Data awal instrumen, parameter, dan fixture pengujian |
 | `docs/arsip-v1/` | Dokumen implementasi versi 1; hanya rujukan sejarah |
 
@@ -45,6 +46,7 @@ php artisan nscas:create-admin EMAIL # pengelola sistem pertama; kata sandi acak
 php artisan nscas:demo               # data contoh, hanya di luar produksi
 composer run dev                     # server, antrean, dan Vite
 php artisan test                     # PHPUnit (basis data uji PostgreSQL nscas_laravel_test)
+npm run e2e                          # Playwright satu siklus penuh (basis data nscas_laravel_e2e; npm run build dulu)
 vendor/bin/pint                      # format PHP
 npm run types:check && npm run check # TypeScript, lint, format
 npm run build

@@ -6,17 +6,17 @@ use App\Domain\Workflow\AssessmentStatus;
 use App\Models\Assessment;
 use App\Models\ParticipationSnapshot;
 use App\Services\Respondents\ParticipationReport;
-use Illuminate\Console\Attributes\AsCommand;
 use Illuminate\Console\Command;
 
 /**
  * Cuplikan partisipasi harian pukul 23.00 WIB (routes/console.php) untuk grafik tren. Menyimpan jumlah mentah dari
  * token; ambang sel diterapkan saat ditampilkan.
  */
-#[AsCommand(name: 'nscas:participation-snapshot', description: 'Simpan cuplikan partisipasi harian asesmen yang sedang mengumpulkan data')]
 class ParticipationSnapshotCommand extends Command
 {
     protected $signature = 'nscas:participation-snapshot';
+
+    protected $description = 'Simpan cuplikan partisipasi harian asesmen yang sedang mengumpulkan data';
 
     public function handle(): int
     {

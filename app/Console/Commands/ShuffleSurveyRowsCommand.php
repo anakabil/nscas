@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Attributes\AsCommand;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -14,10 +13,11 @@ use Illuminate\Support\Facades\DB;
  * menurut kunci utama, yaitu UUID versi 4 acak, sehingga urutan pengiriman hilang. Dijalankan terjadwal setiap malam
  * (routes/console.php) dan dapat dijalankan manual setelah masa survei ditutup. CLUSTER mengunci tabel sebentar.
  */
-#[AsCommand(name: 'nscas:shuffle-survey-rows', description: 'Tulis ulang tabel jawaban survei dalam urutan UUID acak')]
 class ShuffleSurveyRowsCommand extends Command
 {
     protected $signature = 'nscas:shuffle-survey-rows';
+
+    protected $description = 'Tulis ulang tabel jawaban survei dalam urutan UUID acak';
 
     public function handle(): int
     {

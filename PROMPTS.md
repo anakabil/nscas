@@ -26,7 +26,7 @@ Cara membangun ulang sebuah modul:
 | R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | Selesai |
 | R10 | Laporan dan komunikasi hasil | 5 | Selesai |
 | R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | Selesai |
-| R12 | Uji menyeluruh, uji beban, penempatan produksi | Lintas tahap | Berikutnya |
+| R12 | Uji menyeluruh, uji beban, penempatan produksi | Lintas tahap | Selesai di lingkungan penyusunan; penempatan menunggu syarat `docs/15` bagian 6 |
 
 ## R0. Fondasi (selesai)
 
@@ -74,7 +74,7 @@ Pemilik proyek menyetujui seluruh rekomendasi Trustie pada 19 November 2026. Kep
 | R3 | Trustie menyusun draf terjemahan Inggris isi instrumen untuk ditelaah | Tugas di luar fase |
 | R5 | Syarat `evidence_reviewed` berupa pernyataan tinjauan asesor per karakteristik; hitungan dua jenis bukti hanya penanda | Sudah berlaku (R6) |
 | R5 | Asesor tetap hanya membaca bukti; dokumen yang diterima saat wawancara diunggah administrator klien dan dicatat pada catatan sesi | Sudah berlaku (matriks `docs/04`) |
-| R5 | Aplikasi web yang dapat dipasang (PWA) untuk halaman kamera observasi | R12 |
+| R5 | Aplikasi web yang dapat dipasang (PWA) untuk halaman kamera observasi | Sudah berlaku (R12); uji di telepon sungguhan menunggu domain produksi |
 | `docs/13` | D1 instrumen versi 2 berstruktur 5 tema dan 20 subtema, dengan instrumen versi 1 sebagai jembatan; D5 kode dan judul subtema SCL 2.0 di seed tanpa teks kriteria | Tugas di luar fase, sebelum R7 |
 | `docs/13` | D2 aturan penetapan tingkat per tema; D3 ambang 0,80 dan 0,50 sebagai awal; D4 fixture versi 2 | Sudah berlaku sebagai aturan murni dan fixture (R7); dipakai mesin setelah instrumen versi 2 (D1) selesai ditelaah |
 | `docs/13` | D6 paling sedikit satu kunjungan proyek fisik setiap asesmen | Sudah berlaku (R6) |
@@ -91,6 +91,9 @@ Pemilik proyek menyetujui seluruh rekomendasi Trustie pada 19 November 2026. Kep
 | Draf instrumen versi 2 (D1) dan peta silang kode subtema SCL 2.0 (D5) untuk ditelaah ahli | Trustie, ditelaah Nusa Safety | Belum; diperlukan sebelum R7 |
 | Rumusan adendum atau klausul perjanjian pemrosesan data tentang lokasi Singapura, untuk dibaca dan disetujui klien | Nusa Safety | Belum |
 | Pembukaan blokir port SMTP DigitalOcean; bucket Spaces dan aturan CORS (`docs/08` bagian 9 dan 9a) | Administrator server | Belum |
+| Perbaiki temuan Larastan tingkat 5 di CI (anotasi `@property` model, atribut `withCount`, kolom JSON), lalu jadikan langkah Static analysis memblokir (`docs/14` K15) | Pengembang | Belum |
+| Pembatas laju per alamat IP untuk percobaan masuk ke banyak akun, di Caddy atau di aplikasi (`docs/14` K27) | Pengembang dan administrator server | Belum |
+| Uji penetrasi pihak ketiga sebelum data responden nyata (`docs/14` K28) | Nusa Safety | Belum |
 
 ## R2. Responden, undangan, kode QR, dan partisipasi (selesai)
 
@@ -201,7 +204,10 @@ Rujukan versi 1: `src/lib/retention`, `src/lib/jobs/destruction.ts`, `src/lib/au
 
 Halaman jejak audit, pemusnahan data mentah dengan berita acara, pengingat retensi, batas waktu sesi untuk peran Nusa Safety, daftar periksa keamanan baru, dan pemasangan kembali analisis statis PHP (Larastan).
 
-## R12. Uji menyeluruh dan penempatan produksi
+## R12. Uji menyeluruh dan penempatan produksi (selesai di lingkungan penyusunan)
+
+Hasil: uji ujung ke ujung Playwright (`npm run e2e`, `tests/e2e/full-cycle.spec.ts`) menjalankan satu siklus penuh dari Draf sampai Pemantauan pada basis data tersendiri; asesor utama menjalankan sembilan transisi dari pusat asesmen, seorang pekerja mengisi survei dari telepon, dan aksi kunci lain lewat antarmuka, sedangkan langkah berulang dikerjakan `nscas:e2e-cycle` lewat layanan yang sama sehingga setiap syarat transisi tetap diperiksa sungguhan. Uji beban 300 responden dengan image produksi (`tests/load/survey-load.mjs`) tanpa kegagalan: pola realistis kirim p95 70 ms terhadap garis dasar 59 ms, pola serentak p95 3,6 detik. Kamera observasi dapat dipasang di layar utama telepon (manifes, service worker yang hanya menampilkan halaman luring, pintu masuk `/observe`). Hasil dan sisa syarat penempatan ada di `docs/15`; tidak ada perintah yang dijalankan di server produksi. Tes: `tests/Feature/Observations/ObservationLauncherTest.php`, `tests/Feature/E2eCycleCommandTest.php`.
+
 
 1. Uji ujung ke ujung dengan Playwright untuk satu siklus penuh dari DRAFT sampai MONITORING.
 2. Uji beban 300 pengisian survei bersamaan.

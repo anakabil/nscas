@@ -192,6 +192,10 @@ http://:2020 {
 	@build path /build/*
 	header @build Cache-Control "public, max-age=31536000, immutable"
 
+	# Fase R12: manifes dan service worker kamera observasi selalu diperiksa ulang agar pembaruan segera berlaku.
+	@pwa path /sw.js /manifest.webmanifest /offline.html
+	header @pwa Cache-Control "no-cache"
+
 	php_server
 }
 EOF

@@ -15,6 +15,7 @@ void createInertiaApp({
             // memakai kerangka ringkas sendiri agar jendela bidik leluasa di telepon.
             case name === 'error':
             case name === 'observations/capture':
+            case name === 'observations/launcher':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
