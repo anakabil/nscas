@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Setup;
 
+use App\Domain\Access\Role;
 use App\Domain\Setup\ConditionEvaluator;
 use App\Domain\Setup\ConsentTemplate;
 use App\Domain\Setup\EditableParameters;
@@ -12,6 +13,7 @@ use App\Domain\Setup\PlanningChecklist;
 use App\Domain\Setup\SetupFacts;
 use App\Domain\Setup\UnitTree;
 use App\Domain\Workflow\AssessmentStatus;
+use App\Domain\Workflow\Transition;
 use App\Domain\Workflow\Workflow;
 use PHPUnit\Framework\TestCase;
 
@@ -145,10 +147,21 @@ class SetupRulesTest extends TestCase
 
     public function test_conditions_of_modules_not_yet_built_are_unknown_and_block_the_transition(): void
     {
-        $results = ConditionEvaluator::evaluate(Workflow::next(AssessmentStatus::Scoring), $this->completeFacts());
+        $transition = new Transition(AssessmentStatus::Draft, AssessmentStatus::Configured, Role::LeadAssessor, ['units_defined', 'syarat_belum_dibangun']);
+        $results = ConditionEvaluator::evaluate($transition, $this->completeFacts());
 
-        $this->assertContains(null, array_map(fn ($r) => $r->met, $results));
+        $this->assertSame([true, null], array_map(fn ($r) => $r->met, $results));
         $this->assertFalse(ConditionEvaluator::allowed($results));
+    }
+
+    public function test_scoring_and_panel_gates_follow_ratings_runs_and_decisions(): void
+    {
+        $this->assertSame(['two_assessor_ratings', 'score_run_saved'], Workflow::next(AssessmentStatus::Scoring)->conditions);
+        $this->assertSame(['panel_adjustments_justified', 'results_locked'], Workflow::next(AssessmentStatus::PanelReview)->conditions);
+        $this->assertFalse(ConditionEvaluator::check('score_run_saved', new SetupFacts));
+        $ready = new SetupFacts(twoAssessorRatings: true, scoreRunCurrent: true, panelDecisionsComplete: true, resultsLocked: true);
+        $this->assertTrue(ConditionEvaluator::allowed(ConditionEvaluator::evaluate(Workflow::next(AssessmentStatus::Scoring), $ready)));
+        $this->assertTrue(ConditionEvaluator::allowed(ConditionEvaluator::evaluate(Workflow::next(AssessmentStatus::PanelReview), $ready)));
     }
 
     public function test_validation_gates_need_reviews_submitted_self_assessments_and_a_site_visit(): void

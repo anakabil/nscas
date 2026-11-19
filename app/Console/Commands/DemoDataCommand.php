@@ -13,6 +13,7 @@ use App\Models\Assessment;
 use App\Models\AssessmentReview;
 use App\Models\Characteristic;
 use App\Models\EvidenceItem;
+use App\Models\EvidenceRating;
 use App\Models\EvidenceReview;
 use App\Models\FeedbackNote;
 use App\Models\InstrumentVersion;
@@ -21,6 +22,8 @@ use App\Models\ObservationWindow;
 use App\Models\Organization;
 use App\Models\ParticipationSnapshot;
 use App\Models\RosterEntry;
+use App\Models\SclFulfillment;
+use App\Models\ScoreRun;
 use App\Models\SelfAssessment;
 use App\Models\SelfAssessmentAnswer;
 use App\Models\StratumJustification;
@@ -34,6 +37,7 @@ use App\Services\Files\ObjectStore;
 use App\Services\Respondents\ParticipationReport;
 use App\Services\Respondents\RespondentDistribution;
 use App\Services\Respondents\SurveyLinks;
+use App\Services\Scoring\ScoringService;
 use App\Services\Validation\ValidationService;
 use Carbon\CarbonImmutable;
 use Database\Seeders\InstrumentVersionSeeder;
@@ -155,6 +159,11 @@ class DemoDataCommand extends Command
             if ($assessment !== null && $status->position() > AssessmentStatus::DataCollection->position()
                 && ! ValidationSession::where('assessment_id', $assessment->id)->exists()) {
                 $this->validation($assessment, $lead, $assessor, $status === AssessmentStatus::Validation);
+            }
+            // Fase R7: nilai bukti dua asesor, jalur setara, perhitungan, dan keputusan panel.
+            if ($assessment !== null && $status->position() >= AssessmentStatus::Scoring->position()
+                && ! ScoreRun::where('assessment_id', $assessment->id)->exists()) {
+                $this->scoring($assessment->refresh(), $lead, $assessor, $status);
             }
         }
         Auth::forgetUser();
@@ -686,5 +695,49 @@ class DemoDataCommand extends Command
             }
             EvidenceReview::create(['assessment_id' => $assessment->id, 'characteristic_id' => $c->id, 'reviewed_by' => $assessor->id, 'reviewed_at' => $at->addDay(), 'note' => null]);
         }
+    }
+
+    /**
+     * Fase R7: nilai bukti dua asesor (satu karakteristik sengaja berselisih agar perlu rekonsiliasi), jalur setara,
+     * satu perhitungan lewat layanan sungguhan, lalu, untuk asesmen yang sudah melewati rapat panel, keputusan panel
+     * dan penetapan hasil. Status sementara dipindahkan agar aturan status layanan tetap berlaku, lalu dikembalikan.
+     */
+    private function scoring(Assessment $assessment, User $lead, User $assessor, AssessmentStatus $final): void
+    {
+        mt_srand(crc32('penilaian '.$assessment->name));
+        $service = app(ScoringService::class);
+        $assessment->forceFill(['status' => AssessmentStatus::Scoring])->save();
+        $characteristics = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->get(['id', 'code']);
+        foreach ($characteristics as $k => $c) {
+            $base = 2.5 + ($k % 4) * 0.5;
+            foreach ([$lead, $assessor] as $i => $rater) {
+                $level = $k === 2 && $i === 1 ? max(1.0, $base - 1.5) : max(1.0, min(5.0, $base + (mt_rand(0, 1) * 0.5)));
+                EvidenceRating::create([
+                    'assessment_id' => $assessment->id, 'characteristic_id' => $c->id, 'assessor_id' => $rater->id, 'level' => $level,
+                    'rationale' => 'Prosedur tersedia dan dikenal pekerja; bukti pelaksanaan terlihat di sebagian besar proyek yang dikunjungi.',
+                ]);
+            }
+        }
+        foreach ($service->sclAspectCodes($assessment) as $a => $code) {
+            foreach ([2 => 92, 3 => 84, 4 => 72, 5 => 55] as $step => $percent) {
+                SclFulfillment::create([
+                    'assessment_id' => $assessment->id, 'aspect_code' => $code, 'step' => $step, 'percent' => max(0, $percent - $a * 2),
+                    'justification' => 'Dinilai dari bukti dokumen, wawancara, dan observasi lapangan.', 'updated_by' => $lead->id,
+                ]);
+            }
+        }
+        $service->run($assessment, $lead, Role::LeadAssessor);
+        if ($final->position() > AssessmentStatus::PanelReview->position()) {
+            $assessment->forceFill(['status' => AssessmentStatus::PanelReview])->save();
+            $panel = $service->panel($assessment);
+            foreach ($panel['needed'] ?? [] as $i => $code) {
+                $engine = collect($panel['characteristics'])->firstWhere('code', $code)['final'] ?? 3.0;
+                $i % 2 === 0
+                    ? $service->decide($assessment, $lead, Role::LeadAssessor, $code, 'ADJUSTED', round(max(1.0, $engine - 0.25), 2), 'Panel menimbang bukti kunjungan proyek yang menunjukkan pelaksanaan belum merata.')
+                    : $service->decide($assessment, $lead, Role::LeadAssessor, $code, 'CONFIRMED', null, 'Panel membahas selisih dan sepakat nilai mesin mencerminkan bukti.');
+            }
+            $service->finalize($assessment, $lead, Role::LeadAssessor);
+        }
+        $assessment->forceFill(['status' => $final])->save();
     }
 }

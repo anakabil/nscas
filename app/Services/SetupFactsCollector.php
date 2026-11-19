@@ -3,22 +3,28 @@
 namespace App\Services;
 
 use App\Domain\Access\Role;
+use App\Domain\Panel\PanelRules;
 use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\Kickoff;
 use App\Domain\Setup\SetupFacts;
 use App\Domain\Validation\SessionProposal;
 use App\Domain\Validation\ValidationRules;
+use App\Domain\Workflow\AssessmentStatus;
 use App\Models\AccessToken;
 use App\Models\Assessment;
 use App\Models\AssessmentReview;
+use App\Models\EvidenceRating;
 use App\Models\EvidenceReview;
 use App\Models\ObservationWindow;
+use App\Models\ScoreRun;
 use App\Models\SelfAssessment;
 use App\Models\StratumJustification;
 use App\Models\ValidationSession;
 use App\Services\Evidence\EvidenceService;
 use App\Services\Respondents\ParticipationReport;
+use App\Services\Scoring\ScoringService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Mengumpulkan fakta perencanaan dari basis data untuk pemeriksa syarat dan dasbor progres. Untuk banyak asesmen
@@ -76,6 +82,13 @@ final class SetupFactsCollector
         $reviewedEvidence = EvidenceReview::whereIn('assessment_id', $ids)
             ->selectRaw('assessment_id, count(*) as n')->groupBy('assessment_id')->pluck('n', 'assessment_id');
         $minParticipation = [];
+        // Fase R7: nilai bukti per karakteristik dan asesor, serta eksekusi mesin terakhir dan final.
+        $evidenceRatings = EvidenceRating::whereIn('assessment_id', $ids)->get(['assessment_id', 'characteristic_id', 'assessor_id'])->groupBy('assessment_id');
+        $runs = ScoreRun::whereIn('assessment_id', $ids)->with('decisions:id,score_run_id,characteristic_code,rationale')
+            ->orderByDesc('created_at')->get(['id', 'assessment_id', 'created_at', 'is_final', 'result'])->groupBy('assessment_id');
+        $characteristicIds = DB::table('characteristics')->whereIn('instrument_version_id', $assessments->pluck('instrument_version_id')->filter()->unique())
+            ->get(['id', 'instrument_version_id'])->groupBy('instrument_version_id');
+        $scoring = app(ScoringService::class);
 
         $facts = [];
         foreach ($assessments as $assessment) {
@@ -89,6 +102,10 @@ final class SetupFactsCollector
             $ownSessions = ($sessions[$assessment->id] ?? collect())->map(fn ($s) => [
                 'type' => $s->type, 'status' => $s->status, 'focus' => count($s->focus_characteristic_ids), 'ratings' => (int) $s->ratings_count,
             ])->values()->all();
+            $ownRuns = $runs[$assessment->id] ?? collect();
+            $latest = $ownRuns->first();
+            $final = $ownRuns->firstWhere('is_final', true);
+            $changed = $latest !== null && $assessment->status->position() <= AssessmentStatus::Scoring->position() ? $scoring->lastInputChange($assessment) : null;
             $facts[$assessment->id] = new SetupFacts(
                 unitCount: (int) $assessment->units_count,
                 strataCount: (int) $assessment->strata_count,
@@ -123,6 +140,16 @@ final class SetupFactsCollector
                 validationSessionsCompleted: ValidationRules::sessionsCompleted($ownSessions),
                 siteVisitCompleted: array_filter($ownSessions, fn (array $s) => $s['type'] === SessionProposal::SITE_VISIT && $s['status'] === 'COMPLETED') !== [],
                 characteristicsReviewed: (int) ($reviewedEvidence[$assessment->id] ?? 0),
+                twoAssessorRatings: PanelRules::twoAssessorsComplete(
+                    ($characteristicIds[$assessment->instrument_version_id] ?? collect())->pluck('id')->all(),
+                    ($evidenceRatings[$assessment->id] ?? collect())->map(fn ($r) => ['characteristicId' => $r->characteristic_id, 'assessorId' => $r->assessor_id])->all(),
+                ),
+                scoreRunCurrent: $latest !== null && ($changed === null || $latest->created_at->greaterThanOrEqualTo($changed)),
+                panelDecisionsComplete: ($final ?? $latest) !== null && PanelRules::decisionsComplete(
+                    PanelRules::needsDecision(($final ?? $latest)->result['characteristics'] ?? []),
+                    ($final ?? $latest)->decisions->pluck('rationale', 'characteristic_code')->all(),
+                ),
+                resultsLocked: $final !== null,
             );
         }
 

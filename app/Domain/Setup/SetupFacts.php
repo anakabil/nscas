@@ -43,5 +43,10 @@ final readonly class SetupFacts
         public bool $validationSessionsCompleted = false,
         public bool $siteVisitCompleted = false,
         public int $characteristicsReviewed = 0,
+        // Fase R7: nilai dua asesor, eksekusi mesin yang mutakhir, keputusan panel, dan hasil terkunci.
+        public bool $twoAssessorRatings = false,
+        public bool $scoreRunCurrent = false,
+        public bool $panelDecisionsComplete = false,
+        public bool $resultsLocked = false,
     ) {}
 }

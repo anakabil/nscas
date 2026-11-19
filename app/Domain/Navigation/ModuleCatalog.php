@@ -49,8 +49,8 @@ final class ModuleCatalog
             new Module('validation', Stage::Validation, 'validation', $assessors, 'R6', ready: true),
 
             // Tahap 4. Penilaian dan penetapan
-            new Module('scoring', Stage::Rating, 'scoring', $read(Resource::AssessorRatings), 'R7'),
-            new Module('panel', Stage::Rating, 'panel', $read(Resource::PanelAndFinalization), 'R7'),
+            new Module('scoring', Stage::Rating, 'scoring', $read(Resource::AssessorRatings), 'R7', ready: true),
+            new Module('panel', Stage::Rating, 'panel', $read(Resource::PanelAndFinalization), 'R7', ready: true),
 
             // Tahap 5. Pelaporan dan rencana aksi
             new Module('dashboard', Stage::Reporting, 'dashboard', $read(Resource::ResultsDashboard), 'R8'),

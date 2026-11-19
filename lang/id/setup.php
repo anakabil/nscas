@@ -65,6 +65,13 @@ return [
         'SAMPLE_PLAN_MISSING' => 'Rencana sampel belum dihitung, sehingga usulan sesi belum dapat dibuat.',
         'FOCUS_GROUP_FULL' => 'Diskusi kelompok terarah paling banyak delapan peserta.',
         'SURVEY_NOT_RUNNING' => 'Survei hanya dapat ditutup saat pengumpulan data berlangsung.',
+        'SNAPSHOT_MISSING' => 'Parameter terkunci tidak ditemukan pada asesmen ini.',
+        'RUN_CLOSED' => 'Perhitungan nilai hanya dapat dijalankan pada tahap penilaian.',
+        'PANEL_CLOSED' => 'Keputusan panel hanya dapat dicatat saat rapat panel.',
+        'NO_SCORE_RUN' => 'Belum ada perhitungan nilai. Jalankan perhitungan pada tahap penilaian terlebih dahulu.',
+        'RESULTS_FINAL' => 'Hasil sudah ditetapkan dan dikunci sehingga tidak dapat diubah.',
+        'DECISIONS_MISSING' => 'Semua karakteristik bertanda harus diputuskan dengan alasan tertulis sebelum hasil ditetapkan.',
+        'INVALID_PANEL_VALUE' => 'Nilai panel harus antara 1,00 dan 5,00 dengan paling banyak dua angka desimal.',
     ],
     'sessionLabels' => [
         'INTERVIEW' => 'Wawancara :stratum, sesi :n',

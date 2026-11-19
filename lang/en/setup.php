@@ -64,6 +64,13 @@ return [
         'SAMPLE_PLAN_MISSING' => 'The sample plan has not been calculated, so sessions cannot be proposed yet.',
         'FOCUS_GROUP_FULL' => 'A focus group discussion has at most eight participants.',
         'SURVEY_NOT_RUNNING' => 'The survey can only be closed while data collection is running.',
+        'SNAPSHOT_MISSING' => 'The locked parameters were not found for this assessment.',
+        'RUN_CLOSED' => 'Scoring can only be run during the scoring stage.',
+        'PANEL_CLOSED' => 'Panel decisions can only be recorded during the panel review.',
+        'NO_SCORE_RUN' => 'There is no scoring run yet. Run the scoring during the scoring stage first.',
+        'RESULTS_FINAL' => 'The results have been finalized and locked, so they cannot be changed.',
+        'DECISIONS_MISSING' => 'Every flagged characteristic needs a written decision before the results are finalized.',
+        'INVALID_PANEL_VALUE' => 'The panel value must be between 1.00 and 5.00 with at most two decimals.',
     ],
     'sessionLabels' => [
         'INTERVIEW' => 'Interview :stratum, session :n',

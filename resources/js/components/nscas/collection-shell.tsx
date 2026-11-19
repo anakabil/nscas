@@ -12,7 +12,7 @@ import type { AssessmentMenu } from '@/types/nscas';
 /** Bagian bersama halaman tahap 2 dan 3 yang dikirim CollectionController::collectionCommon(). */
 export type CollectionCommon = {
     assessment: AssessmentMenu;
-    /** Kunci teks label tahap: 'collection' (tahap 2) atau 'validationStage' (tahap 3). */
+    /** Kunci teks label tahap: 'collection' (tahap 2), 'validationStage' (tahap 3), atau 'ratingStage' (tahap 4). */
     stage?: string;
     tabs: { key: string; href: string }[];
     distribution: 'notYet' | 'open' | 'closed';
@@ -158,7 +158,8 @@ export function CollectionShell({
                             {notice}
                         </p>
                     ) : null}
-                    {flash?.status && ['saved', 'emailQueued', 'sessionsCreated'].includes(flash.status) ? (
+                    {flash?.status &&
+                    ['saved', 'emailQueued', 'sessionsCreated', 'scoreRun', 'finalized'].includes(flash.status) ? (
                         <p
                             role="status"
                             className="rounded-md border border-success/30 bg-success/10 px-4 py-3 text-sm text-success"

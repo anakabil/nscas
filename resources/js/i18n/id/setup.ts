@@ -23,6 +23,8 @@ export const setup = {
         transitioned: 'Status asesmen berhasil diubah.',
         emailQueued: 'Surel masuk antrean pengiriman.',
         sessionsCreated: 'Sesi validasi dibuat dari usulan.',
+        scoreRun: 'Perhitungan nilai selesai dan tersimpan.',
+        finalized: 'Hasil ditetapkan dan dikunci.',
     },
     shell: {
         navTitle: 'Tahap 1. Perencanaan',

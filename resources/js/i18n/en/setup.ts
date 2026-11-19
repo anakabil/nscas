@@ -21,6 +21,8 @@ export const setup = {
         created: 'Created successfully.',
         emailQueued: 'The email has been queued for sending.',
         sessionsCreated: 'Validation sessions were created from the proposal.',
+        scoreRun: 'The scoring run has finished and was saved.',
+        finalized: 'The results have been finalized and locked.',
         transitioned: 'Assessment status changed.',
     },
     shell: {

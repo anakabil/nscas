@@ -8,7 +8,7 @@ Hasil aplikasi ini adalah **pengukuran dan diagnosis internal**, bukan sertifika
 
 Atas keputusan pemilik proyek (19 November 2026), NSCAS dibangun ulang dengan Laravel, React, dan PostgreSQL. Implementasi versi 1 (Next.js, 16 fase selesai) dihapus dari cabang kerja dan tersimpan di riwayat Git pada komit `8ad6b3d`. Saat membangun ulang sebuah modul, baca dulu implementasi lamanya dengan `git show 8ad6b3d:<path>` (kode di `src/`, teks antarmuka di `messages/id.json` dan `messages/en.json`, tes di `tests/`): aturan bisnis dan teksnya sudah diuji dan disetujui, jadi dibawa, bukan dikarang ulang.
 
-Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progres di beranda), R2 (responden, undangan, kode QR, partisipasi; surel lewat Hostinger Mail), R3 (survei responden anonim untuk telepon), R4 (penilaian mandiri manajemen), R5 (bukti dokumen dan observasi lapangan; berkas di Spaces lewat URL bertanda tangan), dan R6 (mutu data, temuan awal, validasi lapangan) selesai. Fase berikutnya, keputusan pemilik proyek yang sudah diambil (termasuk D1 sampai D6, disetujui 19 November 2026), dan tugas di luar fase ada di `PROMPTS.md`.
+Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progres di beranda), R2 (responden, undangan, kode QR, partisipasi; surel lewat Hostinger Mail), R3 (survei responden anonim untuk telepon), R4 (penilaian mandiri manajemen), R5 (bukti dokumen dan observasi lapangan; berkas di Spaces lewat URL bertanda tangan), R6 (mutu data, temuan awal, validasi lapangan), dan R7 (penilaian asesor, perhitungan nilai, rapat panel) selesai. Fase berikutnya, keputusan pemilik proyek yang sudah diambil (termasuk D1 sampai D6, disetujui 19 November 2026), dan tugas di luar fase ada di `PROMPTS.md`.
 
 ## Baca sebelum mengerjakan apa pun
 
@@ -51,7 +51,7 @@ npm run build
 
 ## Aturan yang tidak boleh dilanggar
 
-1. **Mesin penilaian adalah kode murni** di `app/Domain/Scoring/` tanpa Eloquent, `Illuminate\*`, fasad, atau I/O. Setiap perubahan wajib lolos semua fixture di `seed/fixtures/` dengan toleransi 1e-6. Jika hasil berbeda dari fixture, yang salah adalah kode, bukan fixture. Rujukan perhitungan ada di `seed/fixtures/referensi_skoring.py`. Seluruh `app/Domain/` murni dan dijaga tes `DomainPurityTest`.
+1. **Mesin penilaian adalah kode murni** di `app/Domain/Scoring/` tanpa Eloquent, `Illuminate\*`, fasad, atau I/O. Setiap perubahan wajib lolos semua fixture di `seed/fixtures/` dengan toleransi 1e-6. Jika hasil berbeda dari fixture, yang salah adalah kode, bukan fixture. Rujukan perhitungan ada di `seed/fixtures/referensi_skoring.py`, dan untuk aturan penetapan tangga per tema (D2) di `seed/fixtures/referensi_aturan_tema.py`. Seluruh `app/Domain/` murni dan dijaga tes `DomainPurityTest`.
 2. **Anonimitas responden survei.** Tabel jawaban survei tidak boleh menyimpan, atau dapat dihubungkan ke, token akses, daftar responden, alamat IP, atau waktu kirim yang presisi. Lihat bagian Desain Anonimitas di `docs/02`. Penilaian mandiri manajemen tidak anonim dan diberi tahu demikian di layar.
 3. **Sel laporan dengan kurang dari 5 responden disembunyikan** atau digabung, di dasbor, ekspor, dan laporan.
 4. **Isolasi tenant.** Setiap kueri yang menyentuh data asesmen berangkat dari `App\Support\AssessmentAccess::visibleTo()` atau didahului `AssessmentAccess::require()`. Jangan mengandalkan pemeriksaan di sisi peramban. Pengguna tanpa peran pada sebuah asesmen menerima 404.

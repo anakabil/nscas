@@ -8,7 +8,8 @@ use App\Domain\Workflow\Transition;
 
 /**
  * Pemeriksa syarat transisi status (docs/01 bagian 3, App\Domain\Workflow\Workflow). Fase R1 memeriksa syarat tahap
- * perencanaan, fase R2 syarat dimulainya pengumpulan data, fase R6 gerbang mutu data dan validasi; syarat tahap lain
+ * perencanaan, fase R2 syarat dimulainya pengumpulan data, fase R6 gerbang mutu data dan validasi, fase R7 penilaian
+ * dan rapat panel; syarat tahap lain
  * bernilai null sampai modulnya dibangun.
  */
 final class ConditionEvaluator
@@ -85,6 +86,11 @@ final class ConditionEvaluator
             'validation_sessions_completed' => $facts->validationSessionsCompleted,
             'site_visit_completed' => $facts->siteVisitCompleted,
             'evidence_reviewed' => $facts->characteristicCount >= 1 && $facts->characteristicsReviewed >= $facts->characteristicCount,
+            'two_assessor_ratings' => $facts->twoAssessorRatings,
+            // Eksekusi terakhir dibuat setelah perubahan terakhir pada data masukan.
+            'score_run_saved' => $facts->scoreRunCurrent,
+            'panel_adjustments_justified' => $facts->panelDecisionsComplete,
+            'results_locked' => $facts->resultsLocked,
             default => null,
         };
     }

@@ -21,8 +21,8 @@ Cara membangun ulang sebuah modul:
 | R4 | Penilaian mandiri manajemen | 2 | Selesai |
 | R5 | Bukti dokumen dan observasi lapangan | 2 | Selesai |
 | R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | Selesai |
-| R7 | Penilaian asesor dan rapat panel | 4 | Berikutnya |
-| R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | |
+| R7 | Penilaian asesor dan rapat panel | 4 | Selesai |
+| R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | Berikutnya |
 | R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | |
 | R10 | Laporan dan komunikasi hasil | 5 | |
 | R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | |
@@ -76,7 +76,7 @@ Pemilik proyek menyetujui seluruh rekomendasi Trustie pada 19 November 2026. Kep
 | R5 | Asesor tetap hanya membaca bukti; dokumen yang diterima saat wawancara diunggah administrator klien dan dicatat pada catatan sesi | Sudah berlaku (matriks `docs/04`) |
 | R5 | Aplikasi web yang dapat dipasang (PWA) untuk halaman kamera observasi | R12 |
 | `docs/13` | D1 instrumen versi 2 berstruktur 5 tema dan 20 subtema, dengan instrumen versi 1 sebagai jembatan; D5 kode dan judul subtema SCL 2.0 di seed tanpa teks kriteria | Tugas di luar fase, sebelum R7 |
-| `docs/13` | D2 aturan penetapan tingkat per tema; D3 ambang 0,80 dan 0,50 sebagai awal; D4 fixture versi 2 | R7 |
+| `docs/13` | D2 aturan penetapan tingkat per tema; D3 ambang 0,80 dan 0,50 sebagai awal; D4 fixture versi 2 | Sudah berlaku sebagai aturan murni dan fixture (R7); dipakai mesin setelah instrumen versi 2 (D1) selesai ditelaah |
 | `docs/13` | D6 paling sedikit satu kunjungan proyek fisik setiap asesmen | Sudah berlaku (R6) |
 | R4 | Tautan penilaian mandiri tetap diterbitkan administrator klien, dapat dikirim lewat surel Hostinger; syarat `self_assessments_submitted` (paling sedikit satu terkirim, tidak ada tautan aktif yang belum dikirim) | Sudah berlaku (R6) |
 | Bahasa | "Peninjau eksekutif"; "masa survei" dan "masa observasi" menggantikan "jendela"; "Pengaturan lengkap" | Sudah berlaku (`docs/05` butir 6 dan 8) |
@@ -153,7 +153,10 @@ Rujukan versi 1: `src/lib/validation`, `src/app/(console)/assessments/[id]/valid
 5. Syarat `evidence_reviewed`: asesor menyatakan bukti setiap karakteristik telah ditinjau; indikator dua jenis bukti dari modul Bukti tampil sebagai penanda, bukan penentu (keputusan R5).
 6. Sesi kunjungan proyek fisik sebagai jenis sesi validasi; paling sedikit satu per asesmen menjadi syarat VALIDATION ke SCORING (D6).
 
-## R7. Penilaian asesor dan rapat panel
+## R7. Penilaian asesor dan rapat panel (selesai)
+
+Hasil: setiap asesor menilai bukti setiap karakteristik (1,0 sampai 5,0 kelipatan 0,5) dengan alasan paling sedikit 20 karakter serta pilihan bukti dokumen dan rekaman observasi yang menjadi dasarnya, dalam satu ruang kerja yang memuat persepsi (survei per kelompok jabatan, penilaian mandiri, porsi "Tidak tahu"), nilai validasi per sesi, bukti, dan observasi; nilai asesor lain baru terlihat setelah asesor menyimpan nilainya sendiri, dan selisih di atas ambang ditandai perlu rekonsiliasi. Asesor utama mengisi jalur setara per aspek dan tangga dengan alasan. Perhitungan nilai dijalankan dari data basis data dan parameter terkunci, disimpan sebagai eksekusi yang tidak dapat diubah (pemicu basis data) beserta versi mesin, parameter, dan nilai lapisan tanpa jawaban mentah; halaman memberi tahu bila data masukan berubah setelah perhitungan terakhir. Rapat panel memutuskan setiap karakteristik bertanda selisih persepsi dan bukti atau perlu rekonsiliasi, dengan menyesuaikan nilai (1,00 sampai 5,00) atau mengukuhkan nilai mesin, selalu dengan alasan tertulis; hasil sesudah keputusan dihitung ulang dari masukan tersimpan, lalu ditetapkan dan dikunci. Pernyataan bahwa hasil bukan sertifikat tampil di halaman panel. Syarat `two_assessor_ratings`, `score_run_saved`, `panel_adjustments_justified`, dan `results_locked` diperiksa otomatis. Aturan penetapan tangga per tema (D2) dengan ambang 0,80 dan 0,50 (D3) tersedia sebagai kode murni `App\Domain\Scoring\ThemeLevelRule` dengan fixture versi 2 `seed/fixtures/aturan-tema-v2.json` dari `seed/fixtures/referensi_aturan_tema.py` (D4); fixture versi 1 tidak diubah. Aturan ini dipakai mesin setelah instrumen versi 2 bertema (D1, D5) selesai ditelaah, karena instrumen versi 1 tidak berstruktur tema. Tes: `tests/Unit/Scoring/ThemeLevelRuleTest.php`, `tests/Unit/Domain/Panel`, `tests/Feature/Scoring`.
+
 
 Rujukan versi 1: `src/lib/assessor-scoring`, `src/app/(console)/assessments/[id]/scoring`, `panel`.
 

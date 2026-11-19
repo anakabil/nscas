@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 sampai R6)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R7)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -90,6 +90,10 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `validation_participants` | Nama dan jabatan narasumber | R6. Disimpan terpisah dari catatan dan nilai; tidak masuk laporan |
 | `validation_ratings` | Nilai 1,0 sampai 5,0 kelipatan 0,5 per sesi, karakteristik, dan asesor, dengan dasar penilaian | R6. Batasan basis data memeriksa rentang dan kelipatan |
 | `feedback_notes` | Ringkasan umpan balik harian kepada organisasi | R6. Satu baris per tanggal |
+| `evidence_ratings` | Nilai bukti per asesmen, karakteristik, dan asesor (1,0 sampai 5,0 kelipatan 0,5), alasan, id bukti dan rekaman observasi dasar | R7. Satu baris per asesor per karakteristik; nilai rekan tersembunyi sampai asesor menyimpan nilainya |
+| `scl_fulfillments` | Pemenuhan jalur setara per aspek dan tangga (0 sampai 100 persen) dengan alasan | R7. Diisi asesor utama |
+| `score_runs` | Eksekusi mesin: versi mesin, masukan (nilai lapisan dan hitungan, tanpa jawaban mentah), parameter terkunci, hasil, pelaksana; kolom final diisi satu kali saat penetapan | R7. Pemicu `score_run_guard` menolak perubahan masukan dan hasil, serta perubahan atau penghapusan eksekusi final; paling banyak satu eksekusi final per asesmen |
+| `panel_decisions` | Keputusan panel per karakteristik: disesuaikan (nilai 1,00 sampai 5,00) atau dikukuhkan, nilai mesin, alasan, pemutus | R7. Pemicu `panel_decision_guard` menolak perubahan setelah hasil ditetapkan |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
@@ -101,7 +105,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R7 | `evidence_ratings`, `score_runs`, `panel_adjustments` |
 | R9 | `gaps`, `action_items`, `monitoring_reviews` |
 | R10 | `reports` |
 | R11 | `destruction_records` |

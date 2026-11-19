@@ -15,6 +15,8 @@ use App\Http\Controllers\Respondents\RespondentController;
 use App\Http\Controllers\Respondents\SelfAssessmentController;
 use App\Http\Controllers\Respondents\SelfAssessmentFormController;
 use App\Http\Controllers\Respondents\SurveyEntryController;
+use App\Http\Controllers\Scoring\PanelController;
+use App\Http\Controllers\Scoring\ScoringController;
 use App\Http\Controllers\Setup\DetailsController;
 use App\Http\Controllers\Setup\KickoffController;
 use App\Http\Controllers\Setup\ParameterController;
@@ -157,6 +159,19 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::delete('validation/participants/{participant}', [ValidationController::class, 'removeParticipant'])->whereAlphaNumeric('participant')->name('validation.participants.destroy');
         Route::put('validation/guides/{layer}', [ValidationController::class, 'guide'])->where('layer', 'MANAGEMENT|SUPERVISORY|FIELD')->name('validation.guides.update');
         Route::put('validation/feedback', [ValidationController::class, 'feedback'])->name('validation.feedback');
+    });
+
+    // Tahap 4. Penilaian asesor dan rapat panel (fase R7).
+    Route::prefix('assessments/{assessment}')->group(function () {
+        Route::get('scoring', [ScoringController::class, 'index'])->name('scoring.index');
+        Route::post('scoring/runs', [ScoringController::class, 'run'])->name('scoring.run');
+        Route::put('scoring/scl/{aspect}', [ScoringController::class, 'scl'])->where('aspect', 'A[0-9]{1,2}')->name('scoring.scl');
+        Route::put('scoring/ratings/{characteristic}', [ScoringController::class, 'rate'])->whereAlphaNumeric('characteristic')->name('scoring.rate');
+        Route::get('scoring/{code}', [ScoringController::class, 'show'])->where('code', 'K[0-9T]{1,2}\.[0-9]{1,2}')->name('scoring.show');
+        Route::get('panel', [PanelController::class, 'index'])->name('panel.index');
+        Route::put('panel/decisions/{code}', [PanelController::class, 'decide'])->where('code', 'K[0-9T]{1,2}\.[0-9]{1,2}')->name('panel.decide');
+        Route::delete('panel/decisions/{code}', [PanelController::class, 'withdraw'])->where('code', 'K[0-9T]{1,2}\.[0-9]{1,2}')->name('panel.withdraw');
+        Route::post('panel/finalize', [PanelController::class, 'finalize'])->name('panel.finalize');
     });
 
     // Penerima unggahan saat penyimpanan memakai disk lokal; dengan disk s3 peramban mengunggah langsung (fase R5).

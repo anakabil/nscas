@@ -282,8 +282,8 @@ Pemilik proyek menyetujui seluruh rekomendasi pada 19 November 2026. Instrumen v
 | R2 | Kerangka sampel mencakup subkontraktor dan pekerja sewaan |
 | R3, R4 | Survei dan penilaian mandiri memuat butir P dan B sesuai instrumen versi 2 |
 | R5 | Observasi lapangan dikaitkan dengan butir B |
-| R6 | Validasi: pernyataan tidak dapat ditelusuri ke orang, catatan umpan balik harian |
-| R7 | Mesin penilaian versi 2: penilaian warna per tema, aturan bagian 6.3, fixture baru |
+| R6 | Validasi: pernyataan tidak dapat ditelusuri ke orang, catatan umpan balik harian. Selesai |
+| R7 | Mesin penilaian versi 2: penilaian warna per tema, aturan bagian 6.3, fixture baru. Aturan 6.3 dan fixture versi 2 selesai (`App\Domain\Scoring\ThemeLevelRule`, `seed/fixtures/aturan-tema-v2.json`); dipakai mesin setelah instrumen versi 2 selesai ditelaah |
 | R10 | Laporan menampilkan profil warna per tema, P dan B, dan indeks `O` sebagai tren |
 
 ## Rujukan
