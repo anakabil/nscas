@@ -79,6 +79,8 @@ export type AssessmentProgress = {
         strataBelowMinimum: number;
         minParticipation: number;
         selfAssessments: { issued: number; submitted: number };
+        evidence: { complete: number; total: number };
+        observations: { observed: number; projects: number };
         rateOfTarget: number | null;
     };
 };

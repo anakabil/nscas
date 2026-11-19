@@ -29,5 +29,10 @@ final readonly class SetupFacts
         public int $strataBelowMinimum = 0,
         public int $selfAssessmentsIssued = 0,
         public int $selfAssessmentsSubmitted = 0,
+        // Fase R5: karakteristik yang memenuhi ambang jenis bukti, dan proyek yang sudah memiliki rekaman observasi.
+        public int $characteristicsWithEvidence = 0,
+        public int $characteristicCount = 0,
+        public int $projectCount = 0,
+        public int $projectsObserved = 0,
     ) {}
 }

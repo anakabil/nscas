@@ -8,7 +8,7 @@ Hasil aplikasi ini adalah **pengukuran dan diagnosis internal**, bukan sertifika
 
 Atas keputusan pemilik proyek (19 November 2026), NSCAS dibangun ulang dengan Laravel, React, dan PostgreSQL. Implementasi versi 1 (Next.js, 16 fase selesai) dihapus dari cabang kerja dan tersimpan di riwayat Git pada komit `8ad6b3d`. Saat membangun ulang sebuah modul, baca dulu implementasi lamanya dengan `git show 8ad6b3d:<path>` (kode di `src/`, teks antarmuka di `messages/id.json` dan `messages/en.json`, tes di `tests/`): aturan bisnis dan teksnya sudah diuji dan disetujui, jadi dibawa, bukan dikarang ulang.
 
-Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progres di beranda), R2 (responden, undangan, kode QR, partisipasi; surel lewat Hostinger Mail), R3 (survei responden anonim untuk telepon), dan R4 (penilaian mandiri manajemen) selesai. Fase berikutnya ada di `PROMPTS.md`.
+Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progres di beranda), R2 (responden, undangan, kode QR, partisipasi; surel lewat Hostinger Mail), R3 (survei responden anonim untuk telepon), R4 (penilaian mandiri manajemen), dan R5 (bukti dokumen dan observasi lapangan; berkas di Spaces lewat URL bertanda tangan) selesai. Fase berikutnya ada di `PROMPTS.md`.
 
 ## Baca sebelum mengerjakan apa pun
 

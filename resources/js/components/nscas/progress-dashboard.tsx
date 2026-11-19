@@ -104,7 +104,7 @@ function AttentionCell({ row }: { row: DashboardRow }) {
 function Tile({ label, value, tone }: { label: string; value: number; tone?: 'warn' | 'good' }) {
     const locale = useLocale();
     return (
-        <div className="frame-hairline rounded-lg px-5 py-4">
+        <div className="frame-hairline min-w-0 rounded-lg px-4 py-3 sm:px-5 sm:py-4">
             <p className="eyebrow text-muted-foreground">{label}</p>
             <p
                 className={cn(
@@ -154,12 +154,12 @@ export function ProgressDashboard({ dashboard }: { dashboard: Dashboard }) {
                 </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_minmax(0,1.6fr)]">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-[repeat(4,minmax(0,1fr))_minmax(0,1.6fr)]">
                 <Tile label={t('dashboard.active')} value={dashboard.totals.active} />
                 <Tile label={t('dashboard.attention')} value={dashboard.totals.attention} tone="warn" />
                 <Tile label={t('dashboard.ready')} value={dashboard.totals.ready} tone="good" />
                 <Tile label={t('dashboard.closed')} value={dashboard.totals.closed} />
-                <div className="frame-hairline rounded-lg px-5 py-4 sm:col-span-2 lg:col-span-1">
+                <div className="frame-hairline col-span-2 rounded-lg px-5 py-4 lg:col-span-1">
                     <p className="eyebrow text-muted-foreground">{t('dashboard.byStage')}</p>
                     <ol className="mt-3 grid grid-cols-6 items-end gap-2" aria-label={t('dashboard.byStage')}>
                         {dashboard.totals.byStage.map((count, index) => (
@@ -187,7 +187,7 @@ export function ProgressDashboard({ dashboard }: { dashboard: Dashboard }) {
             {dashboard.rows.length === 0 ? (
                 <p className="frame-hairline rounded-lg p-6 text-sm text-muted-foreground">{t('dashboard.empty')}</p>
             ) : (
-                <div className="frame-hairline overflow-x-auto rounded-lg">
+                <div className="frame-hairline relative overflow-x-auto rounded-lg">
                     <table className="w-full min-w-[60rem] text-left text-sm" data-testid="progress-table">
                         <thead>
                             <tr className="border-b border-border text-xs text-muted-foreground">
@@ -307,6 +307,19 @@ function StageProgressCell({ row }: { row: DashboardRow }) {
                     {t('dashboard.participation.strataBelow', {
                         count: p.strataBelowMinimum,
                         min: `${Math.round(p.minParticipation * 100)}%`,
+                    })}
+                </p>
+            ) : null}
+            {p.evidence.total > 0 ? (
+                <p className="numeral text-xs text-muted-foreground" data-testid="evidence-measure">
+                    {t('dashboard.participation.evidence', { complete: p.evidence.complete, total: p.evidence.total })}
+                </p>
+            ) : null}
+            {p.observations.projects > 0 ? (
+                <p className="numeral text-xs text-muted-foreground">
+                    {t('dashboard.participation.observations', {
+                        observed: p.observations.observed,
+                        projects: p.observations.projects,
                     })}
                 </p>
             ) : null}

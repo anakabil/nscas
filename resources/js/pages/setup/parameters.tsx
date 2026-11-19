@@ -279,7 +279,7 @@ export default function SetupParameters(props: Props) {
                 </Panel>
 
                 <Panel title={t('parameters.sclTitle')} hint={t('parameters.sclHint')}>
-                    <div className="overflow-x-auto">
+                    <div className="relative overflow-x-auto">
                         <table className="w-full min-w-[26rem] text-sm">
                             <thead>
                                 <tr className="border-b border-border text-left text-xs text-muted-foreground">
@@ -397,7 +397,7 @@ export default function SetupParameters(props: Props) {
                 </Panel>
 
                 <Panel title={t('parameters.aspectWeights')} hint={t('parameters.aspectWeightsHint')}>
-                    <div className="overflow-x-auto">
+                    <div className="relative overflow-x-auto">
                         <table className="w-full min-w-[20rem] text-sm">
                             <thead>
                                 <tr className="border-b border-border text-left text-xs text-muted-foreground">

@@ -175,7 +175,7 @@ export default function RespondentsQr(props: Props) {
                 {props.codes.length === 0 ? (
                     <p className="text-sm text-muted-foreground">{t('qrCodes.none')}</p>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <div className="relative overflow-x-auto">
                         <table className="w-full min-w-[40rem] text-left text-sm" data-testid="qr-codes">
                             <thead className="border-b border-border text-xs text-muted-foreground">
                                 <tr>

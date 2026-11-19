@@ -6,7 +6,7 @@ import { formatWib } from '@/components/nscas/collection-shell';
 import { formatNumber } from '@/components/nscas/setup-shell';
 import { Button } from '@/components/ui/button';
 import { useLocale, useT } from '@/i18n';
-import { postJson, sendFile } from '@/lib/upload';
+import { postJson, sendFile, uploaded } from '@/lib/upload';
 import type { Grant } from '@/lib/upload';
 
 // Pengambilan observasi langsung dari kamera perangkat (docs/01 M6), dibawa dari v1 src/app/o/[windowId]/capture-app.tsx.
@@ -200,8 +200,8 @@ export default function ObservationCapture(props: Props) {
         const sent = await sendFile(granted.data.upload, capture.blob, (fraction) =>
             setStatus({ kind: 'sending', percent: Math.round(fraction * 100) }),
         );
-        if (!sent) {
-            setStatus({ kind: 'error', text: t('observeApp.network') });
+        if (!uploaded(sent)) {
+            setStatus({ kind: 'error', text: sent === 413 ? t('observeApp.tooLarge') : t('observeApp.network') });
             return;
         }
         const done = await postJson<{ serverCapturedAt: string; outsideRadius: boolean; distanceMeters: number | null }>(

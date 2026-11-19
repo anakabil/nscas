@@ -82,7 +82,8 @@ Seluruh pemeriksaan dilakukan di server melalui `App\Support\AssessmentAccess::r
 - Content-Security-Policy ketat tanpa skrip pihak ketiga. Tidak ada Google Analytics, Hotjar, atau sejenisnya.
 - `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer` pada rute survei agar token tidak bocor melalui perujuk.
 - Pembatas laju: masuk 10 per menit per akun; rute survei 60 permintaan per menit per hash IP; unggah 30 per menit per pengguna.
-- Validasi jenis berkas dengan pemeriksaan isi (magic bytes), bukan hanya ekstensi.
+- Validasi jenis berkas dengan pemeriksaan isi (magic bytes), bukan hanya ekstensi. Fase R5: `App\Domain\Files\FileType`; bukti juga harus sesuai ekstensi namanya; batas 25 MB per berkas; SHA-256 dihitung server dari seluruh isi.
+- Unggah bukti dan observasi: izin unggah 60 per menit per pengguna; URL unggah bertanda tangan berlaku 15 menit dan URL unduh 5 menit; bucket privat. Berkas yang tidak pernah diselesaikan dihapus setiap jam.
 
 ## 6. Jejak audit
 
@@ -94,7 +95,8 @@ Aksi yang wajib dicatat:
 | Asesmen | pembuatan, perubahan parameter, penguncian, setiap transisi status |
 | Responden | impor daftar, penerbitan, pencabutan, dan pengiriman ulang token |
 | Data | pengeluaran respons dari analisis beserta alasannya |
-| Bukti | unggah, versi baru, penghapusan logis |
+| Bukti | unggah (`evidence.upload`), versi baru (`evidence.version`), perubahan pemetaan (`evidence.map`), penghapusan logis (`evidence.delete`) |
+| Observasi | pembukaan jendela (`observation.window_create`), setiap rekaman (`observation.capture`) |
 | Penilaian | setiap nilai asesor, eksekusi mesin, penyesuaian panel, finalisasi |
 | Laporan | pembuatan, penandatanganan, pengunduhan |
 | Retensi | pemusnahan beserta berita acara |
@@ -106,6 +108,8 @@ Tabel `AuditLog` dilindungi pemicu PostgreSQL yang menolak UPDATE dan DELETE. Le
 - Masa simpan data mentah bawaan 36 bulan sejak laporan final.
 - Tugas mingguan menandai asesmen yang melewati masa simpan; pemusnahan dijalankan SUPER_ADMIN setelah konfirmasi tertulis klien.
 - Yang dimusnahkan: `RosterEntry`, `AccessToken`, `SurveyResponse` beserta jawabannya, `SelfAssessment`, berkas bukti, observasi, dan rekaman.
+- Bukti yang dihapus pengguna hanya dihapus secara logis (fase R5): tidak lagi dihitung dan tidak tampil di daftar, tetapi berkasnya tetap tersimpan dan dapat diunduh pihak yang berhak sampai pemusnahan data asesmen, agar jejak penilaian utuh.
+- Rekaman observasi memuat data pribadi: nama pengunggah, waktu, dan lokasi perangkat, serta kemungkinan wajah pekerja pada foto atau video. Rekaman tidak anonim (diberitahukan di halaman kamera), hanya dapat dilihat peran pada matriks bagian 2, dan dimusnahkan bersama data mentah asesmen.
 - Yang disimpan: hasil agregat, `ScoreRun` final, laporan final, `DestructionRecord`, dan jejak audit.
 - Berita acara pemusnahan dibuat sebagai PDF dan dicatat di `DestructionRecord`.
 

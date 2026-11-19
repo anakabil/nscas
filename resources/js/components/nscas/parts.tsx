@@ -100,7 +100,8 @@ export function StageCard({ stage }: { stage: StageGroup }) {
             data-testid={`stage-${stage.number}`}
             data-state={stage.state}
             className={cn(
-                'flex h-full flex-col rounded-lg bg-card p-7',
+                // min-w-0: kartu sebagai butir kisi tidak boleh melebar mengikuti teks satu baris di dalamnya.
+                'flex h-full min-w-0 flex-col rounded-lg bg-card p-5 sm:p-7',
                 current ? 'frame-gold shadow-[0_18px_40px_-24px_rgb(134_101_42/0.45)]' : 'frame-hairline',
                 stage.state === 'upcoming' && 'opacity-[0.93]',
             )}
@@ -158,7 +159,7 @@ export function TaskTile({ module }: { module: ModuleLink }) {
     return (
         <Link
             href={module.href}
-            className="group flex h-full items-start gap-4 rounded-lg border border-border bg-card p-5 transition-[border-color,box-shadow] duration-200 hover:border-gold/70 hover:shadow-[0_14px_30px_-22px_rgb(132_104_26/0.6)] focus-visible:border-gold/70"
+            className="group flex h-full min-w-0 items-start gap-4 rounded-lg border border-border bg-card p-5 transition-[border-color,box-shadow] duration-200 hover:border-gold/70 hover:shadow-[0_14px_30px_-22px_rgb(132_104_26/0.6)] focus-visible:border-gold/70"
         >
             <span
                 aria-hidden
@@ -186,7 +187,7 @@ export function AccountTile({ item }: { item: AccountMenuItem }) {
     return (
         <Link
             href={item.path}
-            className="group flex h-full items-start gap-4 rounded-lg border border-border bg-card p-5 transition-colors duration-200 hover:border-taupe-dim focus-visible:border-taupe-dim"
+            className="group flex h-full min-w-0 items-start gap-4 rounded-lg border border-border bg-card p-5 transition-colors duration-200 hover:border-taupe-dim focus-visible:border-taupe-dim"
         >
             <span
                 aria-hidden

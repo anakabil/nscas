@@ -93,7 +93,7 @@ export default function RespondentsParticipation(props: Props) {
             ) : null}
 
             <Panel title={t('participation.strata.title')}>
-                <div className="overflow-x-auto">
+                <div className="relative overflow-x-auto">
                     <table className="w-full min-w-[44rem] text-left text-sm" data-testid="participation-strata">
                         <thead className="border-b border-border text-xs text-muted-foreground">
                             <tr>
@@ -126,7 +126,7 @@ export default function RespondentsParticipation(props: Props) {
             </Panel>
 
             <Panel title={t('participation.units.title')} hint={t('participation.units.note')}>
-                <div className="overflow-x-auto">
+                <div className="relative overflow-x-auto">
                     <table className="w-full min-w-[40rem] text-left text-sm" data-testid="participation-units">
                         <thead className="border-b border-border text-xs text-muted-foreground">
                             <tr>

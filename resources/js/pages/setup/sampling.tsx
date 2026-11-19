@@ -165,7 +165,7 @@ export default function SetupSampling(props: Props) {
                     </p>
 
                     <Panel title={t('sampling.minimumTitle')}>
-                        <div className="overflow-x-auto">
+                        <div className="relative overflow-x-auto">
                             <table className="w-full min-w-[32rem] text-sm">
                                 <thead>
                                     <tr className="border-b border-border text-left text-xs text-muted-foreground">
@@ -205,7 +205,7 @@ export default function SetupSampling(props: Props) {
                     </Panel>
 
                     <Panel title={t('sampling.strataTitle')}>
-                        <div className="overflow-x-auto">
+                        <div className="relative overflow-x-auto">
                             <table className="w-full min-w-[34rem] text-sm">
                                 <thead>
                                     <tr className="border-b border-border text-left text-xs text-muted-foreground">

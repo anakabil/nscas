@@ -73,7 +73,7 @@ Angka berikut adalah titik awal untuk lingkup 3.000 responden dengan sekitar 300
 |---|---|---|
 | Droplet aplikasi | 2 vCPU, 4 GB memori | 4 vCPU, 8 GB memori |
 | Basis data | Di dalam Droplet | Managed PostgreSQL 2 vCPU, 4 GB memori, dengan simpul cadangan bila anggaran memungkinkan |
-| Penyimpanan berkas | Belum diperlukan | Satu bucket Spaces privat |
+| Penyimpanan berkas | Satu bucket Spaces privat (sejak fase R5, lihat bagian 9a) | Satu bucket Spaces privat |
 | Cadangan | `backup.sh` ke bucket Spaces terpisah | Cadangan harian dan pemulihan ke titik waktu bawaan Managed PostgreSQL |
 
 Harga DigitalOcean berubah dari waktu ke waktu. Periksa halaman harga resminya saat membuat sumber daya; panduan ini sengaja tidak mencantumkan harga.
@@ -99,6 +99,7 @@ Harga DigitalOcean berubah dari waktu ke waktu. Periksa halaman harga resminya s
 | `DB_DATABASE`, `DB_USERNAME` | `nscas`, `nscas` |
 | `DB_PASSWORD` | Kata sandi acak panjang, misalnya hasil `openssl rand -base64 24` |
 | `MAIL_*` | Lihat bagian 9 |
+| `FILESYSTEM_DISK`, `AWS_*` | Lihat bagian 9a |
 
 9. Pasang: `/opt/nscas/app/deploy/digitalocean/deploy.sh deploy`. Skrip memeriksa berkas variabel, membangun image, menjalankan migrasi, menyalakan layanan, dan menunggu sampai sehat. Bila gagal, skrip mengembalikan versi sebelumnya dan menampilkan sebabnya.
 10. Isi data awal: `deploy.sh artisan db:seed --force`. Perintah ini hanya membuat organisasi Nusa Safety, tanpa akun.
@@ -112,7 +113,7 @@ Sama dengan tata letak A, dengan perbedaan berikut.
 1. Buat Managed PostgreSQL versi 16 di wilayah SGP1. Pada Trusted sources, izinkan hanya Droplet aplikasi. Buat basis data dan pengguna `nscas`.
 2. Buat bucket Spaces privat di SGP1, dan kunci akses yang dibatasi hanya untuk bucket itu.
 3. Di `/opt/nscas/.env`: kosongkan `COMPOSE_PROFILES`; isi `DB_HOST`, `DB_PORT` (biasanya 25060), `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` dari halaman basis data; biarkan `DB_SSLMODE=require`.
-4. Variabel `AWS_*` untuk Spaces diisi sekarang, tetapi `FILESYSTEM_DISK` tetap `local` sampai modul bukti dan laporan dibangun (fase R5 dan R10). Pada fase R0 aplikasi belum menyimpan berkas.
+4. Isi `FILESYSTEM_DISK=s3` dan variabel `AWS_*` untuk bucket itu, serta pasang aturan CORS, sesuai bagian 9a.
 5. Cadangan memakai fitur Managed PostgreSQL. `backup.sh` otomatis tidak melakukan apa pun pada tata letak ini.
 
 Pindah dari A ke B: buat cadangan dengan `backup.sh`, pulihkan ke Managed PostgreSQL dengan `pg_restore`, ubah variabel `DB_*`, lalu jalankan `deploy.sh deploy`.
@@ -172,6 +173,38 @@ Langkah sebelum undangan pertama:
 
 Cara kerja di aplikasi: undangan dan pengingat dikirim oleh layanan `worker` (antrean basis data), sedangkan pengingat harian pukul 08.00 WIB dan cuplikan partisipasi pukul 23.00 WIB dijadwalkan oleh layanan `scheduler`. Token survei dibuat saat surel dikirim dan dicabut bila pengiriman gagal, sehingga token mentah tidak pernah tersimpan. Logo di badan surel disematkan sebagai lampiran, bukan dimuat dari server lain, sehingga pembukaan surel tidak dapat dilacak.
 
+## 9a. Penyimpanan berkas: DigitalOcean Spaces (sejak fase R5)
+
+Bukti dokumen dan rekaman observasi disimpan di bucket Spaces privat di wilayah SGP1. Peramban mengunggah langsung ke bucket memakai URL bertanda tangan 15 menit yang dibuat aplikasi, sehingga berkas sampai 25 MB tidak melewati server aplikasi; aplikasi lalu membaca berkas itu untuk memeriksa jenis dari isi dan menghitung SHA-256 (`docs/02` bagian 4a). Dengan `FILESYSTEM_DISK=local`, berkas berada di dalam kontainer dan hilang saat kontainer diganti, jadi nilai itu hanya untuk Codespaces dan pengujian.
+
+1. Buat bucket Spaces di SGP1 dengan File Listing `Restricted`, misalnya `nscas-prod-berkas`. Jangan aktifkan CDN.
+2. Buat kunci akses Spaces yang dibatasi hanya untuk bucket itu (Read, Write, Delete).
+3. Pasang aturan CORS pada bucket (menu Settings, CORS Configurations):
+
+| Isian | Nilai |
+|---|---|
+| Origin | `https://nscas.nusasafety.co.id` (alamat aplikasi, tanpa garis miring di akhir) |
+| Allowed methods | `PUT`, `GET` |
+| Allowed headers | `Content-Type` |
+| Access control max age | `3600` |
+
+4. Isi di `/opt/nscas/.env`:
+
+| Variabel | Nilai |
+|---|---|
+| `FILESYSTEM_DISK` | `s3` |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | kunci dari langkah 2; hanya di berkas ini |
+| `AWS_DEFAULT_REGION` | `sgp1` |
+| `AWS_BUCKET` | nama bucket dari langkah 1 |
+| `AWS_ENDPOINT` | `https://sgp1.digitaloceanspaces.com` |
+| `AWS_USE_PATH_STYLE_ENDPOINT` | `false` |
+| `AWS_URL` | kosong |
+
+5. Jalankan `deploy.sh deploy`. Kebijakan keamanan isi otomatis mengizinkan alamat bucket untuk unggah dan pratinjau; tidak ada perubahan kode.
+6. Periksa dengan data buatan: pada asesmen uji yang sudah dikunci, unggah satu PDF di halaman Bukti dokumen, unduh kembali, lalu buka jendela observasi dan kirim satu foto dari telepon. Bila unggahan gagal dengan pesan sambungan, periksa aturan CORS langkah 3.
+
+Unggahan yang diminta tetapi tidak pernah diselesaikan dihapus setiap jam oleh penjadwal (`nscas:prune-uploads`), beserta berkasnya. Rekaman observasi memerlukan kamera dan lokasi peramban, yang hanya tersedia lewat HTTPS.
+
 ## 10. Pemantauan
 
 1. Aktifkan pemantauan Droplet dan buat peringatan untuk pemakaian prosesor di atas 80 persen, memori di atas 85 persen, dan disk di atas 80 persen.
@@ -207,3 +240,4 @@ Cara kerja di aplikasi: undangan dan pengingat dikirim oleh layanan `worker` (an
 | 10 | Surel uji dari `admin@nusasafety.co.id` terkirim dan tidak masuk folder sampah | Kirim pengaturan ulang kata sandi ke alamat sendiri, lalu periksa hasil SPF, DKIM, dan DMARC pada kepala surel |
 | 11 | Uji beban fase R12 lulus pada ukuran server yang dipakai | Laporan uji |
 | 12 | `deploy.sh rollback` pernah dicoba di server uji | Catatan administrator |
+| 13 | Unggah bukti dan rekaman observasi berhasil ke bucket Spaces privat, dan berkas tidak dapat dibuka tanpa masuk | Langkah 6 bagian 9a; buka alamat objek langsung di peramban, harus ditolak |

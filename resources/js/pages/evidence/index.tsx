@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useLocale, useT } from '@/i18n';
-import { postJson, sendFile } from '@/lib/upload';
+import { postJson, sendFile, uploaded } from '@/lib/upload';
 import type { Grant } from '@/lib/upload';
 import { cn } from '@/lib/utils';
 
@@ -519,9 +519,9 @@ function UploadDialog({
             return;
         }
         const sent = await sendFile(granted.data.upload, file, (f) => setProgress(f * 0.95));
-        if (!sent) {
+        if (!uploaded(sent)) {
             setProgress(null);
-            setError(t('evidence.upload.failed'));
+            setError(sent === 413 ? t('evidence.upload.tooLarge') : t('evidence.upload.failed'));
             return;
         }
         const finished = await postJson<{ id: string }>(props.urls.finalize, {

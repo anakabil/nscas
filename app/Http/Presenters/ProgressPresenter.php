@@ -85,6 +85,8 @@ final class ProgressPresenter
                 'strataBelowMinimum' => $facts->strataBelowMinimum,
                 'minParticipation' => ParticipationReport::thresholds($assessment)[1],
                 'selfAssessments' => ['issued' => $facts->selfAssessmentsIssued, 'submitted' => $facts->selfAssessmentsSubmitted],
+                'evidence' => ['complete' => $facts->characteristicsWithEvidence, 'total' => $facts->characteristicCount],
+                'observations' => ['observed' => $facts->projectsObserved, 'projects' => $facts->projectCount],
                 'rateOfTarget' => $completed['suppressed'] || ! $surveyTarget ? null : $facts->completedSurveys / $surveyTarget,
             ],
         ];

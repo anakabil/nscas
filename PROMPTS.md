@@ -19,8 +19,8 @@ Cara membangun ulang sebuah modul:
 | R2 | Responden, undangan, kode QR, partisipasi | 2 | Selesai |
 | R3 | Survei responden | 2 | Selesai |
 | R4 | Penilaian mandiri manajemen | 2 | Selesai |
-| R5 | Bukti dokumen dan observasi lapangan | 2 | Berikutnya |
-| R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | |
+| R5 | Bukti dokumen dan observasi lapangan | 2 | Selesai |
+| R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | Berikutnya |
 | R7 | Penilaian asesor dan rapat panel | 4 | |
 | R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | |
 | R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | |
@@ -56,7 +56,7 @@ Dasbor dibangun pada fase R1 dengan ukuran tahap perencanaan, kesiapan menuju st
 | R2 (selesai) | Responden terdaftar dan token terbit; survei selesai dibanding sasaran kalkulator sampel; jumlah strata di bawah ambang partisipasi minimum |
 | R3 (selesai) | Survei selesai dihitung dari token secara langsung pada dasbor dan halaman Partisipasi, per unit dan strata, dengan jumlah di bawah ambang sel disembunyikan; tren harian dari cuplikan pukul 23.00 WIB |
 | R4 (selesai) | Penilaian mandiri terkirim dibanding yang diterbitkan |
-| R5 | Dokumen bukti per tema; proyek yang sudah diobservasi dibanding sasaran |
+| R5 (selesai) | Karakteristik yang memenuhi ambang jenis bukti dibanding seluruh karakteristik; proyek yang sudah memiliki rekaman observasi dibanding seluruh proyek |
 | R6 | Wawancara dan diskusi kelompok terarah dibanding sasaran; status mutu data |
 | R7 | Sub-tema yang sudah dinilai dua asesor; rapat panel |
 | R9 | Rencana aksi berjalan dan yang melewati tenggat |
@@ -97,7 +97,10 @@ Rujukan versi 1: `src/app/sa/[token]`, `src/lib/self-assessment`.
 
 Formulir bertoken yang teridentifikasi (diberitahukan di layar), pilihan pernyataan berjenjang dengan alasan wajib, simpan per karakteristik, kirim sekali.
 
-## R5. Bukti dokumen dan observasi lapangan
+## R5. Bukti dokumen dan observasi lapangan (selesai)
+
+Hasil: bukti dokumen dengan unggah dua langkah (URL PUT bertanda tangan ke Spaces, atau penerima aplikasi pada disk lokal), pemeriksaan jenis dari isi berkas dan kesesuaian ekstensi, batas 25 MB, SHA-256, nomor versi (versi lama tetap dapat diunduh), pemetaan ke karakteristik dan butir daftar periksa dari `evidence_examples`, indikator karakteristik dengan kurang dari dua jenis bukti, hapus logis, dan cakupan unit koordinator. Observasi lapangan: jendela per proyek oleh asesor (waktu WIB, daftar periksa, titik dan radius), halaman kamera di dalam aplikasi tanpa isian berkas (foto dari bingkai kamera, video tanpa suara paling lama 30 detik), waktu server, lokasi dan akurasinya, penanda di luar radius, penolakan di luar jendela waktu, dan galeri untuk asesor. Penilaian mandiri kini menautkan bukti per karakteristik. Unggahan yang tidak diselesaikan dihapus setiap jam. Survei dan penilaian mandiri mendapat daftar pertanyaan untuk berpindah dan mengubah jawaban, serta halaman periksa dengan tombol Ubah; petunjuk diringkas; kesamaan kunci teks dua bahasa diperiksa saat kompilasi. Seluruh halaman diperiksa otomatis pada lebar 360, 768, 1024, dan 1440 piksel tanpa luapan. Tes: `tests/Unit/Domain/{Files,Evidence,Observations}`, `tests/Feature/Evidence`, `tests/Feature/Observations`.
+
 
 Rujukan versi 1: `src/lib/evidence`, `src/lib/observations`, `src/app/o`, `src/lib/files`.
 

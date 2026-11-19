@@ -87,7 +87,7 @@ export default function SetupStrata(props: Props) {
                     {props.strata.length === 0 ? (
                         <p className="text-sm text-muted-foreground">{t('strata.empty')}</p>
                     ) : (
-                        <div className="-mx-2 overflow-x-auto">
+                        <div className="relative -mx-2 overflow-x-auto">
                             <table className="w-full min-w-[36rem] text-sm" data-testid="strata-table">
                                 <thead>
                                     <tr className="border-b border-border text-left text-xs text-muted-foreground">

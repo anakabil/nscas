@@ -34,8 +34,11 @@ export async function postJson<T>(url: string, body: unknown): Promise<JsonResul
     return response.ok ? { ok: true, data: json } : { ok: false, status: response.status, message: json.message ?? null };
 }
 
-/** Mengirim berkas ke tujuan unggah dengan laporan kemajuan 0 sampai 1. */
-export function sendFile(target: UploadTarget, file: Blob, onProgress: (fraction: number) => void): Promise<boolean> {
+/**
+ * Mengirim berkas ke tujuan unggah dengan laporan kemajuan 0 sampai 1. Hasilnya kode status HTTP, atau 0 bila
+ * sambungan terputus.
+ */
+export function sendFile(target: UploadTarget, file: Blob, onProgress: (fraction: number) => void): Promise<number> {
     return new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
         xhr.open(target.method, target.url);
@@ -49,9 +52,12 @@ export function sendFile(target: UploadTarget, file: Blob, onProgress: (fraction
                 onProgress(event.loaded / event.total);
             }
         };
-        xhr.onload = () => resolve(xhr.status >= 200 && xhr.status < 300);
-        xhr.onerror = () => resolve(false);
-        xhr.onabort = () => resolve(false);
+        xhr.onload = () => resolve(xhr.status);
+        xhr.onerror = () => resolve(0);
+        xhr.onabort = () => resolve(0);
         xhr.send(file);
     });
 }
+
+/** Unggahan diterima tujuan unggah. */
+export const uploaded = (status: number): boolean => status >= 200 && status < 300;

@@ -121,7 +121,7 @@ export default function SelfAssessments(props: Props) {
                 {props.rows.length === 0 ? (
                     <p className="text-sm text-muted-foreground">{t('selfAssessments.table.empty')}</p>
                 ) : (
-                    <div className="overflow-x-auto">
+                    <div className="relative overflow-x-auto">
                         <table className="w-full min-w-[52rem] text-left text-sm" data-testid="sa-table">
                             <thead className="border-b border-border text-xs text-muted-foreground">
                                 <tr>

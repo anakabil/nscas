@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 sampai R4)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R5)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -76,6 +76,12 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `characteristic_answers`, `climate_answers` | Tingkat per karakteristik (kosong untuk Tidak tahu) dan nilai 1 sampai 5 per butir iklim | R3. UUID versi 4 acak; urutan fisik baris diacak setiap malam (`nscas:shuffle-survey-rows`) |
 | `self_assessments` | Penilaian mandiri manajemen: asesmen, unit, token yang berlaku, nama dan jabatan pengisi, status DRAFT atau SUBMITTED, waktu kirim | R4. Teridentifikasi dan diaudit; token jenis SELF_ASSESSMENT pada `access_tokens` dapat diganti tanpa kehilangan draf |
 | `self_assessment_answers` | Tingkat, alasan (paling sedikit 50 karakter saat kirim), dan id bukti per karakteristik | R4. Terkunci setelah dikirim; penautan bukti diisi sejak R5 |
+| `evidence_requirements` | Butir daftar periksa bukti per karakteristik (posisi, uraian) | R5. Diisi dari `evidence_examples` versi instrumen, oleh migrasi untuk versi yang sudah dimuat dan oleh `InstrumentVersionSeeder` untuk versi baru |
+| `evidence_items` | Bukti dokumen: asesmen, unit (kosong untuk tingkat organisasi), judul, keterangan, nama berkas, kunci objek, SHA-256, jenis dari isi, ukuran, nomor versi, versi yang digantikan, pengunggah, waktu hapus logis | R5. Setiap versi baris tersendiri; satu versi hanya dapat digantikan sekali; hapus logis, berkas tetap tersimpan sampai pemusnahan |
+| `evidence_links` | Pemetaan bukti ke karakteristik beserta id butir daftar periksa yang dipenuhi | R5. Dasar hitungan jenis bukti per karakteristik (`EvidenceChecklist`) |
+| `observation_windows` | Jendela observasi per proyek: judul, waktu buka dan tutup, daftar periksa (O1, O2, dan seterusnya), titik proyek, radius toleransi, pembuat | R5. Dibuat asesor utama atau asesor |
+| `observation_captures` | Foto atau video kamera: butir, kunci objek, SHA-256, jenis dari isi, ukuran, waktu server, lokasi dan akurasi, jarak ke titik proyek, penanda di luar radius, catatan, pengunggah | R5. Tidak anonim; waktu dari server, bukan dari perangkat |
+| `pending_uploads` | Izin unggah yang belum diselesaikan: jenis, asesmen, pengguna, kunci objek, nama berkas, ukuran yang dinyatakan, data tambahan, waktu kedaluwarsa | R5. Id baris menjadi tiket unggah; baris dan objek yang tidak diselesaikan dihapus setiap jam oleh `nscas:prune-uploads` |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
@@ -87,7 +93,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R5 | `evidence_items`, `evidence_versions`, `observation_windows`, `observations` |
 | R6 | `validation_sessions`, `validation_ratings`, `validation_plans` |
 | R7 | `evidence_ratings`, `score_runs`, `panel_adjustments` |
 | R9 | `gaps`, `action_items`, `monitoring_reviews` |
@@ -109,6 +114,14 @@ Tujuan: tidak seorang pun, termasuk Nusa Safety, dapat mengetahui jawaban seoran
 
 Penilaian mandiri, observasi, dan validasi tidak anonim karena memerlukan pertanggungjawaban. Hal ini dinyatakan di layar masing-masing.
 
+## 4a. Penyimpanan berkas bukti dan observasi (fase R5)
+
+1. Kunci objek: `{organisasi}/{asesmen}/{evidence|observation}/{acak 128 bit}.{ekstensi}`. Bucket privat; tidak ada berkas yang dapat dibuka tanpa URL bertanda tangan.
+2. Unggah dua langkah. Peramban meminta izin ke aplikasi (judul, unit, ukuran, nama berkas; untuk observasi juga butir dan lokasi), lalu mengirim berkas langsung ke tujuan unggah, lalu menyelesaikan dengan tiket. Dengan disk `s3` (DigitalOcean Spaces di produksi) tujuan unggah adalah URL PUT bertanda tangan 15 menit, sehingga berkas tidak melewati server aplikasi. Dengan disk `local` (Codespaces dan pengujian) tujuan unggah adalah `PUT /uploads/{tiket}` di aplikasi sendiri, dengan alur dan pemeriksaan yang sama.
+3. Saat diselesaikan, server membaca objek: ukuran harus sama dengan yang dinyatakan dan paling besar 25 MB; jenis dikenali dari isi berkas (`App\Domain\Files\FileType`), bukan dari nama atau header kiriman peramban; untuk bukti, ekstensi nama berkas harus sesuai dengan jenisnya; SHA-256 dihitung dari seluruh isi. Objek yang gagal diperiksa langsung dihapus.
+4. Unduhan selalu lewat aplikasi, yang memeriksa hak akses dan cakupan unit, lalu mengalihkan ke URL GET bertanda tangan lima menit (disk `s3`) atau mengirim isi berkas (disk `local`).
+5. Observasi hanya menerima foto dan video dari kamera di dalam aplikasi; halaman kamera tidak memiliki isian berkas. Waktu pengambilan adalah waktu server saat izin unggah diminta. Pengambilan di luar jendela waktu ditolak; di luar radius diterima tetapi ditandai.
+
 ## 5. Keamanan lapisan aplikasi
 
 | Kendali | Letak |
@@ -120,6 +133,7 @@ Penilaian mandiri, observasi, dan validasi tidak anonim karena memerlukan pertan
 | Pembatas laju masuk dan verifikasi dua langkah | `FortifyServiceProvider` |
 | Halaman galat tanpa rincian teknis | `bootstrap/app.php` |
 | Huruf dan ikon dipasang lokal | `resources/css/app.css` |
+| Jenis berkas dari isi, ukuran, dan SHA-256 diperiksa server; berkas tanpa catatan dibersihkan | `UploadGrants`, `ObjectStore`, `nscas:prune-uploads` |
 
 ## 6. Variabel lingkungan
 

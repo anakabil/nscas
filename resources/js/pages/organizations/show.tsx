@@ -405,7 +405,7 @@ export default function OrganizationShow({ organization, users, canManageUsers, 
                             {t('users.empty')}
                         </p>
                     ) : (
-                        <div className="-mx-2 overflow-x-auto px-2">
+                        <div className="relative -mx-2 overflow-x-auto px-2">
                             <table className="w-full min-w-[40rem] text-left text-sm" data-testid="users-table">
                                 <thead>
                                     <tr className="border-b border-border text-xs text-muted-foreground">

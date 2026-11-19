@@ -712,7 +712,7 @@ function RosterTable(props: Props) {
             {props.roster.rows.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t('respondents.table.empty')}</p>
             ) : (
-                <div className="overflow-x-auto">
+                <div className="relative overflow-x-auto">
                     <table className="w-full min-w-[56rem] text-left text-sm" data-testid="roster-table">
                         <thead className="border-b border-border text-xs text-muted-foreground">
                             <tr>

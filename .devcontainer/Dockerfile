@@ -28,3 +28,7 @@ RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
     && node --version \
     && npm --version \
     && php -m | grep -qx pdo_pgsql
+
+# Batas unggah sama dengan image produksi: bukti dan rekaman observasi paling besar 25 MB (fase R5). Laravel menolak
+# permintaan yang lebih besar dari post_max_size, termasuk unggahan PUT ke penerima aplikasi saat memakai disk lokal.
+RUN printf 'upload_max_filesize = 25M\npost_max_size = 32M\n' > "${PHP_INI_DIR:-/usr/local/etc/php}/conf.d/zz-nscas-upload.ini"

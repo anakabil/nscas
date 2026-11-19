@@ -155,6 +155,9 @@ class ObservationTest extends TestCase
             ->has('windows.0.captures', 3)
             ->where('windows.0.captures.1.outsideRadius', true));
         $this->actingAs($this->lead)->get(route('observations.captures.file', [$this->assessment, $inside->id]))->assertOk()->assertStreamedContent(self::JPEG);
+        // Dasbor beranda: satu dari satu proyek sudah diobservasi.
+        $this->actingAs($this->lead)->get(route('home'))->assertInertia(fn (Assert $page) => $page
+            ->where('dashboard.rows.0.participation.observations', ['observed' => 1, 'projects' => 1]));
     }
 
     public function test_captures_outside_the_time_window_are_rejected(): void

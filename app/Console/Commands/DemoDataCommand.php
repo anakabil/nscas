@@ -3,12 +3,17 @@
 namespace App\Console\Commands;
 
 use App\Domain\Access\Role;
+use App\Domain\Observations\Geo;
 use App\Domain\Setup\EditableParameters;
 use App\Domain\Survey\SurveyRules;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Models\AccessToken;
 use App\Models\Assessment;
+use App\Models\Characteristic;
+use App\Models\EvidenceItem;
 use App\Models\InstrumentVersion;
+use App\Models\ObservationCapture;
+use App\Models\ObservationWindow;
 use App\Models\Organization;
 use App\Models\ParticipationSnapshot;
 use App\Models\RosterEntry;
@@ -18,6 +23,7 @@ use App\Models\SurveyResponse;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\AssessmentSetup;
+use App\Services\Files\ObjectStore;
 use App\Services\Respondents\RespondentDistribution;
 use App\Services\Respondents\SurveyLinks;
 use Carbon\CarbonImmutable;
@@ -123,6 +129,14 @@ class DemoDataCommand extends Command
             }
             if ($assessment !== null && $status !== AssessmentStatus::Draft && ! SurveyResponse::where('assessment_id', $assessment->id)->exists()) {
                 $this->answers($assessment);
+            }
+            // Fase R5: bukti dokumen dan observasi lapangan contoh, sebelum penilaian mandiri agar jawabannya dapat
+            // menautkan bukti.
+            if ($assessment !== null && $status !== AssessmentStatus::Draft && ! EvidenceItem::where('assessment_id', $assessment->id)->exists()) {
+                $this->evidence($assessment, $accounts['CLIENT_ADMIN']);
+            }
+            if ($assessment !== null && $status !== AssessmentStatus::Draft && ! ObservationWindow::where('assessment_id', $assessment->id)->exists()) {
+                $this->observations($assessment, $lead, $accounts['CLIENT_ADMIN'], $status === AssessmentStatus::DataCollection);
             }
             // Fase R4: penilaian mandiri manajemen contoh.
             if ($assessment !== null && $status !== AssessmentStatus::Draft && ! SelfAssessment::where('assessment_id', $assessment->id)->exists()) {
@@ -356,6 +370,13 @@ class DemoDataCommand extends Command
         $characteristics = DB::table('characteristics')->where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->get(['id']);
         $units = Unit::where('assessment_id', $assessment->id)->pluck('id', 'name');
         $at = CarbonImmutable::parse($assessment->survey_opens_at ?? $assessment->period_start)->addDays(6)->setTime(10, 0);
+        // Bukti terbaru per karakteristik (fase R5) untuk ditautkan pada jawaban.
+        $evidence = [];
+        foreach (EvidenceItem::where('assessment_id', $assessment->id)->whereNull('deleted_at')->whereNotIn('id', EvidenceItem::whereNotNull('supersedes_id')->select('supersedes_id'))->with('links')->orderBy('title')->get() as $item) {
+            foreach ($item->links as $link) {
+                $evidence[$link->characteristic_id][] = $item->id;
+            }
+        }
 
         foreach ($people as $i => [$name, $position, $unitName, $state]) {
             $token = SurveyLinks::issue($assessment, ['unit_id' => $units[$unitName] ?? $units->first(), 'stratum_id' => null, 'kind' => 'SELF_ASSESSMENT', 'channel' => 'LINK'])['token'];
@@ -377,8 +398,187 @@ class DemoDataCommand extends Command
                     'self_assessment_id' => $sa->id, 'characteristic_id' => $c->id,
                     'level' => max(2, min(5, 3 + mt_rand(0, 2) - ($k % 5 === 4 ? 1 : 0))),
                     'justification' => $bases[($k + $i) % count($bases)],
+                    'evidence_ids' => array_slice($evidence[$c->id] ?? [], 0, 1 + ($i % 2)),
                 ]);
             }
         }
+    }
+
+    /**
+     * Bukti dokumen contoh (fase R5): berkas PDF kecil dengan pemetaan ke karakteristik dan butir daftar periksa, satu
+     * bukti dengan versi kedua, dan satu bukti yang dihapus. Berkas ditulis ke disk penyimpanan yang berlaku.
+     */
+    private function evidence(Assessment $assessment, User $admin): void
+    {
+        $store = app(ObjectStore::class);
+        $characteristics = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)
+            ->orderBy('position')->with('evidenceRequirements')->get()->keyBy('code');
+        $units = Unit::where('assessment_id', $assessment->id)->pluck('id', 'name');
+        $at = CarbonImmutable::parse($assessment->locked_at ?? $assessment->period_start)->addDays(2)->setTime(9, 0);
+        // [judul, unit (null untuk tingkat organisasi), [kode karakteristik => posisi butir daftar periksa]]
+        $items = [
+            ['Risalah rapat direksi triwulan III', null, ['K1.1' => [1], 'K2.2' => [1]]],
+            ['Jadwal dan catatan kunjungan manajemen ke lapangan', 'Proyek Gedung Perkantoran Kuningan', ['K1.1' => [2]]],
+            ['Notulen forum P2K3 bulanan', 'Kantor Pusat Jakarta', ['K1.2' => [1]]],
+            ['Daftar hadir safety talk pagi', 'Proyek Jalan Tol Semarang', ['K1.2' => [2], 'K5.3' => [1]]],
+            ['Kebijakan penghargaan dan sanksi K3', null, ['K1.3' => [1]]],
+            ['Laporan investigasi kejadian nyaris celaka', 'Proyek Gedung Perkantoran Kuningan', ['K2.1' => [1], 'K5.2' => [1]]],
+            ['Rencana kerja dan anggaran K3 tahunan', null, ['K2.2' => [2]]],
+            ['Prosedur seleksi dan evaluasi subkontraktor', null, ['K3.1' => [1]]],
+            ['Matriks kompetensi dan rencana pelatihan', 'Kantor Pusat Jakarta', ['K3.2' => [1, 2]]],
+            ['Struktur organisasi fungsi K3', null, ['K3.3' => [1]]],
+            ['Izin kerja dan analisis keselamatan pekerjaan', 'Proyek Jalan Tol Semarang', ['K4.1' => [1], 'K4.3' => [1]]],
+            ['Rekap laporan bahaya dari pekerja', 'Proyek Jalan Tol Semarang', ['K5.1' => [1]]],
+        ];
+        $created = [];
+        foreach ($items as $n => [$title, $unitName, $map]) {
+            $item = $this->storeEvidence($store, $assessment, $admin, $title, $unitName === null ? null : ($units[$unitName] ?? null), $at->addHours($n * 5), null);
+            foreach ($map as $code => $positions) {
+                $c = $characteristics->get($code);
+                if ($c === null) {
+                    continue;
+                }
+                $requirementIds = $c->evidenceRequirements->whereIn('position', $positions)->pluck('id')->values()->all();
+                $item->links()->create(['characteristic_id' => $c->id, 'requirement_ids' => $requirementIds]);
+            }
+            $created[] = $item;
+        }
+        // Versi kedua untuk rencana kerja dan anggaran, mewarisi pemetaan versi pertama.
+        $first = $created[6];
+        $second = $this->storeEvidence($store, $assessment, $admin, $first->title.' (revisi)', $first->unit_id, $at->addDays(5), $first);
+        foreach ($first->links as $link) {
+            $second->links()->create(['characteristic_id' => $link->characteristic_id, 'requirement_ids' => $link->requirement_ids]);
+        }
+        // Bukti yang diunggah keliru lalu dihapus secara logis.
+        $this->storeEvidence($store, $assessment, $admin, 'Draf surat edaran (keliru unggah)', null, $at->addDays(1), null)
+            ->forceFill(['deleted_at' => $at->addDays(1)->addHour()])->save();
+    }
+
+    private function storeEvidence(ObjectStore $store, Assessment $assessment, User $admin, string $title, ?string $unitId, CarbonImmutable $at, ?EvidenceItem $previous): EvidenceItem
+    {
+        $pdf = $this->samplePdf($title);
+        $key = $store->key($assessment->organization_id, $assessment->id, 'evidence', 'pdf');
+        $store->disk()->put($key, $pdf);
+        $item = new EvidenceItem([
+            'assessment_id' => $assessment->id,
+            'unit_id' => $unitId,
+            'title' => $title,
+            'file_name' => Str::slug($title).'.pdf',
+            'storage_key' => $key,
+            'sha256' => hash('sha256', $pdf),
+            'mime_type' => 'application/pdf',
+            'size_bytes' => strlen($pdf),
+            'version' => $previous === null ? 1 : $previous->version + 1,
+            'supersedes_id' => $previous?->id,
+            'uploaded_by_id' => $admin->id,
+        ]);
+        $item->created_at = $at;
+        $item->updated_at = $at;
+        $item->save();
+
+        return $item;
+    }
+
+    /** PDF satu halaman yang sah dengan judul bukti, tanpa pustaka tambahan. */
+    private function samplePdf(string $title): string
+    {
+        $text = str_replace(['\\', '(', ')'], ['\\\\', '\\(', '\\)'], 'Contoh bukti NSCAS: '.$title);
+        $stream = "BT /F1 14 Tf 56 760 Td ({$text}) Tj ET";
+        $objects = [
+            '<< /Type /Catalog /Pages 2 0 R >>',
+            '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>',
+            '<< /Length '.strlen($stream)." >>\nstream\n{$stream}\nendstream",
+            '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+        ];
+        $pdf = "%PDF-1.4\n";
+        $offsets = [];
+        foreach ($objects as $i => $object) {
+            $offsets[] = strlen($pdf);
+            $pdf .= ($i + 1)." 0 obj\n{$object}\nendobj\n";
+        }
+        $xref = strlen($pdf);
+        $pdf .= 'xref'."\n0 ".(count($objects) + 1)."\n0000000000 65535 f \n";
+        foreach ($offsets as $offset) {
+            $pdf .= sprintf("%010d 00000 n \n", $offset);
+        }
+
+        return $pdf.'trailer << /Size '.(count($objects) + 1)." /Root 1 0 R >>\nstartxref\n{$xref}\n%%EOF\n";
+    }
+
+    /**
+     * Observasi lapangan contoh (fase R5): satu jendela yang sudah ditutup dengan beberapa rekaman, dan untuk asesmen
+     * yang sedang mengumpulkan data satu jendela yang terbuka sekarang. Foto dibuat dengan GD.
+     */
+    private function observations(Assessment $assessment, User $lead, User $admin, bool $collecting): void
+    {
+        $store = app(ObjectStore::class);
+        $project = Unit::where('assessment_id', $assessment->id)->whereNotNull('latitude')->orderBy('name')->first();
+        if ($project === null) {
+            return;
+        }
+        $checklist = [
+            ['code' => 'O1', 'label' => 'Pemakaian alat pelindung diri di area kerja'],
+            ['code' => 'O2', 'label' => 'Rambu dan pembatas area galian'],
+            ['code' => 'O3', 'label' => 'Kebersihan dan kerapian area kerja'],
+        ];
+        $start = CarbonImmutable::parse($assessment->survey_opens_at ?? $assessment->period_start)->setTimezone('Asia/Jakarta')->addDays(3)->setTime(8, 0);
+        $windows = [[
+            'title' => 'Observasi area kerja minggu pertama', 'opens' => $start, 'closes' => $start->addDays(2)->setTime(17, 0),
+        ]];
+        if ($collecting) {
+            $now = CarbonImmutable::now('Asia/Jakarta');
+            $windows[] = ['title' => 'Observasi lanjutan pekan ini', 'opens' => $now->subDay()->setTime(7, 0), 'closes' => $now->addDays(3)->setTime(17, 0)];
+        }
+        $lat = (float) $project->latitude;
+        $lng = (float) $project->longitude;
+        $radius = (int) ($project->radius_meters ?? 300);
+        foreach ($windows as $w => $spec) {
+            $window = ObservationWindow::create([
+                'assessment_id' => $assessment->id, 'unit_id' => $project->id, 'title' => $spec['title'],
+                'opens_at' => $spec['opens']->utc(), 'closes_at' => $spec['closes']->utc(), 'checklist' => $checklist,
+                'latitude' => $lat, 'longitude' => $lng, 'radius_meters' => $radius, 'created_by_id' => $lead->id,
+            ]);
+            // [butir, selisih lintang, akurasi]; null berarti lokasi tidak diizinkan.
+            $shots = $w === 0
+                ? [['O1', 0.0004, 8.0], ['O1', -0.0006, 12.0], ['O2', 0.0011, 15.0], ['O3', 0.012, 20.0], ['O3', null, null]]
+                : [['O1', 0.0003, 6.0], ['O2', 0.0008, 10.0]];
+            foreach ($shots as $k => [$code, $dLat, $accuracy]) {
+                $jpeg = $this->samplePhoto($code, $k);
+                $key = $store->key($assessment->organization_id, $assessment->id, 'observation', 'jpg');
+                $store->disk()->put($key, $jpeg);
+                $distance = $dLat === null ? null : Geo::haversineMeters($lat, $lng, $lat + $dLat, $lng);
+                ObservationCapture::create([
+                    'observation_window_id' => $window->id, 'checklist_item_code' => $code, 'storage_key' => $key,
+                    'sha256' => hash('sha256', $jpeg), 'mime_type' => 'image/jpeg', 'size_bytes' => strlen($jpeg),
+                    'server_captured_at' => $spec['opens']->addHours(2 + $k)->utc(),
+                    'latitude' => $dLat === null ? null : $lat + $dLat, 'longitude' => $dLat === null ? null : $lng,
+                    'accuracy_meters' => $accuracy, 'distance_meters' => $distance,
+                    'outside_radius' => $distance !== null && $distance > $radius,
+                    'note' => $k === 0 ? 'Pekerja di lantai 3 memakai helm dan sabuk pengaman.' : null,
+                    'uploaded_by_id' => $admin->id,
+                ]);
+            }
+        }
+    }
+
+    /** Foto contoh 640 x 480 berwarna kalem dengan kode butir, dibuat dengan GD. */
+    private function samplePhoto(string $code, int $variant): string
+    {
+        $image = imagecreatetruecolor(640, 480);
+        $palette = [[105, 27, 46], [134, 101, 42], [59, 52, 49], [74, 18, 32]];
+        [$r, $g, $b] = $palette[$variant % count($palette)];
+        for ($y = 0; $y < 480; $y++) {
+            $shade = (int) (60 * $y / 480);
+            imageline($image, 0, $y, 639, $y, (int) imagecolorallocate($image, min(255, $r + $shade), min(255, $g + $shade), min(255, $b + $shade)));
+        }
+        $light = (int) imagecolorallocate($image, 254, 250, 244);
+        imagefilledrectangle($image, 32, 380, 300, 440, (int) imagecolorallocate($image, 26, 26, 26));
+        imagestring($image, 5, 48, 398, "Observasi {$code} contoh ".($variant + 1), $light);
+        ob_start();
+        imagejpeg($image, null, 80);
+        imagedestroy($image);
+
+        return (string) ob_get_clean();
     }
 }

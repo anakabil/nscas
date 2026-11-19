@@ -8,6 +8,8 @@ use App\Domain\Setup\Kickoff;
 use App\Domain\Setup\SetupFacts;
 use App\Models\AccessToken;
 use App\Models\Assessment;
+use App\Models\ObservationWindow;
+use App\Services\Evidence\EvidenceService;
 use App\Services\Respondents\ParticipationReport;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -33,6 +35,7 @@ final class SetupFactsCollector
         }
         $assessments->loadCount([
             'units',
+            'units as project_units_count' => fn ($q) => $q->where('type', 'PROJECT'),
             'strata',
             'strata as strata_without_population_count' => fn ($q) => $q->where('population', '<=', 0),
             'roster',
@@ -49,8 +52,14 @@ final class SetupFactsCollector
             ->where('kind', 'SURVEY')->whereNotNull('completed_at')->whereNotNull('stratum_id')
             ->selectRaw('stratum_id, count(*) as n')->groupBy('stratum_id')->pluck('n', 'stratum_id');
 
+        // Fase R5: proyek yang sudah memiliki rekaman observasi, dan kelengkapan jenis bukti per karakteristik.
+        $observedProjects = ObservationWindow::whereIn('assessment_id', $assessments->modelKeys())->whereHas('captures')
+            ->selectRaw('assessment_id, count(distinct unit_id) as n')->groupBy('assessment_id')->pluck('n', 'assessment_id');
+        $evidence = app(EvidenceService::class);
+
         $facts = [];
         foreach ($assessments as $assessment) {
+            $checklist = $assessment->status->parametersLocked() ? $evidence->checklist($assessment, null)['rows'] : [];
             $team = $assessment->team;
             $draft = $assessment->parameter_draft ?? [];
             $facts[$assessment->id] = new SetupFacts(
@@ -76,6 +85,10 @@ final class SetupFactsCollector
                     && ((int) ($completedByStratum[$s->id] ?? 0)) / $s->population < ParticipationReport::thresholds($assessment)[1])->count(),
                 selfAssessmentsIssued: (int) $assessment->self_assessments_count,
                 selfAssessmentsSubmitted: (int) $assessment->self_assessments_submitted_count,
+                characteristicsWithEvidence: count(array_filter($checklist, fn (array $row) => ! $row['belowMinimum'])),
+                characteristicCount: count($checklist),
+                projectCount: (int) $assessment->project_units_count,
+                projectsObserved: (int) ($observedProjects[$assessment->id] ?? 0),
             );
         }
 

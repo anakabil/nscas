@@ -207,6 +207,9 @@ class EvidenceTest extends TestCase
             ->where('checklist.rows.1.code', 'K1.2')
             ->where('checklist.rows.1.types', 2)
             ->where('checklist.rows.1.belowMinimum', false));
+        // Dasbor beranda: satu dari delapan belas karakteristik sudah memiliki dua jenis bukti.
+        $this->actingAs($this->lead)->get(route('home'))->assertInertia(fn (Assert $page) => $page
+            ->where('dashboard.rows.0.participation.evidence', ['complete' => 1, 'total' => 18]));
     }
 
     public function test_deleted_evidence_leaves_the_list_and_checklist_but_stays_downloadable(): void
