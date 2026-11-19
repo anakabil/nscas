@@ -7,7 +7,7 @@ namespace App\Domain\Respondents;
 use App\Domain\Workflow\AssessmentStatus;
 use DateTimeInterface;
 
-/** Survei terbuka hanya selama pengumpulan data dan di dalam jendela survei bila jendela diisi. */
+/** Survei terbuka hanya selama pengumpulan data dan di dalam masa survei bila masa survei diisi. */
 final class SurveyWindow
 {
     public static function isOpen(AssessmentStatus $status, ?DateTimeInterface $opensAt, ?DateTimeInterface $closesAt, DateTimeInterface $now): bool
@@ -18,7 +18,7 @@ final class SurveyWindow
     }
 
     /**
-     * Keadaan jendela survei untuk responden: OPEN, NOT_OPEN (belum dimulai atau belum dibuka), atau CLOSED (sudah
+     * Keadaan masa survei untuk responden: OPEN, NOT_OPEN (belum dimulai atau belum dibuka), atau CLOSED (sudah
      * ditutup, termasuk setelah asesmen melewati pengumpulan data).
      *
      * @return 'OPEN'|'NOT_OPEN'|'CLOSED'

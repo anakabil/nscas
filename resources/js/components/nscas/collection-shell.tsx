@@ -41,7 +41,7 @@ export function formatWib(value: string, locale: 'id' | 'en'): string {
 
 /**
  * Kerangka halaman responden, kode QR, dan partisipasi: kepala asesmen, tab ketiga halaman, keadaan distribusi dan
- * jendela survei, serta pesan simpan.
+ * masa survei, serta pesan simpan.
  */
 export function CollectionShell({
     module,
@@ -57,7 +57,7 @@ export function CollectionShell({
     canEdit: boolean;
     /** false pada halaman yang memang hanya untuk dibaca, misalnya partisipasi dan rincian jawaban. */
     readOnlyNotice?: boolean;
-    /** false pada halaman yang tidak terkait jendela survei, misalnya bukti dan observasi. */
+    /** false pada halaman yang tidak terkait masa survei, misalnya bukti dan observasi. */
     showWindow?: boolean;
     /** Pemberitahuan khusus halaman; bila diberikan, menggantikan pemberitahuan distribusi survei. */
     notice?: string | null;

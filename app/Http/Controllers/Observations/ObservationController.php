@@ -24,7 +24,7 @@ use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 /**
- * Observasi lapangan (docs/01 M6). Jendela dibuka asesor utama atau asesor (sama dengan v1
+ * Observasi lapangan (docs/01 M6). Masa observasi dibuka asesor utama atau asesor (sama dengan v1
  * OBSERVATION_WINDOW_WRITE_ROLES); rekaman diambil administrator klien atau koordinator unit (unitnya saja) dari
  * kamera di dalam aplikasi; seluruh peran baca matriks docs/04 melihat galeri rekaman.
  */
@@ -87,7 +87,7 @@ class ObservationController extends CollectionController
         return back()->with('status', 'saved');
     }
 
-    /** Halaman kamera untuk satu jendela: hanya pengambil rekaman yang unitnya mencakup jendela itu. */
+    /** Halaman kamera untuk satu masa observasi: hanya pengambil rekaman yang unitnya mencakup masa observasi itu. */
     public function capture(Request $request, Assessment $assessment, string $window, ObservationService $observations): Response
     {
         $roles = $this->pageRoles($request, $assessment, 'observations');
@@ -178,7 +178,7 @@ class ObservationController extends CollectionController
     }
 
     /**
-     * Pembuka jendela observasi: asesor utama atau asesor asesmen ini.
+     * Pembuka masa observasi: asesor utama atau asesor asesmen ini.
      *
      * @param  list<Role>  $roles
      */

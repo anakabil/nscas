@@ -45,7 +45,7 @@ export const core = {
             name: 'Koordinator unit',
             task: 'Mendorong partisipasi pekerja di unitnya serta mengunggah bukti dan hasil observasi.',
         },
-        EXECUTIVE_VIEWER: { name: 'Pemirsa eksekutif', task: 'Melihat dasbor hasil dan membaca laporan.' },
+        EXECUTIVE_VIEWER: { name: 'Peninjau eksekutif', task: 'Melihat dasbor hasil dan membaca laporan.' },
         none: { name: 'Belum ada peran', task: 'Akun Anda belum memiliki peran. Hubungi administrator organisasi Anda.' },
     },
     stages: {
@@ -97,7 +97,7 @@ export const core = {
         sampling: { title: 'Kalkulator sampel', hint: 'Jumlah minimum responden, wawancara, dan lokasi' },
         team: { title: 'Tim asesor', hint: 'Asesor utama dan anggota tim' },
         kickoff: { title: 'Komunikasi awal', hint: 'Komitmen pimpinan dan penjelasan tujuan kepada pekerja' },
-        respondents: { title: 'Responden dan undangan', hint: 'Daftar pekerja, jendela survei, dan tautan survei' },
+        respondents: { title: 'Responden dan undangan', hint: 'Daftar pekerja, masa survei, dan tautan survei' },
         qr: { title: 'Kode QR', hint: 'Kode QR bagi pekerja yang tidak memiliki surel' },
         participation: { title: 'Partisipasi', hint: 'Tingkat partisipasi menurut unit dan strata' },
         selfAssessments: { title: 'Penilaian mandiri', hint: 'Penilaian mandiri berjenjang oleh manajemen' },

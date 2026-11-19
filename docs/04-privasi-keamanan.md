@@ -22,6 +22,8 @@ Keputusan ini mengubah komitmen proposal awal kepada klien, yang menjanjikan pen
 | 4 | Teks persetujuan responden menyebut Singapura | UU 27/2022 tentang persetujuan yang jelas dan spesifik | Nusa Safety | Sudah di bagian 8; berlaku di aplikasi lewat `NSCAS_DATA_LOCATION` |
 | 5 | Enkripsi saat transit dan saat tersimpan, serta cadangan terenkripsi di wilayah yang sama | Praktik pengamanan | Nusa Safety | Disiapkan di `docs/08` |
 
+Keputusan pemilik proyek, 19 November 2026: persetujuan atas lokasi Singapura tetap mengikuti rencana awal. Nusa Safety menyerahkan rumusan adendum atau klausul perjanjian pemrosesan data kepada klien untuk dibaca dan disetujui; tidak ada perubahan rancangan aplikasi.
+
 Selama syarat 1 sampai 3 belum terpenuhi, server DigitalOcean hanya boleh dipakai untuk uji coba dengan data buatan. Rancangan aplikasi tetap dapat dipindah ke penyedia lain karena seluruhnya berjalan di Docker dengan PostgreSQL dan penyimpanan kompatibel S3.
 
 Catatan untuk penasihat hukum. Uraian ini adalah pembacaan praktisi K3 atas ketentuan pelindungan data, bukan pendapat hukum. Rumusan adendum dan dasar transfer sebaiknya ditinjau penasihat hukum perusahaan.
@@ -96,7 +98,7 @@ Aksi yang wajib dicatat:
 | Responden | impor daftar, penerbitan, pencabutan, dan pengiriman ulang token |
 | Data | pengeluaran respons dari analisis beserta alasannya |
 | Bukti | unggah (`evidence.upload`), versi baru (`evidence.version`), perubahan pemetaan (`evidence.map`), penghapusan logis (`evidence.delete`) |
-| Observasi | pembukaan jendela (`observation.window_create`), setiap rekaman (`observation.capture`) |
+| Observasi | pembukaan masa observasi (`observation.window_create`), setiap rekaman (`observation.capture`) |
 | Penilaian | setiap nilai asesor, eksekusi mesin, penyesuaian panel, finalisasi |
 | Laporan | pembuatan, penandatanganan, pengunduhan |
 | Retensi | pemusnahan beserta berita acara |

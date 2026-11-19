@@ -20,9 +20,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Observasi lapangan (docs/01 M6), dibawa dari v1 src/lib/observations/service.ts. Asesor membuka jendela observasi
+ * Observasi lapangan (docs/01 M6), dibawa dari v1 src/lib/observations/service.ts. Asesor membuka masa observasi
  * per proyek; koordinator mengambil foto atau video langsung dari kamera. Waktu pengambilan adalah waktu server saat
- * izin unggah diminta, bukan waktu perangkat. Pengambilan di luar jendela waktu ditolak; di luar radius diterima
+ * izin unggah diminta, bukan waktu perangkat. Pengambilan di luar masa observasi ditolak; di luar radius diterima
  * tetapi ditandai.
  */
 class ObservationService
@@ -88,7 +88,7 @@ class ObservationService
     }
 
     /**
-     * Jendela observasi beserta rekamannya, terbaru lebih dulu. Koordinator hanya melihat jendela unitnya.
+     * Masa observasi beserta rekamannya, terbaru lebih dulu. Koordinator hanya melihat masa observasi unitnya.
      *
      * @param  list<string>|null  $unitScope
      * @return list<array<string, mixed>>
@@ -130,7 +130,7 @@ class ObservationService
     }
 
     /**
-     * Satu jendela untuk halaman kamera, dengan jumlah rekaman per butir.
+     * Satu masa observasi untuk halaman kamera, dengan jumlah rekaman per butir.
      *
      * @param  list<string>|null  $unitScope
      */

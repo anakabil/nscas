@@ -89,7 +89,7 @@ class MenuBuilderTest extends TestCase
 
     public function test_menu_never_offers_a_page_the_matrix_forbids(): void
     {
-        // Contoh silang terhadap matriks docs/04: daftar responden tertutup bagi asesor dan pemirsa eksekutif.
+        // Contoh silang terhadap matriks docs/04: daftar responden tertutup bagi asesor dan peninjau eksekutif.
         $this->assertFalse(Permissions::canRead([Role::Assessor], Resource::Roster));
         $this->assertFalse(Permissions::canRead([Role::SuperAdmin], Resource::RawSurveyAnswers));
         $this->assertTrue(Permissions::canWrite([Role::UnitCoordinator], Resource::EvidenceAndObservations));

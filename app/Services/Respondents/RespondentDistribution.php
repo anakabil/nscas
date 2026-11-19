@@ -291,11 +291,11 @@ final class RespondentDistribution
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // Jendela survei dan koordinator unit
+    // Masa survei dan koordinator unit
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Jendela survei bukan parameter terkunci (aturan 5): jadwal lapangan dapat bergeser selama pengumpulan data.
+     * Masa survei bukan parameter terkunci (aturan 5): jadwal lapangan dapat bergeser selama pengumpulan data.
      */
     public function setWindow(Assessment $assessment, CarbonImmutable $opensAt, CarbonImmutable $closesAt, Role $actorRole): void
     {

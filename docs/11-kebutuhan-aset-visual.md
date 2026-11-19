@@ -240,7 +240,7 @@ Indonesian construction workers, men and women, some women wearing hijab under t
 | V09 | `state-not-found.png` | Halaman tidak ditemukan | 800 x 600 | Transparan | Pekerja melihat denah dengan satu ruang kosong | Perak dan arang; tanda lokasi emas |
 | V10 | `empty-respondents.png` | Daftar responden kosong | 800 x 600 | Transparan | Papan klip daftar nama kosong dan tiga pekerja | Perak dan arang; helm emas pucat |
 | V11 | `empty-evidence.png` | Daftar bukti kosong | 800 x 600 | Transparan | Map terbuka dengan satu lembar dan kaca pembesar | Perak dan arang; lensa emas |
-| V12 | `empty-observations.png` | Jendela observasi kosong | 800 x 600 | Transparan | Kamera dan penanda lokasi di depan perancah berpagar | Perak dan arang; penanda emas |
+| V12 | `empty-observations.png` | Masa observasi kosong | 800 x 600 | Transparan | Kamera dan penanda lokasi di depan perancah berpagar | Perak dan arang; penanda emas |
 | V13 | `empty-validation.png` | Belum ada sesi validasi | 800 x 600 | Transparan | Meja bundar dengan kursi kosong dan dua gelembung percakapan | Perak dan arang; gelembung emas |
 | V14 | `empty-action-plan.png` | Daftar kesenjangan kosong | 800 x 600 | Transparan | Papan rencana tiga kolom dengan satu kartu | Perak dan arang; kartu emas |
 | V15 | `empty-report.png` | Belum ada laporan | 800 x 600 | Transparan | Lembar laporan dengan grafik dan pena | Perak dan arang; pena emas |

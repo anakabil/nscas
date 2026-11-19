@@ -103,8 +103,9 @@ Ikon enam tahap memakai set khusus di `components/icons/stage-icons.tsx`: garis 
 3. Tidak memakai tanda pisah panjang dan tanda seru.
 4. Menyapa pengguna dengan "Anda".
 5. Istilah harus dipahami pekerja lapangan. Hindari istilah teknis sistem.
-6. Nama jenis akun: Pengelola sistem, Asesor utama, Asesor, Administrator klien, Koordinator unit, Pemirsa eksekutif.
+6. Nama jenis akun: Pengelola sistem, Asesor utama, Asesor, Administrator klien, Koordinator unit, Peninjau eksekutif.
 7. Angka memakai format Indonesia: koma desimal dan titik ribuan.
+8. Rentang waktu kegiatan disebut "masa", bukan terjemahan harfiah "jendela": "masa survei" dan "masa observasi", dengan keadaan "belum dimulai", "berlangsung", dan "selesai" (keputusan pemilik proyek, 19 November 2026).
 
 ## 5. Aksesibilitas
 

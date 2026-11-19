@@ -90,9 +90,9 @@ Catatan versi 2. Siklus di atas berlaku dengan satu tambahan: status `VALIDATION
 - Indikator karakteristik yang belum memiliki minimal dua jenis bukti.
 
 ### M6. Observasi digital
-- Asesor membuat jendela observasi per proyek: waktu buka, waktu tutup, daftar periksa observasi, dan titik koordinat proyek dengan radius toleransi.
+- Asesor membuat masa observasi per proyek: waktu buka, waktu tutup, daftar periksa observasi, dan titik koordinat proyek dengan radius toleransi.
 - Koordinator proyek mengambil foto atau video melalui kamera perangkat di dalam aplikasi. Waktu dicatat oleh server; lokasi dari peramban beserta akurasinya.
-- Unggahan di luar jendela waktu ditolak. Unggahan di luar radius diterima tetapi ditandai.
+- Unggahan di luar masa observasi ditolak. Unggahan di luar radius diterima tetapi ditandai.
 - Pengunggahan berkas dari galeri tidak diizinkan untuk observasi.
 
 ### M7. Wawancara dan diskusi kelompok daring
@@ -137,7 +137,7 @@ Lihat `docs/04`.
 |---|---|
 | Kapasitas | 3.000 responden per asesmen; 300 pengisian bersamaan tanpa penurunan berarti |
 | Kinerja survei | Halaman pertama tampil di bawah 3 detik pada jaringan 3G |
-| Ketersediaan | 99 persen selama jendela survei |
+| Ketersediaan | 99 persen selama masa survei |
 | Peramban | Chrome dan Safari versi dua tahun terakhir, termasuk Android 9 ke atas |
 | Aksesibilitas | Kontras teks memenuhi WCAG AA; target sentuh minimal 44 piksel |
 | Cadangan data | Harian, disimpan 30 hari, diuji pemulihannya setiap bulan |

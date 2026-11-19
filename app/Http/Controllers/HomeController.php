@@ -22,7 +22,7 @@ use Inertia\Response;
 class HomeController extends Controller
 {
     /**
-     * Peran yang melihat dasbor progres (keputusan pemilik proyek, 19 November 2026). Koordinator unit dan pemirsa
+     * Peran yang melihat dasbor progres (keputusan pemilik proyek, 19 November 2026). Koordinator unit dan peninjau
      * eksekutif tidak melihatnya.
      */
     public const DASHBOARD_ROLES = [Role::SuperAdmin, Role::LeadAssessor, Role::Assessor, Role::ClientAdmin];

@@ -46,7 +46,7 @@ Server aplikasi tidak menyimpan keadaan. Sesi, cache, dan antrean ada di Postgre
 |---|---|---|---|
 | A. Satu Droplet | Aplikasi, antrean, penjadwal, dan PostgreSQL dalam satu Droplet | Uji coba dan demo dengan data buatan | Ubah ukuran Droplet (resize) |
 | B. Produksi awal | Satu Droplet untuk aplikasi; DigitalOcean Managed PostgreSQL; Spaces untuk berkas | Pengukuran sungguhan sampai sekitar 3.000 responden | Ubah ukuran Droplet dan basis data secara terpisah |
-| C. Produksi elastis | Load Balancer di depan beberapa Droplet web dalam Autoscale Pool; satu Droplet untuk antrean dan penjadwal; Managed PostgreSQL; Spaces | Banyak klien atau jendela survei bersamaan | Pool menambah dan mengurangi Droplet web menurut beban |
+| C. Produksi elastis | Load Balancer di depan beberapa Droplet web dalam Autoscale Pool; satu Droplet untuk antrean dan penjadwal; Managed PostgreSQL; Spaces | Banyak klien atau masa survei bersamaan | Pool menambah dan mengurangi Droplet web menurut beban |
 
 ```
 Tata letak A                  Tata letak B                       Tata letak C
@@ -201,7 +201,7 @@ Bukti dokumen dan rekaman observasi disimpan di bucket Spaces privat di wilayah 
 | `AWS_URL` | kosong |
 
 5. Jalankan `deploy.sh deploy`. Kebijakan keamanan isi otomatis mengizinkan alamat bucket untuk unggah dan pratinjau; tidak ada perubahan kode.
-6. Periksa dengan data buatan: pada asesmen uji yang sudah dikunci, unggah satu PDF di halaman Bukti dokumen, unduh kembali, lalu buka jendela observasi dan kirim satu foto dari telepon. Bila unggahan gagal dengan pesan sambungan, periksa aturan CORS langkah 3.
+6. Periksa dengan data buatan: pada asesmen uji yang sudah dikunci, unggah satu PDF di halaman Bukti dokumen, unduh kembali, lalu buka masa observasi dan kirim satu foto dari telepon. Bila unggahan gagal dengan pesan sambungan, periksa aturan CORS langkah 3.
 
 Unggahan yang diminta tetapi tidak pernah diselesaikan dihapus setiap jam oleh penjadwal (`nscas:prune-uploads`), beserta berkasnya. Rekaman observasi memerlukan kamera dan lokasi peramban, yang hanya tersedia lewat HTTPS.
 
@@ -210,7 +210,7 @@ Unggahan yang diminta tetapi tidak pernah diselesaikan dihapus setiap jam oleh p
 1. Aktifkan pemantauan Droplet dan buat peringatan untuk pemakaian prosesor di atas 80 persen, memori di atas 85 persen, dan disk di atas 80 persen.
 2. Buat pemeriksaan ketersediaan (uptime check) ke `https://nscas.nusasafety.co.id/up` dengan pemberitahuan ke surel administrator.
 3. Periksa halaman Status sistem di aplikasi setelah setiap penempatan.
-4. Server memulai ulang sendiri pukul 03.00 WIB bila pembaruan keamanan memerlukannya. Selama jendela survei besar, matikan mulai ulang otomatis sesuai catatan di `cloud-init.yaml`, lalu mulai ulang secara terjadwal.
+4. Server memulai ulang sendiri pukul 03.00 WIB bila pembaruan keamanan memerlukannya. Selama masa survei besar, matikan mulai ulang otomatis sesuai catatan di `cloud-init.yaml`, lalu mulai ulang secara terjadwal.
 
 ## 11. Keputusan teknis yang perlu diketahui
 

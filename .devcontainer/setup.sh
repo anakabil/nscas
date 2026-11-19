@@ -98,7 +98,7 @@ Akun contoh
   asesor@contoh.test          Asesor, Nusa Safety
   admin.klien@contoh.test     Administrator klien, PT Konstruksi Contoh
   koordinator@contoh.test     Koordinator unit, PT Konstruksi Contoh
-  eksekutif@contoh.test       Pemirsa eksekutif, PT Konstruksi Contoh
+  eksekutif@contoh.test       Peninjau eksekutif, PT Konstruksi Contoh
 
 Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Tahap 1 (perencanaan), seluruh halaman tahap 2
 (responden, kode QR, partisipasi, penilaian mandiri, bukti dokumen, observasi lapangan), dan survei responden di telepon

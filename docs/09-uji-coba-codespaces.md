@@ -39,7 +39,7 @@ Panduan versi 1 (Next.js) tersimpan di riwayat Git pada komit `8ad6b3d`. Codespa
 | `asesor@contoh.test` | Asesor, Nusa Safety |
 | `admin.klien@contoh.test` | Administrator klien, PT Konstruksi Contoh |
 | `koordinator@contoh.test` | Koordinator unit, PT Konstruksi Contoh |
-| `eksekutif@contoh.test` | Pemirsa eksekutif, PT Konstruksi Contoh |
+| `eksekutif@contoh.test` | Peninjau eksekutif, PT Konstruksi Contoh |
 
 4. Kotak surat uji dibuka dari tab Ports, baris "Kotak surat uji (Mailpit)", port 8025. Port ini tetap Private, hanya untuk pemilik codespace.
 
@@ -53,14 +53,14 @@ Versi 2 saat ini berada di akhir fase R5 (bukti dokumen dan observasi lapangan).
 4. Asesmen baru dengan akun asesor utama, lalu tujuh halaman tahap Perencanaan: rincian, unit, strata, parameter, kalkulator sampel, tim asesor, serta komunikasi awal dan kalibrasi.
 5. Mengubah status asesmen dari Draf ke Pengaturan lengkap, lalu ke Parameter terkunci, di pusat asesmen. Setelah terkunci, parameter tidak dapat diubah lagi.
 6. Tahap 2 pada asesmen contoh "Kantor Pusat 2026" (sekitar 2.400 responden fiktif dengan partisipasi yang sudah berjalan):
-   - Responden dan undangan, dengan akun administrator klien: unduh templat Excel, isi beberapa baris, periksa lalu simpan; terbitkan tautan dan unduh CSV-nya; kirim undangan, lalu lihat surelnya di kotak surat uji (Mailpit); cabut dan terbitkan ulang token seorang responden; ubah jendela survei.
+   - Responden dan undangan, dengan akun administrator klien: unduh templat Excel, isi beberapa baris, periksa lalu simpan; terbitkan tautan dan unduh CSV-nya; kirim undangan, lalu lihat surelnya di kotak surat uji (Mailpit); cabut dan terbitkan ulang token seorang responden; ubah masa survei.
    - Kode QR, dengan akun administrator klien: buat kode untuk satu unit, cetak lembar A4, lalu pindai kode dari telepon untuk melihat halaman responden.
    - Partisipasi, dengan akun mana pun yang berhak: tabel per strata dan unit, angka di bawah 5 yang disembunyikan, dan perkembangan harian.
    - Akun koordinator unit hanya melihat Divisi Gedung beserta proyek di bawahnya.
 7. Survei responden di telepon: dengan akun administrator klien, terbitkan ulang tautan seorang responden di halaman Responden (tombol putar ulang), lalu buka tautannya di peramban telepon; atau pindai kode QR yang baru dibuat. Isi survei sampai selesai. Buka Daftar pertanyaan untuk berpindah ke pertanyaan mana pun yang sudah dijawab, dan pakai tombol Ubah di halaman Periksa jawaban sebelum mengirim. Coba juga mematikan sambungan data sebelum menekan Kirim: jawaban terkirim otomatis begitu sambungan kembali, dan angka di halaman Partisipasi bertambah. Tautan yang sama tidak dapat dipakai dua kali.
 8. Penilaian mandiri manajemen: dengan akun administrator klien, buka tab Penilaian mandiri, terbitkan tautan untuk seorang manajer, lalu buka tautannya. Pilih pernyataan, tulis alasan paling sedikit 50 karakter, dan centang bukti pendukung untuk setiap karakteristik; Daftar karakteristik menunjukkan mana yang belum lengkap. Kirim, lalu dengan akun asesor utama buka Lihat jawaban untuk membaca alasan dan judul bukti yang ditautkan.
 9. Bukti dokumen, dengan akun administrator klien: buka tab Bukti dokumen, lihat daftar periksa per karakteristik, unggah PDF atau gambar dan petakan ke karakteristik serta butir daftar periksanya, ubah pemetaan, unggah versi baru, unduh, lalu hapus. Akun koordinator unit hanya dapat mengunggah untuk unitnya; akun asesor hanya membaca. Di Codespaces berkas disimpan di disk codespace, bukan di penyimpanan objek.
-10. Observasi lapangan: dengan akun asesor utama, buka tab Observasi lapangan dan buka jendela observasi untuk proyek; dengan akun administrator klien di telepon, tekan Buka kamera, izinkan kamera dan lokasi, ambil foto, lalu kirim. Asesor melihat rekaman beserta waktu server, jarak ke titik proyek, dan penanda di luar radius. Asesmen contoh sudah memiliki satu jendela yang sedang terbuka.
+10. Observasi lapangan: dengan akun asesor utama, buka tab Observasi lapangan dan buka masa observasi untuk proyek; dengan akun administrator klien di telepon, tekan Buka kamera, izinkan kamera dan lokasi, ambil foto, lalu kirim. Asesor melihat rekaman beserta waktu server, jarak ke titik proyek, dan penanda di luar radius. Asesmen contoh sudah memiliki satu jendela yang sedang terbuka.
 11. Pengingat survei dapat dicoba tanpa menunggu pukul 08.00 WIB dengan perintah `php artisan nscas:survey-reminders` di terminal; surelnya masuk ke kotak surat uji.
 12. Tampilan konsol di telepon, tablet, dan laptop. Buka alamat yang sama dari peramban perangkat itu; tab tahap pengumpulan data dapat digeser ke samping di layar sempit.
 
@@ -139,7 +139,7 @@ Codespaces sungguhan tidak dapat dibuat dari lingkungan penyusunan. Karena itu k
 | Kuki sesi bertanda Secure, dan header HSTS dikirim karena skema HTTPS terbaca | Lulus |
 | Pusat asesmen dan ringkasan asesmen terbuka | Lulus |
 | Surel atur ulang kata sandi diterima Mailpit, dan tautannya memakai alamat publik | Lulus |
-| Akun pemirsa eksekutif masuk dari layar telepon 390 piksel tanpa geser ke samping | Lulus |
+| Akun peninjau eksekutif masuk dari layar telepon 390 piksel tanpa geser ke samping | Lulus |
 | Tidak ada galat di konsol peramban dan tidak ada permintaan ke host lain | Lulus |
 | `start.sh` mendeteksi alamat publik yang berubah, memperbarui `.env` dan berkas akun, lalu menyalakan ulang | Lulus |
 | Codespace dihentikan lalu dinyalakan kembali: aplikasi siap dalam 3 detik dan data tetap ada | Lulus |

@@ -46,7 +46,7 @@ class RespondentAccessAndParticipationTest extends TestCase
         $this->assessment = $this->lockedAssessment($this->lead, $this->member($this->operator, Role::Assessor));
     }
 
-    /** Membuka pengumpulan data dengan jendela survei yang sedang berjalan. */
+    /** Membuka pengumpulan data dengan masa survei yang sedang berjalan. */
     private function openSurvey(): void
     {
         $this->assessment->forceFill([

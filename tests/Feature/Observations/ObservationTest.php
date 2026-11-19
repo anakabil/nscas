@@ -18,8 +18,8 @@ use Tests\Concerns\BuildsAssessments;
 use Tests\TestCase;
 
 /**
- * Fase R5 (docs/01 M6): jendela observasi oleh asesor, rekaman kamera oleh koordinator, waktu server, lokasi dan
- * akurasinya, penanda di luar radius, penolakan di luar jendela waktu, cakupan unit, dan jejak audit.
+ * Fase R5 (docs/01 M6): masa observasi oleh asesor, rekaman kamera oleh koordinator, waktu server, lokasi dan
+ * akurasinya, penanda di luar radius, penolakan di luar masa observasi, cakupan unit, dan jejak audit.
  */
 class ObservationTest extends TestCase
 {

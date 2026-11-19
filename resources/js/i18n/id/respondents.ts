@@ -10,8 +10,8 @@ export const respondents = {
         readOnly: 'Jenis akun Anda dapat melihat halaman ini tetapi tidak dapat mengubahnya.',
         windowOpen: 'Survei sedang dibuka.',
         windowClosed: 'Survei sedang tidak dibuka.',
-        windowRange: 'Jendela survei {opens} sampai {closes} WIB.',
-        windowUnset: 'Jendela survei belum diatur.',
+        windowRange: 'Masa survei {opens} sampai {closes} WIB.',
+        windowUnset: 'Masa survei belum diatur.',
     },
     respondents: {
         intro: 'Kelola daftar responden, terbitkan tautan, dan kirim undangan. Jawaban survei tidak dapat dihubungkan dengan daftar ini.',
@@ -29,11 +29,11 @@ export const respondents = {
             reissueQueued: 'Surel dengan tautan baru masuk antrean pengiriman.',
         },
         window: {
-            title: 'Jendela survei',
+            title: 'Masa survei',
             intro: 'Waktu dalam WIB. Tautan dan kode QR hanya berlaku di antara waktu buka dan waktu tutup.',
             opensAt: 'Dibuka',
             closesAt: 'Ditutup',
-            save: 'Simpan jendela survei',
+            save: 'Simpan masa survei',
         },
         import: {
             title: 'Impor daftar responden',
@@ -173,7 +173,7 @@ export const respondents = {
             'Kode hanya tampil saat dibuat. Mencetak ulang berarti membuat kode baru, dan kode lama unit itu otomatis nonaktif.',
         print: 'Cetak lembar A4',
         printReady: 'Kode QR untuk {unit} siap dicetak. Kode ini tidak dapat ditampilkan lagi setelah halaman ditinggalkan.',
-        openNote: 'Pemindaian hanya berlaku selama jendela survei terbuka.',
+        openNote: 'Pemindaian hanya berlaku selama masa survei.',
         sheet: {
             heading: 'Survei budaya keselamatan dan kesehatan kerja (K3)',
             scan: 'Pindai kode QR ini dengan kamera telepon genggam Anda untuk mengisi survei.',

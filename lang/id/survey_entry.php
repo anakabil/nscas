@@ -13,7 +13,7 @@ return [
         'QR_LIMIT' => 'Kuota pengisian untuk kode QR ini sudah habis. Hubungi koordinator unit Anda.',
         'INVALID' => 'Tautan survei ini tidak berlaku. Tautan mungkin sudah diganti dengan tautan yang lebih baru. Periksa surel atau pesan terakhir yang Anda terima, atau hubungi koordinator unit Anda.',
         'USED' => 'Jawaban survei dari tautan ini sudah diterima. Terima kasih atas partisipasi Anda.',
-        'NOT_OPEN' => 'Survei sedang tidak dibuka. Tautan Anda tetap berlaku selama jendela survei.',
+        'NOT_OPEN' => 'Survei sedang tidak dibuka. Tautan Anda tetap berlaku selama masa survei.',
         'CLOSED' => 'Survei sudah ditutup. Terima kasih atas perhatian Anda.',
     ],
     'opens' => 'Survei dibuka mulai :date.',

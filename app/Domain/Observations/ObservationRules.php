@@ -8,8 +8,8 @@ use App\Domain\Workflow\AssessmentStatus;
 use DateTimeInterface;
 
 /**
- * Aturan jendela observasi (docs/01 M6), dibawa dari v1 src/lib/observations/service.ts. Unggahan di luar jendela
- * waktu ditolak; di luar radius diterima tetapi ditandai.
+ * Aturan masa observasi (docs/01 M6), dibawa dari v1 src/lib/observations/service.ts. Unggahan di luar masa
+ * observasi ditolak; di luar radius diterima tetapi ditandai.
  */
 final class ObservationRules
 {
@@ -27,7 +27,7 @@ final class ObservationRules
 
     public const NOTE_MAX = 1000;
 
-    /** Jendela observasi dibuat dan dipakai selama asesmen dikunci atau mengumpulkan data. */
+    /** Masa observasi dibuat dan dipakai selama asesmen dikunci atau mengumpulkan data. */
     public static function statusAllows(AssessmentStatus $status): bool
     {
         return $status === AssessmentStatus::Locked || $status === AssessmentStatus::DataCollection;

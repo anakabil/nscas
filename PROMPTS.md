@@ -61,14 +61,44 @@ Dasbor dibangun pada fase R1 dengan ukuran tahap perencanaan, kesiapan menuju st
 | R7 | Sub-tema yang sudah dinilai dua asesor; rapat panel |
 | R9 | Rencana aksi berjalan dan yang melewati tenggat |
 
+## Keputusan pemilik proyek
+
+Pemilik proyek menyetujui seluruh rekomendasi Trustie pada 19 November 2026. Keputusan yang sudah berlaku di kode tidak diubah; yang belum, dikerjakan pada fase yang disebut.
+
+| Asal | Keputusan | Berlaku di |
+|---|---|---|
+| R0 | Model enam tahap dengan status Validasi; satu Droplet sebagai awal, dapat diperbesar | Sudah berlaku |
+| R1 | Tim asesor paling sedikit dua orang; penguncian setelah perjanjian pemrosesan data ditandatangani; akun baru dengan kata sandi sementara; unit dan tim tetap dapat diubah setelah dikunci | Sudah berlaku |
+| R2 | Tautan, undangan, dan kode QR hanya diterbitkan administrator klien; kode QR boleh untuk satu strata; token yang sudah selesai tidak dapat dicabut atau diterbitkan ulang | Sudah berlaku |
+| R3 | Skala iklim tetap draf sampai ditelaah ahli dan diuji coba; batas laju 600 pembukaan dan 300 kiriman per menit; urutan pernyataan acak tanpa nomor tingkat | Sudah berlaku; telaah ahli di bagian Tugas di luar fase |
+| R3 | Trustie menyusun draf terjemahan Inggris isi instrumen untuk ditelaah | Tugas di luar fase |
+| R5 | Syarat `evidence_reviewed` berupa pernyataan tinjauan asesor per karakteristik; hitungan dua jenis bukti hanya penanda | R6 |
+| R5 | Asesor tetap hanya membaca bukti; dokumen yang diterima saat wawancara diunggah administrator klien dan dicatat pada catatan sesi | Sudah berlaku (matriks `docs/04`) |
+| R5 | Aplikasi web yang dapat dipasang (PWA) untuk halaman kamera observasi | R12 |
+| `docs/13` | D1 instrumen versi 2 berstruktur 5 tema dan 20 subtema, dengan instrumen versi 1 sebagai jembatan; D5 kode dan judul subtema SCL 2.0 di seed tanpa teks kriteria | Tugas di luar fase, sebelum R7 |
+| `docs/13` | D2 aturan penetapan tingkat per tema; D3 ambang 0,80 dan 0,50 sebagai awal; D4 fixture versi 2 | R7 |
+| `docs/13` | D6 paling sedikit satu kunjungan proyek fisik setiap asesmen | R6 |
+| Bahasa | "Peninjau eksekutif"; "masa survei" dan "masa observasi" menggantikan "jendela"; "Pengaturan lengkap" | Sudah berlaku (`docs/05` butir 6 dan 8) |
+| Lokasi data | Persetujuan atas lokasi Singapura tetap sesuai rencana awal: rumusan diserahkan kepada klien untuk dibaca dan disetujui | `docs/04` bagian 1.1 |
+
+## Tugas di luar fase
+
+| Tugas | Penanggung jawab | Status |
+|---|---|---|
+| Telaah ahli dan uji coba skala iklim bagian B (21 butir draf; proposal menjanjikan 90 sampai 120 butir) | Nusa Safety, dibantu Trustie | Belum |
+| Draf terjemahan Inggris isi instrumen versi 1 (nama karakteristik, pernyataan berjenjang, butir iklim) untuk ditelaah | Trustie, ditelaah Nusa Safety | Belum |
+| Draf instrumen versi 2 (D1) dan peta silang kode subtema SCL 2.0 (D5) untuk ditelaah ahli | Trustie, ditelaah Nusa Safety | Belum; diperlukan sebelum R7 |
+| Rumusan adendum atau klausul perjanjian pemrosesan data tentang lokasi Singapura, untuk dibaca dan disetujui klien | Nusa Safety | Belum |
+| Pembukaan blokir port SMTP DigitalOcean; bucket Spaces dan aturan CORS (`docs/08` bagian 9 dan 9a) | Administrator server | Belum |
+
 ## R2. Responden, undangan, kode QR, dan partisipasi (selesai)
 
-Hasil: impor daftar responden dari .xlsx atau CSV dengan pratinjau, galat per baris, dan penyimpanan hanya bila seluruh baris valid (templat Excel dengan daftar pilihan unit dan strata); kontak responden terenkripsi; tautan survei yang ditampilkan sekali dan diunduh sebagai CSV, dengan hanya hash token tersimpan; undangan surel lewat antrean yang membuat token saat surel dikirim dan mencabutnya bila pengiriman gagal; pengingat pukul 08.00 WIB paling banyak tiga kali dengan jarak tiga hari, dengan rotasi token yang belum dibuka; pencabutan dan penerbitan ulang; kode QR per unit dan strata dengan batas penerbitan, pemakaian ulang token pada perangkat yang sama, dan lembar A4 siap cetak; jendela survei dalam WIB; penugasan koordinator unit dengan cakupan unit di bawahnya; partisipasi per strata dan unit dengan ambang sel serta penanda strata di bawah ambang, dan cuplikan harian pukul 23.00 WIB; halaman publik `/q` dan `/s` tanpa sesi sehingga alamat IP responden tidak tersimpan (formulir survei menyusul di R3); syarat `roster_imported` dan `tokens_issued` untuk LOCKED ke DATA_COLLECTION; dasbor beranda menampilkan survei selesai terhadap sasaran. Surel memakai Hostinger Mail `admin@nusasafety.co.id` (keputusan pemilik proyek, fase R2; `docs/08` bagian 9, `docs/04` bagian 1.2). Tes: `tests/Unit/Domain/Respondents`, `tests/Feature/Respondents`, termasuk impor 3.000 baris di bawah 30 detik.
+Hasil: impor daftar responden dari .xlsx atau CSV dengan pratinjau, galat per baris, dan penyimpanan hanya bila seluruh baris valid (templat Excel dengan daftar pilihan unit dan strata); kontak responden terenkripsi; tautan survei yang ditampilkan sekali dan diunduh sebagai CSV, dengan hanya hash token tersimpan; undangan surel lewat antrean yang membuat token saat surel dikirim dan mencabutnya bila pengiriman gagal; pengingat pukul 08.00 WIB paling banyak tiga kali dengan jarak tiga hari, dengan rotasi token yang belum dibuka; pencabutan dan penerbitan ulang; kode QR per unit dan strata dengan batas penerbitan, pemakaian ulang token pada perangkat yang sama, dan lembar A4 siap cetak; masa survei dalam WIB; penugasan koordinator unit dengan cakupan unit di bawahnya; partisipasi per strata dan unit dengan ambang sel serta penanda strata di bawah ambang, dan cuplikan harian pukul 23.00 WIB; halaman publik `/q` dan `/s` tanpa sesi sehingga alamat IP responden tidak tersimpan (formulir survei menyusul di R3); syarat `roster_imported` dan `tokens_issued` untuk LOCKED ke DATA_COLLECTION; dasbor beranda menampilkan survei selesai terhadap sasaran. Surel memakai Hostinger Mail `admin@nusasafety.co.id` (keputusan pemilik proyek, fase R2; `docs/08` bagian 9, `docs/04` bagian 1.2). Tes: `tests/Unit/Domain/Respondents`, `tests/Feature/Respondents`, termasuk impor 3.000 baris di bawah 30 detik.
 
 
 Rujukan versi 1: `src/lib/respondents`, `src/app/(console)/assessments/[id]/respondents`, `participation`, `src/lib/jobs/invitations.ts`, `reminders.ts`, `src/app/q`.
 
-1. Impor daftar responden dari Excel dengan validasi; jendela survei; token akses yang hanya disimpan sebagai hash.
+1. Impor daftar responden dari Excel dengan validasi; masa survei; token akses yang hanya disimpan sebagai hash.
 2. Undangan dan pengingat lewat antrean; kepala surel sebagai gambar inline, tanpa gambar jarak jauh.
 3. Kode QR per unit dan strata untuk pekerja tanpa surel, dengan batas pakai.
 4. Partisipasi per unit dan strata dengan penyembunyian sel di bawah 5; koordinator unit hanya melihat unitnya.
@@ -99,14 +129,14 @@ Formulir bertoken yang teridentifikasi (diberitahukan di layar), pilihan pernyat
 
 ## R5. Bukti dokumen dan observasi lapangan (selesai)
 
-Hasil: bukti dokumen dengan unggah dua langkah (URL PUT bertanda tangan ke Spaces, atau penerima aplikasi pada disk lokal), pemeriksaan jenis dari isi berkas dan kesesuaian ekstensi, batas 25 MB, SHA-256, nomor versi (versi lama tetap dapat diunduh), pemetaan ke karakteristik dan butir daftar periksa dari `evidence_examples`, indikator karakteristik dengan kurang dari dua jenis bukti, hapus logis, dan cakupan unit koordinator. Observasi lapangan: jendela per proyek oleh asesor (waktu WIB, daftar periksa, titik dan radius), halaman kamera di dalam aplikasi tanpa isian berkas (foto dari bingkai kamera, video tanpa suara paling lama 30 detik), waktu server, lokasi dan akurasinya, penanda di luar radius, penolakan di luar jendela waktu, dan galeri untuk asesor. Penilaian mandiri kini menautkan bukti per karakteristik. Unggahan yang tidak diselesaikan dihapus setiap jam. Survei dan penilaian mandiri mendapat daftar pertanyaan untuk berpindah dan mengubah jawaban, serta halaman periksa dengan tombol Ubah; petunjuk diringkas; kesamaan kunci teks dua bahasa diperiksa saat kompilasi. Seluruh halaman diperiksa otomatis pada lebar 360, 768, 1024, dan 1440 piksel tanpa luapan. Tes: `tests/Unit/Domain/{Files,Evidence,Observations}`, `tests/Feature/Evidence`, `tests/Feature/Observations`.
+Hasil: bukti dokumen dengan unggah dua langkah (URL PUT bertanda tangan ke Spaces, atau penerima aplikasi pada disk lokal), pemeriksaan jenis dari isi berkas dan kesesuaian ekstensi, batas 25 MB, SHA-256, nomor versi (versi lama tetap dapat diunduh), pemetaan ke karakteristik dan butir daftar periksa dari `evidence_examples`, indikator karakteristik dengan kurang dari dua jenis bukti, hapus logis, dan cakupan unit koordinator. Observasi lapangan: masa observasi per proyek oleh asesor (waktu WIB, daftar periksa, titik dan radius), halaman kamera di dalam aplikasi tanpa isian berkas (foto dari bingkai kamera, video tanpa suara paling lama 30 detik), waktu server, lokasi dan akurasinya, penanda di luar radius, penolakan di luar masa observasi, dan galeri untuk asesor. Penilaian mandiri kini menautkan bukti per karakteristik. Unggahan yang tidak diselesaikan dihapus setiap jam. Survei dan penilaian mandiri mendapat daftar pertanyaan untuk berpindah dan mengubah jawaban, serta halaman periksa dengan tombol Ubah; petunjuk diringkas; kesamaan kunci teks dua bahasa diperiksa saat kompilasi. Seluruh halaman diperiksa otomatis pada lebar 360, 768, 1024, dan 1440 piksel tanpa luapan. Tes: `tests/Unit/Domain/{Files,Evidence,Observations}`, `tests/Feature/Evidence`, `tests/Feature/Observations`.
 
 
 Rujukan versi 1: `src/lib/evidence`, `src/lib/observations`, `src/app/o`, `src/lib/files`.
 
 1. Unggah langsung ke penyimpanan objek dengan URL bertanda tangan; pemeriksaan jenis berkas dari isi berkas; versi dan hash SHA-256.
 2. Pemetaan bukti ke karakteristik dan butir daftar periksa.
-3. Jendela observasi per proyek; pengambilan foto dan video dari kamera di dalam aplikasi; waktu dari server; lokasi dan akurasinya; unggahan di luar radius ditandai.
+3. Masa observasi per proyek; pengambilan foto dan video dari kamera di dalam aplikasi; waktu dari server; lokasi dan akurasinya; unggahan di luar radius ditandai.
 
 ## R6. Mutu data, temuan awal, wawancara dan diskusi kelompok
 
@@ -116,6 +146,8 @@ Rujukan versi 1: `src/lib/validation`, `src/app/(console)/assessments/[id]/valid
 2. Temuan awal: gambaran deskriptif per aspek dan strata tanpa tingkat, serta selisih persepsi manajemen dan lapangan.
 3. Rencana validasi yang diturunkan dari temuan awal; sesi wawancara dan diskusi kelompok terarah (paling banyak 8 peserta); panduan dari `seed/panduan-validasi-v1.json`; nilai per karakteristik per asesor.
 4. Transisi DATA_COLLECTION ke VALIDATION ke SCORING dengan gerbang mutu data.
+5. Syarat `evidence_reviewed`: asesor menyatakan bukti setiap karakteristik telah ditinjau; indikator dua jenis bukti dari modul Bukti tampil sebagai penanda, bukan penentu (keputusan R5).
+6. Sesi kunjungan proyek fisik sebagai jenis sesi validasi; paling sedikit satu per asesmen menjadi syarat VALIDATION ke SCORING (D6).
 
 ## R7. Penilaian asesor dan rapat panel
 
@@ -124,6 +156,7 @@ Rujukan versi 1: `src/lib/assessor-scoring`, `src/app/(console)/assessments/[id]
 1. Nilai bukti per karakteristik oleh dua asesor (kelipatan 0,5), tanda rekonsiliasi.
 2. Menjalankan `ScoringEngine` dan menyimpan hasil sebagai catatan perhitungan beserta versi mesin dan parameter.
 3. Rapat panel: penyesuaian dengan alasan tertulis, penguncian hasil.
+4. Aturan penetapan tingkat per tema (D2) dengan ambang 0,80 dan 0,50 (D3), dan fixture versi 2 beserta `referensi_skoring.py` (D4). Fixture versi 1 tetap untuk instrumen versi 1.
 
 ## R8. Dasbor hasil, perbandingan antarperiode, analisis kepekaan
 
@@ -154,3 +187,4 @@ Halaman jejak audit, pemusnahan data mentah dengan berita acara, pengingat reten
 1. Uji ujung ke ujung dengan Playwright untuk satu siklus penuh dari DRAFT sampai MONITORING.
 2. Uji beban 300 pengisian survei bersamaan.
 3. Penempatan di DigitalOcean sesuai `docs/08`, setelah syarat lokasi data di `docs/04` terpenuhi.
+4. Halaman kamera observasi sebagai aplikasi web yang dapat dipasang di layar utama telepon (keputusan R5), diuji pada domain produksi dengan telepon sungguhan.

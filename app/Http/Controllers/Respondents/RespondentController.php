@@ -27,7 +27,7 @@ use Inertia\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * Daftar responden, jendela survei, distribusi token, dan penugasan koordinator unit (docs/01 M2). Koordinator unit
+ * Daftar responden, masa survei, distribusi token, dan penugasan koordinator unit (docs/01 M2). Koordinator unit
  * hanya melihat dan mengimpor unitnya; distribusi token hanya oleh administrator klien (matriks docs/04). Status
  * penyelesaian per orang tidak pernah ditampilkan.
  */

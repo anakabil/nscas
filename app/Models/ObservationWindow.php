@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- * Jendela observasi lapangan satu proyek (docs/01 M6): waktu buka dan tutup, daftar periksa, dan titik proyek
+ * Masa observasi lapangan satu proyek (docs/01 M6): waktu buka dan tutup, daftar periksa, dan titik proyek
  * dengan radius toleransi.
  *
  * @property string $id

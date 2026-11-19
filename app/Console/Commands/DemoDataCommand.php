@@ -263,7 +263,7 @@ class DemoDataCommand extends Command
                 'channel' => $entry->email === null ? 'LINK' : 'EMAIL',
             ])['token'];
             $rate = $plan[$strata->firstWhere('id', $entry->stratum_id)->code][1];
-            // Penyelesaian tersebar sepanjang jendela survei, dibulatkan ke jam seperti aplikasi sungguhan.
+            // Penyelesaian tersebar sepanjang masa survei, dibulatkan ke jam seperti aplikasi sungguhan.
             if (($k * 7919 % 1000) / 1000 < $rate) {
                 $at = $opens->copy()->addHours(($k * 37) % $span)->startOfHour();
                 $token->forceFill(['issued_at' => $opens, 'first_opened_at' => $at, 'consent_at' => $at, 'completed_at' => $at])->save();
@@ -507,8 +507,8 @@ class DemoDataCommand extends Command
     }
 
     /**
-     * Observasi lapangan contoh (fase R5): satu jendela yang sudah ditutup dengan beberapa rekaman, dan untuk asesmen
-     * yang sedang mengumpulkan data satu jendela yang terbuka sekarang. Foto dibuat dengan GD.
+     * Observasi lapangan contoh (fase R5): satu masa observasi yang sudah berakhir dengan beberapa rekaman, dan untuk asesmen
+     * yang sedang mengumpulkan data satu masa observasi yang sedang berlangsung. Foto dibuat dengan GD.
      */
     private function observations(Assessment $assessment, User $lead, User $admin, bool $collecting): void
     {

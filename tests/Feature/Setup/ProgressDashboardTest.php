@@ -15,7 +15,7 @@ use Tests\TestCase;
 
 /**
  * Dasbor progres di beranda (keputusan pemilik proyek, 19 November 2026): tampil untuk pengelola sistem, asesor, dan
- * administrator klien, tidak untuk koordinator unit dan pemirsa eksekutif, dan hanya memuat asesmen yang boleh dilihat.
+ * administrator klien, tidak untuk koordinator unit dan peninjau eksekutif, dan hanya memuat asesmen yang boleh dilihat.
  */
 class ProgressDashboardTest extends TestCase
 {

@@ -55,7 +55,7 @@ type Props = CollectionCommon & {
     windows: Window[];
 };
 
-/** Observasi lapangan (docs/01 M6): jendela per proyek dan galeri rekaman kamera. */
+/** Observasi lapangan (docs/01 M6): masa observasi per proyek dan galeri rekaman kamera. */
 export default function ObservationsIndex(props: Props) {
     const t = useT();
     const [creating, setCreating] = useState(false);

@@ -27,7 +27,7 @@ use Tests\TestCase;
 
 /**
  * Fase R2 (docs/01 M2): impor daftar responden, tautan sekali tampil, undangan surel lewat antrean, pencabutan,
- * penerbitan ulang, jendela survei, dan syarat dimulainya pengumpulan data.
+ * penerbitan ulang, masa survei, dan syarat dimulainya pengumpulan data.
  */
 class RespondentDistributionTest extends TestCase
 {

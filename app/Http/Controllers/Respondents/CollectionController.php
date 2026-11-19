@@ -79,7 +79,7 @@ abstract class CollectionController extends SetupController
     }
 
     /**
-     * Jendela survei diatur asesor utama atau administrator klien (sama dengan v1 SURVEY_WINDOW_WRITE_ROLES).
+     * Masa survei diatur asesor utama atau administrator klien (sama dengan v1 SURVEY_WINDOW_WRITE_ROLES).
      *
      * @param  list<Role>  $roles
      */

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
  * Urutan fisik baris di PostgreSQL dan di berkas cadangan mengikuti urutan pengiriman, sehingga pihak yang dapat
  * membaca basis data secara langsung dapat mencocokkannya dengan waktu selesai token. CLUSTER menulis ulang tabel
  * menurut kunci utama, yaitu UUID versi 4 acak, sehingga urutan pengiriman hilang. Dijalankan terjadwal setiap malam
- * (routes/console.php) dan dapat dijalankan manual setelah jendela survei ditutup. CLUSTER mengunci tabel sebentar.
+ * (routes/console.php) dan dapat dijalankan manual setelah masa survei ditutup. CLUSTER mengunci tabel sebentar.
  */
 #[AsCommand(name: 'nscas:shuffle-survey-rows', description: 'Tulis ulang tabel jawaban survei dalam urutan UUID acak')]
 class ShuffleSurveyRowsCommand extends Command

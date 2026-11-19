@@ -261,18 +261,18 @@ Aturan nonkompensatoris semacam ini dikenal dalam penyusunan indikator komposit:
 3. Kalkulator sampel, karena rumusnya sudah sama dengan skema.
 4. Survei pekerja, karena memberi gambaran pola perilaku yang paling umum dari banyak orang, sesuai makna hijau dalam skema. Survei tidak menggantikan wawancara dan observasi.
 
-## 7. Keputusan yang diperlukan dari pemilik proyek
+## 7. Keputusan pemilik proyek
 
-| No | Keputusan | Pilihan | Rekomendasi |
-|---|---|---|---|
-| D1 | Kerangka instrumen | (a) tetap 6 aspek SCL 2016 dengan laporan tambahan per tema SCL 2.0; (b) instrumen versi 2 berstruktur 5 tema dan 20 subtema | (b), disusun pada fase R1, dengan (a) sebagai jembatan bila klien pertama dimulai sebelum instrumen versi 2 siap |
-| D2 | Aturan penetapan tingkat | (a) tetap rata-rata tertimbang; (b) aturan per tema bagian 6.3 sebagai penentu, indeks `O` sebagai pelengkap | (b) |
-| D3 | Ambang warna | 0,80 dan 0,50 atau nilai lain | 0,80 dan 0,50 sebagai awal, dikalibrasi setelah asesmen pertama |
-| D4 | Fixture baru | Fixture versi 1 tetap untuk instrumen lama; fixture versi 2 dibuat untuk aturan baru beserta `referensi_skoring.py` | Setuju, dikerjakan di fase R7 |
-| D5 | Peta silang sebagai data seed | Simpan kode subtema SCL 2.0 di seed | Setuju; hanya kode dan judul, tanpa teks kriteria |
-| D6 | Kunjungan fisik | Paling sedikit satu kunjungan proyek fisik setiap asesmen | Setuju |
+| No | Keputusan | Pilihan | Rekomendasi | Status |
+|---|---|---|---|---|
+| D1 | Kerangka instrumen | (a) tetap 6 aspek SCL 2016 dengan laporan tambahan per tema SCL 2.0; (b) instrumen versi 2 berstruktur 5 tema dan 20 subtema | (b), disusun pada fase R1, dengan (a) sebagai jembatan bila klien pertama dimulai sebelum instrumen versi 2 siap | Disetujui, 19 November 2026 |
+| D2 | Aturan penetapan tingkat | (a) tetap rata-rata tertimbang; (b) aturan per tema bagian 6.3 sebagai penentu, indeks `O` sebagai pelengkap | (b) | Disetujui, 19 November 2026 |
+| D3 | Ambang warna | 0,80 dan 0,50 atau nilai lain | 0,80 dan 0,50 sebagai awal, dikalibrasi setelah asesmen pertama | Disetujui, 19 November 2026 |
+| D4 | Fixture baru | Fixture versi 1 tetap untuk instrumen lama; fixture versi 2 dibuat untuk aturan baru beserta `referensi_skoring.py` | Setuju, dikerjakan di fase R7 | Disetujui, 19 November 2026 |
+| D5 | Peta silang sebagai data seed | Simpan kode subtema SCL 2.0 di seed | Setuju; hanya kode dan judul, tanpa teks kriteria | Disetujui, 19 November 2026 |
+| D6 | Kunjungan fisik | Paling sedikit satu kunjungan proyek fisik setiap asesmen | Setuju | Disetujui, 19 November 2026 |
 
-Selama keputusan belum diambil, mesin penilaian versi 1 dan seluruh fixture-nya tidak diubah.
+Pemilik proyek menyetujui seluruh rekomendasi pada 19 November 2026. Instrumen versi 1 dan mesin penilaian versi 1 beserta fixture-nya tetap dipakai sebagai jembatan sampai instrumen versi 2 (D1, D5) selesai ditelaah dan aturan penetapan tingkat per tema (D2) beserta fixture versi 2 (D4) dibangun pada fase R7. Fixture versi 1 tidak diubah.
 
 ## 8. Dampak pada fase pembangunan
 

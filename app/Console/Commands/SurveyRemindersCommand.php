@@ -13,7 +13,7 @@ use Illuminate\Console\Command;
 
 /**
  * Penjadwal pengingat harian pukul 08.00 WIB (routes/console.php): mengantre satu pekerjaan per token undangan surel
- * yang belum selesai dan memenuhi App\Domain\Respondents\ReminderPolicy, hanya selama jendela survei terbuka.
+ * yang belum selesai dan memenuhi App\Domain\Respondents\ReminderPolicy, hanya selama masa survei terbuka.
  */
 #[AsCommand(name: 'nscas:survey-reminders', description: 'Antrekan pengingat survei untuk undangan surel yang belum selesai')]
 class SurveyRemindersCommand extends Command
