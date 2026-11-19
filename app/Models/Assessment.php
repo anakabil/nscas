@@ -23,7 +23,7 @@ use Illuminate\Support\Carbon;
  * @property AssessmentStatus $status
  * @property array<string, mixed>|null $parameter_snapshot
  */
-#[Fillable(['organization_id', 'name', 'period_start', 'period_end', 'target_level', 'status', 'instrument_version', 'created_by'])]
+#[Fillable(['organization_id', 'name', 'period_start', 'period_end', 'target_level', 'status', 'created_by'])]
 class Assessment extends Model
 {
     /** @use HasFactory<AssessmentFactory> */
