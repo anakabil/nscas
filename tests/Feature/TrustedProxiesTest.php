@@ -64,22 +64,21 @@ class TrustedProxiesTest extends TestCase
     /**
      * Nilai dari .env baru tersedia setelah aplikasi dimuat. Pengaturan proksi harus dibaca dari konfigurasi pada saat
      * permintaan, bukan dari env() saat kernel dibuat, agar TRUSTED_PROXIES di berkas .env tidak diabaikan diam-diam.
+     * Berkas konfigurasi dibaca langsung: memuat ulang aplikasi akan memuat ulang .env dan menimpa nilai uji.
      */
-    public function test_value_from_environment_reaches_the_configuration(): void
+    public function test_configuration_reads_the_environment_value(): void
     {
-        putenv('TRUSTED_PROXIES=*');
-        $_ENV['TRUSTED_PROXIES'] = $_SERVER['TRUSTED_PROXIES'] = '*';
-        $this->refreshApplication();
-
-        $this->assertSame('*', config('trustedproxy.proxies'));
+        $this->assertSame('*', $this->configWith('*')['proxies']);
+        $this->assertSame('10.0.0.0/16', $this->configWith('10.0.0.0/16')['proxies']);
+        $this->assertNull($this->configWith('')['proxies']);
     }
 
-    public function test_empty_value_means_no_trusted_proxy(): void
+    /** @return array<string, mixed> */
+    private function configWith(string $value): array
     {
-        putenv('TRUSTED_PROXIES=');
-        $_ENV['TRUSTED_PROXIES'] = $_SERVER['TRUSTED_PROXIES'] = '';
-        $this->refreshApplication();
+        putenv("TRUSTED_PROXIES={$value}");
+        $_ENV['TRUSTED_PROXIES'] = $_SERVER['TRUSTED_PROXIES'] = $value;
 
-        $this->assertNull(config('trustedproxy.proxies'));
+        return require config_path('trustedproxy.php');
     }
 }
