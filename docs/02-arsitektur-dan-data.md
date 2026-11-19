@@ -53,7 +53,7 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 
 ## 3. Model data
 
-### 3.1 Tabel yang sudah ada (fase R0 sampai R9)
+### 3.1 Tabel yang sudah ada (fase R0 sampai R10)
 
 | Tabel | Isi | Catatan |
 |---|---|---|
@@ -98,6 +98,8 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `action_items` | Tindakan: judul, uraian, penanggung jawab dan jabatan, surel (terenkripsi), unit, tenggat, indikator keberhasilan, status, kemajuan, verifikasi, waktu pengingat terakhir | R9. Status PLANNED, IN_PROGRESS, DONE, CANCELLED, VERIFIED |
 | `action_updates` | Riwayat pembaruan kemajuan dan verifikasi asesor | R9 |
 | `monitoring_reviews` | Tinjauan pemantauan per triwulan, dengan penanda tinjauan penutup | R9. Syarat `monitoring_closed` |
+| `reports` | Versi laporan per jenis (FULL, EXECUTIVE_SUMMARY, STATEMENT, WORKER_SUMMARY): potret isi, bahasa, status, penanda tangan, kunci dan SHA-256 PDF | R10. Pemicu `report_guard` menolak perubahan isi, perubahan versi bertanda tangan (kecuali kunci PDF yang diisi sekali), dan penghapusan |
+| `result_communications` | Penyampaian hasil kepada pekerja: tanggal, saluran, sasaran, perkiraan jangkauan, catatan | R10. Syarat `results_communicated` bersama ringkasan pekerja bertanda tangan |
 | `audit_logs` | Waktu, pelaku, peran, organisasi, asesmen, aksi, entitas, perubahan, hash alamat IP | Hanya-tambah; pemicu menolak UPDATE, DELETE, TRUNCATE |
 | `sessions`, `cache`, `jobs` | Sesi, cache, antrean | Membuat server aplikasi tanpa keadaan |
 
@@ -109,7 +111,6 @@ Nama dan kolom mengikuti model versi 1 (`git show 8ad6b3d:prisma/schema.prisma`)
 
 | Fase | Tabel |
 |---|---|
-| R10 | `reports` |
 | R11 | `destruction_records` |
 
 ## 4. Desain anonimitas survei

@@ -205,6 +205,14 @@ Bukti dokumen dan rekaman observasi disimpan di bucket Spaces privat di wilayah 
 
 Unggahan yang diminta tetapi tidak pernah diselesaikan dihapus setiap jam oleh penjadwal (`nscas:prune-uploads`), beserta berkasnya. Rekaman observasi memerlukan kamera dan lokasi peramban, yang hanya tersedia lewat HTTPS.
 
+## 9b. PDF laporan (fase R10)
+
+Image produksi memasang Chromium dari repositori Debian dan menyetel `PDF_CHROMIUM_EXECUTABLE=/usr/bin/chromium`. PDF dibuat di server yang sama tanpa layanan luar; HTML laporan tidak memuat skrip maupun sumber luar, dan jaringan Chromium diarahkan ke alamat yang tidak melayani. PDF versi bertanda tangan dibuat sekali lalu disimpan di Spaces beserta SHA-256.
+
+1. Setelah penempatan, pada asesmen uji yang hasilnya sudah ditetapkan, simpan satu versi Pernyataan hasil, tandatangani, lalu unduh PDF-nya. Waktu pembuatan normalnya di bawah lima detik.
+2. Bila PDF gagal dibuat, periksa log kontainer aplikasi. Laporan tetap dapat dicetak dari peramban, dan pengunduhan berikutnya mencoba membuat PDF lagi.
+3. Chromium memakai sekitar 200 MB memori selama pembuatan PDF. Pada Droplet 2 GB, hindari membuat banyak PDF bersamaan.
+
 ## 10. Pemantauan
 
 1. Aktifkan pemantauan Droplet dan buat peringatan untuk pemakaian prosesor di atas 80 persen, memori di atas 85 persen, dan disk di atas 80 persen.

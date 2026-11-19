@@ -13,4 +13,7 @@ return [
      */
     'data_location' => env('NSCAS_DATA_LOCATION', 'Singapura'),
     'data_location_en' => env('NSCAS_DATA_LOCATION_EN', 'Singapore'),
+
+    // Fase R10: biner Chromium untuk PDF laporan di server. Kosong berarti laporan hanya dicetak dari peramban.
+    'pdf_chromium' => env('PDF_CHROMIUM_EXECUTABLE', ''),
 ];

@@ -24,8 +24,8 @@ Cara membangun ulang sebuah modul:
 | R7 | Penilaian asesor dan rapat panel | 4 | Selesai |
 | R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | Selesai |
 | R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | Selesai |
-| R10 | Laporan dan komunikasi hasil | 5 | Berikutnya |
-| R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | |
+| R10 | Laporan dan komunikasi hasil | 5 | Selesai |
+| R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | Berikutnya |
 | R12 | Uji menyeluruh, uji beban, penempatan produksi | Lintas tahap | |
 
 ## R0. Fondasi (selesai)
@@ -183,7 +183,10 @@ Rujukan versi 1: `src/lib/action-plans`, `src/app/(console)/assessments/[id]/gap
 
 Daftar kesenjangan dari hasil, analisis akar masalah, rencana aksi dengan penanggung jawab dan tenggat, pengingat tenggat, pemantauan triwulan.
 
-## R10. Laporan dan komunikasi hasil
+## R10. Laporan dan komunikasi hasil (selesai)
+
+Hasil: empat dokumen disusun dari hasil final, yaitu laporan lengkap dengan dua belas bagian sesuai `docs/01` bagian 6, ringkasan eksekutif, pernyataan hasil satu halaman, dan ringkasan untuk pekerja dalam bahasa sederhana (`docs/12` temuan T5). Setiap dokumen berupa HTML siap cetak tanpa skrip maupun sumber luar, dalam bahasa Indonesia atau Inggris, dengan pratinjau draf bertanda DRAF. Asesor utama menyimpan versi bernomor yang isinya tidak dapat diubah, lalu menandatangani versi terakhir dengan nama, jabatan, dan waktu; pemicu basis data menolak perubahan isi, perubahan versi bertanda tangan, dan penghapusan. PDF dibuat Chromium tanpa layar di server yang sama dengan nomor halaman; untuk versi final PDF dibuat sekali, disimpan di penyimpanan objek beserta SHA-256, lalu dipakai ulang; bila Chromium belum tersedia, laporan dicetak dari peramban. Laporan tidak memuat nama narasumber validasi maupun data per responden; lampiran memuat sesi validasi (jenis, kelompok jabatan, tanggal, banyak narasumber), bukti dengan sidik SHA-256, dan parameter terkunci. Halaman Komunikasi hasil mencatat penyampaian ringkasan kepada pekerja (tanggal, saluran, sasaran, perkiraan jangkauan). Syarat `final_report_signed` dan `results_communicated` diperiksa otomatis. Image produksi kini memasang Chromium (`PDF_CHROMIUM_EXECUTABLE`). Tes: `tests/Feature/Reports`.
+
 
 Rujukan versi 1: `src/lib/report`, `src/lib/jobs/report-render.ts`.
 

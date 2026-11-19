@@ -78,6 +78,11 @@ return [
         'GAP_LIST_MISSING' => 'Daftar kesenjangan belum terbentuk karena hasil belum ditetapkan.',
         'ACTION_PLAN_INCOMPLETE' => 'Setiap kesenjangan memerlukan analisis penyebab dan paling sedikit satu tindakan sebelum rencana aksi diterbitkan.',
         'MONITORING_CLOSED' => 'Tinjauan pemantauan dicatat saat asesmen berada pada tahap pemantauan.',
+        'RESULTS_NOT_FINAL' => 'Laporan disusun setelah rapat panel menetapkan hasil.',
+        'REPORT_CLOSED' => 'Laporan tidak dapat diubah pada status asesmen ini.',
+        'REPORT_SIGNED' => 'Versi ini sudah ditandatangani.',
+        'REPORT_NOT_LATEST' => 'Hanya versi terakhir yang dapat ditandatangani.',
+        'PDF_UNAVAILABLE' => 'PDF belum dapat dibuat di server ini. Buka laporan, lalu cetak atau simpan sebagai PDF dari peramban.',
     ],
     'sessionLabels' => [
         'INTERVIEW' => 'Wawancara :stratum, sesi :n',

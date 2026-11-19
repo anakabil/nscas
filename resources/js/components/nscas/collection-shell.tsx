@@ -161,7 +161,9 @@ export function CollectionShell({
                         </p>
                     ) : null}
                     {flash?.status &&
-                    ['saved', 'emailQueued', 'sessionsCreated', 'scoreRun', 'finalized', 'published'].includes(flash.status) ? (
+                    ['saved', 'emailQueued', 'sessionsCreated', 'scoreRun', 'finalized', 'published', 'signed'].includes(
+                        flash.status,
+                    ) ? (
                         <p
                             role="status"
                             className="rounded-md border border-success/30 bg-success/10 px-4 py-3 text-sm text-success"

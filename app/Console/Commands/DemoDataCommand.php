@@ -26,6 +26,7 @@ use App\Models\ObservationCapture;
 use App\Models\ObservationWindow;
 use App\Models\Organization;
 use App\Models\ParticipationSnapshot;
+use App\Models\Report;
 use App\Models\RosterEntry;
 use App\Models\SclFulfillment;
 use App\Models\ScoreRun;
@@ -39,6 +40,7 @@ use App\Models\ValidationRating;
 use App\Models\ValidationSession;
 use App\Services\AssessmentSetup;
 use App\Services\Files\ObjectStore;
+use App\Services\Reports\ReportService;
 use App\Services\Respondents\ParticipationReport;
 use App\Services\Respondents\RespondentDistribution;
 use App\Services\Respondents\SurveyLinks;
@@ -174,6 +176,11 @@ class DemoDataCommand extends Command
             if ($assessment !== null && $status->position() >= AssessmentStatus::ActionPlanning->position()
                 && GapItem::where('assessment_id', $assessment->id)->exists() && ! ActionItem::whereIn('gap_item_id', GapItem::where('assessment_id', $assessment->id)->select('id'))->exists()) {
                 $this->actionPlan($assessment->refresh(), $lead, $assessor, $accounts['CLIENT_ADMIN'], $status);
+            }
+            // Fase R10: laporan bertanda tangan dan komunikasi hasil untuk asesmen yang sudah melewati pelaporan.
+            if ($assessment !== null && $status->position() >= AssessmentStatus::Reported->position()
+                && ! Report::where('assessment_id', $assessment->id)->exists() && ScoreRun::where('assessment_id', $assessment->id)->where('is_final', true)->exists()) {
+                $this->reports($assessment->refresh(), $lead, $accounts['CLIENT_ADMIN']);
             }
         }
         Auth::forgetUser();
@@ -813,5 +820,17 @@ class DemoDataCommand extends Command
                 'closing' => false, 'reviewed_by' => $lead->id,
             ]);
         }
+    }
+
+    /** Fase R10: laporan lengkap, ringkasan eksekutif, dan ringkasan untuk pekerja yang ditandatangani, serta penyampaiannya. */
+    private function reports(Assessment $assessment, User $lead, User $admin): void
+    {
+        $service = app(ReportService::class);
+        foreach (['FULL', 'EXECUTIVE_SUMMARY', 'WORKER_SUMMARY'] as $kind) {
+            $report = $service->createVersion($assessment, $lead, Role::LeadAssessor, $kind, 'id');
+            $service->sign($assessment, $lead, Role::LeadAssessor, $report->id, 'Asesor utama');
+        }
+        $service->recordCommunication($assessment, $admin, Role::ClientAdmin, CarbonImmutable::parse($assessment->period_end)->addDays(25)->toDateString(),
+            ['SAFETY_TALK', 'NOTICE_BOARD'], 'Seluruh pekerja kantor pusat dan proyek', 2650, 'Ringkasan dibacakan pada briefing pagi dan ditempel di papan pengumuman setiap proyek.');
     }
 }

@@ -51,5 +51,8 @@ final readonly class SetupFacts
         // Fase R9: rencana aksi terbit dan pemantauan selesai.
         public bool $actionPlanPublished = false,
         public bool $monitoringClosed = false,
+        // Fase R10: laporan lengkap ditandatangani dan hasil dikomunikasikan kepada pekerja.
+        public bool $finalReportSigned = false,
+        public bool $resultsCommunicated = false,
     ) {}
 }

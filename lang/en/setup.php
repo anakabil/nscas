@@ -77,6 +77,11 @@ return [
         'GAP_LIST_MISSING' => 'The gap list has not been formed because the results are not finalized.',
         'ACTION_PLAN_INCOMPLETE' => 'Every gap needs a root cause analysis and at least one action before the action plan is published.',
         'MONITORING_CLOSED' => 'Monitoring reviews are recorded while the assessment is in the monitoring stage.',
+        'RESULTS_NOT_FINAL' => 'Reports are prepared after the panel finalizes the results.',
+        'REPORT_CLOSED' => 'Reports cannot be changed at this assessment status.',
+        'REPORT_SIGNED' => 'This version has already been signed.',
+        'REPORT_NOT_LATEST' => 'Only the latest version can be signed.',
+        'PDF_UNAVAILABLE' => 'PDF cannot be produced on this server yet. Open the report, then print or save it as PDF from the browser.',
     ],
     'sessionLabels' => [
         'INTERVIEW' => 'Interview :stratum, session :n',

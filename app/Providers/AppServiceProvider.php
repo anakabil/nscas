@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Reports\ChromiumPdfRenderer;
+use App\Services\Reports\PdfRenderer;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -18,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Fase R10: PDF laporan dari Chromium di server yang sama.
+        $this->app->bind(PdfRenderer::class, ChromiumPdfRenderer::class);
     }
 
     /**

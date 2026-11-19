@@ -19,6 +19,8 @@ use App\Models\EvidenceRating;
 use App\Models\EvidenceReview;
 use App\Models\MonitoringReview;
 use App\Models\ObservationWindow;
+use App\Models\Report;
+use App\Models\ResultCommunication;
 use App\Models\ScoreRun;
 use App\Models\SelfAssessment;
 use App\Models\StratumJustification;
@@ -96,6 +98,9 @@ final class SetupFactsCollector
         $actionStatuses = ActionItem::join('gap_items', 'gap_items.id', '=', 'action_items.gap_item_id')->whereIn('gap_items.assessment_id', $ids)
             ->get(['gap_items.assessment_id', 'action_items.status'])->groupBy('assessment_id');
         $closingReviews = MonitoringReview::whereIn('assessment_id', $ids)->where('closing', true)->pluck('assessment_id')->flip();
+        // Fase R10: versi final per jenis laporan dan catatan komunikasi hasil.
+        $finalReports = Report::whereIn('assessment_id', $ids)->where('status', 'FINAL')->get(['assessment_id', 'kind'])->groupBy('assessment_id');
+        $communicated = ResultCommunication::whereIn('assessment_id', $ids)->pluck('assessment_id')->flip();
 
         $facts = [];
         foreach ($assessments as $assessment) {
@@ -162,6 +167,8 @@ final class SetupFactsCollector
                     ($actionStatuses[$assessment->id] ?? collect())->pluck('status')->all(),
                     $closingReviews->has($assessment->id),
                 ),
+                finalReportSigned: ($finalReports[$assessment->id] ?? collect())->contains('kind', 'FULL'),
+                resultsCommunicated: ($finalReports[$assessment->id] ?? collect())->contains('kind', 'WORKER_SUMMARY') && $communicated->has($assessment->id),
             );
         }
 

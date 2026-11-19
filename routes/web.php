@@ -15,8 +15,10 @@ use App\Http\Controllers\Respondents\RespondentController;
 use App\Http\Controllers\Respondents\SelfAssessmentController;
 use App\Http\Controllers\Respondents\SelfAssessmentFormController;
 use App\Http\Controllers\Respondents\SurveyEntryController;
+use App\Http\Controllers\Results\CommunicationController;
 use App\Http\Controllers\Results\GapsController;
 use App\Http\Controllers\Results\MonitoringController;
+use App\Http\Controllers\Results\ReportController;
 use App\Http\Controllers\Results\ResultsController;
 use App\Http\Controllers\Results\TrendController;
 use App\Http\Controllers\Scoring\PanelController;
@@ -193,6 +195,15 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::post('actions/{action}/progress', [MonitoringController::class, 'progress'])->whereAlphaNumeric('action')->name('actions.progress');
         Route::post('actions/{action}/verify', [MonitoringController::class, 'verify'])->whereAlphaNumeric('action')->name('actions.verify');
         Route::put('monitoring/reviews', [MonitoringController::class, 'review'])->name('monitoring.review');
+        // Fase R10: laporan dan komunikasi hasil.
+        Route::get('report', [ReportController::class, 'index'])->name('report.index');
+        Route::get('report/preview/{kind}', [ReportController::class, 'preview'])->where('kind', 'FULL|EXECUTIVE_SUMMARY|STATEMENT|WORKER_SUMMARY')->name('report.preview');
+        Route::post('report/versions', [ReportController::class, 'store'])->name('report.store');
+        Route::get('report/versions/{report}', [ReportController::class, 'show'])->whereAlphaNumeric('report')->name('report.show');
+        Route::post('report/versions/{report}/sign', [ReportController::class, 'sign'])->whereAlphaNumeric('report')->name('report.sign');
+        Route::get('report/versions/{report}/pdf', [ReportController::class, 'pdf'])->whereAlphaNumeric('report')->middleware('throttle:20,1')->name('report.pdf');
+        Route::get('communication', [CommunicationController::class, 'index'])->name('communication.index');
+        Route::post('communication', [CommunicationController::class, 'store'])->name('communication.store');
     });
 
     // Penerima unggahan saat penyimpanan memakai disk lokal; dengan disk s3 peramban mengunggah langsung (fase R5).

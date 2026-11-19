@@ -26,6 +26,7 @@ export const setup = {
         scoreRun: 'Perhitungan nilai selesai dan tersimpan.',
         finalized: 'Hasil ditetapkan dan dikunci.',
         published: 'Rencana aksi diterbitkan.',
+        signed: 'Laporan ditandatangani.',
     },
     shell: {
         navTitle: 'Tahap 1. Perencanaan',

@@ -108,6 +108,12 @@ ENV APP_ENV=production \
     LOG_CHANNEL=stderr \
     SERVER_NAME=:8080
 
+# Chromium tanpa layar untuk PDF laporan di server yang sama (fase R10, docs/01 M11), beserta huruf dasar.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends chromium fonts-dejavu-core fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+ENV PDF_CHROMIUM_EXECUTABLE=/usr/bin/chromium
+
 # Konfigurasi PHP produksi.
 RUN cp "${PHP_INI_DIR}/php.ini-production" "${PHP_INI_DIR}/php.ini"
 COPY <<'EOF' /usr/local/etc/php/conf.d/zz-nscas.ini

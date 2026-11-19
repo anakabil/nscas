@@ -24,6 +24,7 @@ export const setup = {
         scoreRun: 'The scoring run has finished and was saved.',
         finalized: 'The results have been finalized and locked.',
         published: 'The action plan has been published.',
+        signed: 'The report has been signed.',
         transitioned: 'Assessment status changed.',
     },
     shell: {

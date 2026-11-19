@@ -93,6 +93,8 @@ final class ConditionEvaluator
             'results_locked' => $facts->resultsLocked,
             'action_plan_published' => $facts->actionPlanPublished,
             'monitoring_closed' => $facts->monitoringClosed,
+            'final_report_signed' => $facts->finalReportSigned,
+            'results_communicated' => $facts->resultsCommunicated,
             default => null,
         };
     }
