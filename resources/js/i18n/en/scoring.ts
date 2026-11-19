@@ -2,7 +2,7 @@
 
 export const scoring = {
     ratingStage: {
-        stage: 'Stage 4. Scoring',
+        stage: 'Stage 4. Rating and determination',
     },
     layers: {
         perception: 'Perception',

@@ -53,14 +53,14 @@ final class ModuleCatalog
             new Module('panel', Stage::Rating, 'panel', $read(Resource::PanelAndFinalization), 'R7', ready: true),
 
             // Tahap 5. Pelaporan dan rencana aksi
-            new Module('dashboard', Stage::Reporting, 'dashboard', $read(Resource::ResultsDashboard), 'R8'),
+            new Module('dashboard', Stage::Reporting, 'dashboard', $read(Resource::ResultsDashboard), 'R8', ready: true),
             new Module('gaps', Stage::Reporting, 'gaps', $read(Resource::ActionPlans), 'R9'),
             new Module('report', Stage::Reporting, 'report', $read(Resource::Reports), 'R10'),
             new Module('communication', Stage::Reporting, 'communication', [...$lead, Role::ClientAdmin], 'R10'),
 
             // Tahap 6. Pemantauan dan perbaikan berkelanjutan
             new Module('monitoring', Stage::Monitoring, 'monitoring', $read(Resource::ActionPlans), 'R9'),
-            new Module('trend', Stage::Monitoring, 'trend', $read(Resource::ResultsDashboard), 'R8'),
+            new Module('trend', Stage::Monitoring, 'trend', $read(Resource::ResultsDashboard), 'R8', ready: true),
 
             // Lintas tahap
             new Module('audit', null, 'audit', $read(Resource::AuditTrail), 'R11'),

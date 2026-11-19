@@ -15,6 +15,8 @@ use App\Http\Controllers\Respondents\RespondentController;
 use App\Http\Controllers\Respondents\SelfAssessmentController;
 use App\Http\Controllers\Respondents\SelfAssessmentFormController;
 use App\Http\Controllers\Respondents\SurveyEntryController;
+use App\Http\Controllers\Results\ResultsController;
+use App\Http\Controllers\Results\TrendController;
 use App\Http\Controllers\Scoring\PanelController;
 use App\Http\Controllers\Scoring\ScoringController;
 use App\Http\Controllers\Setup\DetailsController;
@@ -172,6 +174,13 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::put('panel/decisions/{code}', [PanelController::class, 'decide'])->where('code', 'K[0-9T]{1,2}\.[0-9]{1,2}')->name('panel.decide');
         Route::delete('panel/decisions/{code}', [PanelController::class, 'withdraw'])->where('code', 'K[0-9T]{1,2}\.[0-9]{1,2}')->name('panel.withdraw');
         Route::post('panel/finalize', [PanelController::class, 'finalize'])->name('panel.finalize');
+    });
+
+    // Tahap 5 dan 6. Dasbor hasil dan perbandingan antarperiode (fase R8).
+    Route::prefix('assessments/{assessment}')->group(function () {
+        Route::get('dashboard', [ResultsController::class, 'index'])->name('results.index');
+        Route::get('dashboard/export', [ResultsController::class, 'export'])->middleware('throttle:20,1')->name('results.export');
+        Route::get('trend', [TrendController::class, 'index'])->name('trend.index');
     });
 
     // Penerima unggahan saat penyimpanan memakai disk lokal; dengan disk s3 peramban mengunggah langsung (fase R5).

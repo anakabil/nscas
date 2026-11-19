@@ -2,7 +2,7 @@
 
 export const scoring = {
     ratingStage: {
-        stage: 'Tahap 4. Penilaian',
+        stage: 'Tahap 4. Penilaian dan penetapan',
     },
     layers: {
         perception: 'Persepsi',

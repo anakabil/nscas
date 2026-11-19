@@ -12,7 +12,7 @@ import type { AssessmentMenu } from '@/types/nscas';
 /** Bagian bersama halaman tahap 2 dan 3 yang dikirim CollectionController::collectionCommon(). */
 export type CollectionCommon = {
     assessment: AssessmentMenu;
-    /** Kunci teks label tahap: 'collection' (tahap 2), 'validationStage' (tahap 3), atau 'ratingStage' (tahap 4). */
+    /** Kunci teks label tahap: 'collection' (tahap 2), 'validationStage', 'ratingStage', 'reportingStage', atau 'monitoringStage'. */
     stage?: string;
     tabs: { key: string; href: string }[];
     distribution: 'notYet' | 'open' | 'closed';
@@ -70,12 +70,14 @@ export function CollectionShell({
     const { flash } = usePage<{ flash?: { status?: string | null } }>().props;
     const Icon = MODULE_ICONS[module];
     const title = t(`modules.${module}.title`);
+    // Keadaan distribusi survei hanya relevan di tahap 2; tahap lain memakai pemberitahuan halamannya sendiri.
+    const collecting = (common.stage ?? 'collection') === 'collection';
     const notice =
         noticeOverride !== undefined
             ? noticeOverride
-            : common.distribution === 'notYet'
+            : collecting && common.distribution === 'notYet'
               ? t('collection.notYet')
-              : common.distribution === 'closed'
+              : collecting && common.distribution === 'closed'
                 ? t('collection.closed')
                 : !canEdit && readOnlyNotice
                   ? t('collection.readOnly')

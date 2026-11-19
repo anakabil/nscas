@@ -22,8 +22,8 @@ Cara membangun ulang sebuah modul:
 | R5 | Bukti dokumen dan observasi lapangan | 2 | Selesai |
 | R6 | Mutu data, temuan awal, wawancara dan diskusi kelompok | 3 | Selesai |
 | R7 | Penilaian asesor dan rapat panel | 4 | Selesai |
-| R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | Berikutnya |
-| R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | |
+| R8 | Dasbor hasil, perbandingan antarperiode, analisis kepekaan | 5 dan 6 | Selesai |
+| R9 | Kesenjangan, rencana aksi, pemantauan | 5 dan 6 | Berikutnya |
 | R10 | Laporan dan komunikasi hasil | 5 | |
 | R11 | Privasi, retensi, jejak audit, pemeriksaan keamanan | Lintas tahap | |
 | R12 | Uji menyeluruh, uji beban, penempatan produksi | Lintas tahap | |
@@ -165,7 +165,10 @@ Rujukan versi 1: `src/lib/assessor-scoring`, `src/app/(console)/assessments/[id]
 3. Rapat panel: penyesuaian dengan alasan tertulis, penguncian hasil.
 4. Aturan penetapan tingkat per tema (D2) dengan ambang 0,80 dan 0,50 (D3), dan fixture versi 2 beserta `referensi_skoring.py` (D4). Fixture versi 1 tetap untuk instrumen versi 1.
 
-## R8. Dasbor hasil, perbandingan antarperiode, analisis kepekaan
+## R8. Dasbor hasil, perbandingan antarperiode, analisis kepekaan (selesai)
+
+Hasil: dasbor hasil membaca hasil final rapat panel; asesor juga dapat melihat hasil sementara dari perhitungan terakhir dengan tanda yang jelas, sedangkan peran lain hanya melihat hasil final. Isinya kartu indeks organisasi, tingkat indikatif dan kemantapannya, selisih ke sasaran, aspek prioritas, dan tingkat jalur setara; batang indeks per aspek dan per karakteristik dengan garis sasaran; daftar karakteristik terkena aturan selisih persepsi dan bukti; selisih persepsi manajemen dan pelaksana per aspek; peta warna aspek terhadap strata dan terhadap unit dengan sel di bawah lima responden disembunyikan (koordinator unit hanya melihat unitnya); ringkasan mutu data; dan analisis kepekaan bobot lapisan (enam skenario, satu bobot naik 0,05 dan satu turun 0,05) yang menyatakan apakah tingkat berubah (`docs/12` bagian 6). Ekspor Excel memuat ringkasan, aspek, karakteristik, kedua peta warna dengan sel tetap tersembunyi, dan kepekaan, dengan pernyataan bukan sertifikat di baris pertama; setiap ekspor tercatat di jejak audit. Perbandingan antarperiode menampilkan hasil final asesmen organisasi yang sama dengan versi instrumen yang sama, yang dapat dilihat pengguna, beserta perubahan indeks organisasi dan indeks aspek. Pernyataan bukan sertifikat tampil di dasbor. Tes: `tests/Unit/Domain/Results`, `tests/Feature/Results`.
+
 
 Rujukan versi 1: `src/lib/dashboard`, `src/app/(console)/assessments/[id]/dashboard`.
 
