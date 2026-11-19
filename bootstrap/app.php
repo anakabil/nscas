@@ -30,8 +30,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // pengguna bisa mengaktifkan verifikasi dua langkah.
         $middleware->alias(['usable' => EnsureAccountIsUsable::class]);
 
-        // Di belakang penyeimbang beban atau proksi TLS, alamat klien dan skema HTTPS dibaca dari header proksi.
-        $middleware->trustProxies(at: env('TRUSTED_PROXIES') ? explode(',', (string) env('TRUSTED_PROXIES')) : null);
+        // Proksi tepercaya diatur di config/trustedproxy.php, bukan di sini: fungsi ini berjalan sebelum .env dimuat,
+        // sehingga env() di sini hanya melihat variabel lingkungan sistem dan mengabaikan isi berkas .env.
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

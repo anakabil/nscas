@@ -20,6 +20,7 @@ Fase R0 (fondasi) selesai. Fase berikutnya ada di `PROMPTS.md`.
 | `docs/04-privasi-keamanan.md` | Hak akses, pelindungan data pribadi, lokasi data, jejak audit, retensi |
 | `docs/05-panduan-tampilan.md` | Tema Monokrom Perak dan Emas, huruf, pola komponen, aturan bahasa |
 | `docs/08-penempatan.md` | Penempatan di DigitalOcean (Singapura) |
+| `docs/09-uji-coba-codespaces.md` | Uji coba di GitHub Codespaces dengan data contoh saja |
 | `docs/11-kebutuhan-aset-visual.md` | Logo, ikon, ilustrasi: nama, konsep, warna |
 | `docs/12-kajian-metode.md` | Enam tahap penilaian dan dasar teorinya |
 | `docs/13-verifikasi-scl-2.md` | Verifikasi metode terhadap SCL 2.0:2023 dan skema sertifikasinya, peta silang, usulan aturan penetapan tingkat, keputusan D1 sampai D6 |

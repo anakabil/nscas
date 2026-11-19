@@ -1,0 +1,51 @@
+# Layanan codespace NSCAS (docs/09): ruang kerja (PHP dan Node), PostgreSQL 16, dan Mailpit.
+#
+# Ketiganya berbagi satu ruang jaringan (network_mode: service:postgres), sehingga aplikasi menjangkau basis data dan
+# Mailpit di 127.0.0.1, dan Codespaces dapat meneruskan port 8000 dan 8025 dari ruang kerja.
+# PostgreSQL hanya mendengar di localhost ruang jaringan itu dan tidak diteruskan keluar. Kata sandinya adalah nilai
+# bawaan pengembangan yang sama dengan docker-compose.yml dan tidak boleh dipakai di server mana pun.
+
+services:
+    workspace:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ../..:/workspaces:cached
+        command: sleep infinity
+        network_mode: service:postgres
+        depends_on:
+            postgres:
+                condition: service_healthy
+        environment:
+            TZ: Asia/Jakarta
+            # Xdebug bawaan image pengembangan dimatikan agar aplikasi tidak melambat.
+            XDEBUG_MODE: 'off'
+
+    postgres:
+        image: postgres:16
+        restart: unless-stopped
+        command: ['postgres', '-c', 'listen_addresses=localhost']
+        environment:
+            POSTGRES_DB: nscas
+            POSTGRES_USER: nscas
+            POSTGRES_PASSWORD: nscas
+            TZ: Asia/Jakarta
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -h localhost -U nscas -d nscas']
+            interval: 5s
+            timeout: 5s
+            retries: 12
+
+    # Menampung semua surel uji (pengaturan ulang kata sandi, undangan); tidak ada surel yang terkirim keluar.
+    mailpit:
+        image: axllent/mailpit:v1.33
+        restart: unless-stopped
+        network_mode: service:postgres
+        depends_on:
+            - postgres
+
+volumes:
+    postgres_data:

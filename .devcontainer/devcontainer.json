@@ -1,0 +1,28 @@
+// Lingkungan uji coba NSCAS versi 2 di GitHub Codespaces (docs/09). Hanya untuk data contoh fiktif: server
+// Codespaces bukan server produksi NSCAS, sehingga data pekerja sungguhan tidak boleh dimasukkan (CLAUDE.md aturan 7).
+{
+    "name": "NSCAS uji coba",
+    "dockerComposeFile": "compose.yaml",
+    "service": "workspace",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "shutdownAction": "stopCompose",
+    "remoteUser": "vscode",
+    "features": {
+        // GitHub CLI untuk membuka port aplikasi bagi umum (ports.sh).
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
+    "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "32gb" },
+    // 8000 aplikasi, 8025 kotak surat uji. Port lain (misalnya basis data) tidak diteruskan.
+    "forwardPorts": [8000, 8025],
+    "portsAttributes": {
+        "8000": { "label": "NSCAS", "onAutoForward": "notify" },
+        "8025": { "label": "Kotak surat uji (Mailpit)", "onAutoForward": "silent" }
+    },
+    "otherPortsAttributes": { "onAutoForward": "ignore" },
+    "postCreateCommand": "bash .devcontainer/setup.sh",
+    "postStartCommand": "bash .devcontainer/start.sh",
+    "postAttachCommand": "bash .devcontainer/ports.sh",
+    "customizations": {
+        "codespaces": { "openFiles": ["docs/09-uji-coba-codespaces.md"] }
+    }
+}
