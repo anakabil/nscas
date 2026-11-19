@@ -129,4 +129,10 @@ class Assessment extends Model
     {
         return Stage::of($this->status);
     }
+
+    /** @return HasMany<SelfAssessment, $this> */
+    public function selfAssessments(): HasMany
+    {
+        return $this->hasMany(SelfAssessment::class);
+    }
 }

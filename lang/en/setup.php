@@ -41,6 +41,7 @@ return [
         'WINDOW_ORDER' => 'The closing time must be after the opening time.',
         'NOT_A_COORDINATOR' => 'This user is not a unit coordinator in the client organisation of this assessment.',
         'NOT_FOUND' => 'The data was not found.',
+        'SELF_ASSESSMENT_SUBMITTED' => 'This self-assessment has been submitted, so it can no longer be changed.',
     ],
     'mustChangePassword' => 'Change your temporary password before continuing.',
     'passwordChanged' => 'Password changed successfully.',

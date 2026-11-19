@@ -304,6 +304,7 @@ export const setup = {
             completed: 'Selesai {completed}',
             suppressed: 'kurang dari {min}',
             strataBelow: '{count} strata di bawah {min}',
+            selfAssessments: 'Penilaian mandiri {submitted} dari {issued} terkirim',
             distribution: '{roster} terdaftar, {tokens} token',
         },
         workers: '{count} pekerja',

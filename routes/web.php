@@ -9,6 +9,8 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\Respondents\ParticipationController;
 use App\Http\Controllers\Respondents\QrController;
 use App\Http\Controllers\Respondents\RespondentController;
+use App\Http\Controllers\Respondents\SelfAssessmentController;
+use App\Http\Controllers\Respondents\SelfAssessmentFormController;
 use App\Http\Controllers\Respondents\SurveyEntryController;
 use App\Http\Controllers\Setup\DetailsController;
 use App\Http\Controllers\Setup\KickoffController;
@@ -46,6 +48,11 @@ Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, Pr
             Route::get('q/{code}', [SurveyEntryController::class, 'qr'])->where('code', '[A-Za-z0-9_-]{1,64}')->name('survey.qr');
             Route::get('s/{token}', [SurveyEntryController::class, 'show'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('survey.show');
             Route::post('s/{token}/open', [SurveyEntryController::class, 'open'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('survey.open');
+            // Penilaian mandiri manajemen bertoken (fase R4); teridentifikasi dan diaudit oleh layanannya.
+            Route::get('sa/{token}', [SelfAssessmentFormController::class, 'show'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('self-assessment.show');
+            Route::put('sa/{token}/profile', [SelfAssessmentFormController::class, 'profile'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('self-assessment.profile');
+            Route::put('sa/{token}/answer', [SelfAssessmentFormController::class, 'answer'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('self-assessment.answer');
+            Route::post('sa/{token}/submit', [SelfAssessmentFormController::class, 'submit'])->where('token', '[A-Za-z0-9_-]{1,64}')->name('self-assessment.submit');
         });
         Route::post('s/{token}/submit', [SurveyEntryController::class, 'submit'])->where('token', '[A-Za-z0-9_-]{1,64}')
             ->middleware('throttle:survey-submit')->name('survey.submit');
@@ -85,7 +92,7 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::put('kickoff/calibration', [KickoffController::class, 'calibration'])->name('kickoff.calibration');
     });
 
-    // Tahap 2. Responden, kode QR, dan partisipasi (fase R2).
+    // Tahap 2. Responden, kode QR, partisipasi (fase R2), dan penilaian mandiri (fase R4).
     Route::prefix('assessments/{assessment}')->group(function () {
         Route::get('respondents', [RespondentController::class, 'index'])->name('respondents.index');
         Route::get('respondents/template', [RespondentController::class, 'template'])->name('respondents.template');
@@ -101,6 +108,11 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::post('respondents/{entry}/revoke', [RespondentController::class, 'revoke'])->whereAlphaNumeric('entry')->name('respondents.revoke');
         Route::post('respondents/{entry}/reissue', [RespondentController::class, 'reissue'])->whereAlphaNumeric('entry')->name('respondents.reissue');
         Route::get('participation', [ParticipationController::class, 'index'])->name('participation.index');
+        Route::get('self-assessments', [SelfAssessmentController::class, 'index'])->name('self-assessments.index');
+        Route::post('self-assessments', [SelfAssessmentController::class, 'store'])->name('self-assessments.store');
+        Route::get('self-assessments/{selfAssessment}', [SelfAssessmentController::class, 'show'])->whereAlphaNumeric('selfAssessment')->name('self-assessments.show');
+        Route::post('self-assessments/{selfAssessment}/revoke', [SelfAssessmentController::class, 'revoke'])->whereAlphaNumeric('selfAssessment')->name('self-assessments.revoke');
+        Route::post('self-assessments/{selfAssessment}/reissue', [SelfAssessmentController::class, 'reissue'])->whereAlphaNumeric('selfAssessment')->name('self-assessments.reissue');
     });
 
     Route::get('assessments/{assessment}/{path}', [AssessmentController::class, 'module'])

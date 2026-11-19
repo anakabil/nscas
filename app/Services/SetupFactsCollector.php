@@ -39,6 +39,8 @@ final class SetupFactsCollector
             // Hanya hitungan dari token, tidak pernah dari tabel jawaban (docs/02 bagian 4).
             'tokens as active_survey_tokens_count' => fn ($q) => $q->where('kind', 'SURVEY')->whereNull('revoked_at'),
             'tokens as completed_surveys_count' => fn ($q) => $q->where('kind', 'SURVEY')->whereNotNull('completed_at'),
+            'selfAssessments',
+            'selfAssessments as self_assessments_submitted_count' => fn ($q) => $q->where('status', 'SUBMITTED'),
         ]);
         $assessments->loadSum('strata as strata_population_sum', 'population');
         $assessments->loadMissing(['team', 'instrumentVersion', 'strata']);
@@ -72,6 +74,8 @@ final class SetupFactsCollector
                 completedSurveys: (int) $assessment->completed_surveys_count,
                 strataBelowMinimum: $assessment->strata->filter(fn ($s) => $s->population > 0
                     && ((int) ($completedByStratum[$s->id] ?? 0)) / $s->population < ParticipationReport::thresholds($assessment)[1])->count(),
+                selfAssessmentsIssued: (int) $assessment->self_assessments_count,
+                selfAssessmentsSubmitted: (int) $assessment->self_assessments_submitted_count,
             );
         }
 

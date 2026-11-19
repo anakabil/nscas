@@ -4,7 +4,10 @@
 
 return [
     'title' => 'Occupational safety and health (OSH) culture survey',
+    'titleSelfAssessment' => 'Occupational safety and health (OSH) culture self-assessment',
     'states' => [
+        'SA_INVALID' => 'This self-assessment link is not recognised or has been replaced. Contact the assessment administrator in your organisation for the latest link.',
+        'SA_CLOSED' => 'The self-assessment period has ended.',
         'QR_INVALID' => 'This QR code is not valid or has been replaced. Ask your unit coordinator for the latest code.',
         'QR_CLOSED' => 'The survey is not open at the moment. Check the survey schedule with your unit coordinator.',
         'QR_LIMIT' => 'The quota for this QR code has been used up. Contact your unit coordinator.',

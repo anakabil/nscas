@@ -42,6 +42,7 @@ return [
         'WINDOW_ORDER' => 'Waktu tutup harus sesudah waktu buka.',
         'NOT_A_COORDINATOR' => 'Pengguna ini bukan koordinator unit di organisasi klien asesmen ini.',
         'NOT_FOUND' => 'Data tidak ditemukan.',
+        'SELF_ASSESSMENT_SUBMITTED' => 'Penilaian mandiri ini sudah dikirim sehingga tidak dapat diubah.',
     ],
     'mustChangePassword' => 'Ganti kata sandi sementara Anda sebelum melanjutkan.',
     'passwordChanged' => 'Kata sandi berhasil diganti.',

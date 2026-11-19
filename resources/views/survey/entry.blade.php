@@ -1,5 +1,6 @@
 {{-- Keadaan tautan atau kode QR yang tidak dapat dipakai saat ini. Ringan, tanpa skrip, tanpa sumber pihak ketiga; dua bahasa. --}}
 @php
+    $titleKey ??= 'title';
     $when = fn ($at, string $locale) => $at->copy()->setTimezone('Asia/Jakarta')->locale($locale)->translatedFormat($locale === 'id' ? 'j F Y, H.i' : 'j F Y, H:i').' WIB';
     $schedule = function (string $locale) use ($state, $opensAt, $closesAt, $when) {
         if ($state !== 'NOT_OPEN') {
@@ -18,7 +19,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>{{ __('survey_entry.title', [], 'id') }}</title>
+    <title>{{ __('survey_entry.'.$titleKey, [], 'id') }}</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <style>
         body { margin: 0; background: #fefaf4; color: #1a1a1a; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
@@ -41,7 +42,7 @@
                 <hr>
             @endif
             <section lang="{{ $locale }}">
-                <h1>{{ __('survey_entry.title', [], $locale) }}</h1>
+                <h1>{{ __('survey_entry.'.$titleKey, [], $locale) }}</h1>
                 <p>{{ __('survey_entry.states.'.$state, [], $locale) }}</p>
                 @if ($schedule($locale))
                     <p>{{ $schedule($locale) }}</p>

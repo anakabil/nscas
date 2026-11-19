@@ -9,7 +9,13 @@ import { defineConfig, lazyPlugins } from 'vite-plus';
 export default defineConfig({
     plugins: lazyPlugins(() => [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx', 'resources/css/survey.css', 'resources/js/survey/main.tsx'],
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.tsx',
+                'resources/css/survey.css',
+                'resources/js/survey/main.tsx',
+                'resources/js/self-assessment/main.tsx',
+            ],
             refresh: true,
         }),
         inertia(),

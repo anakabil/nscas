@@ -78,6 +78,7 @@ export type AssessmentProgress = {
         minCell: number;
         strataBelowMinimum: number;
         minParticipation: number;
+        selfAssessments: { issued: number; submitted: number };
         rateOfTarget: number | null;
     };
 };

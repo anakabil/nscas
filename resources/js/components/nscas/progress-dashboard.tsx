@@ -310,6 +310,14 @@ function StageProgressCell({ row }: { row: DashboardRow }) {
                     })}
                 </p>
             ) : null}
+            {p.selfAssessments.issued > 0 ? (
+                <p className="numeral text-xs text-muted-foreground">
+                    {t('dashboard.participation.selfAssessments', {
+                        submitted: p.selfAssessments.submitted,
+                        issued: p.selfAssessments.issued,
+                    })}
+                </p>
+            ) : null}
             <p className="numeral text-xs text-muted-foreground">
                 {t('dashboard.participation.distribution', {
                     roster: number(p.roster, locale),

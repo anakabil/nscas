@@ -254,3 +254,73 @@ button {
     white-space: nowrap;
     border: 0;
 }
+
+/* Formulir penilaian mandiri (fase R4) memakai gaya yang sama dengan survei, ditambah isian teks. */
+.sv-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-weight: 600;
+}
+.sv-field > .sv-muted,
+.sv-field > .sv-ok-text {
+    font-weight: 400;
+}
+.sv-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.6rem 0.75rem;
+    background: #fff;
+    border: 2px solid var(--sv-border);
+    border-radius: 10px;
+    color: var(--sv-ink);
+    font: inherit;
+    font-weight: 400;
+}
+.sv-input:focus-visible {
+    outline: 3px solid var(--sv-gold-deep);
+    outline-offset: 1px;
+}
+.sv-textarea {
+    min-height: 9rem;
+    resize: vertical;
+}
+.sv-identified {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--sv-maroon-soft);
+    border: 2px solid var(--sv-maroon);
+    border-radius: 12px;
+}
+.sv-alert {
+    padding: 0.6rem 0.8rem;
+    background: #f8e1e1;
+    color: #8a1c1c;
+    border-radius: 10px;
+}
+.sv-ok {
+    padding: 0.6rem 0.8rem;
+    background: #e3f1ea;
+    color: #2f6b4f;
+    border-radius: 10px;
+}
+.sv-ok-text {
+    color: #2f6b4f;
+}
+.sv-row {
+    display: flex;
+    gap: 0.75rem;
+}
+.sv-list {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+.sv-list li {
+    margin-bottom: 0.4rem;
+}
+.sv-inline {
+    min-height: auto;
+    padding: 0;
+}

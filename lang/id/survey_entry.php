@@ -4,7 +4,10 @@
 
 return [
     'title' => 'Survei budaya keselamatan dan kesehatan kerja (K3)',
+    'titleSelfAssessment' => 'Penilaian mandiri budaya keselamatan dan kesehatan kerja (K3)',
     'states' => [
+        'SA_INVALID' => 'Tautan penilaian mandiri ini tidak dikenali atau sudah diganti. Hubungi administrator asesmen di organisasi Anda untuk tautan terbaru.',
+        'SA_CLOSED' => 'Masa pengisian penilaian mandiri sudah berakhir.',
         'QR_INVALID' => 'Kode QR ini tidak berlaku atau sudah diganti. Mintalah kode terbaru kepada koordinator unit Anda.',
         'QR_CLOSED' => 'Survei sedang tidak dibuka. Periksa jadwal survei dari koordinator unit Anda.',
         'QR_LIMIT' => 'Kuota pengisian untuk kode QR ini sudah habis. Hubungi koordinator unit Anda.',

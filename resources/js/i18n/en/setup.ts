@@ -305,6 +305,7 @@ export const setup = {
             completed: '{completed} completed',
             suppressed: 'fewer than {min}',
             strataBelow: '{count} strata below {min}',
+            selfAssessments: 'Self-assessments {submitted} of {issued} sent',
             distribution: '{roster} registered, {tokens} tokens',
         },
         workers: '{count} workers',
