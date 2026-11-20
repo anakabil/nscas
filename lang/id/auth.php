@@ -15,7 +15,7 @@ return [
 
     'failed' => 'Alamat surel atau kata sandi tidak sesuai. Periksa kembali, lalu coba lagi.',
     'password' => 'Kata sandi yang Anda masukkan tidak sesuai. Periksa kembali, lalu coba lagi.',
-    'throttle' => 'Akun dikunci sementara setelah 5 kali gagal masuk. Coba lagi dalam :minutes menit.',
+    'throttle' => 'Masuk dikunci sementara karena terlalu banyak percobaan yang gagal. Coba lagi dalam :minutes menit.',
     'session_absolute' => 'Sesi berakhir setelah 8 jam. Silakan masuk kembali.',
     'session_idle' => 'Sesi berakhir karena tidak ada aktivitas selama 30 menit. Silakan masuk kembali.',
     'inactive' => 'Akun ini telah dinonaktifkan. Hubungi administrator organisasi Anda.',

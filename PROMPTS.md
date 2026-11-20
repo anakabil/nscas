@@ -92,7 +92,7 @@ Pemilik proyek menyetujui seluruh rekomendasi Trustie pada 19 November 2026. Kep
 | Rumusan adendum atau klausul perjanjian pemrosesan data tentang lokasi Singapura, untuk dibaca dan disetujui klien | Nusa Safety | Belum |
 | Pembukaan blokir port SMTP DigitalOcean; bucket Spaces dan aturan CORS (`docs/08` bagian 9 dan 9a) | Administrator server | Belum |
 | Perbaiki temuan Larastan tingkat 5 di CI (anotasi `@property` model, atribut `withCount`, kolom JSON), lalu jadikan langkah Static analysis memblokir (`docs/14` K15) | Pengembang | Belum |
-| Pembatas laju per alamat IP untuk percobaan masuk ke banyak akun, di Caddy atau di aplikasi (`docs/14` K27) | Pengembang dan administrator server | Belum |
+| Pembatas laju per alamat IP untuk percobaan masuk ke banyak akun, di Caddy atau di aplikasi (`docs/14` K27) | Pengembang dan administrator server | Selesai di aplikasi (20 November 2026) |
 | Uji penetrasi pihak ketiga sebelum data responden nyata (`docs/14` K28) | Nusa Safety | Belum |
 | Bahan validasi lapangan versi 2: pertanyaan pendalaman dan petunjuk penilaian wawancara, panduan diskusi kelompok terarah, lembar kerja kunjungan proyek 37 butir, kode untuk analisis, triangulasi di ruang kerja asesor, ekspor Excel, dan cetak panduan (`docs/16`); rumus nilai tetap | Trustie | Selesai (20 November 2026) |
 | Telaah ahli isi bahan validasi lapangan versi 2 (`seed/panduan-validasi-v2.json`) sebelum dipakai pada klien | Nusa Safety | Belum |

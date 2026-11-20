@@ -23,7 +23,7 @@ Hasil NSCAS adalah pengukuran internal, bukan sertifikat. Daftar ini tidak mengg
 | Pustaka dan analisis kode (K14 sampai K15) | 1 | 1 | 0 |
 | Data pribadi dan anonimitas (K16 sampai K21) | 5 | 0 | 1 |
 | Jejak audit dan pemantauan (K22 sampai K24) | 3 | 0 | 0 |
-| Infrastruktur (K25 sampai K28) | 2 | 1 | 1 |
+| Infrastruktur (K25 sampai K28) | 3 | 0 | 1 |
 
 ## 3. Butir pemeriksaan
 
@@ -89,7 +89,7 @@ Catatan K19: jejak audit tetap disimpan setelah pemusnahan karena menjadi bukti 
 |---|---|---|---|---|
 | K25 | Rahasia tidak masuk repositori | `.env` diabaikan Git; contoh tanpa nilai asli | `git ls-files` | Terpenuhi |
 | K26 | TLS dan cadangan terenkripsi | Caddy dengan TLS otomatis; `backup.sh` mengenkripsi cadangan harian dengan age dan memeriksa kepala berkasnya (`docs/08`) | `deploy/digitalocean/backup.sh` | Terpenuhi |
-| K27 | Pembatasan laju lintas akun | Penguncian per akun (K4) dan pembatas laju rute survei. Belum ada pembatas per alamat IP untuk percobaan masuk ke banyak akun sekaligus | `AppServiceProvider` | Sebagian. Tindak lanjut: aktifkan pembatas di Caddy atau firewall DigitalOcean saat penempatan (fase R12) |
+| K27 | Pembatasan laju lintas akun | Selain penguncian per akun (K4), satu alamat IP dikunci 15 menit setelah 30 kali gagal masuk lintas akun; kuncinya HMAC alamat IP (`App\Auth\LoginLockout`, 20 November 2026). Pembatas laju rute survei tetap terpisah | `tests/Feature/Security/SessionSecurityTest.php` | Terpenuhi |
 | K28 | Uji penetrasi | Belum dilakukan | Tidak ada | Belum. Tindak lanjut: uji penetrasi pihak ketiga sebelum data responden nyata (pemilik proyek) |
 
 ## 4. Cara memeriksa ulang

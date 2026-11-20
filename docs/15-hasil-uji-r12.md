@@ -115,5 +115,4 @@ Butir yang masih harus dipenuhi sebelum data responden nyata, berdasarkan `docs/
 2. Penempatan pertama ke Droplet dengan domain dan sertifikat TLS, lalu daftar periksa `docs/08` bagian 12.
 3. Uji beban ulang pada Droplet sungguhan dan uji kamera di telepon sungguhan (bagian 3 dan 4).
 4. Uji penetrasi oleh pihak ketiga (`docs/14` butir K28).
-5. Pembatas laju per alamat IP untuk percobaan masuk ke banyak akun (`docs/14` butir K27).
-6. Perbaikan temuan Larastan, lalu langkah CI dijadikan memblokir (`docs/14` butir K15).
+5. Perbaikan temuan Larastan, lalu langkah CI dijadikan memblokir (`docs/14` butir K15).

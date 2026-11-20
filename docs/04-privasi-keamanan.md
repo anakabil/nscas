@@ -69,7 +69,7 @@ Seluruh pemeriksaan dilakukan di server melalui `App\Support\AssessmentAccess::r
 - Kata sandi minimal 12 karakter, di-hash dengan argon2id (`config/hashing.php`, fase R11).
 - TOTP wajib untuk SUPER_ADMIN, LEAD_ASSESSOR, ASSESSOR, dan CLIENT_ADMIN. Disediakan kode pemulihan sekali pakai.
 - Sesi kedaluwarsa setelah 8 jam, atau setelah 30 menit tidak aktif untuk peran Nusa Safety (pengelola sistem dan anggota organisasi operator). Fase R11: `App\Http\Middleware\EnforceSessionLimits`; halaman masuk menjelaskan sebab sesi berakhir. Pilihan "ingat saya" dihapus karena akan melewati batas 8 jam.
-- Penguncian akun setelah 5 kali gagal masuk dalam 15 menit, per pasangan surel dan alamat IP; masuk yang berhasil tidak dihitung (`App\Auth\LoginLockout`).
+- Penguncian akun setelah 5 kali gagal masuk dalam 15 menit, per pasangan surel dan alamat IP; masuk yang berhasil tidak dihitung. Selain itu, satu alamat IP dikunci 15 menit setelah 30 kali gagal masuk lintas akun (`App\Auth\LoginLockout`).
 - Responden survei tidak memiliki akun; token acak 32 byte (base64url), hanya hash yang disimpan, berlaku sampai survei ditutup.
 
 ## 4. Enkripsi

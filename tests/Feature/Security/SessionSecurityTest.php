@@ -42,6 +42,21 @@ class SessionSecurityTest extends TestCase
         $this->assertSame(1, AuditLog::where('action', 'auth.login')->count());
     }
 
+    public function test_many_failed_accounts_from_one_address_lock_that_address(): void
+    {
+        $victim = $this->member($this->client, Role::ClientAdmin);
+        foreach (range(1, 30) as $i) {
+            $this->post(route('login.store'), ['email' => "coba{$i}@contoh.id", 'password' => 'tebakan'])->assertSessionHasErrors('email');
+        }
+        // Akun lain dengan kata sandi benar dari alamat yang sama ikut tertahan.
+        $this->post(route('login.store'), ['email' => $victim->email, 'password' => 'password'])->assertSessionHasErrors('email');
+        $this->assertGuest();
+        // Alamat lain tidak terdampak.
+        $this->withServerVariables(['REMOTE_ADDR' => '10.9.8.7'])
+            ->post(route('login.store'), ['email' => $victim->email, 'password' => 'password'])->assertRedirect();
+        $this->assertAuthenticatedAs($victim);
+    }
+
     public function test_successful_sign_ins_do_not_count_towards_the_lock(): void
     {
         $user = $this->member($this->client, Role::ClientAdmin);
