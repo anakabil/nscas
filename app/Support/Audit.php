@@ -20,7 +20,7 @@ final class Audit
     public static function record(string $action, ?Model $entity = null, array $changes = [], ?Assessment $assessment = null, ?Role $actorRole = null): AuditLog
     {
         $assessment ??= $entity instanceof Assessment ? $entity : null;
-        $ip = request()?->ip();
+        $ip = request()->ip();
 
         return AuditLog::create([
             'actor_id' => Auth::id(),

@@ -88,7 +88,7 @@ class DataQualityService
             ->map(fn (SurveyResponse $r) => [
                 'id' => $r->id,
                 'flags' => $r->quality_flags,
-                'submittedOn' => $r->submitted_on?->toDateString(),
+                'submittedOn' => $r->submitted_on->toDateString(),
                 'durationBucket' => $r->duration_bucket,
                 'excluded' => (bool) $r->excluded,
                 'reason' => $r->excluded_reason,

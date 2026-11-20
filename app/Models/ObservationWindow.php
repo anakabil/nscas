@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * Masa observasi lapangan satu proyek (docs/01 M6): waktu buka dan tutup, daftar periksa, dan titik proyek
@@ -16,8 +16,8 @@ use Illuminate\Support\Carbon;
  * @property string $assessment_id
  * @property string $unit_id
  * @property string $title
- * @property Carbon $opens_at
- * @property Carbon $closes_at
+ * @property CarbonImmutable $opens_at
+ * @property CarbonImmutable $closes_at
  * @property list<array{code: string, label: string}> $checklist
  * @property float $latitude
  * @property float $longitude

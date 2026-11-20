@@ -152,10 +152,10 @@ final class SelfAssessmentAdmin
                     'level' => $level,
                     'statement' => $level === null ? null : $c->statements->firstWhere('level', $level)?->text_id,
                     'justification' => $answer?->justification ?: null,
-                    'evidenceCount' => count($answer?->evidence_ids ?? []),
+                    'evidenceCount' => count($answer->evidence_ids ?? []),
                     'evidence' => array_values(array_filter(array_map(
                         fn (string $id) => $evidence->has($id) ? ['title' => $evidence[$id]->title, 'version' => $evidence[$id]->version] : null,
-                        $answer?->evidence_ids ?? [],
+                        $answer->evidence_ids ?? [],
                     ))),
                 ];
             })->all(),

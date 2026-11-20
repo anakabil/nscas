@@ -62,7 +62,7 @@ class ReportService
             'meta' => [
                 'organization' => $assessment->organization->name,
                 'assessment' => $assessment->name,
-                'scopeType' => $assessment->scope_type?->value ?? (string) $assessment->scope_type,
+                'scopeType' => $assessment->scope_type->value,
                 'periodStart' => $assessment->period_start->toDateString(),
                 'periodEnd' => $assessment->period_end->toDateString(),
                 'targetLevel' => $dashboard['targetLevel'],

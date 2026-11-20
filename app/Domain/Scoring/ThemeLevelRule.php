@@ -63,7 +63,7 @@ final class ThemeLevelRule
      * dan tangga, profil per tema, serta tema penghambat menuju tangga berikutnya bila sasaran belum tercapai.
      *
      * @param  list<array{code: string, behaviour: array<int|string, float>, prerequisite: array<int|string, float>}>  $themes
-     * @return array{level: int, colors: array<string, array<string, array{behaviour: string, prerequisite: string}>>, profile: array<string, int>, nextStep: int|null, blockers: list<array{code: string, behaviour: string, prerequisite: string}>}
+     * @return array{level: int, colors: array<string, array<int|string, array{behaviour: string, prerequisite: string}>>, profile: array<string, int>, nextStep: int|null, blockers: list<array{code: string, behaviour: string, prerequisite: string}>}
      */
     public static function determine(array $themes, int $target, float $green = self::DEFAULT_GREEN, float $amber = self::DEFAULT_AMBER): array
     {

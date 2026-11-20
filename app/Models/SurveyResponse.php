@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
  * @property string $stratum_id
  * @property string $instrument_version_id
  * @property string $language
- * @property Carbon $submitted_on
+ * @property CarbonImmutable $submitted_on
  * @property string $duration_bucket
  * @property list<string> $quality_flags
  * @property bool $excluded

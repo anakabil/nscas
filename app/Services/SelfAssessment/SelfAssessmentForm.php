@@ -74,8 +74,8 @@ final class SelfAssessmentForm
                     'statements' => array_map(fn ($s) => ['id' => $s['id'], 'text' => $s['text']], SurveyRules::respondentOrder($statements, $seed)),
                     'answer' => [
                         'statementId' => $answer?->level === null ? null : collect($statements)->firstWhere('level', $answer->level)['id'] ?? null,
-                        'justification' => (string) ($answer?->justification ?? ''),
-                        'evidenceIds' => $answer?->evidence_ids ?? [],
+                        'justification' => (string) ($answer->justification ?? ''),
+                        'evidenceIds' => $answer->evidence_ids ?? [],
                     ],
                 ];
             })->all(),

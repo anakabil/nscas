@@ -6,6 +6,7 @@ use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\ScopeType;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Domain\Workflow\Stage;
+use Carbon\CarbonImmutable;
 use Database\Factories\AssessmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -13,14 +14,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
  * @property string $organization_id
  * @property string $name
- * @property Carbon $period_start
- * @property Carbon $period_end
+ * @property CarbonImmutable $period_start
+ * @property CarbonImmutable $period_end
  * @property int $target_level
  * @property AssessmentStatus $status
  * @property array<string, mixed>|null $parameter_snapshot
@@ -31,14 +31,21 @@ use Illuminate\Support\Carbon;
  * @property string|null $consent_text_en
  * @property DpaStatus $dpa_status
  * @property string|null $dpa_reference
- * @property Carbon|null $dpa_signed_on
+ * @property CarbonImmutable|null $dpa_signed_on
  * @property array<string, mixed>|null $kickoff
  * @property array<string, mixed>|null $calibration
- * @property Carbon|null $locked_at
+ * @property CarbonImmutable|null $locked_at
  * @property int|null $locked_by
- * @property Carbon|null $survey_opens_at
- * @property Carbon|null $survey_closes_at
- * @property Carbon|null $action_plan_published_at
+ * @property CarbonImmutable|null $survey_opens_at
+ * @property CarbonImmutable|null $survey_closes_at
+ * @property CarbonImmutable|null $action_plan_published_at
+ * @property CarbonImmutable|null $retention_flagged_at
+ * @property-read int|null $strata_without_population_count Hasil withCount di SetupFactsCollector.
+ * @property-read int|string|null $strata_population_sum Hasil withSum di SetupFactsCollector.
+ * @property-read int|null $active_survey_tokens_count
+ * @property-read int|null $completed_surveys_count
+ * @property-read int|null $self_assessments_submitted_count
+ * @property-read int|null $project_units_count
  */
 #[Fillable([
     'organization_id', 'name', 'scope_type', 'period_start', 'period_end', 'target_level', 'status', 'created_by',

@@ -14,7 +14,7 @@ final class UnitTree
      * @template T of array{id: string, parentId: string|null, name: string}
      *
      * @param  list<T>  $units
-     * @return list<T&array{depth: int}>
+     * @return list<array<string, mixed>> Butir masukan beserta kunci depth.
      */
     public static function flatten(array $units): array
     {

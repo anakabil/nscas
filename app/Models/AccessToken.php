@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 /**
  * Token akses survei. Hanya hash yang disimpan; token mentah hanya ada di tautan (docs/02 bagian 4). Partisipasi
@@ -21,13 +21,13 @@ use Illuminate\Support\Carbon;
  * @property string $kind
  * @property string $token_hash
  * @property string|null $channel
- * @property Carbon $issued_at
- * @property Carbon|null $first_opened_at
- * @property Carbon|null $completed_at
- * @property Carbon|null $revoked_at
+ * @property CarbonImmutable $issued_at
+ * @property CarbonImmutable|null $first_opened_at
+ * @property CarbonImmutable|null $completed_at
+ * @property CarbonImmutable|null $revoked_at
  * @property string|null $revoked_reason
  * @property int $reminder_count
- * @property Carbon|null $last_reminder_at
+ * @property CarbonImmutable|null $last_reminder_at
  */
 #[Fillable([
     'assessment_id', 'roster_entry_id', 'unit_qr_code_id', 'unit_id', 'stratum_id', 'kind', 'token_hash', 'channel',

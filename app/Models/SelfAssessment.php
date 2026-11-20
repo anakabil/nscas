@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * Penilaian mandiri manajemen (docs/01 M4). Teridentifikasi, berbeda dengan survei pekerja yang anonim.
@@ -18,9 +18,10 @@ use Illuminate\Support\Carbon;
  * @property string $respondent_name
  * @property string $respondent_position
  * @property string $status
- * @property Carbon|null $submitted_at
+ * @property CarbonImmutable|null $submitted_at
  * @property string|null $respondent_email
- * @property Carbon $created_at
+ * @property CarbonImmutable $created_at
+ * @property-read int|null $answered_count Hasil withCount di SelfAssessmentAdmin.
  */
 class SelfAssessment extends Model
 {

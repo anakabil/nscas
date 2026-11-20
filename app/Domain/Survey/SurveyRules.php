@@ -29,7 +29,7 @@ final class SurveyRules
      * Urutan acak yang tetap untuk satu responden: butir diurutkan menurut SHA-256 dari benih (hash token) dan id
      * butir. Urutan yang sama muncul setiap kali tautan dibuka, tetapi berbeda antarresponden.
      *
-     * @template T of array{id: string}
+     * @template T of array{id: string, ...}
      *
      * @param  list<T>  $items
      * @return list<T>

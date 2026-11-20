@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * Versi instrumen beserta parameter bawaannya. Parameter bawaan disalin ke draf asesmen saat asesmen dibuat, lalu ke
@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string $id
  * @property string $code
  * @property string $status
- * @property Carbon|null $published_at
+ * @property CarbonImmutable|null $published_at
  * @property array<string, mixed> $default_parameters
  * @property array<string, mixed>|null $content
  */

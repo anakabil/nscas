@@ -278,7 +278,7 @@ class RetentionService
 
         $ordered = [];
         foreach (self::CATEGORIES as $category) {
-            $ordered[$category] = (int) ($counts[$category] ?? 0);
+            $ordered[$category] = (int) $counts[$category];
         }
 
         return [$ordered, $keys];

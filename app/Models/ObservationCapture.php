@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 /**
  * Satu foto atau video observasi dari kamera di dalam aplikasi (docs/01 M6). Waktu adalah waktu server.
@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property string $sha256
  * @property string $mime_type
  * @property int $size_bytes
- * @property Carbon $server_captured_at
+ * @property CarbonImmutable $server_captured_at
  * @property float|null $latitude
  * @property float|null $longitude
  * @property float|null $accuracy_meters

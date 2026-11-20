@@ -95,7 +95,7 @@ final class AssessmentSetup
     // Unit
     // -----------------------------------------------------------------------------------------------------------------
 
-    /** @param  array{name: string, type: string, parent_id: string|null, latitude: float|null, longitude: float|null, radius_meters: int|null}  $input */
+    /** @param  array{name: string, type: string, parent_id: string|null, latitude?: float|null, longitude?: float|null, radius_meters?: int|null}  $input */
     public function createUnit(Assessment $assessment, array $input): Unit
     {
         return DB::transaction(function () use ($assessment, $input) {
@@ -109,7 +109,7 @@ final class AssessmentSetup
         });
     }
 
-    /** @param  array{name: string, type: string, parent_id: string|null, latitude: float|null, longitude: float|null, radius_meters: int|null}  $input */
+    /** @param  array{name: string, type: string, parent_id: string|null, latitude?: float|null, longitude?: float|null, radius_meters?: int|null}  $input */
     public function updateUnit(Assessment $assessment, Unit $unit, array $input): void
     {
         DB::transaction(function () use ($assessment, $unit, $input) {
@@ -138,7 +138,7 @@ final class AssessmentSetup
             }
             try {
                 $unit->delete();
-            } catch (QueryException) {
+            } catch (QueryException) { // @phpstan-ignore catch.neverThrown (pelanggaran kunci asing terjadi di basis data)
                 // Unit yang sudah dirujuk data lain (responden, token, bukti) tidak dapat dihapus.
                 throw RuleViolation::invalid('unit', 'UNIT_IN_USE');
             }
@@ -204,7 +204,7 @@ final class AssessmentSetup
             $locked = $this->lockEditable($assessment);
             try {
                 $stratum->delete();
-            } catch (QueryException) {
+            } catch (QueryException) { // @phpstan-ignore catch.neverThrown (pelanggaran kunci asing terjadi di basis data)
                 throw RuleViolation::invalid('stratum', 'STRATUM_IN_USE');
             }
             $this->invalidateSamplePlan($locked);
@@ -474,7 +474,7 @@ final class AssessmentSetup
      * Koordinat hanya untuk proyek, dan harus lengkap (garis lintang, garis bujur, radius) atau kosong sama sekali.
      *
      * @param  array<string, mixed>  $input
-     * @return array{name: string, type: string, parent_id: string|null, latitude: float|null, longitude: float|null, radius_meters: int|null}
+     * @return array{name: string, type: string, parent_id: string|null, latitude?: float|null, longitude?: float|null, radius_meters?: int|null}
      */
     private function unitData(Assessment $assessment, array $input): array
     {

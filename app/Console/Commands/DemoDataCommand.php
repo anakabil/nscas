@@ -678,7 +678,7 @@ class DemoDataCommand extends Command
                 'unit_id' => $visit ? $project?->id : null,
                 'scheduled_at' => $at->addDays(intdiv($i, 3))->addHours(($i % 3) * 2)->utc(),
                 'meeting_url' => $p['type'] === SessionProposal::SITE_VISIT ? null : 'https://rapat.contoh.test/validasi-'.($i + 1),
-                'location' => $p['type'] === SessionProposal::SITE_VISIT ? ($project?->name ?? 'Lokasi proyek') : null,
+                'location' => $p['type'] === SessionProposal::SITE_VISIT ? ($project->name ?? 'Lokasi proyek') : null,
                 'participant_count' => $p['participantCount'] ?: null,
                 'status' => $done ? 'COMPLETED' : 'SCHEDULED',
                 'focus_characteristic_ids' => $focus,

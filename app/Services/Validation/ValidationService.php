@@ -42,7 +42,7 @@ class ValidationService
     // Panduan
     // -----------------------------------------------------------------------------------------------------------------
 
-    /** @return list<array{layer: string, intro: string, questions: list<array{code: string, question: string}>}> */
+    /** @return list<array{layer: string, intro: string, questions: array<array-key, mixed>}> */
     public function guides(Assessment $assessment): array
     {
         $this->ensureGuides($assessment);
@@ -342,7 +342,7 @@ class ValidationService
      * Formulir asesor per sesi: catatan sesi, persetujuan perekaman, dan nilai milik asesor ini. Nilai kosong menghapus
      * nilai karakteristik itu.
      *
-     * @param  list<array{characteristicId: string, level: float|null, note: string|null}>  $ratings
+     * @param  list<array{characteristicId: string, level: float|null, note: string|null, evidence?: string|null, agreement?: string|null}>  $ratings
      */
     public function saveAssessorForm(Assessment $assessment, User $assessor, Role $actorRole, string $sessionId, bool $recordingConsent, ?string $notes, array $ratings): void
     {

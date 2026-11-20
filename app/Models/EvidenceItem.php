@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Carbon;
 
 /**
  * Bukti dokumen (docs/01 M5). Setiap versi adalah baris tersendiri; versi baru merujuk versi yang digantikannya.
@@ -25,8 +25,8 @@ use Illuminate\Support\Carbon;
  * @property int $version
  * @property string|null $supersedes_id
  * @property int $uploaded_by_id
- * @property Carbon|null $deleted_at
- * @property Carbon $created_at
+ * @property CarbonImmutable|null $deleted_at
+ * @property CarbonImmutable $created_at
  */
 class EvidenceItem extends Model
 {

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * Izin unggah yang belum diselesaikan. Id-nya menjadi tiket unggah; hanya pengguna yang memintanya yang dapat
@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
  * @property string $file_name
  * @property int $declared_size
  * @property array<string, mixed> $data
- * @property Carbon $expires_at
+ * @property CarbonImmutable $expires_at
  */
 class PendingUpload extends Model
 {

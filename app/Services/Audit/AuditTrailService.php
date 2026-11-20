@@ -57,7 +57,10 @@ class AuditTrailService
         $page = min(max(1, (int) ($filters['page'] ?? 1)), $pages);
         $rows = $query->orderByDesc('occurred_at')->orderByDesc('id')->forPage($page, self::PAGE_SIZE)->get();
 
-        return ['entries' => $this->present($rows->all(), $full), 'total' => $total, 'page' => $page, 'pages' => $pages];
+        /** @var list<AuditLog> $list */
+        $list = $rows->all();
+
+        return ['entries' => $this->present($list, $full), 'total' => $total, 'page' => $page, 'pages' => $pages];
     }
 
     /**
@@ -69,7 +72,9 @@ class AuditTrailService
     public function export(Assessment $assessment, array $filters, string $locale): array
     {
         $rows = $this->filtered($assessment, $filters)->orderBy('occurred_at')->orderBy('id')->limit(self::EXPORT_LIMIT)->get();
-        $entries = $this->present($rows->all(), true);
+        /** @var list<AuditLog> $list */
+        $list = $rows->all();
+        $entries = $this->present($list, true);
         $label = fn (string $key) => __('audit.csv.'.$key, [], $locale);
         $header = array_map($label, ['at', 'atWib', 'action', 'entityType', 'entityId', 'actor', 'actorEmail', 'role', 'ipHash', 'changes']);
         $lines = [$header];

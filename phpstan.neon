@@ -1,4 +1,3 @@
-# Analisis statis PHP (fase R11, docs/04 bagian 5). Dijalankan di CI: `vendor/bin/phpstan analyse`.
 includes:
     - vendor/larastan/larastan/extension.neon
 
@@ -7,3 +6,25 @@ parameters:
     paths:
         - app/
     tmpDir: storage/framework/phpstan
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # array_values dipakai sengaja agar keluaran JSON selalu berupa larik berurutan, juga bila sumbernya kelak
+        # berubah; tidak mengubah perilaku.
+        - identifier: arrayValues.list
+        - identifier: arrayValues.empty
+        # Mesin penilaian murni memeriksa bentuk masukan secara defensif walaupun docblock sudah menyebut tipenya,
+        # karena masukan berasal dari snapshot JSON. Kode ini dijaga fixture 1e-6 sehingga tidak diubah demi analisis.
+        -
+            identifier: function.alreadyNarrowedType
+            paths:
+                - app/Domain/Scoring/DataQuality.php
+                - app/Domain/Scoring/SampleCalculator.php
+        -
+            identifier: notIdentical.alwaysTrue
+            path: app/Domain/Scoring/ScoringEngine.php
+        # Data contoh pengembangan: PHPStan menyempitkan tipe larik literal terlalu jauh.
+        -
+            identifiers:
+                - identical.alwaysFalse
+                - booleanAnd.alwaysFalse
+            path: app/Console/Commands/DemoDataCommand.php

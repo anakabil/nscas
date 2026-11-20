@@ -2,11 +2,21 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** Pernyataan asesor bahwa bukti satu karakteristik telah ditinjau (fase R6, syarat evidence_reviewed). */
+/**
+ * Pernyataan asesor bahwa bukti satu karakteristik telah ditinjau (fase R6, syarat evidence_reviewed).
+ *
+ * @property string $id
+ * @property string $assessment_id
+ * @property string $characteristic_id
+ * @property string|null $note
+ * @property int $reviewed_by
+ * @property CarbonImmutable $reviewed_at
+ */
 class EvidenceReview extends Model
 {
     use HasUlids;
