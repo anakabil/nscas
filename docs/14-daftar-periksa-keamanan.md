@@ -20,7 +20,7 @@ Hasil NSCAS adalah pengukuran internal, bukan sertifikat. Daftar ini tidak mengg
 | Autentikasi dan sesi (K1 sampai K6) | 6 | 0 | 0 |
 | Hak akses dan isolasi tenant (K7 sampai K9) | 3 | 0 | 0 |
 | Masukan, keluaran, dan berkas (K10 sampai K13) | 4 | 0 | 0 |
-| Pustaka dan analisis kode (K14 sampai K15) | 1 | 1 | 0 |
+| Pustaka dan analisis kode (K14 sampai K15) | 2 | 0 | 0 |
 | Data pribadi dan anonimitas (K16 sampai K21) | 5 | 0 | 1 |
 | Jejak audit dan pemantauan (K22 sampai K24) | 3 | 0 | 0 |
 | Infrastruktur (K25 sampai K28) | 3 | 0 | 1 |
@@ -60,7 +60,7 @@ Hasil NSCAS adalah pengukuran internal, bukan sertifikat. Daftar ini tidak mengg
 | No | Kendali | Penerapan | Bukti | Status |
 |---|---|---|---|---|
 | K14 | Pustaka tanpa kerentanan yang diketahui | `composer audit --locked` dan `npm audit --omit=dev --audit-level=high` dijalankan di CI dan memblokir. Hasil 19 November 2026: tidak ada temuan | `.github/workflows/tests.yml` | Terpenuhi |
-| K15 | Analisis statis PHP | Larastan tingkat 5 untuk `app/` (`phpstan.neon`, `composer analyse`). Paket tidak dapat diunduh di lingkungan pengembangan karena pembatasan jaringan, sehingga dijalankan di CI tanpa memblokir sampai temuan pertama ditinjau | CI langkah Static analysis | Sebagian. Run CI pertama: 130 temuan, sebagian besar anotasi model dan tipe kolom JSON (`docs/15` bagian 5). Tindak lanjut: perbaiki, lalu jadikan memblokir (pengembang) |
+| K15 | Analisis statis PHP | Larastan tingkat 5 untuk `app/` (`phpstan.neon`, `composer analyse`). Paket tidak dapat diunduh di lingkungan pengembangan karena pembatasan jaringan, sehingga dijalankan di CI | CI langkah Static analysis, run 44683728954 pada komit f33f1ab: nol temuan | Terpenuhi (20 November 2026). Run CI pertama memberi 130 temuan, sebagian besar anotasi model dan tipe kolom JSON (`docs/15` bagian 5). Semuanya sudah diperbaiki tanpa mengubah perilaku, dan langkah CI kini memblokir |
 
 ### 3.5 Data pribadi dan anonimitas
 

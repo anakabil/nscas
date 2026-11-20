@@ -71,8 +71,7 @@ jobs:
           composer audit --no-interaction --locked
           npm audit --omit=dev --audit-level=high
 
-      # Analisis statis PHP dengan Larastan (fase R11). Belum memblokir sampai temuan pertama ditinjau.
+      # Analisis statis PHP dengan Larastan tingkat 5 (fase R11). Memblokir sejak temuannya nol (20 November 2026).
       - name: Static analysis
-        continue-on-error: true
         # Format raw menulis berkas:baris:pesan di log agar setiap temuan dapat ditelusuri; github hanya menyimpan 10 anotasi.
         run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=raw

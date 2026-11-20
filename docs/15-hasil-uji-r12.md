@@ -13,7 +13,7 @@ Dokumen ini mencatat hasil uji fase R12 pada 19 November 2026: uji ujung ke ujun
 | Aplikasi kamera observasi (PWA) | Lulus di peramban telepon tiruan | Uji di telepon sungguhan pada domain produksi masih tertunda |
 | Tampilan 360, 768, 1024, 1440 piksel | Lulus untuk halaman fase R11 dan R12 | Tanpa luapan dan tanpa galat JavaScript |
 | Audit kerentanan pustaka | Tidak ada temuan | `composer audit`, `npm audit` |
-| Analisis statis Larastan tingkat 5 | 130 temuan tipe, 4 sudah diperbaiki; belum memblokir | Lihat bagian 5 |
+| Analisis statis Larastan tingkat 5 | 130 temuan tipe pada run pertama; seluruhnya diperbaiki 20 November 2026, langkah CI kini memblokir | Lihat bagian 5 |
 
 ## 2. Uji ujung ke ujung
 
@@ -97,6 +97,14 @@ Larastan 3.15 (PHPStan 2.3) tingkat 5 berjalan di CI untuk pertama kali pada kom
 
 Tidak ada temuan yang menunjukkan galat saat aplikasi berjalan pada jalur yang diuji; seluruh tes fitur lulus pada kode yang sama. Langkah CI dibiarkan tidak memblokir sampai sisa temuan diperbaiki, dicatat sebagai tugas di luar fase di `PROMPTS.md`. Paket Larastan tidak dapat diunduh di lingkungan penyusunan karena pembatasan jaringan ke github.com, sehingga perbaikan sebaiknya dikerjakan di lingkungan yang dapat menjalankan `composer analyse`.
 
+Pembaruan 20 November 2026: seluruh temuan sudah ditangani dan run CI 44683728954 (komit f33f1ab) melaporkan nol temuan, dengan 407 tes tetap lulus. Penanganannya:
+
+1. Anotasi `@property` ditambahkan ke model, termasuk kolom JSON sebagai larik, kolom waktu sebagai `CarbonImmutable` (aplikasi memakai tanggal tidak berubah), dan atribut hasil `withCount` serta `withSum`.
+2. Docblock bentuk larik dilengkapi, operator `?->` yang tidak perlu dan pemeriksaan berlebih dibuang.
+3. Tiga kelompok temuan dikecualikan secara terbatas di `phpstan.neon`, masing-masing dengan alasannya: `array_values` yang sengaja dipakai agar keluaran JSON selalu berupa larik berurutan; pemeriksaan bentuk masukan yang defensif di mesin penilaian (`app/Domain/Scoring`), yang tidak diubah karena dijaga fixture 1e-6; dan penyempitan tipe larik literal pada perintah data contoh.
+
+Langkah Static analysis di CI kini memblokir.
+
 ## 6. Kesiapan penempatan
 
 Berkas penempatan dari fase R0.7 tetap berlaku (`docs/08`). Perubahan fase R11 dan R12 yang perlu diperhatikan saat penempatan:
@@ -115,4 +123,4 @@ Butir yang masih harus dipenuhi sebelum data responden nyata, berdasarkan `docs/
 2. Penempatan pertama ke Droplet dengan domain dan sertifikat TLS, lalu daftar periksa `docs/08` bagian 12.
 3. Uji beban ulang pada Droplet sungguhan dan uji kamera di telepon sungguhan (bagian 3 dan 4).
 4. Uji penetrasi oleh pihak ketiga (`docs/14` butir K28).
-5. Perbaikan temuan Larastan, lalu langkah CI dijadikan memblokir (`docs/14` butir K15).
+5. Perbaikan temuan Larastan dan langkah CI yang memblokir: selesai 20 November 2026 (`docs/14` butir K15).
