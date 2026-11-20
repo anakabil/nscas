@@ -1,5 +1,5 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react';
-import { CalendarClock, ChevronDown, MapPin, Plus, Video } from 'lucide-react';
+import { CalendarClock, ChevronDown, Download, MapPin, Plus, Video } from 'lucide-react';
 import { useState } from 'react';
 import ValidationController from '@/actions/App/Http/Controllers/Validation/ValidationController';
 import { CollectionShell, formatWib } from '@/components/nscas/collection-shell';
@@ -43,6 +43,7 @@ type Props = CollectionCommon &
         canPlan: boolean;
         canLead: boolean;
         canFeedback: boolean;
+        canExport: boolean;
         sessions: Session[];
         proposal: Proposal | null;
         guides: Guide[];
@@ -74,7 +75,21 @@ export default function ValidationIndex(props: Props) {
             showWindow={false}
             notice={props.canPlan ? null : t('validation.closed')}
         >
-            <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{t('validation.intro')}</p>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">{t('validation.intro')}</p>
+                {props.canExport ? (
+                    <Button asChild variant="outline" size="sm">
+                        <a
+                            href={ValidationController.export.url(props.assessment.id)}
+                            title={t('validation.exportHint')}
+                            data-testid="validation-export"
+                        >
+                            <Download aria-hidden />
+                            {t('validation.exportData')}
+                        </a>
+                    </Button>
+                ) : null}
+            </div>
             <FormError message={errors.form} />
 
             {props.sessions.length === 0 && props.canPlan ? (

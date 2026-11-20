@@ -1,0 +1,519 @@
+{
+  "_catatan": "Bahan kerja validasi lapangan versi 2 (permintaan pemilik proyek, 20 November 2026): pertanyaan pendalaman dan petunjuk penilaian jawaban wawancara, alur dan pertanyaan diskusi kelompok terarah, serta lembar kerja kunjungan proyek. Disusun Nusa Safety dari nama karakteristik instrumen dengan acuan PP 50/2012, Permen PUPR 10/2021, Permenaker 8/2010, Permenaker 9/2016, dan Permenaker 5/2018. Tidak menyalin kriteria skema sertifikasi NEN. Hasilnya dipakai untuk triangulasi, bukan masuk rumus nilai.",
+  "version": "2",
+  "interview": {
+    "opening": [
+      "Perkenalkan diri dan jelaskan tujuan wawancara: memahami praktik keselamatan sehari-hari, bukan menilai pribadi narasumber.",
+      "Tegaskan bahwa nama narasumber tidak dicantumkan pada catatan maupun laporan, lalu mintakan persetujuan perekaman.",
+      "Minta narasumber menjawab dengan contoh nyata dari pengalaman sendiri dalam tiga sampai enam bulan terakhir."
+    ],
+    "closing": [
+      "Tanyakan satu hal yang paling perlu diperbaiki menurut narasumber.",
+      "Tanyakan apakah ada dokumen atau lokasi yang dapat ditunjukkan sebagai bukti.",
+      "Ucapkan terima kasih dan jelaskan bahwa hasil keseluruhan akan disampaikan kepada pekerja."
+    ],
+    "characteristics": {
+      "K1.1": {
+        "probes": [
+          "Siapa yang hadir dan apa yang dikatakan atau dilakukan saat itu?",
+          "Apa yang berubah di lapangan setelah kunjungan tersebut?"
+        ],
+        "strong": "Contoh spesifik dalam tiga bulan terakhir; pimpinan hadir di lapangan dan mengambil tindakan yang terlihat pekerja.",
+        "weak": "Jawaban umum atau hanya merujuk kebijakan, spanduk, atau rapat tanpa contoh tindakan."
+      },
+      "K1.2": {
+        "probes": [
+          "Bagaimana usulan itu disampaikan dan siapa yang memutuskan?",
+          "Apakah pengusul mendapat kabar tentang hasilnya?"
+        ],
+        "strong": "Ada usulan pekerja yang benar-benar mengubah rencana kerja, dan pengusul mendapat umpan balik.",
+        "weak": "Usulan hanya ditampung, atau narasumber tidak dapat menyebut contoh usulan yang dipakai."
+      },
+      "K1.3": {
+        "probes": [
+          "Siapa yang menerima apresiasi atau konsekuensi, dan apa bentuknya?",
+          "Apakah aturan yang sama berlaku untuk staf dan pekerja penyedia jasa?"
+        ],
+        "strong": "Apresiasi dan konsekuensi diberikan secara adil, tercatat, dan berlaku sama untuk semua jabatan.",
+        "weak": "Hanya hukuman bagi pekerja lapangan, atau tidak ada contoh apresiasi."
+      },
+      "K2.1": {
+        "probes": [
+          "Siapa yang terlibat dalam penyelidikan dan berapa lama prosesnya?",
+          "Bagaimana pelajarannya disampaikan ke proyek lain?"
+        ],
+        "strong": "Penyelidikan menemukan penyebab sistem dan menghasilkan perubahan yang dapat ditunjukkan.",
+        "weak": "Penyebab berhenti pada kelalaian pekerja tanpa perubahan sistem."
+      },
+      "K2.2": {
+        "probes": [
+          "Siapa yang mengusulkan dan siapa yang menyetujui perubahan tersebut?",
+          "Bagaimana dampaknya terhadap jadwal atau biaya?"
+        ],
+        "strong": "Ada keputusan bisnis yang nyata dipengaruhi pertimbangan keselamatan, termasuk yang menambah biaya atau waktu.",
+        "weak": "Keselamatan disebut penting tetapi tidak ada contoh keputusan yang berubah karenanya."
+      },
+      "K3.1": {
+        "probes": [
+          "Bagaimana syarat keselamatan dimasukkan dalam kontrak penyedia jasa?",
+          "Apa tindakan terhadap penyedia jasa yang kinerjanya buruk?"
+        ],
+        "strong": "Kinerja penyedia jasa dinilai sebelum, selama, dan sesudah pekerjaan, dengan contoh tindakan nyata.",
+        "weak": "Penilaian hanya administratif saat pengadaan, atau tidak ada contoh tindakan."
+      },
+      "K3.2": {
+        "probes": [
+          "Bagaimana kebutuhan pelatihan ditentukan untuk jabatan Anda?",
+          "Bagaimana atasan memastikan hasil pelatihan diterapkan?"
+        ],
+        "strong": "Pelatihan dipilih dari kebutuhan pekerjaan dan penerapannya diperiksa di lapangan.",
+        "weak": "Pelatihan bersifat rutin atau formalitas, tanpa pemeriksaan penerapan."
+      },
+      "K3.3": {
+        "probes": [
+          "Kepada siapa petugas K3 melapor, dan apakah dapat langsung ke pimpinan tertinggi proyek?",
+          "Apa yang terjadi ketika saran petugas K3 tidak sejalan dengan target produksi?"
+        ],
+        "strong": "Petugas K3 memiliki kewenangan yang dihormati dan contoh sarannya mengubah rencana kerja.",
+        "weak": "Petugas K3 hanya mencatat atau mengurus administrasi, sarannya sering diabaikan."
+      },
+      "K4.1": {
+        "probes": [
+          "Siapa yang terlibat dalam identifikasi bahaya, termasuk pekerja dan penyedia jasa?",
+          "Bagaimana rencana diperbarui bila kondisi lapangan berubah?"
+        ],
+        "strong": "Analisis bahaya dibuat bersama pelaksana sebelum pekerjaan dan diperbarui saat kondisi berubah.",
+        "weak": "Analisis bahaya disalin dari dokumen lama atau dibuat setelah pekerjaan berjalan."
+      },
+      "K4.2": {
+        "probes": [
+          "Siapa yang bertanggung jawab memperbaiki kondisi tersebut?",
+          "Apa yang dilakukan pekerja sambil menunggu perbaikan?"
+        ],
+        "strong": "Kondisi tidak aman diperbaiki cepat dengan penanggung jawab yang jelas.",
+        "weak": "Kondisi yang sama terus berulang atau perbaikan menunggu lama tanpa pengendalian sementara."
+      },
+      "K4.3": {
+        "probes": [
+          "Bagaimana prosedur itu disusun dan apakah pelaksana dilibatkan?",
+          "Apa yang terjadi bila pekerja tidak menjalankan prosedur karena sulit?"
+        ],
+        "strong": "Prosedur dipahami pelaksana dan diperbaiki ketika tidak sesuai kondisi lapangan.",
+        "weak": "Prosedur dianggap formalitas dan penyimpangan dibiarkan."
+      },
+      "K5.1": {
+        "probes": [
+          "Apakah pelapor mendapat kabar tentang tindak lanjutnya?",
+          "Apakah ada yang ragu melapor karena takut disalahkan?"
+        ],
+        "strong": "Laporan ditindaklanjuti dengan cepat dan pelapor mendapat umpan balik tanpa rasa takut.",
+        "weak": "Pelaporan jarang, tanpa umpan balik, atau pelapor merasa disalahkan."
+      },
+      "K5.2": {
+        "probes": [
+          "Bagaimana tindakan perbaikan dipantau sampai selesai?",
+          "Bagaimana hasil investigasi disampaikan kepada pekerja?"
+        ],
+        "strong": "Investigasi melibatkan pihak terkait, tindakan perbaikan selesai dan hasilnya dikomunikasikan.",
+        "weak": "Investigasi berhenti pada laporan tanpa pemantauan penyelesaian."
+      },
+      "K5.3": {
+        "probes": [
+          "Siapa yang memimpin pertemuan pagi dan apakah pekerja boleh bertanya?",
+          "Bagaimana informasi sampai ke pekerja penyedia jasa dan pekerja baru?"
+        ],
+        "strong": "Komunikasi harian membahas bahaya pekerjaan hari itu dan pekerja aktif bertanya.",
+        "weak": "Pertemuan pagi berupa rutinitas satu arah dengan materi yang tidak berubah."
+      },
+      "K6.1": {
+        "probes": [
+          "Siapa yang menentukan prioritas tindak lanjut temuan?",
+          "Bagaimana penyelesaian temuan diverifikasi?"
+        ],
+        "strong": "Temuan audit ditindaklanjuti tepat waktu dan penyelesaiannya diverifikasi.",
+        "weak": "Temuan menumpuk atau ditutup tanpa verifikasi di lapangan."
+      },
+      "K6.2": {
+        "probes": [
+          "Data apa selain angka kecelakaan yang dipantau?",
+          "Siapa yang membahas tren tersebut dan seberapa sering?"
+        ],
+        "strong": "Data proaktif dipantau dan tren dipakai untuk mengambil keputusan.",
+        "weak": "Hanya angka kecelakaan yang dilaporkan tanpa analisis atau keputusan lanjutan."
+      },
+      "KT.1": {
+        "probes": [
+          "Siapa yang memperbarui Rencana Keselamatan Konstruksi dan kapan terakhir diperbarui?",
+          "Bagaimana rencana tersebut dipakai dalam inspeksi dan rapat?"
+        ],
+        "strong": "Rencana Keselamatan Konstruksi menjadi dokumen kerja yang diperbarui dan dipakai sehari-hari.",
+        "weak": "Rencana hanya disusun untuk memenuhi persyaratan administrasi."
+      },
+      "KT.2": {
+        "probes": [
+          "Bagaimana atasan menanggapi saat itu, dan apakah ada akibat bagi yang menyuarakan?",
+          "Bagaimana beban kerja dan kelelahan dibicarakan di tim Anda?"
+        ],
+        "strong": "Pekerja berani menghentikan pekerjaan atau menyampaikan keberatan dan tanggapannya mendukung.",
+        "weak": "Pekerja ragu bersuara, atau ada contoh pekerja yang dirugikan setelah menyampaikan keberatan."
+      }
+    }
+  },
+  "focusGroup": {
+    "rules": [
+      "Enam sampai delapan peserta dari kelompok jabatan yang sama, tanpa atasan langsung di ruangan.",
+      "Satu fasilitator memandu dan satu asesor mencatat; durasi 60 sampai 90 menit.",
+      "Setiap peserta mendapat kesempatan berbicara; tidak ada jawaban benar atau salah.",
+      "Yang dicatat adalah isi dan tingkat kesepakatan, bukan siapa yang berbicara."
+    ],
+    "opening": [
+      "Jelaskan tujuan diskusi dengan bahasa sehari-hari dan jamin kerahasiaan peserta.",
+      "Mintakan persetujuan perekaman; bila ada yang keberatan, diskusi tidak direkam."
+    ],
+    "warmUp": "Ceritakan secara singkat pekerjaan kalian hari ini atau minggu ini, dan bagian mana yang paling berisiko.",
+    "characteristics": {
+      "K1.1": {
+        "question": "Di proyek ini, kapan terakhir kali kalian melihat pimpinan proyek datang ke lapangan untuk urusan keselamatan? Apa yang mereka lakukan?",
+        "probes": [
+          "Apakah semua setuju? Ada yang punya pengalaman berbeda?",
+          "Apa yang berubah setelah itu?"
+        ]
+      },
+      "K1.2": {
+        "question": "Kalau kalian punya usul supaya kerja lebih aman, kepada siapa disampaikan? Ada usul yang pernah benar-benar dipakai?",
+        "probes": [
+          "Bagaimana rasanya ketika usul dipakai atau tidak dipakai?",
+          "Apakah pekerja penyedia jasa juga bisa mengusulkan?"
+        ]
+      },
+      "K1.3": {
+        "question": "Apa yang terjadi kalau seseorang bekerja dengan aman, dan apa yang terjadi kalau ada yang melanggar aturan keselamatan?",
+        "probes": [
+          "Apakah perlakuannya sama untuk mandor, staf, dan pekerja?",
+          "Ada contoh dalam tiga bulan terakhir?"
+        ]
+      },
+      "K2.1": {
+        "question": "Kalau ada kecelakaan atau hampir celaka di proyek, apa yang biasanya terjadi sesudahnya?",
+        "probes": [
+          "Apakah kalian pernah diberi tahu penyebabnya?",
+          "Apa yang diubah supaya tidak terulang?"
+        ]
+      },
+      "K2.2": {
+        "question": "Pernahkah pekerjaan ditunda atau caranya diubah karena alasan keselamatan, walaupun target jadi mundur?",
+        "probes": [
+          "Siapa yang memutuskan?",
+          "Bagaimana tanggapan atasan terhadap keterlambatan itu?"
+        ]
+      },
+      "K3.1": {
+        "question": "Apakah pekerja dari penyedia jasa atau subkontraktor diperlakukan sama soal keselamatan dengan pekerja kontraktor utama?",
+        "probes": [
+          "Alat pelindung diri siapa yang menyediakan?",
+          "Apakah mereka ikut safety talk yang sama?"
+        ]
+      },
+      "K3.2": {
+        "question": "Pelatihan keselamatan apa yang terakhir kalian ikuti? Apa yang masih diingat dan dipakai di pekerjaan?",
+        "probes": [
+          "Apakah pekerja baru dikenalkan bahaya sebelum mulai kerja?",
+          "Siapa yang mengecek bahwa materi pelatihan dijalankan?"
+        ]
+      },
+      "K3.3": {
+        "question": "Apa peran petugas K3 di proyek ini sehari-hari? Kapan terakhir saran mereka mengubah cara kerja?",
+        "probes": [
+          "Apakah saran petugas K3 diikuti mandor dan atasan?",
+          "Mudahkah menemui petugas K3 bila ada masalah?"
+        ]
+      },
+      "K4.1": {
+        "question": "Sebelum memulai pekerjaan yang berbahaya, misalnya di ketinggian atau pengangkatan, apa yang dibahas dan disiapkan?",
+        "probes": [
+          "Apakah kalian ikut membahas bahayanya?",
+          "Apa yang terjadi bila kondisi di lapangan ternyata berbeda?"
+        ]
+      },
+      "K4.2": {
+        "question": "Kondisi tidak aman apa yang paling sering kalian lihat di area kerja? Berapa lama biasanya diperbaiki?",
+        "probes": [
+          "Siapa yang memperbaikinya?",
+          "Apa yang kalian lakukan sambil menunggu?"
+        ]
+      },
+      "K4.3": {
+        "question": "Ada aturan atau prosedur keselamatan yang sulit dijalankan di lapangan? Apa yang biasanya kalian lakukan?",
+        "probes": [
+          "Pernahkah prosedurnya diperbaiki setelah kalian sampaikan?",
+          "Apakah semua orang menjalankan aturan yang sama?"
+        ]
+      },
+      "K5.1": {
+        "question": "Kalau melihat kondisi tidak aman atau hampir celaka, apakah kalian melaporkannya? Apa yang terjadi sesudahnya?",
+        "probes": [
+          "Ada yang takut disalahkan bila melapor?",
+          "Apakah pelapor diberi tahu hasilnya?"
+        ]
+      },
+      "K5.2": {
+        "question": "Setelah kejadian diselidiki, apakah perbaikannya benar-benar dikerjakan? Bagaimana kalian tahu?",
+        "probes": [
+          "Berapa lama sampai perbaikan selesai?",
+          "Apakah hasilnya diceritakan kepada pekerja?"
+        ]
+      },
+      "K5.3": {
+        "question": "Bagaimana pertemuan pagi atau safety talk di sini? Ada informasi yang mengubah cara kalian bekerja?",
+        "probes": [
+          "Apakah kalian boleh bertanya atau menyampaikan masalah?",
+          "Bagaimana pekerja yang datang terlambat atau baru mendapat informasinya?"
+        ]
+      },
+      "K6.1": {
+        "question": "Kalau ada pemeriksaan atau inspeksi keselamatan, apa yang terjadi sesudahnya di area kerja kalian?",
+        "probes": [
+          "Apakah temuannya diperbaiki?",
+          "Apakah kalian diberi tahu hasilnya?"
+        ]
+      },
+      "K6.2": {
+        "question": "Pernahkah kalian diberi tahu angka atau perkembangan keselamatan proyek, misalnya jumlah laporan atau kejadian?",
+        "probes": [
+          "Di mana informasi itu ditampilkan?",
+          "Apakah ada perubahan kerja karena angka itu?"
+        ]
+      },
+      "KT.1": {
+        "question": "Apakah kalian tahu rencana keselamatan untuk pekerjaan kalian di proyek ini? Bagaimana rencana itu dipakai?",
+        "probes": [
+          "Siapa yang menjelaskannya?",
+          "Apakah rencana berubah ketika metode kerja berubah?"
+        ]
+      },
+      "KT.2": {
+        "question": "Kalau merasa pekerjaan tidak aman, apakah kalian berani berhenti atau menolak? Pernah ada contohnya?",
+        "probes": [
+          "Bagaimana tanggapan mandor atau atasan?",
+          "Bagaimana soal jam kerja, lembur, dan kelelahan di tim kalian?"
+        ]
+      }
+    },
+    "closing": [
+      "Minta setiap peserta menyebut satu hal yang paling ingin diperbaiki.",
+      "Rangkum pokok pembicaraan dan tanyakan apakah ada yang perlu dikoreksi.",
+      "Ucapkan terima kasih dan jelaskan bahwa hasilnya akan disampaikan kembali kepada pekerja."
+    ]
+  },
+  "siteVisit": {
+    "intro": "Isi lembar ini selama kunjungan proyek. Pilih hasil untuk setiap butir: Sesuai, Sebagian, Tidak sesuai, atau Tidak dapat diperiksa bila butir tidak relevan atau tidak dapat dilihat saat kunjungan. Tulis catatan singkat untuk hasil Sebagian dan Tidak sesuai, dan rekam fotonya lewat kamera observasi bila perlu.",
+    "sections": [
+      {
+        "code": "A",
+        "title": "Pertemuan pembuka dan pemeriksaan dokumen",
+        "method": "DOCUMENT",
+        "items": [
+          {
+            "code": "SV01",
+            "characteristic": "K1.1",
+            "text": "Jadwal atau catatan kunjungan keselamatan pimpinan proyek ke lapangan dalam satu bulan terakhir tersedia dan sesuai yang dilaksanakan."
+          },
+          {
+            "code": "SV02",
+            "characteristic": "K1.2",
+            "text": "Perwakilan pekerja atau mandor ikut dalam rapat atau inspeksi keselamatan, terlihat dari daftar hadir atau notulen."
+          },
+          {
+            "code": "SV03",
+            "characteristic": "K1.3",
+            "text": "Catatan penghargaan atas perilaku selamat dalam tiga bulan terakhir tersedia."
+          },
+          {
+            "code": "SV04",
+            "characteristic": "K2.1",
+            "text": "Hasil investigasi kejadian terakhir menyebut penyebab sistem (perencanaan, peralatan, pengawasan), bukan hanya kesalahan pekerja."
+          },
+          {
+            "code": "SV05",
+            "characteristic": "K2.2",
+            "text": "Biaya penerapan keselamatan konstruksi tercantum dalam anggaran proyek dan realisasinya sesuai rencana."
+          },
+          {
+            "code": "SV06",
+            "characteristic": "K3.1",
+            "text": "Penyedia jasa yang bekerja di area berisiko tinggi memiliki analisis keselamatan pekerjaan yang disetujui."
+          },
+          {
+            "code": "SV07",
+            "characteristic": "K3.2",
+            "text": "Operator alat berat, juru ikat beban, dan pekerja di ketinggian yang sedang bertugas memiliki sertifikat atau lisensi yang masih berlaku."
+          },
+          {
+            "code": "SV08",
+            "characteristic": "K3.3",
+            "text": "Rekomendasi petugas K3 dalam catatan inspeksi ditindaklanjuti dan disetujui pimpinan proyek."
+          },
+          {
+            "code": "SV09",
+            "characteristic": "K4.1",
+            "text": "Pekerjaan berisiko tinggi hari ini memiliki izin kerja dan analisis bahaya yang ditandatangani sebelum dimulai."
+          },
+          {
+            "code": "SV10",
+            "characteristic": "K5.1",
+            "text": "Laporan kondisi tidak aman dan kejadian hampir celaka tercatat dalam satu bulan terakhir, termasuk dari pekerja penyedia jasa."
+          },
+          {
+            "code": "SV11",
+            "characteristic": "K5.2",
+            "text": "Tindakan perbaikan hasil investigasi memiliki penanggung jawab dan tenggat, dan sebagian besar sudah selesai."
+          },
+          {
+            "code": "SV12",
+            "characteristic": "K6.1",
+            "text": "Inspeksi keselamatan rutin tercatat sesuai jadwal dan temuannya ditutup tepat waktu."
+          },
+          {
+            "code": "SV13",
+            "characteristic": "K6.2",
+            "text": "Data kinerja keselamatan proyek dipantau, ditampilkan, dan dibahas dalam rapat proyek."
+          },
+          {
+            "code": "SV14",
+            "characteristic": "KT.1",
+            "text": "Rencana Keselamatan Konstruksi tersedia, diperbarui sesuai perubahan pekerjaan, dan dipakai sebagai acuan inspeksi."
+          },
+          {
+            "code": "SV15",
+            "characteristic": "KT.1",
+            "text": "Identifikasi bahaya dan penilaian risiko diperbarui ketika ada metode kerja atau tahapan pekerjaan baru."
+          }
+        ]
+      },
+      {
+        "code": "B",
+        "title": "Pengamatan area kerja",
+        "method": "OBSERVE",
+        "items": [
+          {
+            "code": "SV16",
+            "characteristic": "K1.1",
+            "text": "Pimpinan dan staf proyek yang memasuki area kerja memakai alat pelindung diri dan mematuhi rambu yang sama dengan pekerja."
+          },
+          {
+            "code": "SV17",
+            "characteristic": "K3.1",
+            "text": "Pekerja penyedia jasa memakai alat pelindung diri dan mengikuti aturan yang sama dengan pekerja kontraktor utama."
+          },
+          {
+            "code": "SV18",
+            "characteristic": "K3.3",
+            "text": "Petugas atau ahli K3 hadir di area kerja selama pekerjaan berisiko berlangsung."
+          },
+          {
+            "code": "SV19",
+            "characteristic": "K4.2",
+            "text": "Pengaman tepi, lubang, dan bukaan lantai terpasang lengkap."
+          },
+          {
+            "code": "SV20",
+            "characteristic": "K4.2",
+            "text": "Perancah dan tangga dalam keadaan baik dan diberi tanda layak pakai."
+          },
+          {
+            "code": "SV21",
+            "characteristic": "K4.2",
+            "text": "Akses, jalur pejalan kaki, dan jalur alat berat terpisah, rapi, dan bebas hambatan."
+          },
+          {
+            "code": "SV22",
+            "characteristic": "K4.2",
+            "text": "Instalasi listrik sementara tertata, kabel terlindung, dan panel dilengkapi pengaman arus bocor."
+          },
+          {
+            "code": "SV23",
+            "characteristic": "K4.3",
+            "text": "Pekerja di ketinggian memakai sabuk pengaman penuh yang terkait pada titik tambat."
+          },
+          {
+            "code": "SV24",
+            "characteristic": "K4.3",
+            "text": "Alat pelindung diri dipakai sesuai bahaya pekerjaan: helm, sepatu, kacamata, sarung tangan, dan pelindung telinga."
+          },
+          {
+            "code": "SV25",
+            "characteristic": "K5.3",
+            "text": "Pertemuan pagi atau safety talk membahas pekerjaan hari itu dan pekerja diberi kesempatan bertanya."
+          },
+          {
+            "code": "SV26",
+            "characteristic": "K5.3",
+            "text": "Rambu, papan informasi, dan nomor darurat terpasang, mudah dibaca, dan memakai bahasa yang dipahami pekerja."
+          },
+          {
+            "code": "SV27",
+            "characteristic": "K5.3",
+            "text": "Alat pemadam api ringan, kotak pertolongan pertama, jalur evakuasi, dan titik kumpul tersedia dan terawat."
+          },
+          {
+            "code": "SV28",
+            "characteristic": "KT.2",
+            "text": "Waktu istirahat dan tempat istirahat pekerja layak, dan tidak terlihat tanda kelelahan berat."
+          }
+        ]
+      },
+      {
+        "code": "C",
+        "title": "Tanya jawab singkat dengan pekerja di lokasi",
+        "method": "ASK",
+        "items": [
+          {
+            "code": "SV29",
+            "characteristic": "K1.2",
+            "text": "Pekerja yang ditanya secara acak dapat menyebut cara menyampaikan usulan keselamatan dan contoh usulan yang ditindaklanjuti."
+          },
+          {
+            "code": "SV30",
+            "characteristic": "K1.3",
+            "text": "Pekerja dan mandor dapat menjelaskan konsekuensi pelanggaran berat dan menyatakan aturan berlaku sama untuk semua."
+          },
+          {
+            "code": "SV31",
+            "characteristic": "K2.1",
+            "text": "Pekerja dapat menyebut pelajaran dari kejadian di proyek ini atau proyek lain yang disampaikan kepada mereka."
+          },
+          {
+            "code": "SV32",
+            "characteristic": "K2.2",
+            "text": "Ada contoh jadwal atau metode kerja yang diubah karena pertimbangan keselamatan meskipun menambah waktu atau biaya."
+          },
+          {
+            "code": "SV33",
+            "characteristic": "K3.2",
+            "text": "Pekerja baru menerima pengenalan keselamatan sebelum mulai bekerja dan dapat menyebut bahaya utama di area kerjanya."
+          },
+          {
+            "code": "SV34",
+            "characteristic": "K4.1",
+            "text": "Pekerja di lokasi pekerjaan berisiko tinggi dapat menjelaskan bahaya dan pengendalian yang tercantum dalam izin kerja."
+          },
+          {
+            "code": "SV35",
+            "characteristic": "K4.3",
+            "text": "Pekerja dapat menyebut langkah prosedur kerja aman untuk pekerjaannya dan bagian yang sulit dijalankan."
+          },
+          {
+            "code": "SV36",
+            "characteristic": "K5.1",
+            "text": "Pekerja tahu cara melapor dan menyatakan tidak takut disalahkan bila melapor."
+          },
+          {
+            "code": "SV37",
+            "characteristic": "KT.2",
+            "text": "Pekerja menyatakan berani menghentikan pekerjaan bila tidak aman dan dapat menyebut contoh yang dihormati atasan."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,13 +4,16 @@ namespace App\Services\Validation;
 
 use App\Domain\Access\Role;
 use App\Domain\Evidence\EvidenceRules;
+use App\Domain\Validation\FieldCoding;
 use App\Domain\Validation\SessionProposal;
+use App\Domain\Validation\Triangulation;
 use App\Domain\Validation\ValidationRules;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Models\Assessment;
 use App\Models\Characteristic;
 use App\Models\EvidenceReview;
 use App\Models\FeedbackNote;
+use App\Models\SiteVisitCheck;
 use App\Models\Stratum;
 use App\Models\User;
 use App\Models\ValidationGuide;
@@ -77,7 +80,10 @@ class ValidationService
         foreach ($missing as $layer) {
             ValidationGuide::firstOrCreate(['assessment_id' => $assessment->id, 'layer' => $layer], [
                 'intro' => trim(($bank['layers'][$layer] ?? '')."\n\n".($bank['opening'] ?? '')),
-                'questions' => array_map(fn (string $code) => ['code' => $code, 'question' => (string) ($bank['questions'][$code] ?? '')], $codes),
+                // Lapisan pekerja memakai pertanyaan diskusi kelompok terarah berbahasa sehari-hari (bahan versi 2).
+                'questions' => array_map(fn (string $code) => ['code' => $code, 'question' => (string) ($layer === 'FIELD'
+                    ? (FieldGuide::content()['focusGroup']['characteristics'][$code]['question'] ?? $bank['questions'][$code] ?? '')
+                    : ($bank['questions'][$code] ?? ''))], $codes),
             ]);
         }
     }
@@ -296,7 +302,10 @@ class ValidationService
             'participants' => ValidationParticipant::where('validation_session_id', $s->id)->orderBy('created_at')->get(['id', 'full_name', 'position'])
                 ->map(fn ($p) => ['id' => $p->id, 'name' => $p->full_name, 'position' => $p->position])->all(),
             'guide' => $guide ? ['intro' => $guide->intro, 'questions' => $guide->questions] : null,
-            'ratings' => $mine->map(fn (ValidationRating $r) => ['level' => $r->level, 'note' => $r->note])->all(),
+            'ratings' => $mine->map(fn (ValidationRating $r) => ['level' => $r->level, 'note' => $r->note, 'evidence' => $r->evidence_code, 'agreement' => $r->agreement])->all(),
+            'fieldGuide' => FieldGuide::forType($s->type),
+            'siteChecks' => SiteVisitCheck::where('validation_session_id', $s->id)->get()
+                ->mapWithKeys(fn (SiteVisitCheck $c) => [$c->item_code => ['result' => $c->result, 'note' => $c->note]])->all(),
         ];
     }
 
@@ -341,6 +350,10 @@ class ValidationService
             if ($r['level'] !== null && ! ValidationRules::isValidRating($r['level'])) {
                 throw RuleViolation::invalid('ratings', 'INVALID_RATING');
             }
+            if ((($r['evidence'] ?? null) !== null && ! in_array($r['evidence'], FieldCoding::EVIDENCE, true))
+                || (($r['agreement'] ?? null) !== null && ! in_array($r['agreement'], FieldCoding::AGREEMENT, true))) {
+                throw RuleViolation::invalid('ratings', 'INVALID_CODE');
+            }
         }
         DB::transaction(function () use ($assessment, $assessor, $actorRole, $sessionId, $recordingConsent, $notes, $ratings) {
             $locked = $this->lock($assessment, fn (AssessmentStatus $s) => ValidationRules::ratingOpen($s), 'RATINGS_CLOSED');
@@ -359,20 +372,106 @@ class ValidationService
                 Audit::record('validation.session_notes', $session, ['before' => $before, 'after' => ['notes' => $notes, 'recordingConsent' => $recordingConsent]], $locked, $actorRole);
             }
             $before = ValidationRating::where('validation_session_id', $session->id)->where('assessor_id', $assessor->id)->get()
-                ->map(fn (ValidationRating $r) => ['characteristic' => $codes[$r->characteristic_id] ?? $r->characteristic_id, 'level' => $r->level, 'note' => $r->note])->values()->all();
+                ->map(fn (ValidationRating $r) => ['characteristic' => $codes[$r->characteristic_id] ?? $r->characteristic_id, 'level' => $r->level, 'note' => $r->note,
+                    'evidence' => $r->evidence_code, 'agreement' => $r->agreement])->values()->all();
             foreach ($ratings as $r) {
                 $match = ['validation_session_id' => $session->id, 'characteristic_id' => $r['characteristicId'], 'assessor_id' => $assessor->id];
                 if ($r['level'] === null) {
                     ValidationRating::where($match)->delete();
                 } else {
-                    ValidationRating::updateOrCreate($match, ['level' => $r['level'], 'note' => $r['note']]);
+                    ValidationRating::updateOrCreate($match, [
+                        'level' => $r['level'], 'note' => $r['note'], 'evidence_code' => $r['evidence'] ?? null,
+                        // Kesepakatan kelompok hanya bermakna pada diskusi kelompok terarah.
+                        'agreement' => $session->type === SessionProposal::FOCUS_GROUP ? ($r['agreement'] ?? null) : null,
+                    ]);
                 }
             }
             Audit::record('validation.rating_save', $session, [
                 'before' => $before,
-                'after' => array_values(array_map(fn (array $r) => ['characteristic' => $codes[$r['characteristicId']], 'level' => $r['level'], 'note' => $r['note']], array_filter($ratings, fn (array $r) => $r['level'] !== null))),
+                'after' => array_values(array_map(fn (array $r) => ['characteristic' => $codes[$r['characteristicId']], 'level' => $r['level'], 'note' => $r['note'],
+                    'evidence' => $r['evidence'] ?? null, 'agreement' => $r['agreement'] ?? null], array_filter($ratings, fn (array $r) => $r['level'] !== null))),
             ], $locked, $actorRole);
         });
+    }
+
+    /**
+     * Lembar kerja kunjungan proyek (bahan versi 2): hasil per butir untuk satu sesi kunjungan. Hasil kosong menghapus
+     * butir itu dari lembar.
+     *
+     * @param  list<array{itemCode: string, result: ?string, note: ?string}>  $checks
+     */
+    public function saveSiteChecks(Assessment $assessment, User $user, Role $actorRole, string $sessionId, array $checks): void
+    {
+        $items = FieldGuide::siteItems();
+        foreach ($checks as $c) {
+            if (! array_key_exists($c['itemCode'], $items) || ($c['result'] !== null && ! in_array($c['result'], FieldCoding::SITE_RESULTS, true))) {
+                throw RuleViolation::invalid('checks', 'INVALID_CODE');
+            }
+        }
+        DB::transaction(function () use ($assessment, $user, $actorRole, $sessionId, $checks, $items) {
+            $locked = $this->lock($assessment, fn (AssessmentStatus $s) => ValidationRules::ratingOpen($s), 'RATINGS_CLOSED');
+            $session = ValidationSession::where('assessment_id', $locked->id)->lockForUpdate()->find($sessionId);
+            if ($session === null) {
+                throw new RuleViolation(404, 'NOT_FOUND');
+            }
+            if (! in_array($session->type, [SessionProposal::SITE_VISIT, SessionProposal::VIRTUAL_SITE_VISIT], true)) {
+                throw RuleViolation::invalid('checks', 'NOT_SITE_VISIT');
+            }
+            $characteristics = Characteristic::where('instrument_version_id', $locked->instrument_version_id)->pluck('id', 'code');
+            $changed = [];
+            foreach ($checks as $c) {
+                $match = ['validation_session_id' => $session->id, 'item_code' => $c['itemCode']];
+                if ($c['result'] === null) {
+                    if (SiteVisitCheck::where($match)->delete() > 0) {
+                        $changed[] = ['item' => $c['itemCode'], 'result' => null];
+                    }
+
+                    continue;
+                }
+                $characteristicId = $characteristics[$items[$c['itemCode']]] ?? null;
+                if ($characteristicId === null) {
+                    throw RuleViolation::invalid('checks', 'UNKNOWN_ITEM');
+                }
+                $row = SiteVisitCheck::firstOrNew($match);
+                if ($row->exists && $row->result === $c['result'] && $row->note === $c['note']) {
+                    continue;
+                }
+                $row->fill(['characteristic_id' => $characteristicId, 'result' => $c['result'], 'note' => $c['note'], 'checked_by' => $user->id])->save();
+                $changed[] = ['item' => $c['itemCode'], 'result' => $c['result'], 'note' => $c['note']];
+            }
+            if ($changed !== []) {
+                Audit::record('validation.site_check', $session, ['after' => $changed], $locked, $actorRole);
+            }
+        });
+    }
+
+    /**
+     * Ringkasan triangulasi per karakteristik (App\Domain\Validation\Triangulation). Bukan nilai: rumus penilaian
+     * tidak berubah.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function triangulation(Assessment $assessment): array
+    {
+        $codes = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->pluck('code', 'id');
+        $sessions = ValidationSession::where('assessment_id', $assessment->id)->where('status', '!=', 'CANCELLED')->get(['id', 'type', 'layer', 'unit_id'])->keyBy('id');
+        $ratings = ValidationRating::whereIn('validation_session_id', $sessions->keys())->get()
+            ->map(fn (ValidationRating $r) => [
+                'code' => (string) ($codes[$r->characteristic_id] ?? ''),
+                'type' => (string) $sessions[$r->validation_session_id]->type,
+                'layer' => (string) $sessions[$r->validation_session_id]->layer,
+                'level' => (float) $r->level,
+                'evidence' => $r->evidence_code,
+                'agreement' => $r->agreement,
+            ])->values()->all();
+        $checks = SiteVisitCheck::whereIn('validation_session_id', $sessions->keys())->get()
+            ->map(fn (SiteVisitCheck $c) => [
+                'code' => (string) ($codes[$c->characteristic_id] ?? ''),
+                'result' => $c->result,
+                'unitId' => $sessions[$c->validation_session_id]->unit_id,
+            ])->values()->all();
+
+        return Triangulation::summarize($codes->values()->all(), $ratings, $checks);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

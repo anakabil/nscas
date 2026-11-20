@@ -32,6 +32,7 @@ use App\Models\SclFulfillment;
 use App\Models\ScoreRun;
 use App\Models\SelfAssessment;
 use App\Models\SelfAssessmentAnswer;
+use App\Models\SiteVisitCheck;
 use App\Models\StratumJustification;
 use App\Models\SurveyResponse;
 use App\Models\Unit;
@@ -45,6 +46,7 @@ use App\Services\Respondents\ParticipationReport;
 use App\Services\Respondents\RespondentDistribution;
 use App\Services\Respondents\SurveyLinks;
 use App\Services\Scoring\ScoringService;
+use App\Services\Validation\FieldGuide;
 use App\Services\Validation\ValidationService;
 use Carbon\CarbonImmutable;
 use Database\Seeders\InstrumentVersionSeeder;
@@ -683,6 +685,19 @@ class DemoDataCommand extends Command
                 'recording_consent' => $done,
                 'notes' => $done ? 'Narasumber menyebut contoh nyata penerapan prosedur, tetapi tindak lanjut laporan bahaya belum konsisten antarproyek.' : null,
             ]);
+            // Bahan validasi versi 2: lembar kerja kunjungan proyek dengan hasil per butir.
+            if ($visit && $done) {
+                $codes = $characteristics->pluck('id', 'code');
+                foreach (FieldGuide::siteItems() as $item => $code) {
+                    $roll = mt_rand(1, 20);
+                    $result = $roll <= 9 ? 'MEETS' : ($roll <= 15 ? 'PARTIAL' : ($roll <= 18 ? 'NOT_MET' : 'NOT_OBSERVED'));
+                    SiteVisitCheck::create([
+                        'validation_session_id' => $session->id, 'item_code' => $item, 'characteristic_id' => $codes[$code], 'result' => $result,
+                        'note' => in_array($result, ['PARTIAL', 'NOT_MET'], true) ? 'Ditemukan di sebagian area kerja; perlu tindak lanjut pengawas.' : null,
+                        'checked_by' => $lead->id,
+                    ]);
+                }
+            }
             if ($visit || ! $done) {
                 continue;
             }
@@ -695,6 +710,8 @@ class DemoDataCommand extends Command
                     ValidationRating::create([
                         'validation_session_id' => $session->id, 'characteristic_id' => $characteristicId, 'assessor_id' => $rater->id,
                         'level' => $level, 'note' => 'Didukung contoh yang disebut lebih dari satu narasumber.',
+                        'evidence_code' => $level >= 3.5 ? 'CONSISTENT' : ($level >= 2.5 ? 'PARTIAL' : 'NONE'),
+                        'agreement' => $p['type'] === SessionProposal::FOCUS_GROUP ? ['AGREED', 'AGREED', 'MIXED', 'DIVIDED'][mt_rand(0, 3)] : null,
                     ]);
                 }
             }

@@ -164,6 +164,9 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::get('validation/sessions/{session}', [ValidationController::class, 'show'])->whereAlphaNumeric('session')->name('validation.sessions.show');
         Route::put('validation/sessions/{session}', [ValidationController::class, 'update'])->whereAlphaNumeric('session')->name('validation.sessions.update');
         Route::put('validation/sessions/{session}/form', [ValidationController::class, 'form'])->whereAlphaNumeric('session')->name('validation.sessions.form');
+        Route::put('validation/sessions/{session}/site-checks', [ValidationController::class, 'siteChecks'])->whereAlphaNumeric('session')->name('validation.sessions.site-checks');
+        Route::get('validation/sessions/{session}/print', [ValidationController::class, 'print'])->whereAlphaNumeric('session')->name('validation.sessions.print');
+        Route::get('validation/export', [ValidationController::class, 'export'])->middleware('throttle:20,1')->name('validation.export');
         Route::post('validation/sessions/{session}/participants', [ValidationController::class, 'addParticipant'])->whereAlphaNumeric('session')->name('validation.participants.store');
         Route::delete('validation/participants/{participant}', [ValidationController::class, 'removeParticipant'])->whereAlphaNumeric('participant')->name('validation.participants.destroy');
         Route::put('validation/guides/{layer}', [ValidationController::class, 'guide'])->where('layer', 'MANAGEMENT|SUPERVISORY|FIELD')->name('validation.guides.update');

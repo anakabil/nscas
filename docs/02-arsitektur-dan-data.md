@@ -88,7 +88,8 @@ tests/Feature            beranda, hak akses, jejak audit, autentikasi
 | `validation_guides` | Panduan pertanyaan per kelompok jabatan: pembuka dan pertanyaan per kode karakteristik | R6. Disalin dari `seed/panduan-validasi-v1.json` saat pertama dibuka; diubah asesor utama |
 | `validation_sessions` | Sesi wawancara, diskusi kelompok terarah, kunjungan proyek fisik atau daring: nama, kelompok jabatan, unit, strata, jadwal, tautan rapat HTTPS, lokasi, jumlah peserta, status, karakteristik fokus, persetujuan perekaman, catatan | R6. Syarat `validation_plan_set`, `validation_sessions_completed`, `site_visit_completed` |
 | `validation_participants` | Nama dan jabatan narasumber | R6. Disimpan terpisah dari catatan dan nilai; tidak masuk laporan |
-| `validation_ratings` | Nilai 1,0 sampai 5,0 kelipatan 0,5 per sesi, karakteristik, dan asesor, dengan dasar penilaian | R6. Batasan basis data memeriksa rentang dan kelipatan |
+| `validation_ratings` | Nilai 1,0 sampai 5,0 kelipatan 0,5 per sesi, karakteristik, dan asesor, dengan dasar penilaian; kode bukti dan kesepakatan kelompok (bahan validasi versi 2) | R6. Batasan basis data memeriksa rentang dan kelipatan |
+| `site_visit_checks` | Hasil butir lembar kerja kunjungan proyek per sesi: kode butir, karakteristik, hasil (Sesuai, Sebagian, Tidak sesuai, Tidak dapat diperiksa), catatan, pemeriksa | Bahan validasi versi 2 (`docs/16`). Untuk triangulasi; tidak masuk rumus nilai |
 | `feedback_notes` | Ringkasan umpan balik harian kepada organisasi | R6. Satu baris per tanggal |
 | `evidence_ratings` | Nilai bukti per asesmen, karakteristik, dan asesor (1,0 sampai 5,0 kelipatan 0,5), alasan, id bukti dan rekaman observasi dasar | R7. Satu baris per asesor per karakteristik; nilai rekan tersembunyi sampai asesor menyimpan nilainya |
 | `scl_fulfillments` | Pemenuhan jalur setara per aspek dan tangga (0 sampai 100 persen) dengan alasan | R7. Diisi asesor utama |

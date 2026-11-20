@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers\Validation;
 
+use App\Domain\Access\Role;
+use App\Domain\Validation\FieldCoding;
 use App\Domain\Validation\SessionProposal;
 use App\Domain\Validation\ValidationRules;
 use App\Models\Assessment;
 use App\Models\Characteristic;
 use App\Models\Stratum;
 use App\Models\Unit;
+use App\Services\Validation\ValidationExport;
 use App\Services\Validation\ValidationService;
+use App\Support\Audit;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 /**
  * Validasi lapangan (docs/01 M7, docs/12 tahap 3): usulan sesi dari rencana sampel, jadwal wawancara, diskusi
@@ -38,6 +44,8 @@ class ValidationController extends ValidationStageController
             'canPlan' => $planningOpen,
             'canLead' => $planningOpen && $this->isLead($roles),
             'canFeedback' => in_array($assessment->status->value, ['DATA_COLLECTION', 'VALIDATION'], true),
+            // Ekspor data validasi lapangan untuk analisis (bahan versi 2): hanya asesor.
+            'canExport' => $sessions !== [] && (in_array(Role::LeadAssessor, $roles, true) || in_array(Role::Assessor, $roles, true)),
             'sessions' => $sessions,
             // Usulan hanya dihitung selama belum ada sesi; setelah itu sesi diatur langsung.
             'proposal' => $sessions === [] && $planningOpen ? $validation->proposal($assessment) : null,
@@ -101,6 +109,8 @@ class ValidationController extends ValidationStageController
             'ratings.*.characteristicId' => ['required', 'string', 'max:26', 'distinct'],
             'ratings.*.level' => ['nullable', 'numeric', 'between:1,5'],
             'ratings.*.note' => ['nullable', 'string', 'max:2000'],
+            'ratings.*.evidence' => ['nullable', Rule::in(FieldCoding::EVIDENCE)],
+            'ratings.*.agreement' => ['nullable', Rule::in(FieldCoding::AGREEMENT)],
         ]);
         $notes = trim((string) ($data['notes'] ?? ''));
         $validation->saveAssessorForm($assessment, $request->user(), $actor, $session, (bool) $data['recordingConsent'], $notes === '' ? null : $notes,
@@ -108,9 +118,60 @@ class ValidationController extends ValidationStageController
                 'characteristicId' => $r['characteristicId'],
                 'level' => $r['level'] === null ? null : (float) $r['level'],
                 'note' => ($n = trim((string) ($r['note'] ?? ''))) === '' ? null : $n,
+                'evidence' => $r['evidence'] ?? null,
+                'agreement' => $r['agreement'] ?? null,
             ], $data['ratings']));
 
         return back()->with('status', 'saved');
+    }
+
+    /** Lembar kerja kunjungan proyek (bahan validasi versi 2). */
+    public function siteChecks(Request $request, Assessment $assessment, string $session, ValidationService $validation): RedirectResponse
+    {
+        $actor = $this->assessorRole($this->pageRoles($request, $assessment, 'validation'));
+        $data = $request->validate([
+            'checks' => ['present', 'array', 'max:100'],
+            'checks.*.itemCode' => ['required', 'string', 'max:12', 'distinct'],
+            'checks.*.result' => ['nullable', Rule::in(FieldCoding::SITE_RESULTS)],
+            'checks.*.note' => ['nullable', 'string', 'max:2000'],
+        ]);
+        $validation->saveSiteChecks($assessment, $request->user(), $actor, $session, array_map(fn (array $c) => [
+            'itemCode' => $c['itemCode'],
+            'result' => $c['result'] ?? null,
+            'note' => ($n = trim((string) ($c['note'] ?? ''))) === '' ? null : $n,
+        ], $data['checks']));
+
+        return back()->with('status', 'saved');
+    }
+
+    /** Data validasi lapangan ke Excel untuk analisis lanjut; hanya asesor. */
+    public function export(Request $request, Assessment $assessment, ValidationService $validation): BinaryFileResponse
+    {
+        $actor = $this->assessorRole($this->pageRoles($request, $assessment, 'validation'));
+        $locale = app()->getLocale();
+        $path = ValidationExport::build($assessment, $validation->triangulation($assessment), $locale);
+        Audit::record('validation.export', $assessment, ['after' => ['format' => 'xlsx']], $assessment, $actor);
+        $name = preg_replace('/[^\pL\pN ._-]+/u', '', __('fieldwork.fileName', ['name' => $assessment->name], $locale));
+
+        return response()->download($path, $name, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])->deleteFileAfterSend();
+    }
+
+    /** Panduan sesi siap cetak untuk dipakai di lapangan tanpa sambungan. */
+    public function print(Request $request, Assessment $assessment, string $session, ValidationService $validation): HttpResponse
+    {
+        $this->assessorRole($this->pageRoles($request, $assessment, 'validation'));
+        $detail = $validation->session($assessment, $session, $request->user());
+        abort_if($detail === null || $detail['fieldGuide'] === null, 404);
+        $characteristics = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')->get(['id', 'code', 'name_id', 'name_en']);
+        $focus = $detail['focus'] === [] ? $characteristics : $characteristics->whereIn('id', $detail['focus'])->values();
+
+        return response()->view('validation.guide', [
+            'loc' => app()->getLocale() === 'en' ? 'en' : 'id',
+            's' => $detail,
+            'characteristics' => $focus,
+            'questions' => collect($detail['guide']['questions'] ?? [])->pluck('question', 'code'),
+        ])->header('Cache-Control', 'private, no-store')
+            ->header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'");
     }
 
     public function addParticipant(Request $request, Assessment $assessment, string $session, ValidationService $validation): RedirectResponse

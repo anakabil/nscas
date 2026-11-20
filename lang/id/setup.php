@@ -60,6 +60,8 @@ return [
         'REVIEW_CLOSED' => 'Tinjauan tidak dapat dicatat pada status asesmen ini.',
         'VALIDATION_CLOSED' => 'Rencana validasi tidak dapat diubah pada status asesmen ini.',
         'RATINGS_CLOSED' => 'Nilai validasi hanya dapat diisi pada tahap validasi dan penilaian.',
+        'INVALID_CODE' => 'Kode hasil tidak dikenal. Pilih dari daftar yang tersedia.',
+        'NOT_SITE_VISIT' => 'Lembar kerja kunjungan hanya untuk sesi kunjungan proyek.',
         'INVALID_RATING' => 'Nilai harus antara 1,0 dan 5,0 dengan kelipatan 0,5.',
         'SESSIONS_EXIST' => 'Sesi validasi sudah dibuat. Tambah atau ubah sesi satu per satu.',
         'SAMPLE_PLAN_MISSING' => 'Rencana sampel belum dihitung, sehingga usulan sesi belum dapat dibuat.',

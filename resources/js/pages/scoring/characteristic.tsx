@@ -41,6 +41,19 @@ type Workspace = {
         url: string;
     }[];
     validation: { label: string; type: string; mean: number; raters: number }[];
+    triangulation: {
+        talks: { n: number; mean: number | null; evidence: Record<'CONSISTENT' | 'PARTIAL' | 'NONE', number> };
+        site: { counts: Record<'MEETS' | 'PARTIAL' | 'NOT_MET' | 'NOT_OBSERVED', number>; index: number | null };
+        divergent: boolean;
+    } | null;
+    siteChecks: {
+        item: string;
+        text: string | null;
+        result: string;
+        note: string | null;
+        session: string;
+        unit: string | null;
+    }[];
     review: { note: string | null; by: string | null; at: string } | null;
     own: Rating | null;
     others: Rating[];
@@ -163,6 +176,8 @@ export default function ScoringCharacteristic(props: Props) {
                             </div>
                         </dl>
                     </Panel>
+
+                    {c.triangulation ? <TriangulationPanel c={c} /> : null}
 
                     <Panel title={t('scoringItem.validation.title')}>
                         {c.validation.length === 0 ? (
@@ -356,5 +371,60 @@ export default function ScoringCharacteristic(props: Props) {
                 </div>
             </div>
         </CollectionShell>
+    );
+}
+
+/** Triangulasi sumber (bahan validasi versi 2): wawancara dan diskusi terhadap kunjungan proyek. Bukan nilai. */
+function TriangulationPanel({ c }: { c: Workspace }) {
+    const t = useT();
+    const locale = useLocale();
+    const tri = c.triangulation!;
+    const checked = tri.site.counts.MEETS + tri.site.counts.PARTIAL + tri.site.counts.NOT_MET;
+    return (
+        <Panel title={t('scoringItem.validation.triangulation')} hint={t('scoringItem.validation.note')}>
+            <ul className="space-y-1.5 text-sm text-charcoal" data-testid="workspace-triangulation">
+                {tri.talks.n > 0 && tri.talks.mean !== null ? (
+                    <li>
+                        {t('scoringItem.validation.talks', { count: tri.talks.n, mean: formatNumber(tri.talks.mean, locale, 2) })}
+                        .{' '}
+                        {t('scoringItem.validation.evidenceMix', {
+                            consistent: tri.talks.evidence.CONSISTENT,
+                            partial: tri.talks.evidence.PARTIAL,
+                            none: tri.talks.evidence.NONE,
+                        })}
+                    </li>
+                ) : null}
+                <li>
+                    {tri.site.index !== null
+                        ? t('scoringItem.validation.siteIndex', {
+                              index: formatNumber(tri.site.index, locale, 2),
+                              count: checked,
+                          })
+                        : t('scoringItem.validation.siteNone')}
+                </li>
+                {tri.divergent ? <li className="font-medium text-gold-deep">{t('scoringItem.validation.divergent')}</li> : null}
+            </ul>
+            {c.siteChecks.length > 0 ? (
+                <details className="text-sm">
+                    <summary className="cursor-pointer text-xs font-medium text-gold-deep select-none">
+                        {t('scoringItem.validation.siteItems')} ({c.siteChecks.length})
+                    </summary>
+                    <ul className="mt-2 divide-y divide-border">
+                        {c.siteChecks.map((s, i) => (
+                            <li key={i} className="min-w-0 py-2">
+                                <p className="text-xs text-muted-foreground">
+                                    {s.item}, {s.unit ?? s.session}
+                                </p>
+                                <p className="text-ink">{s.text}</p>
+                                <p className="text-xs font-medium text-charcoal">
+                                    {t(`validation.session.field.site.results.${s.result}`)}
+                                    {s.note ? `, ${s.note}` : ''}
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+                </details>
+            ) : null}
+        </Panel>
     );
 }

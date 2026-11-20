@@ -97,6 +97,10 @@ Tingkat indikatif = tingkat tertinggi `s` sehingga semua tingkat 2 sampai `s` lu
 
 Untuk setiap aspek: rata-rata skor survei kelompok `MANAGEMENT` dikurangi rata-rata kelompok `FIELD` (pembobotan populasi dalam kelompok). Tandai bila selisih `>= perceptionGapAttention` (bawaan 0,50). Hanya ditampilkan bila kedua kelompok memiliki minimal 5 respons.
 
+### 6.1 Triangulasi validasi lapangan (bukan bagian rumus)
+
+Kode bukti wawancara dan diskusi kelompok terarah, serta indeks lembar kerja kunjungan proyek, diringkas per karakteristik untuk dibahas asesor dan rapat panel (`docs/16`). Ringkasan itu tidak masuk rumus di dokumen ini. Mesin penilaian dan fixture-nya tidak berubah (keputusan pemilik proyek, 20 November 2026).
+
 ## 7. Kalkulator sampel
 
 Masukan: `M` jumlah pekerja, `N` proyek berjalan, `X` lokasi, populasi tiap strata, `z = 1,96`, `e = 0,05`, `p = 0,5`, partisipasi minimum 0,30.

@@ -26,6 +26,7 @@ Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progr
 | `docs/13-verifikasi-scl-2.md` | Verifikasi metode terhadap SCL 2.0:2023 dan skema sertifikasinya, peta silang, usulan aturan penetapan tingkat, keputusan D1 sampai D6 |
 | `docs/14-daftar-periksa-keamanan.md` | Daftar periksa keamanan dan privasi: 28 butir, status, bukti, tindak lanjut |
 | `docs/15-hasil-uji-r12.md` | Hasil uji ujung ke ujung, uji beban, kamera observasi, dan sisa syarat penempatan |
+| `docs/16-bahan-validasi-lapangan.md` | Pertanyaan wawancara, panduan diskusi kelompok terarah, lembar kerja kunjungan proyek, kode analisis, dan triangulasi |
 | `seed/` | Data awal instrumen, parameter, dan fixture pengujian |
 | `docs/arsip-v1/` | Dokumen implementasi versi 1; hanya rujukan sejarah |
 

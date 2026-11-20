@@ -28,11 +28,14 @@ use App\Models\ObservationCapture;
 use App\Models\PanelDecision;
 use App\Models\SclFulfillment;
 use App\Models\ScoreRun;
+use App\Models\SiteVisitCheck;
 use App\Models\User;
 use App\Models\ValidationRating;
 use App\Models\ValidationSession;
 use App\Services\ActionPlan\ActionPlanService;
 use App\Services\Findings\SurveyDataLoader;
+use App\Services\Validation\FieldGuide;
+use App\Services\Validation\ValidationService;
 use App\Support\Audit;
 use App\Support\RuleViolation;
 use Carbon\CarbonInterface;
@@ -222,11 +225,37 @@ class ScoringService
                 'label' => $s->label, 'type' => $s->type,
                 'mean' => $s->ratings->avg(fn ($r) => (float) $r->level), 'raters' => $s->ratings->count(),
             ])->values()->all(),
+            // Bahan validasi versi 2: ringkasan triangulasi dan hasil butir kunjungan proyek untuk karakteristik ini.
+            'triangulation' => app(ValidationService::class)->triangulation($assessment)[$c->code] ?? null,
+            'siteChecks' => $this->siteChecks($assessment, $c->id),
             'review' => $review ? ['note' => $review->note, 'by' => $review->reviewer?->name, 'at' => $review->reviewed_at->toIso8601String()] : null,
             'own' => $visible['own'],
             'others' => $visible['others'],
             'hidden' => $visible['hidden'],
         ];
+    }
+
+    /**
+     * Hasil butir lembar kunjungan proyek untuk satu karakteristik, per sesi kunjungan.
+     *
+     * @return list<array{item: string, text: ?string, result: string, note: ?string, session: string, unit: ?string}>
+     */
+    private function siteChecks(Assessment $assessment, string $characteristicId): array
+    {
+        $texts = [];
+        foreach (FieldGuide::content()['siteVisit']['sections'] as $section) {
+            foreach ($section['items'] as $item) {
+                $texts[$item['code']] = $item['text'];
+            }
+        }
+
+        return SiteVisitCheck::where('characteristic_id', $characteristicId)
+            ->whereIn('validation_session_id', ValidationSession::where('assessment_id', $assessment->id)->where('status', '!=', 'CANCELLED')->select('id'))
+            ->with('session.unit:id,name')->orderBy('item_code')->get()
+            ->map(fn (SiteVisitCheck $c) => [
+                'item' => $c->item_code, 'text' => $texts[$c->item_code] ?? null, 'result' => $c->result, 'note' => $c->note,
+                'session' => (string) $c->session?->label, 'unit' => $c->session?->unit?->name,
+            ])->values()->all();
     }
 
     /**

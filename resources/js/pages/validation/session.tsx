@@ -1,5 +1,5 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react';
-import { ArrowLeft, ExternalLink, Trash2, UserPlus } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Printer, Trash2, UserPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import ValidationController from '@/actions/App/Http/Controllers/Validation/ValidationController';
 import { CollectionShell, formatWib } from '@/components/nscas/collection-shell';
@@ -32,8 +32,35 @@ type Detail = {
     raters: number;
     participants: { id: string; name: string; position: string }[];
     guide: { intro: string; questions: { code: string; question: string }[] } | null;
-    ratings: Record<string, { level: number; note: string | null }>;
+    ratings: Record<string, { level: number; note: string | null; evidence: string | null; agreement: string | null }>;
+    fieldGuide: FieldGuide | null;
+    siteChecks: Record<string, { result: string; note: string | null }>;
 };
+type SiteItem = { code: string; characteristic: string; text: string };
+type FieldGuide =
+    | {
+          kind: 'INTERVIEW';
+          opening: string[];
+          closing: string[];
+          characteristics: Record<string, { probes: string[]; strong: string; weak: string }>;
+      }
+    | {
+          kind: 'FOCUS_GROUP';
+          rules: string[];
+          opening: string[];
+          warmUp: string;
+          closing: string[];
+          characteristics: Record<string, { probes: string[] }>;
+      }
+    | {
+          kind: 'SITE_VISIT';
+          intro: string;
+          sections: { code: string; title: string; method: string; items: SiteItem[] }[];
+      };
+
+const EVIDENCE = ['CONSISTENT', 'PARTIAL', 'NONE'];
+const AGREEMENT = ['AGREED', 'MIXED', 'DIVIDED'];
+const SITE_RESULTS = ['MEETS', 'PARTIAL', 'NOT_MET', 'NOT_OBSERVED'];
 type Props = CollectionCommon &
     Reference & {
         session: Detail;
@@ -86,16 +113,34 @@ export default function ValidationSession(props: Props) {
                     {s.scheduledAt ? `, ${formatWib(s.scheduledAt, locale)} WIB` : ''}
                     {s.location ? `, ${s.location}` : ''}
                 </p>
-                {s.meetingUrl ? (
-                    <Button asChild variant="outline" size="sm">
-                        <a href={s.meetingUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink aria-hidden />
-                            {t('validation.session.openMeeting')}
-                        </a>
-                    </Button>
-                ) : null}
+                <div className="flex flex-wrap gap-2">
+                    {s.meetingUrl ? (
+                        <Button asChild variant="outline" size="sm">
+                            <a href={s.meetingUrl} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink aria-hidden />
+                                {t('validation.session.openMeeting')}
+                            </a>
+                        </Button>
+                    ) : null}
+                    {s.fieldGuide ? (
+                        <Button asChild variant="outline" size="sm">
+                            <a
+                                href={ValidationController.print.url({ assessment, session: s.id })}
+                                target="_blank"
+                                rel="noopener"
+                                title={t('validation.session.field.printHint')}
+                                data-testid="guide-print"
+                            >
+                                <Printer aria-hidden />
+                                {t('validation.session.field.print')}
+                            </a>
+                        </Button>
+                    ) : null}
+                </div>
             </div>
             <FormError message={errors.form} />
+
+            {s.fieldGuide?.kind === 'SITE_VISIT' ? <SiteChecklist {...props} guide={s.fieldGuide} /> : null}
 
             <AssessorForm {...props} />
 
@@ -122,7 +167,12 @@ function AssessorForm(props: Props) {
             Object.fromEntries(
                 props.characteristics.map((c) => [
                     c.id,
-                    { level: s.ratings[c.id] ? String(s.ratings[c.id].level) : '', note: s.ratings[c.id]?.note ?? '' },
+                    {
+                        level: s.ratings[c.id] ? String(s.ratings[c.id].level) : '',
+                        note: s.ratings[c.id]?.note ?? '',
+                        evidence: s.ratings[c.id]?.evidence ?? '',
+                        agreement: s.ratings[c.id]?.agreement ?? '',
+                    },
                 ]),
             ),
         [props.characteristics, s.ratings],
@@ -130,13 +180,16 @@ function AssessorForm(props: Props) {
     const form = useForm({
         recordingConsent: s.recordingConsent,
         notes: s.notes ?? '',
-        ratings: initial as Record<string, { level: string; note: string }>,
+        ratings: initial as Record<string, { level: string; note: string; evidence: string; agreement: string }>,
     });
     const errors = form.errors as Record<string, string | undefined>;
     const visible = props.characteristics.filter(
         (c) => showAll || s.focus.includes(c.id) || form.data.ratings[c.id]?.level !== '',
     );
     const disabled = !props.canRate;
+    const guide = s.fieldGuide;
+    const talk = guide && guide.kind !== 'SITE_VISIT' ? guide : null;
+    const group = guide?.kind === 'FOCUS_GROUP';
 
     return (
         <form
@@ -151,6 +204,8 @@ function AssessorForm(props: Props) {
                             characteristicId: id,
                             level: r.level === '' ? null : Number(r.level),
                             note: r.note.trim() === '' ? null : r.note,
+                            evidence: r.evidence === '' ? null : r.evidence,
+                            agreement: r.agreement === '' ? null : r.agreement,
                         })),
                 }));
                 form.put(ValidationController.form.url({ assessment: props.assessment.id, session: s.id }), {
@@ -164,10 +219,20 @@ function AssessorForm(props: Props) {
                         {t('validation.session.assessor.raters', { count: s.raters })}
                     </p>
                 ) : null}
-                {s.guide ? (
-                    <details className="rounded-md border border-border px-4 py-2 text-sm">
-                        <summary className="cursor-pointer font-medium text-ink">{t('validation.session.guide')}</summary>
-                        <p className="mt-2 whitespace-pre-line text-charcoal">{s.guide.intro}</p>
+                {s.guide || talk ? (
+                    <details className="rounded-md border border-border px-4 py-2 text-sm" data-testid="guide-flow">
+                        <summary className="cursor-pointer font-medium text-ink">
+                            {talk ? t('validation.session.field.flowTitle') : t('validation.session.guide')}
+                        </summary>
+                        {s.guide ? <p className="mt-2 whitespace-pre-line text-charcoal">{s.guide.intro}</p> : null}
+                        {talk?.kind === 'FOCUS_GROUP' ? (
+                            <GuideList title={t('validation.session.field.rules')} lines={talk.rules} />
+                        ) : null}
+                        {talk ? <GuideList title={t('validation.session.field.opening')} lines={talk.opening} ordered /> : null}
+                        {talk?.kind === 'FOCUS_GROUP' ? (
+                            <GuideList title={t('validation.session.field.warmUp')} lines={[talk.warmUp]} />
+                        ) : null}
+                        {talk ? <GuideList title={t('validation.session.field.closing')} lines={talk.closing} ordered /> : null}
                     </details>
                 ) : null}
                 <ul className="divide-y divide-border rounded-lg border border-border" data-testid="rating-list">
@@ -182,7 +247,16 @@ function AssessorForm(props: Props) {
                                 {questions.get(c.code) ? (
                                     <p className="text-sm text-muted-foreground">{questions.get(c.code)}</p>
                                 ) : null}
-                                <div className="grid gap-2 sm:grid-cols-[9rem_1fr]">
+                                {talk?.characteristics[c.code] ? <Probes item={talk.characteristics[c.code]} /> : null}
+                                <div
+                                    className={cn(
+                                        'grid gap-2 sm:grid-cols-2',
+                                        talk &&
+                                            (group
+                                                ? 'lg:grid-cols-[8rem_minmax(0,1fr)_minmax(0,1fr)]'
+                                                : 'lg:grid-cols-[8rem_minmax(0,1fr)]'),
+                                    )}
+                                >
                                     <NativeSelect
                                         aria-label={`${t('validation.session.assessor.rating')} ${c.code}`}
                                         disabled={disabled}
@@ -201,7 +275,55 @@ function AssessorForm(props: Props) {
                                             </option>
                                         ))}
                                     </NativeSelect>
+                                    {talk ? (
+                                        <NativeSelect
+                                            aria-label={`${t('validation.session.field.evidence')} ${c.code}`}
+                                            disabled={disabled}
+                                            value={value.evidence}
+                                            onChange={(e) =>
+                                                form.setData('ratings', {
+                                                    ...form.data.ratings,
+                                                    [c.id]: { ...value, evidence: e.target.value },
+                                                })
+                                            }
+                                            data-testid="evidence-code"
+                                        >
+                                            <option value="">
+                                                {t('validation.session.field.evidence')}: {t('validation.session.field.notCoded')}
+                                            </option>
+                                            {EVIDENCE.map((code) => (
+                                                <option key={code} value={code}>
+                                                    {t(`validation.session.field.evidenceCodes.${code}`)}
+                                                </option>
+                                            ))}
+                                        </NativeSelect>
+                                    ) : null}
+                                    {group ? (
+                                        <NativeSelect
+                                            aria-label={`${t('validation.session.field.agreement')} ${c.code}`}
+                                            disabled={disabled}
+                                            value={value.agreement}
+                                            onChange={(e) =>
+                                                form.setData('ratings', {
+                                                    ...form.data.ratings,
+                                                    [c.id]: { ...value, agreement: e.target.value },
+                                                })
+                                            }
+                                            data-testid="agreement-code"
+                                        >
+                                            <option value="">
+                                                {t('validation.session.field.agreement')}:{' '}
+                                                {t('validation.session.field.notCoded')}
+                                            </option>
+                                            {AGREEMENT.map((code) => (
+                                                <option key={code} value={code}>
+                                                    {t(`validation.session.field.agreementCodes.${code}`)}
+                                                </option>
+                                            ))}
+                                        </NativeSelect>
+                                    ) : null}
                                     <Input
+                                        className={talk ? 'sm:col-span-2 lg:col-span-full' : undefined}
                                         aria-label={`${t('validation.session.assessor.ratingNote')} ${c.code}`}
                                         placeholder={t('validation.session.assessor.ratingNote')}
                                         disabled={disabled}
@@ -253,6 +375,174 @@ function AssessorForm(props: Props) {
                 {props.canRate ? (
                     <Button type="submit" disabled={form.processing} data-testid="rating-save">
                         {t('validation.session.assessor.save')}
+                    </Button>
+                ) : null}
+            </Panel>
+        </form>
+    );
+}
+
+function GuideList({ title, lines, ordered = false }: { title: string; lines: string[]; ordered?: boolean }) {
+    const List = ordered ? 'ol' : 'ul';
+    return (
+        <div className="mt-3 space-y-1">
+            <p className="font-medium text-ink">{title}</p>
+            <List className={cn('space-y-1 pl-5 text-charcoal', ordered ? 'list-decimal' : 'list-disc')}>
+                {lines.map((line, i) => (
+                    <li key={i}>{line}</li>
+                ))}
+            </List>
+        </div>
+    );
+}
+
+/** Pertanyaan pendalaman dan petunjuk penilaian jawaban untuk satu karakteristik. */
+function Probes({ item }: { item: { probes: string[]; strong?: string; weak?: string } }) {
+    const t = useT();
+    return (
+        <details className="text-sm">
+            <summary className="cursor-pointer text-xs font-medium text-gold-deep select-none">
+                {t('validation.session.field.probes')}
+            </summary>
+            <ul className="mt-1.5 list-disc space-y-1 pl-5 text-charcoal">
+                {item.probes.map((p, i) => (
+                    <li key={i}>{p}</li>
+                ))}
+            </ul>
+            {item.strong ? (
+                <dl className="mt-2 grid gap-1 text-xs sm:grid-cols-2">
+                    <div className="rounded-md bg-success/10 px-2.5 py-1.5">
+                        <dt className="font-medium text-success">{t('validation.session.field.strong')}</dt>
+                        <dd className="text-charcoal">{item.strong}</dd>
+                    </div>
+                    <div className="rounded-md bg-gold/10 px-2.5 py-1.5">
+                        <dt className="font-medium text-gold-deep">{t('validation.session.field.weak')}</dt>
+                        <dd className="text-charcoal">{item.weak}</dd>
+                    </div>
+                </dl>
+            ) : null}
+        </details>
+    );
+}
+
+/** Lembar kerja kunjungan proyek (bahan validasi versi 2): hasil per butir untuk analisis antarproyek. */
+function SiteChecklist(props: Props & { guide: Extract<FieldGuide, { kind: 'SITE_VISIT' }> }) {
+    const t = useT();
+    const locale = useLocale();
+    const s = props.session;
+    const items = props.guide.sections.flatMap((section) => section.items);
+    const form = useForm({
+        checks: Object.fromEntries(
+            items.map((item) => [
+                item.code,
+                { result: s.siteChecks[item.code]?.result ?? '', note: s.siteChecks[item.code]?.note ?? '' },
+            ]),
+        ) as Record<string, { result: string; note: string }>,
+    });
+    const errors = form.errors as Record<string, string | undefined>;
+    const done = Object.values(form.data.checks).filter((c) => c.result !== '').length;
+    const disabled = !props.canRate;
+    const set = (code: string, patch: Partial<{ result: string; note: string }>) =>
+        form.setData('checks', { ...form.data.checks, [code]: { ...form.data.checks[code], ...patch } });
+
+    return (
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                form.transform((data) => ({
+                    checks: Object.entries(data.checks)
+                        .filter(([code, c]) => c.result !== '' || s.siteChecks[code])
+                        .map(([code, c]) => ({
+                            itemCode: code,
+                            result: c.result === '' ? null : c.result,
+                            note: c.note.trim() === '' ? null : c.note,
+                        })),
+                }));
+                form.put(ValidationController.siteChecks.url({ assessment: props.assessment.id, session: s.id }), {
+                    preserveScroll: true,
+                });
+            }}
+        >
+            <Panel title={t('validation.session.field.site.title')} hint={t('validation.session.field.site.hint')}>
+                <p className="text-sm font-medium text-charcoal" data-testid="site-progress">
+                    {t('validation.session.field.site.progress', {
+                        done: formatNumber(done, locale),
+                        total: formatNumber(items.length, locale),
+                    })}
+                </p>
+                {props.guide.sections.map((section) => (
+                    <section key={section.code} className="space-y-2">
+                        <h4 className="text-sm font-semibold text-ink">
+                            {section.code}. {section.title}{' '}
+                            <span className="font-normal text-muted-foreground">
+                                ({t(`validation.session.field.site.methods.${section.method}`)})
+                            </span>
+                        </h4>
+                        <ul className="divide-y divide-border rounded-lg border border-border" data-testid="site-items">
+                            {section.items.map((item) => {
+                                const value = form.data.checks[item.code];
+                                return (
+                                    <li key={item.code} className="min-w-0 space-y-2 px-4 py-3" data-code={item.code}>
+                                        <p className="text-sm text-ink">
+                                            <span className="font-medium">{item.code}</span>{' '}
+                                            <span className="text-xs text-muted-foreground">{item.characteristic}</span>
+                                            <br />
+                                            {item.text}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={item.code}>
+                                            {SITE_RESULTS.map((r) => (
+                                                <label
+                                                    key={r}
+                                                    className={cn(
+                                                        'cursor-pointer rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors',
+                                                        value.result === r
+                                                            ? 'border-maroon bg-maroon text-parchment'
+                                                            : 'border-border text-charcoal hover:bg-muted',
+                                                        disabled && 'cursor-not-allowed opacity-60',
+                                                    )}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        className="sr-only"
+                                                        name={`site-${item.code}`}
+                                                        value={r}
+                                                        disabled={disabled}
+                                                        checked={value.result === r}
+                                                        onChange={() => set(item.code, { result: r })}
+                                                    />
+                                                    {t(`validation.session.field.site.results.${r}`)}
+                                                </label>
+                                            ))}
+                                            {value.result !== '' && !disabled ? (
+                                                <button
+                                                    type="button"
+                                                    className="px-2 text-xs text-muted-foreground underline-offset-4 hover:underline"
+                                                    onClick={() => set(item.code, { result: '', note: '' })}
+                                                >
+                                                    {t('validation.session.field.site.clear')}
+                                                </button>
+                                            ) : null}
+                                        </div>
+                                        {value.result === 'PARTIAL' || value.result === 'NOT_MET' || value.note !== '' ? (
+                                            <Input
+                                                aria-label={`${t('validation.session.field.site.note')} ${item.code}`}
+                                                placeholder={t('validation.session.field.site.note')}
+                                                disabled={disabled}
+                                                maxLength={2000}
+                                                value={value.note}
+                                                onChange={(e) => set(item.code, { note: e.target.value })}
+                                            />
+                                        ) : null}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </section>
+                ))}
+                <FormError message={errors.checks} />
+                {props.canRate ? (
+                    <Button type="submit" disabled={form.processing} data-testid="site-save">
+                        {t('validation.session.field.site.save')}
                     </Button>
                 ) : null}
             </Panel>

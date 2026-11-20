@@ -59,6 +59,8 @@ return [
         'REVIEW_CLOSED' => 'Reviews cannot be recorded at this assessment status.',
         'VALIDATION_CLOSED' => 'The validation plan cannot be changed at this assessment status.',
         'RATINGS_CLOSED' => 'Validation ratings can only be entered during validation and scoring.',
+        'INVALID_CODE' => 'Unknown result code. Choose from the available list.',
+        'NOT_SITE_VISIT' => 'The site visit worksheet is only for project visit sessions.',
         'INVALID_RATING' => 'Ratings must be between 1.0 and 5.0 in steps of 0.5.',
         'SESSIONS_EXIST' => 'Validation sessions already exist. Add or change sessions one at a time.',
         'SAMPLE_PLAN_MISSING' => 'The sample plan has not been calculated, so sessions cannot be proposed yet.',
