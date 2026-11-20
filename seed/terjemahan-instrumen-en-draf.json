@@ -1,0 +1,251 @@
+{
+  "_status": "DRAF. Terjemahan maju dari bahasa Indonesia oleh Trustie, 20 November 2026, untuk ditelaah Nusa Safety. Belum berlaku: survei berbahasa Inggris tetap menampilkan teks Indonesia sampai draf ini disetujui (isi bagian approval) dan diterapkan dengan php artisan nscas:instrument-translation seed/terjemahan-instrumen-en-draf.json --apply. Langkah telaah, daftar istilah, dan tabel berdampingan ada di docs/17-draf-terjemahan-instrumen.md. Teks sumber tetap seed/instrumen-karakteristik-v1.json dan seed/skala-iklim-draf.json.",
+  "instrumentVersion": "NS-SCML-1.0",
+  "language": "en",
+  "approval": {
+    "approvedBy": null,
+    "approvedOn": null,
+    "backTranslatedBy": null,
+    "notes": null
+  },
+  "characteristics": {
+    "K1.1": {
+      "name": "Management attention and leading by example",
+      "levels": {
+        "1": "Management does not talk about safety unless an outside party demands it.",
+        "2": "Management talks about safety mainly after an incident or an inspection finding.",
+        "3": "Management discusses safety in scheduled meetings and demands compliance with the rules that have been set.",
+        "4": "Management visits the site as planned, both corrects and praises behaviour in person, and treats safety as a standing consideration in decision-making.",
+        "5": "Management sets a consistent example at every level, business decisions are postponed or changed when they put safety at risk, and this is recognised by workers and supply chain partners."
+      }
+    },
+    "K1.2": {
+      "name": "Worker involvement",
+      "levels": {
+        "1": "Workers are not involved and see safety as entirely the job of the OSH unit.",
+        "2": "Workers are involved only now and then, usually only after something has happened.",
+        "3": "Workers are involved through formal forums, such as the OSH committee (P2K3) and scheduled safety meetings.",
+        "4": "Workers actively propose improvements and help prepare the risk analysis for their own work, and their proposals are acted on with feedback.",
+        "5": "Workers take full ownership of the safety of their own work and remind one another across job levels and across companies without feeling awkward."
+      }
+    },
+    "K1.3": {
+      "name": "Recognition and consequences",
+      "levels": {
+        "1": "There is no recognition or consequence linked to safety behaviour.",
+        "2": "Consequences are given reactively and tend to blame individuals after an incident.",
+        "3": "There are written rules on recognition and sanctions, and they are applied administratively.",
+        "4": "Recognition is given for proactive behaviour, such as reporting hazards and stopping unsafe work, using criteria that workers know.",
+        "5": "Recognition and consequences are applied fairly and consistently, including to contractors, and have been shown to shape the desired behaviour."
+      }
+    },
+    "K2.1": {
+      "name": "Accident causes and organisational learning",
+      "levels": {
+        "1": "Accidents are seen as the result of worker carelessness or bad luck.",
+        "2": "Causes are looked for after an event, and the search usually stops at the immediate cause.",
+        "3": "Investigations use a standard method and identify underlying causes at the system level.",
+        "4": "Cause analysis covers organisational factors and management decisions, and the results change policies and work processes.",
+        "5": "The organisation learns from near misses, weak signals, and the experience of others in similar industries, before losses occur."
+      }
+    },
+    "K2.2": {
+      "name": "Safety in strategy, profitability, and sustainability",
+      "levels": {
+        "1": "Safety is seen as a cost that holds back production.",
+        "2": "The safety budget is kept to a bare minimum and increases only after a major event.",
+        "3": "Safety is included in the annual work plan and budget, with measurable targets.",
+        "4": "Safety investment is planned on the basis of risk, and its benefit to project performance is evaluated.",
+        "5": "Safety is part of business strategy and project feasibility assessment, and it also helps the company win work."
+      }
+    },
+    "K3.1": {
+      "name": "Management of contractors and subcontractors",
+      "levels": {
+        "1": "Contractors are chosen on price alone, and nobody asks about their safety performance.",
+        "2": "Safety requirements are written into contracts but are not checked on site.",
+        "3": "Safety prequalification is carried out, and contractor performance is monitored regularly.",
+        "4": "Safety performance is a criterion for selection and for repeated evaluation, and contractors are coached to improve.",
+        "5": "Contractors are treated as part of one shared culture and take part in risk planning and in learning together."
+      }
+    },
+    "K3.2": {
+      "name": "Competence and training",
+      "levels": {
+        "1": "Safety training is not held, or is held only as a paperwork formality.",
+        "2": "Training is given after an inspection finding or when regulations require it.",
+        "3": "There is a competence matrix and an annual training programme, and it is carried out.",
+        "4": "Training is evaluated down to changes in behaviour at work, and safety competence is part of the assessment for each position.",
+        "5": "Competence development is continuous and includes safety leadership skills for every level and for work partners."
+      }
+    },
+    "K3.3": {
+      "name": "Role and position of the OSH unit",
+      "levels": {
+        "1": "There are no competent OSH staff, or their role is purely administrative.",
+        "2": "An OSH unit exists but mainly reacts to problems as they arise.",
+        "3": "The OSH unit has certified staff with clear duties and authority.",
+        "4": "The OSH unit acts as a strategic partner to line operations and has direct access to the board of directors.",
+        "5": "Safety is built into line operations, while the OSH unit serves as a centre of expertise and development rather than the sole owner of safety problems."
+      }
+    },
+    "K4.1": {
+      "name": "Work planning",
+      "levels": {
+        "1": "Work starts without any safety planning.",
+        "2": "Safety planning is prepared to meet tender document requirements or at the request of the project owner.",
+        "3": "A job safety analysis is prepared before work starts, following the standard procedure.",
+        "4": "Planning involves site supervisors, is reviewed when conditions change, and takes into account how different work activities affect one another.",
+        "5": "Safety planning is part of planning the work method and schedule, so that risks are removed from the design and engineering stage onwards."
+      }
+    },
+    "K4.2": {
+      "name": "Workplace safety",
+      "levels": {
+        "1": "Unsafe conditions are left as they are as long as the work can continue.",
+        "2": "Unsafe conditions are fixed after someone else finds them or after an incident.",
+        "3": "Workplace inspections are carried out on schedule, and the findings are followed up.",
+        "4": "Workers have the authority to stop unsafe work, and they actually use it without fear.",
+        "5": "Workers and work partners keep the workplace safe on their own initiative, deviations are rare, and they are corrected together straight away."
+      }
+    },
+    "K4.3": {
+      "name": "Procedures and compliance",
+      "levels": {
+        "1": "Procedures are not available or are not known to workers.",
+        "2": "Procedures are available but are rarely used and do not match how work is done on site.",
+        "3": "Procedures are set, explained to workers, and checked for compliance.",
+        "4": "Procedures are reviewed with the people who use them so that they fit real conditions, and deviations are analysed to improve the procedures.",
+        "5": "Workers understand the purpose of procedures rather than just memorising them, and they can make safe decisions in situations that no procedure covers."
+      }
+    },
+    "K5.1": {
+      "name": "Reporting of deviations",
+      "levels": {
+        "1": "Reporting does not happen, or events are covered up for fear of being blamed.",
+        "2": "Only events with actual losses are reported.",
+        "3": "There is a formal reporting system that covers near misses and unsafe conditions.",
+        "4": "Reports are made often and voluntarily, and the people who report receive feedback and are not punished.",
+        "5": "Reporting is seen as a valuable contribution, covers weak signals and one's own mistakes, and is a main source of improvement."
+      }
+    },
+    "K5.2": {
+      "name": "Investigation and follow-up",
+      "levels": {
+        "1": "Events are not investigated.",
+        "2": "Investigations are superficial and stop at the conclusion that a person made a mistake.",
+        "3": "Investigations use a standard method, and corrective actions are set and tracked until they are completed.",
+        "4": "The effectiveness of corrective actions is checked on site, and the lessons are shared across projects.",
+        "5": "Lessons from events change the organisation's standards, designs, and ways of working, and are shared with partners and others in the industry."
+      }
+    },
+    "K5.3": {
+      "name": "Daily control and communication",
+      "levels": {
+        "1": "There is no structured safety communication.",
+        "2": "Safety communication is one-way and ceremonial.",
+        "3": "Daily and weekly safety meetings run on schedule with set material.",
+        "4": "Communication is two-way, the material is adjusted to the risks of that day's work, and workers' input changes how the work is done.",
+        "5": "Conversations about safety happen naturally in daily work, including with superiors and work partners, without the need for a formal forum."
+      }
+    },
+    "K6.1": {
+      "name": "Audit and review",
+      "levels": {
+        "1": "No safety audits are carried out.",
+        "2": "Audits are carried out only when the project owner or the regulator asks for them.",
+        "3": "Scheduled internal audits of management system compliance are carried out.",
+        "4": "Audits cover safety behaviour and leadership, and the results are discussed in management review and lead to decisions.",
+        "5": "Culture audits are carried out regularly on the organisation's own initiative, and the results are used to test the organisation's assumptions and are compared with the best practice in the industry."
+      }
+    },
+    "K6.2": {
+      "name": "Trends and statistics",
+      "levels": {
+        "1": "Accident data are not collected or are not accurate.",
+        "2": "Data are collected for mandatory reporting without further analysis.",
+        "3": "Lagging indicators are monitored and reported regularly.",
+        "4": "Leading and lagging indicators are analysed together to anticipate and prevent events.",
+        "5": "Data analysis is the basis for strategic decisions and for testing the effectiveness of safety culture programmes."
+      }
+    },
+    "KT.1": {
+      "name": "Integration of the Construction Safety Management System (SMKK)",
+      "levels": {
+        "1": "SMKK requirements are not understood and are not applied.",
+        "2": "SMKK documents are prepared to meet contract requirements, but they are applied on site only to a limited extent.",
+        "3": "The construction safety plan and the construction work quality plan are applied in line with Minister of Public Works and Housing Regulation No. 10 of 2021 and are verified regularly.",
+        "4": "SMKK is applied as part of the project control process, and its effectiveness is evaluated.",
+        "5": "SMKK is a built-in way of working, encourages innovation in safer work methods, and serves as a reference for supply chain partners."
+      }
+    },
+    "KT.2": {
+      "name": "Psychosocial safety and speaking up",
+      "levels": {
+        "1": "Workers do not dare to raise objections or concerns.",
+        "2": "Objections are raised only through informal channels and are rarely followed up.",
+        "3": "There are formal channels for raising complaints and safety concerns.",
+        "4": "Management actively asks workers about their concerns, while workload and schedule pressure are managed as risk factors.",
+        "5": "Openness is the norm, differences of opinion about safety are valued, and production pressure never overrides safety."
+      }
+    }
+  },
+  "climate": {
+    "D1": {
+      "name": "Management safety priority, commitment, and competence",
+      "items": {
+        "D1.1": "The leaders on my project still require work to follow safety procedures even when the schedule is tight.",
+        "D1.2": "The leaders on my project understand the hazards of the work we do every day.",
+        "D1.3": "Safety problems are dealt with by the leaders only after an accident has happened."
+      }
+    },
+    "D2": {
+      "name": "Management safety empowerment",
+      "items": {
+        "D2.1": "My opinion about safety is listened to when work is being planned.",
+        "D2.2": "I am given the authority to stop work that I think is unsafe.",
+        "D2.3": "Decisions about safety are made without involving the workers who do the work."
+      }
+    },
+    "D3": {
+      "name": "Management safety justice",
+      "items": {
+        "D3.1": "Workers who report mistakes or near misses are not unfairly blamed.",
+        "D3.2": "Safety rules are applied equally to our own workers and to contractors' workers.",
+        "D3.3": "When an accident happens, the first thing people look for is who is to blame."
+      }
+    },
+    "D4": {
+      "name": "Workers' safety commitment",
+      "items": {
+        "D4.1": "My co-workers remind one another when they see an unsafe way of working.",
+        "D4.2": "My co-workers take an active part in safety activities, not just attend them.",
+        "D4.3": "Where I work, safety is seen as the job of the OSH officers only."
+      }
+    },
+    "D5": {
+      "name": "Workers' safety priority and non-acceptance of risk",
+      "items": {
+        "D5.1": "Where I work, taking dangerous shortcuts is not seen as normal.",
+        "D5.2": "Workers here would rather delay the work than work in unsafe conditions.",
+        "D5.3": "Small risks are seen as a normal part of construction work."
+      }
+    },
+    "D6": {
+      "name": "Safety communication, learning, and trust in co-workers' safety competence",
+      "items": {
+        "D6.1": "Lessons from incidents on other projects are passed on to us.",
+        "D6.2": "I trust that my co-workers are able to work safely.",
+        "D6.3": "The morning safety briefing rarely discusses the hazards of that day's work."
+      }
+    },
+    "D7": {
+      "name": "Trust in the effectiveness of safety systems",
+      "items": {
+        "D7.1": "Work permits and job safety analyses really help to prevent accidents.",
+        "D7.2": "Safety inspections on site find the real problems.",
+        "D7.3": "Safety procedures exist more to complete the paperwork than to protect workers."
+      }
+    }
+  }
+}

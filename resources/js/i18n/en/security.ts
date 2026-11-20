@@ -34,6 +34,7 @@ export const security = {
         coordinator: 'Unit coordinator',
         evidence: 'Document evidence',
         gap: 'Gaps',
+        instrument: 'Instrument',
         invitation: 'Survey invitations',
         monitoring: 'Monitoring',
         observation: 'Field observation',
@@ -103,6 +104,9 @@ export const security = {
             review_withdraw: 'Evidence review mark withdrawn',
         },
         gap: { generate: 'Gap list created', analysis: 'Gap analysis changed' },
+        instrument: {
+            translation_applied: 'Instrument English translation applied',
+        },
         invitation: {
             queue: 'Survey invitations scheduled',
             sent: 'Survey invitation sent',

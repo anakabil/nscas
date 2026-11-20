@@ -27,6 +27,7 @@ Fase R0 (fondasi), R1 (administrasi dan konfigurasi asesmen, dengan dasbor progr
 | `docs/14-daftar-periksa-keamanan.md` | Daftar periksa keamanan dan privasi: 28 butir, status, bukti, tindak lanjut |
 | `docs/15-hasil-uji-r12.md` | Hasil uji ujung ke ujung, uji beban, kamera observasi, dan sisa syarat penempatan |
 | `docs/16-bahan-validasi-lapangan.md` | Pertanyaan wawancara, panduan diskusi kelompok terarah, lembar kerja kunjungan proyek, kode analisis, dan triangulasi |
+| `docs/17-draf-terjemahan-instrumen.md` | Draf terjemahan Inggris isi instrumen versi 1, tahapan telaah, daftar istilah, dan cara menerapkannya setelah disetujui |
 | `seed/` | Data awal instrumen, parameter, dan fixture pengujian |
 | `docs/arsip-v1/` | Dokumen implementasi versi 1; hanya rujukan sejarah |
 

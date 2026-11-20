@@ -35,6 +35,7 @@ export const security = {
         coordinator: 'Koordinator unit',
         evidence: 'Bukti dokumen',
         gap: 'Kesenjangan',
+        instrument: 'Instrumen',
         invitation: 'Undangan survei',
         monitoring: 'Pemantauan',
         observation: 'Observasi lapangan',
@@ -106,6 +107,9 @@ export const security = {
         gap: {
             generate: 'Daftar kesenjangan dibuat',
             analysis: 'Analisis kesenjangan diubah',
+        },
+        instrument: {
+            translation_applied: 'Terjemahan Inggris instrumen diterapkan',
         },
         invitation: {
             queue: 'Undangan survei dijadwalkan',
