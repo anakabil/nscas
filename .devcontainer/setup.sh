@@ -102,7 +102,7 @@ Akun contoh
 
 Setiap akun menampilkan beranda dan menu yang berbeda sesuai perannya. Tahap 1 (perencanaan), seluruh halaman tahap 2
 (responden, kode QR, partisipasi, penilaian mandiri, bukti dokumen, observasi lapangan), dan survei responden di telepon
-sudah dapat dipakai. Halaman yang bertanda fase R6 dan seterusnya baru berisi penjelasan.
+sudah dapat dipakai, begitu pula seluruh modul tahap 3 sampai 6 (fase R6 sampai R12).
 Undangan dan pengingat survei tidak terkirim ke luar; bukalah kotak surat uji (Mailpit) untuk melihatnya.
 EOF
   )

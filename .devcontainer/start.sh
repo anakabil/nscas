@@ -27,6 +27,12 @@ fi
 
 wait_for_db
 
+# Skema basis data selalu disamakan dengan kode. Tanpa ini, codespace yang kodenya diperbarui tanpa update.sh menampilkan
+# galat 500 setelah masuk karena tabel fase baru belum ada. Aman dijalankan berulang.
+if ! php artisan migrate --force --no-interaction >>"$LOG_DIR/app.log" 2>&1; then
+  echo "Migrasi basis data gagal; periksa .codespace/logs/app.log."
+fi
+
 # setsid melepas proses dari sesi perintah siklus hidup codespace agar tetap berjalan setelah skrip ini selesai.
 if app_ready || pgrep -f "artisan serve" >/dev/null; then
   echo "Aplikasi sudah berjalan."

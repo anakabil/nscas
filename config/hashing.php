@@ -1,8 +1,10 @@
 <?php
 
 /*
-| Hash kata sandi (docs/04 bagian 3): argon2id. Kata sandi lama dengan algoritme lain di-hash ulang otomatis saat
-| pemiliknya berhasil masuk (rehash_on_login), selama HASH_VERIFY dinonaktifkan sementara untuk migrasi.
+| Hash kata sandi (docs/04 bagian 3): argon2id. Akun yang dibuat sebelum fase R11 masih ber-hash bcrypt. Pemeriksaan
+| algoritme (verify) dimatikan agar hash lama tetap dapat diperiksa dengan password_verify, yang membaca algoritme dari
+| hash itu sendiri, lalu langsung di-hash ulang ke argon2id saat pemiliknya berhasil masuk (rehash_on_login). Bila
+| verify menyala, hash bcrypt menimbulkan galat server 500 pada halaman masuk.
 */
 
 return [
@@ -11,7 +13,7 @@ return [
 
     'bcrypt' => [
         'rounds' => env('BCRYPT_ROUNDS', 12),
-        'verify' => env('HASH_VERIFY', true),
+        'verify' => env('HASH_VERIFY', false),
         'limit' => env('BCRYPT_LIMIT', null),
     ],
 
@@ -20,7 +22,7 @@ return [
         'memory' => (int) env('ARGON_MEMORY', 65536),
         'threads' => (int) env('ARGON_THREADS', 1),
         'time' => (int) env('ARGON_TIME', 3),
-        'verify' => env('HASH_VERIFY', true),
+        'verify' => env('HASH_VERIFY', false),
     ],
 
     'rehash_on_login' => true,
