@@ -74,4 +74,5 @@ jobs:
       # Analisis statis PHP dengan Larastan (fase R11). Belum memblokir sampai temuan pertama ditinjau.
       - name: Static analysis
         continue-on-error: true
-        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=github
+        # Format raw menulis berkas:baris:pesan di log agar setiap temuan dapat ditelusuri; github hanya menyimpan 10 anotasi.
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=raw
