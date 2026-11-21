@@ -40,11 +40,14 @@ class DataQualityService
         return in_array($status, [AssessmentStatus::DataCollection, AssessmentStatus::Validation, AssessmentStatus::Scoring], true);
     }
 
-    /** @return array<string, mixed> */
-    public function report(Assessment $assessment, bool $includeResponses): array
+    /**
+     * @param  list<array<string, mixed>>|null  $loaded  jawaban yang sudah dimuat pemanggil (SurveyDataLoader::responses), agar tidak dimuat ulang
+     * @return array<string, mixed>
+     */
+    public function report(Assessment $assessment, bool $includeResponses, ?array $loaded = null): array
     {
         $t = SurveyDataLoader::thresholds($assessment);
-        $responses = SurveyDataLoader::responses($assessment);
+        $responses = $loaded ?? SurveyDataLoader::responses($assessment);
         $dimensions = SurveyDataLoader::dimensions($assessment);
         $units = Unit::where('assessment_id', $assessment->id)->orderBy('name')->get(['id', 'name'])
             ->map(fn (Unit $u) => ['id' => $u->id, 'name' => $u->name])->all();

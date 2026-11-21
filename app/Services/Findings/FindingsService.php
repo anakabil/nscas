@@ -17,8 +17,11 @@ class FindingsService
 {
     public function __construct(private readonly EvidenceService $evidence) {}
 
-    /** @return array<string, mixed> */
-    public function build(Assessment $assessment): array
+    /**
+     * @param  list<array<string, mixed>>|null  $responses  jawaban yang sudah dimuat pemanggil (SurveyDataLoader::responses), agar tidak dimuat ulang
+     * @return array<string, mixed>
+     */
+    public function build(Assessment $assessment, ?array $responses = null): array
     {
         $thresholds = SurveyDataLoader::thresholds($assessment);
         $characteristics = Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->orderBy('position')
@@ -36,7 +39,7 @@ class FindingsService
         foreach ($this->evidence->checklist($assessment, null)['rows'] as $row) {
             $evidence[$row['characteristicId']] = ['types' => $row['types'], 'belowMinimum' => $row['belowMinimum']];
         }
-        $responses = SurveyDataLoader::responses($assessment);
+        $responses ??= SurveyDataLoader::responses($assessment);
 
         return [
             'responses' => count($responses),

@@ -62,9 +62,10 @@ class ResultsService
         $units = Unit::where('assessment_id', $assessment->id)->orderBy('name')->get(['id', 'name'])
             ->filter(fn (Unit $u) => $unitScope === null || in_array($u->id, $unitScope, true));
         $defs = $characteristics->map(fn (Characteristic $c) => ['id' => $c->id, 'aspectCode' => $c->aspect_code, 'contextual' => (bool) $c->is_contextual])->all();
-        $findings = $this->findings->build($assessment);
+        // Jawaban survei dimuat sekali untuk peta, temuan awal, dan statistik mutu.
+        $findings = $this->findings->build($assessment, $responses);
         $scoped = $unitScope !== null;
-        $quality = $this->quality->report($assessment, false);
+        $quality = $this->quality->report($assessment, false, $responses);
         $panel = [];
         foreach ($run->decisions as $d) {
             if ($d->kind === 'ADJUSTED' && $d->adjusted_value !== null) {

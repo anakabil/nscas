@@ -30,6 +30,13 @@
     main { max-width: 190mm; margin: 0 auto; padding: 12mm 0; background: #fff; }
     @media screen { main { padding: 14mm 16mm; margin: 24px auto; box-shadow: 0 1px 6px rgba(0,0,0,.08); } }
     @media print { body { background: #fff; } main { padding: 0; max-width: none; } .no-print { display: none; } }
+    /* Layar telepon: tanpa bingkai halaman, tabel digulir di tempatnya, dan tanda DRAF tidak melebarkan halaman. */
+    @media screen and (max-width: 640px) {
+        body { overflow-x: hidden; }
+        main { padding: 5mm 4mm; margin: 0; box-shadow: none; }
+        table { display: block; max-width: 100%; overflow-x: auto; }
+        .draft { font-size: 40pt; }
+    }
     h1, h2, h3 { font-family: Georgia, "DejaVu Serif", serif; color: #691b2e; font-weight: normal; line-height: 1.2; }
     h1 { font-size: 22pt; margin: 6mm 0 2mm; }
     h2 { font-size: 13.5pt; margin: 9mm 0 3mm; border-bottom: 1px solid #cba35a; padding-bottom: 1.5mm; break-after: avoid; }

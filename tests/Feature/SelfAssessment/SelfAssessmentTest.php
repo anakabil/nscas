@@ -185,4 +185,14 @@ class SelfAssessmentTest extends TestCase
         $this->actingAs($this->lead)->get(route('home'))->assertInertia(fn (Assert $page) => $page
             ->where('dashboard.rows.0.participation.selfAssessments', ['issued' => 1, 'submitted' => 0]));
     }
+
+    public function test_the_hub_links_the_self_assessment_condition_to_its_page(): void
+    {
+        $this->assessment->forceFill(['status' => AssessmentStatus::DataCollection])->save();
+
+        $this->actingAs($this->lead)->get(route('assessments.show', $this->assessment))->assertInertia(function (Assert $page) {
+            $conditions = collect($page->toArray()['props']['progress']['next']['conditions'])->keyBy('key');
+            $this->assertSame(route('assessments.module', [$this->assessment, 'self-assessments']), $conditions['self_assessments_submitted']['href']);
+        });
+    }
 }

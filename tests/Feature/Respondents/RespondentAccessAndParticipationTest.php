@@ -275,5 +275,11 @@ class RespondentAccessAndParticipationTest extends TestCase
             ->where('progress.next.conditions.0.key', 'roster_imported')
             ->where('progress.next.conditions.0.met', false)
             ->where('progress.next.conditions.0.href', route('assessments.module', [$this->assessment, 'respondents'])));
+
+        // Peran yang tidak dapat membuka daftar responden melihat syaratnya tanpa tautan (tidak berujung 403).
+        $viewer = $this->member($this->client, Role::ExecutiveViewer);
+        $this->actingAs($viewer)->get(route('assessments.show', $this->assessment))->assertInertia(fn (Assert $page) => $page
+            ->where('progress.next.conditions.0.key', 'roster_imported')
+            ->where('progress.next.conditions.0.href', null));
     }
 }

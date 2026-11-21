@@ -64,6 +64,8 @@ export const security = {
             update: 'Improvement action changed',
             progress: 'Action progress recorded',
             reminder: 'Action due date reminder sent',
+            verify: 'Action completion verified',
+            reject: 'Action completion rejected',
         },
         action_plan: { publish: 'Action plan published' },
         assessment: {
@@ -187,6 +189,8 @@ export const security = {
             update: 'User changed',
             password_reset: 'User password reset',
             super_admin_created: 'System administrator created',
+            activate: 'User activated',
+            deactivate: 'User deactivated',
         },
         validation: {
             guide_update: 'Validation guide changed',
@@ -198,6 +202,8 @@ export const security = {
             participant_remove: 'Interviewee removed',
             rating_save: 'Validation session rating saved',
             feedback: 'Validation feedback saved',
+            export: 'Field validation data downloaded',
+            site_check: 'Project visit worksheet filled in',
         },
     },
     retentionPage: {

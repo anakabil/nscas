@@ -26,23 +26,22 @@ final class SurveyDataLoader
         DB::table('characteristic_answers')
             ->join('survey_responses', 'survey_responses.id', '=', 'characteristic_answers.survey_response_id')
             ->where('survey_responses.assessment_id', $assessment->id)->where('survey_responses.excluded', false)
-            ->select('characteristic_answers.survey_response_id', 'characteristic_answers.characteristic_id', 'characteristic_answers.level')
-            ->orderBy('characteristic_answers.id')
-            ->chunk(5000, function ($chunk) use (&$rows) {
+            ->select('characteristic_answers.id', 'characteristic_answers.survey_response_id', 'characteristic_answers.characteristic_id', 'characteristic_answers.level')
+            // Paging dengan kunci, bukan offset, agar tidak makin lambat pada ribuan responden.
+            ->chunkById(5000, function ($chunk) use (&$rows) {
                 foreach ($chunk as $a) {
                     $rows[$a->survey_response_id]['levels'][$a->characteristic_id] = $a->level === null ? null : (int) $a->level;
                 }
-            });
+            }, 'characteristic_answers.id', 'id');
         DB::table('climate_answers')
             ->join('survey_responses', 'survey_responses.id', '=', 'climate_answers.survey_response_id')
             ->where('survey_responses.assessment_id', $assessment->id)->where('survey_responses.excluded', false)
-            ->select('climate_answers.survey_response_id', 'climate_answers.climate_item_id', 'climate_answers.value')
-            ->orderBy('climate_answers.id')
-            ->chunk(5000, function ($chunk) use (&$rows) {
+            ->select('climate_answers.id', 'climate_answers.survey_response_id', 'climate_answers.climate_item_id', 'climate_answers.value')
+            ->chunkById(5000, function ($chunk) use (&$rows) {
                 foreach ($chunk as $a) {
                     $rows[$a->survey_response_id]['climate'][$a->climate_item_id] = (int) $a->value;
                 }
-            });
+            }, 'climate_answers.id', 'id');
 
         return array_values($rows);
     }

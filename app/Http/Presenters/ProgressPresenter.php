@@ -3,6 +3,8 @@
 namespace App\Http\Presenters;
 
 use App\Domain\Access\Role;
+use App\Domain\Navigation\Module;
+use App\Domain\Navigation\ModuleCatalog;
 use App\Domain\Progress\ProgressCalculator;
 use App\Domain\Respondents\Participation;
 use App\Domain\Setup\ConditionEvaluator;
@@ -37,7 +39,14 @@ final class ProgressPresenter
             $today,
         );
         $planning = PlanningChecklist::items($facts, $status->parametersLocked());
-        $moduleHref = static fn (?string $module): ?string => $module === null ? null : self::moduleHref($assessment, $module);
+        // Tautan hanya ke halaman yang boleh dibuka peran ini (sama dengan menu); syarat lain tampil tanpa tautan.
+        $modules = [];
+        foreach (ModuleCatalog::all($status) as $module) {
+            if ($module->ready && $module->visibleTo($roles)) {
+                $modules[$module->key] = $module;
+            }
+        }
+        $moduleHref = static fn (?string $key): ?string => $key === null || ! isset($modules[$key]) ? null : self::moduleHref($assessment, $modules[$key]);
         $surveyTarget = $assessment->parameter_snapshot['samplePlan']['result']['surveyTargetTotal']
             ?? $assessment->parameter_draft['samplePlan']['result']['surveyTargetTotal']
             ?? null;
@@ -92,17 +101,9 @@ final class ProgressPresenter
         ];
     }
 
-    /** Alamat halaman modul menurut kuncinya (lihat ModuleCatalog). */
-    private static function moduleHref(Assessment $assessment, string $module): string
+    /** Alamat halaman modul dari ModuleCatalog. */
+    private static function moduleHref(Assessment $assessment, Module $module): string
     {
-        $paths = [
-            'details' => 'setup', 'units' => 'setup/units', 'strata' => 'setup/strata', 'parameters' => 'setup/parameters',
-            'sampling' => 'setup/sampling', 'team' => 'setup/team', 'kickoff' => 'setup/kickoff', 'respondents' => 'respondents',
-            'participation' => 'participation', 'dataQuality' => 'data-quality', 'validation' => 'validation',
-            'evidence' => 'evidence', 'scoring' => 'scoring', 'panel' => 'panel', 'report' => 'report', 'gaps' => 'gaps',
-            'communication' => 'communication', 'monitoring' => 'monitoring',
-        ];
-
-        return route('assessments.module', ['assessment' => $assessment, 'path' => $paths[$module] ?? 'setup']);
+        return route('assessments.module', ['assessment' => $assessment, 'path' => $module->path]);
     }
 }

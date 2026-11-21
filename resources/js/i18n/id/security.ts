@@ -65,6 +65,8 @@ export const security = {
             update: 'Aksi perbaikan diubah',
             progress: 'Kemajuan aksi dicatat',
             reminder: 'Pengingat tenggat aksi dikirim',
+            verify: 'Penyelesaian aksi diverifikasi',
+            reject: 'Penyelesaian aksi ditolak',
         },
         action_plan: { publish: 'Rencana aksi diterbitkan' },
         assessment: {
@@ -191,6 +193,8 @@ export const security = {
             update: 'Pengguna diubah',
             password_reset: 'Kata sandi pengguna diatur ulang',
             super_admin_created: 'Pengelola sistem dibuat',
+            activate: 'Pengguna diaktifkan',
+            deactivate: 'Pengguna dinonaktifkan',
         },
         validation: {
             guide_update: 'Panduan validasi diubah',
@@ -202,6 +206,8 @@ export const security = {
             participant_remove: 'Narasumber dihapus',
             rating_save: 'Nilai sesi validasi disimpan',
             feedback: 'Umpan balik validasi disimpan',
+            export: 'Data validasi lapangan diunduh',
+            site_check: 'Lembar kunjungan proyek diisi',
         },
     },
     retentionPage: {
