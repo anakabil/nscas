@@ -127,6 +127,9 @@ button {
     color: var(--sv-charcoal);
     font-size: 0.95rem;
 }
+.sv-block {
+    display: block;
+}
 .sv-strong {
     font-weight: 600;
 }

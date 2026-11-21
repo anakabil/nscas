@@ -216,6 +216,7 @@ export const validation = {
             field: {
                 print: 'Cetak panduan',
                 printHint: 'Untuk dipakai di lapangan tanpa sambungan; isi hasilnya ke aplikasi setelah sesi.',
+                contentInIndonesian: 'Bahan panduan lapangan saat ini tersedia dalam bahasa Indonesia.',
                 flowTitle: 'Alur sesi',
                 rules: 'Aturan diskusi',
                 opening: 'Pembukaan',

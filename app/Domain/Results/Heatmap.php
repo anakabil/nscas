@@ -7,7 +7,8 @@ namespace App\Domain\Results;
 /**
  * Peta warna aspek terhadap strata atau unit (docs/01 M9) dari jawaban survei: rata-rata tiap responden atas
  * karakteristik nonkontekstual aspek itu, lalu rata-rata per kolom. Sel dengan kurang dari ambang responden
- * disembunyikan (CLAUDE.md aturan 3). Murni.
+ * disembunyikan beserta jumlah respondennya, dan sel lain ikut disembunyikan bila agregat kelompoknya diterbitkan
+ * (App\Domain\Results\CellSuppression; CLAUDE.md aturan 3). Murni.
  */
 final class Heatmap
 {
@@ -16,9 +17,10 @@ final class Heatmap
      * @param  list<array{stratumId: string, unitId: string, levels: array<string, int|null>}>  $responses
      * @param  list<array{id: string, label: string}>  $columns
      * @param  'stratumId'|'unitId'  $key
-     * @return array{columns: list<array{id: string, label: string}>, rows: list<array{aspectCode: string, cells: list<array{value: float|null, n: int, suppressed: bool}>}>}
+     * @param  list<list<string>>  $groups  id kolom yang agregatnya diterbitkan di tempat lain (penyembunyian pelengkap)
+     * @return array{columns: list<array{id: string, label: string}>, rows: list<array{aspectCode: string, cells: list<array{value: float|null, n: int|null, suppressed: bool}>}>}
      */
-    public static function build(array $characteristics, array $responses, array $columns, string $key, int $minCell): array
+    public static function build(array $characteristics, array $responses, array $columns, string $key, int $minCell, array $groups = []): array
     {
         $byAspect = [];
         foreach ($characteristics as $c) {
@@ -40,15 +42,13 @@ final class Heatmap
                     $sums[$r[$key]][] = array_sum($values) / count($values);
                 }
             }
-            $cells = [];
+            $raw = [];
             foreach ($columns as $col) {
                 $own = $sums[$col['id']] ?? [];
-                $n = count($own);
-                $cells[] = $n >= $minCell
-                    ? ['value' => (float) (array_sum($own) / $n), 'n' => $n, 'suppressed' => false]
-                    : ['value' => null, 'n' => $n, 'suppressed' => true];
+                $raw[$col['id']] = ['value' => $own === [] ? null : (float) (array_sum($own) / count($own)), 'n' => count($own)];
             }
-            $rows[] = ['aspectCode' => $aspect, 'cells' => $cells];
+            $safe = CellSuppression::apply($raw, $minCell, $groups);
+            $rows[] = ['aspectCode' => $aspect, 'cells' => array_map(fn (array $col) => $safe[$col['id']], $columns)];
         }
 
         return ['columns' => $columns, 'rows' => $rows];

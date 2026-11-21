@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Results;
 
+use App\Domain\Access\Resource;
 use App\Domain\Access\Role;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Models\Assessment;
@@ -14,6 +15,7 @@ use App\Models\Stratum;
 use App\Models\Unit;
 use App\Models\UnitAssignment;
 use App\Models\User;
+use App\Services\Respondents\RespondentScope;
 use App\Services\Scoring\ScoringService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -132,8 +134,18 @@ class ResultsTest extends TestCase
         $unit = Unit::where('assessment_id', $this->assessment->id)->orderByDesc('name')->firstOrFail();
         UnitAssignment::create(['assessment_id' => $this->assessment->id, 'unit_id' => $unit->id, 'user_id' => $coordinator->id]);
 
+        // Koordinator tidak menerima agregat seluruh organisasi per strata maupun per kelompok jabatan (docs/04).
         $this->actingAs($coordinator)->get(route('results.index', $this->assessment))
-            ->assertInertia(fn (Assert $page) => $page->has('results.heatmaps.units.columns', 1)->where('results.heatmaps.units.columns.0.id', $unit->id));
+            ->assertInertia(fn (Assert $page) => $page->has('results.heatmaps.units.columns', 1)->where('results.heatmaps.units.columns.0.id', $unit->id)
+                ->where('results.heatmaps.strata', null)
+                ->where('results.perceptionGap', [])
+                ->where('results.quality.strata', []));
+
+        // Peran tambahan tanpa hak atas daftar responden tidak melonggarkan batas unit koordinator.
+        $this->assertNull(RespondentScope::units($coordinator, $this->assessment, [Role::ClientAdmin, Role::UnitCoordinator], Resource::Roster));
+        $this->assertSame([$unit->id], RespondentScope::units($coordinator, $this->assessment, [Role::ExecutiveViewer, Role::UnitCoordinator], Resource::Roster));
+        $this->assertSame([$unit->id], RespondentScope::units($coordinator, $this->assessment, [Role::ExecutiveViewer, Role::UnitCoordinator], Resource::ActionPlans, write: true));
+        $this->assertNull(RespondentScope::units($coordinator, $this->assessment, [Role::ExecutiveViewer, Role::UnitCoordinator], Resource::ResultsDashboard));
     }
 
     public function test_excel_export_keeps_the_disclaimer_and_hidden_cells(): void

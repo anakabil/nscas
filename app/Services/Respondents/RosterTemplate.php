@@ -3,6 +3,7 @@
 namespace App\Services\Respondents;
 
 use App\Domain\Respondents\RosterValidator;
+use App\Support\TempFile;
 use OpenSpout\Common\Entity\Cell;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
@@ -23,13 +24,13 @@ final class RosterTemplate
 
     /**
      * @param  list<string>  $units
-     * @param  list<array{code: string, name: string}>  $strata
+     * @param  list<array{code: string, name: string, jobTitles?: list<string>}>  $strata
      * @param  array{optionsSheet: string, instructionsSheet: string, title: string, lines: list<string>, yes: string, no: string}  $texts
      * @return string Jalur berkas sementara; pemanggil menghapusnya setelah dikirim.
      */
     public static function build(array $units, array $strata, array $texts): string
     {
-        $path = tempnam(sys_get_temp_dir(), 'roster-template-').'.xlsx';
+        $path = TempFile::path('roster-template-', 'xlsx');
         $writer = new Writer;
         $writer->openToFile($path);
 
@@ -58,10 +59,25 @@ final class RosterTemplate
         $options->setColumnWidth(14, 2);
         $options->setColumnWidth(40, 3);
         $options->setColumnWidth(16, 4);
-        $writer->addRow(Row::fromValues([RosterValidator::TEMPLATE_HEADERS['unit'], RosterValidator::TEMPLATE_HEADERS['stratum'], '', RosterValidator::TEMPLATE_HEADERS['contractor']], (new Style)->setFontBold()));
+        $options->setColumnWidth(4, 5);
+        $options->setColumnWidth(36, 6);
+        $options->setColumnWidth(14, 7);
+        // Kolom F dan G: nama jabatan organisasi dan strata tujuannya, sebagai rujukan pengisian kolom Jabatan.
+        $titles = [];
+        foreach ($strata as $s) {
+            foreach ($s['jobTitles'] ?? [] as $title) {
+                $titles[] = [$title, $s['code']];
+            }
+        }
+        $writer->addRow(Row::fromValues([
+            RosterValidator::TEMPLATE_HEADERS['unit'], RosterValidator::TEMPLATE_HEADERS['stratum'], '', RosterValidator::TEMPLATE_HEADERS['contractor'],
+            '', RosterValidator::TEMPLATE_HEADERS['jobTitle'], RosterValidator::TEMPLATE_HEADERS['stratum'],
+        ], (new Style)->setFontBold()));
         $choices = [$texts['yes'], $texts['no']];
-        for ($i = 0, $n = max(count($units), count($strata), 2); $i < $n; $i++) {
-            $writer->addRow(Row::fromValues([$units[$i] ?? '', $strata[$i]['code'] ?? '', $strata[$i]['name'] ?? '', $choices[$i] ?? '']));
+        for ($i = 0, $n = max(count($units), count($strata), count($titles), 2); $i < $n; $i++) {
+            $writer->addRow(Row::fromValues([
+                $units[$i] ?? '', $strata[$i]['code'] ?? '', $strata[$i]['name'] ?? '', $choices[$i] ?? '', '', $titles[$i][0] ?? '', $titles[$i][1] ?? '',
+            ]));
         }
 
         $help = $writer->addNewSheetAndMakeItCurrent();

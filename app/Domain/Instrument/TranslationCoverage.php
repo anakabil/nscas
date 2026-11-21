@@ -96,7 +96,8 @@ final class TranslationCoverage
         if (! self::filled($text)) {
             return ["Teks {$label} kosong."];
         }
-        if (str_contains((string) $text, "\u{2014}") || str_contains((string) $text, "\u{2013}") || str_contains((string) $text, '--')) {
+        // Tanda pisah panjang (em dash) dan penggantinya "--"; tanda pisah rentang (en dash) seperti "1–2" tetap boleh.
+        if (str_contains((string) $text, "\u{2014}") || str_contains((string) $text, '--')) {
             return ["Teks {$label} memakai tanda pisah panjang."];
         }
 

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $legal_name
  * @property string|null $sector
  * @property bool $is_active
+ * @property list<array{code: string, name: string, group: string, isContractor: bool, jobTitles: list<string>}>|null $strata_template
  */
 #[Fillable(['name', 'is_operator', 'legal_name', 'sector', 'is_active'])]
 class Organization extends Model
@@ -27,7 +28,7 @@ class Organization extends Model
 
     protected function casts(): array
     {
-        return ['is_operator' => 'boolean', 'is_active' => 'boolean'];
+        return ['is_operator' => 'boolean', 'is_active' => 'boolean', 'strata_template' => 'array'];
     }
 
     /** @return HasMany<Membership, $this> */

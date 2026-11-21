@@ -18,17 +18,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property StratumGroup $group
  * @property int $population
  * @property bool $is_contractor
+ * @property list<string> $job_titles nama jabatan organisasi pada strata ini (App\Domain\Setup\JobTitles)
  */
-#[Fillable(['assessment_id', 'code', 'name', 'group', 'population', 'is_contractor'])]
+#[Fillable(['assessment_id', 'code', 'name', 'group', 'population', 'is_contractor', 'job_titles'])]
 class Stratum extends Model
 {
     use HasUlids;
 
     protected $table = 'strata';
 
+    protected $attributes = ['job_titles' => '[]'];
+
     protected function casts(): array
     {
-        return ['group' => StratumGroup::class, 'population' => 'integer', 'is_contractor' => 'boolean'];
+        return ['group' => StratumGroup::class, 'population' => 'integer', 'is_contractor' => 'boolean', 'job_titles' => 'array'];
     }
 
     /** @return BelongsTo<Assessment, $this> */

@@ -63,6 +63,7 @@ class ResultsService
             ->filter(fn (Unit $u) => $unitScope === null || in_array($u->id, $unitScope, true));
         $defs = $characteristics->map(fn (Characteristic $c) => ['id' => $c->id, 'aspectCode' => $c->aspect_code, 'contextual' => (bool) $c->is_contextual])->all();
         $findings = $this->findings->build($assessment);
+        $scoped = $unitScope !== null;
         $quality = $this->quality->report($assessment, false);
         $panel = [];
         foreach ($run->decisions as $d) {
@@ -97,16 +98,22 @@ class ResultsService
                 'flags' => $c['flags'],
             ], $result['characteristics']),
             'divergence' => array_values(array_map(fn (array $c) => $c['code'], array_filter($result['characteristics'], fn (array $c) => in_array(Flag::SelisihPersepsiBukti->value, $c['flags'], true)))),
-            'perceptionGap' => $findings['aspects'],
+            // Koordinator unit hanya melihat unitnya (docs/04 bagian 2, sama dengan v1): peta strata, selisih persepsi, dan
+            // partisipasi per strata seluruh organisasi tidak dikirim.
+            'perceptionGap' => $scoped ? [] : $findings['aspects'],
             'gapAttention' => $findings['gapAttention'],
             'heatmaps' => [
-                'strata' => Heatmap::build($defs, $responses, array_map(fn (array $s) => ['id' => $s['id'], 'label' => $s['code'], 'name' => $s['name']], $snapshotStrata), 'stratumId', $minCell),
+                'strata' => $scoped ? null : Heatmap::build(
+                    $defs, $responses,
+                    array_map(fn (array $s) => ['id' => $s['id'], 'label' => $s['code'], 'name' => $s['name']], $snapshotStrata),
+                    'stratumId', $minCell, $this->strataGroups($snapshotStrata),
+                ),
                 'units' => Heatmap::build($defs, $responses, $units->map(fn (Unit $u) => ['id' => $u->id, 'label' => $u->name])->values()->all(), 'unitId', $minCell),
             ],
             'quality' => [
                 'counts' => $quality['counts'],
                 'minParticipation' => $quality['minParticipation'],
-                'strata' => array_map(fn (array $s) => ['code' => $s['code'], 'name' => $s['name'], 'population' => $s['population'], 'completed' => $s['completed'], 'rate' => $s['rate'], 'belowMinimum' => $s['belowMinimum']], $quality['strata']),
+                'strata' => $scoped ? [] : array_map(fn (array $s) => ['code' => $s['code'], 'name' => $s['name'], 'population' => $s['population'], 'completed' => $s['completed'], 'rate' => $s['rate'], 'belowMinimum' => $s['belowMinimum']], $quality['strata']),
                 'alpha' => $quality['alpha'],
                 'alphaMin' => $quality['alphaMin'],
                 'rwg' => array_values(array_filter($quality['rwg'], fn (array $r) => $unitScope === null || in_array($r['unitId'], $unitScope, true))),
@@ -119,6 +126,23 @@ class ResultsService
                 'divergenceThreshold' => $params->divergenceThreshold,
             ],
         ];
+    }
+
+    /**
+     * Kelompok kolom peta strata yang agregatnya diterbitkan: setiap kelompok jabatan (rata-rata kelompok pada selisih
+     * persepsi) dan seluruh strata (rata-rata organisasi). Dipakai untuk penyembunyian pelengkap.
+     *
+     * @param  list<array<string, mixed>>  $strata
+     * @return list<list<string>>
+     */
+    private function strataGroups(array $strata): array
+    {
+        $groups = [];
+        foreach ($strata as $s) {
+            $groups[(string) ($s['group'] ?? '')][] = (string) $s['id'];
+        }
+
+        return [...array_values($groups), array_map(fn (array $s) => (string) $s['id'], $strata)];
     }
 
     /** @return array<string, mixed> */

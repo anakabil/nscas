@@ -5,6 +5,7 @@ namespace App\Services\Respondents;
 use App\Domain\Access\Role;
 use App\Domain\Respondents\RosterValidator;
 use App\Domain\Respondents\TokenCodec;
+use App\Domain\Setup\JobTitles;
 use App\Domain\Workflow\AssessmentStatus;
 use App\Jobs\SendSurveyInvitation;
 use App\Models\AccessToken;
@@ -55,7 +56,7 @@ final class RespondentDistribution
         return DB::transaction(function () use ($assessment, $file, $scope, $commit, $actorRole) {
             $locked = $this->lockForDistribution($assessment);
             $units = $locked->units()->get(['id', 'name']);
-            $strata = $locked->strata()->orderBy('code')->get(['id', 'code', 'name', 'is_contractor']);
+            $strata = $locked->strata()->orderBy('code')->get(['id', 'code', 'name', 'is_contractor', 'job_titles']);
             $existing = RosterEntry::where('assessment_id', $locked->id)->get(['employee_no', 'email_hash']);
 
             $strataMap = [];
@@ -71,6 +72,7 @@ final class RespondentDistribution
                 $existing->pluck('employee_no')->filter()->map(fn ($n) => mb_strtolower($n))->values()->all(),
                 $existing->pluck('email_hash')->filter()->values()->all(),
                 RosterEntry::emailHash(...),
+                JobTitles::lookup($strata->map(fn ($s) => ['id' => $s->id, 'isContractor' => $s->is_contractor, 'jobTitles' => array_values($s->job_titles ?? [])])->all()),
             );
             $summary = $this->summarize($validation, $units->pluck('name', 'id')->all(), $strata->pluck('code', 'id')->all());
             $invalid = $validation['missingColumns'] !== [] || $validation['tooManyRows'] || $validation['errors'] !== [] || $validation['valid'] === [];

@@ -164,4 +164,30 @@ class RosterValidatorTest extends TestCase
         $this->assertTrue($result['tooManyRows']);
         $this->assertSame([], $result['valid']);
     }
+
+    public function test_the_job_title_column_finds_the_stratum_when_the_stratum_column_is_empty(): void
+    {
+        $titles = ['site manager' => ['id' => 's-m', 'isContractor' => false], 'tukang besi' => ['id' => 's-pj', 'isContractor' => true]];
+        $this->assertSame([], RosterValidator::mapHeader(['Nama', 'Unit', 'Jabatan'])['missing']);
+        $this->assertSame(['stratum'], RosterValidator::mapHeader(['Nama', 'Unit'])['missing']);
+
+        $result = RosterValidator::validate([
+            ['Nama', 'Unit', 'Jabatan', 'Strata'],
+            ['Ani', 'Kantor Pusat', 'Site  Manager', ''],
+            ['Budi', 'Kantor Pusat', 'Tukang Besi', ''],
+            ['Cici', 'Kantor Pusat', 'Tukang Besi', 'PJ'],
+            ['Dedi', 'Kantor Pusat', 'Juru Masak', ''],
+            ['Eka', 'Kantor Pusat', 'Site Manager', 'PJ'],
+            ['Fani', 'Kantor Pusat', '', ''],
+            ['Gita', 'Kantor Pusat', 'Juru Masak', 'M'],
+        ], self::UNITS, self::STRATA, null, [], [], null, $titles);
+
+        $this->assertSame(['5:jobTitle:JOB_TITLE_NOT_FOUND', '6:jobTitle:JOB_TITLE_OTHER_STRATUM', '7:stratum:STRATUM_REQUIRED'], $this->codes($result));
+        $this->assertSame(
+            [['Ani', 's-m', false], ['Budi', 's-pj', true], ['Cici', 's-pj', true], ['Gita', 's-m', false]],
+            array_map(fn (array $r) => [$r['fullName'], $r['stratumId'], $r['isContractor']], $result['valid']),
+        );
+        // Nama jabatan tidak ikut disimpan.
+        $this->assertArrayNotHasKey('jobTitle', $result['valid'][0]);
+    }
 }

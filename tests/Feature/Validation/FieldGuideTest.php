@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\ValidationGuide;
 use App\Models\ValidationRating;
 use App\Models\ValidationSession;
+use App\Services\Validation\FieldGuide;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Concerns\BuildsAssessments;
@@ -87,6 +88,9 @@ class FieldGuideTest extends TestCase
         // Kesepakatan kelompok hanya untuk diskusi kelompok.
         $this->assertNull(ValidationRating::where('validation_session_id', $interview->id)->value('agreement'));
         $this->assertSame('CONSISTENT', ValidationRating::where('validation_session_id', $interview->id)->value('evidence_code'));
+        // Jejak audit mencatat nilai yang benar-benar disimpan, bukan kode kesepakatan yang diabaikan.
+        $log = AuditLog::where('action', 'validation.rating_save')->where('entity_id', $interview->id)->latest('id')->firstOrFail();
+        $this->assertNull($log->changes['after'][0]['agreement']);
     }
 
     public function test_the_site_visit_worksheet_is_saved_per_item_and_audited(): void
@@ -104,9 +108,12 @@ class FieldGuideTest extends TestCase
         $this->assertSame($this->characteristic('K4.2')->id, SiteVisitCheck::where('item_code', 'SV19')->value('characteristic_id'));
         $this->assertSame(1, AuditLog::where('action', 'validation.site_check')->count());
 
-        // Mengosongkan satu butir menghapusnya; kiriman yang sama tidak menambah catatan audit.
+        // Mengosongkan satu butir menghapusnya, dan hasil sebelumnya tetap terbaca di jejak audit; kiriman yang sama
+        // tidak menambah catatan audit.
         $this->actingAs($this->assessor)->put($url, ['checks' => [['itemCode' => 'SV01', 'result' => null, 'note' => null]]])->assertSessionHasNoErrors();
         $this->assertSame(2, SiteVisitCheck::where('validation_session_id', $visit->id)->count());
+        $removal = AuditLog::where('action', 'validation.site_check')->latest('id')->firstOrFail();
+        $this->assertEquals([['item' => 'SV01', 'result' => 'NOT_OBSERVED', 'note' => null]], $removal->changes['before']);
         $this->actingAs($this->assessor)->put($url, ['checks' => [['itemCode' => 'SV24', 'result' => 'MEETS', 'note' => null]]])->assertSessionHasNoErrors();
         $this->assertSame(2, AuditLog::where('action', 'validation.site_check')->count());
 
@@ -157,5 +164,17 @@ class FieldGuideTest extends TestCase
         $this->actingAs($this->assessor)->get(route('validation.sessions.print', [$this->assessment, $group->id]))->assertOk()
             ->assertSee('Aturan diskusi')->assertSee('Pendalaman')->assertDontSee('Budi Rahasiawan')->assertDontSee('<script', false);
         $this->actingAs($this->admin)->get(route('validation.sessions.print', [$this->assessment, $visit->id]))->assertForbidden();
+    }
+
+    public function test_the_field_guide_only_covers_characteristics_of_the_assessment_instrument(): void
+    {
+        $this->assertNull(FieldGuide::forType('SITE_VISIT', ['X1']));
+        $this->assertNull(FieldGuide::forType('INTERVIEW', []));
+        $visit = FieldGuide::forType('SITE_VISIT', ['K4.2']);
+        $items = array_merge(...array_map(fn (array $section) => $section['items'], $visit['sections']));
+        $this->assertNotSame([], $items);
+        $this->assertSame(['K4.2'], array_values(array_unique(array_column($items, 'characteristic'))));
+        $this->assertSame(['K1.1'], array_keys(FieldGuide::forType('FOCUS_GROUP', ['K1.1', 'X9'])['characteristics']));
+        $this->assertSame(array_keys(FieldGuide::siteItems(['K4.2'])), array_column($items, 'code'));
     }
 }

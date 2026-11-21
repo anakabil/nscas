@@ -119,6 +119,7 @@ export const security = {
         organization: {
             create: 'Organisation created',
             update: 'Organisation changed',
+            strata_template: 'Organisation strata template saved',
         },
         panel: {
             decision: 'Panel decision recorded',

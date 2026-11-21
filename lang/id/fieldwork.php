@@ -26,6 +26,7 @@ return [
     'results' => ['MEETS' => 'Sesuai', 'PARTIAL' => 'Sebagian', 'NOT_MET' => 'Tidak sesuai', 'NOT_OBSERVED' => 'Tidak dapat diperiksa'],
     'methods' => ['DOCUMENT' => 'Periksa dokumen', 'OBSERVE' => 'Amati', 'ASK' => 'Tanya pekerja'],
     'print' => [
+        'contentInIndonesian' => 'Bahan panduan lapangan saat ini tersedia dalam bahasa Indonesia.',
         'title' => 'Panduan :type',
         'session' => 'Sesi',
         'date' => 'Tanggal',

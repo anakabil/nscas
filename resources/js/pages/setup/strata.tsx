@@ -1,21 +1,29 @@
 import { router, useForm } from '@inertiajs/react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { BookmarkPlus, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import StratumController from '@/actions/App/Http/Controllers/Setup/StratumController';
-import { Field, FormError, NativeSelect, Panel, SetupShell, formatNumber } from '@/components/nscas/setup-shell';
+import { Field, FormError, NativeSelect, Panel, SetupShell, TextArea, formatNumber } from '@/components/nscas/setup-shell';
 import type { SetupCommon } from '@/components/nscas/setup-shell';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useLocale, useT } from '@/i18n';
 
-type StratumRow = { id: string; code: string; name: string; group: string; population: number; isContractor: boolean };
+type StratumRow = {
+    id: string;
+    code: string;
+    name: string;
+    group: string;
+    population: number;
+    isContractor: boolean;
+    jobTitles: string[];
+};
 
-type Props = SetupCommon & { strata: StratumRow[] };
+type Props = SetupCommon & { strata: StratumRow[]; canSaveTemplate: boolean; templateCount: number };
 
 const GROUPS = ['MANAGEMENT', 'SUPERVISORY', 'FIELD'] as const;
 
-const EMPTY = { code: '', name: '', group: 'FIELD', population: '0', is_contractor: false };
+const EMPTY = { code: '', name: '', group: 'FIELD', population: '0', is_contractor: false, job_titles: '' };
 
 /** Halaman strata jabatan dan jumlah pekerjanya (tahap 1). Tidak dapat diubah setelah parameter dikunci. */
 export default function SetupStrata(props: Props) {
@@ -43,6 +51,7 @@ export default function SetupStrata(props: Props) {
             group: stratum.group,
             population: String(stratum.population),
             is_contractor: stratum.isContractor,
+            job_titles: stratum.jobTitles.join('\n'),
         });
     };
     const reset = () => {
@@ -58,6 +67,12 @@ export default function SetupStrata(props: Props) {
             form.put(StratumController.update.url({ assessment: props.assessment.id, stratum: editing.id }), options);
         } else {
             form.post(StratumController.store.url(props.assessment.id), options);
+        }
+    };
+    const saveTemplate = () => {
+        const message = props.templateCount > 0 ? t('strata.template.confirmReplace') : t('strata.template.confirm');
+        if (window.confirm(message)) {
+            router.post(StratumController.saveTemplate.url(props.assessment.id), {}, { preserveScroll: true });
         }
     };
     const remove = (stratum: StratumRow) => {
@@ -110,6 +125,20 @@ export default function SetupStrata(props: Props) {
                                                         <span className="ml-2 rounded-sm bg-parchment px-1.5 py-0.5 text-[0.7rem] text-charcoal">
                                                             {t('strata.contractor')}
                                                         </span>
+                                                    ) : null}
+                                                    {stratum.jobTitles.length > 0 ? (
+                                                        <p
+                                                            className="mt-1 text-xs leading-relaxed text-muted-foreground"
+                                                            data-testid="stratum-job-titles"
+                                                        >
+                                                            {t('strata.jobTitles.listed', {
+                                                                titles: stratum.jobTitles.join(', '),
+                                                            })}
+                                                        </p>
+                                                    ) : props.canEdit ? (
+                                                        <p className="mt-1 text-xs text-gold-deep">
+                                                            {t('strata.jobTitles.none')}
+                                                        </p>
                                                     ) : null}
                                                 </td>
                                                 <td className="px-2 py-2.5 text-muted-foreground">
@@ -191,6 +220,22 @@ export default function SetupStrata(props: Props) {
                 </Panel>
             </form>
 
+            {props.canSaveTemplate ? (
+                <Panel title={t('strata.template.title')}>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                            {props.templateCount > 0
+                                ? t('strata.template.saved', { count: formatNumber(props.templateCount, locale) })
+                                : t('strata.template.none')}
+                        </p>
+                        <Button type="button" variant="outline" onClick={saveTemplate} data-testid="strata-template">
+                            <BookmarkPlus aria-hidden />
+                            {t('strata.template.save')}
+                        </Button>
+                    </div>
+                </Panel>
+            ) : null}
+
             {props.canEdit ? (
                 <form onSubmit={submit}>
                     <Panel title={editing ? t('strata.editTitle') : t('strata.addTitle')}>
@@ -234,6 +279,23 @@ export default function SetupStrata(props: Props) {
                                     className="sm:max-w-40"
                                 />
                             </Field>
+                            <div className="sm:col-span-2">
+                                <Field
+                                    id="stratum-job-titles"
+                                    label={t('strata.jobTitles.label')}
+                                    hint={t('strata.jobTitles.hint')}
+                                    error={errors.job_titles}
+                                >
+                                    <TextArea
+                                        id="stratum-job-titles"
+                                        value={form.data.job_titles}
+                                        onChange={(e) => form.setData('job_titles', e.target.value)}
+                                        placeholder={t('strata.jobTitles.placeholder')}
+                                        rows={4}
+                                        maxLength={5000}
+                                    />
+                                </Field>
+                            </div>
                             <div className="flex items-center gap-3 sm:col-span-2">
                                 <Checkbox
                                     id="stratum-contractor"

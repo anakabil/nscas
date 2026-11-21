@@ -24,6 +24,7 @@ use App\Services\SelfAssessment\SelfAssessmentAdmin;
 use App\Services\SelfAssessment\SelfAssessmentForm;
 use App\Services\Survey\SurveyService;
 use App\Services\Validation\ValidationService;
+use App\Support\TempFile;
 use Carbon\CarbonImmutable;
 use Database\Seeders\InstrumentVersionSeeder;
 use Illuminate\Console\Command;
@@ -184,7 +185,7 @@ class E2eCycleCommand extends Command
                 $rows[] = ["Pekerja Siklus {$n}", sprintf('SK-%03d', $n), '', '', $project->name, $stratum->code, ''];
             }
         }
-        $path = tempnam(sys_get_temp_dir(), 'e2e-roster-').'.csv';
+        $path = TempFile::path('e2e-roster-', 'csv');
         file_put_contents($path, implode("\n", array_map(fn ($r) => implode(';', $r), $rows))."\n");
         $service = app(RespondentDistribution::class);
         $service->import($assessment, $path, null, true, Role::ClientAdmin);

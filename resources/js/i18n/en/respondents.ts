@@ -40,7 +40,7 @@ export const respondents = {
         },
         import: {
             title: 'Import respondent list',
-            intro: 'Required columns: Name, Unit, and Stratum. Use the template so unit names and stratum codes match this assessment.',
+            intro: 'Required columns: Name, Unit, and Stratum. Stratum may be left empty when the Job title column holds a job title listed on the Strata page. Use the template so unit names and stratum codes match this assessment.',
             template: 'Download Excel template',
             file: 'Respondent file',
             fileHint: 'Excel (.xlsx) or CSV, up to 10 MB and {max} rows.',
@@ -77,6 +77,7 @@ export const respondents = {
             email: 'Email',
             phone: 'Phone',
             unit: 'Unit',
+            jobTitle: 'Job title',
             stratum: 'Stratum',
             contractor: 'Contractor',
         },
@@ -87,6 +88,10 @@ export const respondents = {
             UNIT_OUT_OF_SCOPE: 'This unit is not assigned to you.',
             STRATUM_REQUIRED: 'Stratum is required.',
             STRATUM_NOT_FOUND: 'Stratum code is not registered in this assessment.',
+            JOB_TITLE_NOT_FOUND:
+                'This job title is not listed under any stratum. Fill in the Stratum column, or add the job title on the Strata page.',
+            JOB_TITLE_OTHER_STRATUM:
+                'This job title is listed under a different stratum than the one in the Stratum column. Check one of them.',
             EMAIL_INVALID: 'Invalid email address.',
             PHONE_INVALID: 'Invalid phone number.',
             CONTRACTOR_INVALID: 'Enter Yes or No.',

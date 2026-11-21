@@ -43,7 +43,7 @@ class ReportController extends ReportingStageController
     public function preview(Request $request, Assessment $assessment, string $kind, ReportService $reports): HttpResponse
     {
         $this->pageRoles($request, $assessment, 'report');
-        $locale = $request->query('locale') === 'en' ? 'en' : 'id';
+        $locale = $request->validate(['locale' => ['nullable', 'in:id,en']])['locale'] ?? 'id';
         $content = $reports->content($assessment, $kind, $locale);
         abort_if($content === null, 404);
 

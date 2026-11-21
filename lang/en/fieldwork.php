@@ -25,6 +25,7 @@ return [
     'results' => ['MEETS' => 'Met', 'PARTIAL' => 'Partly met', 'NOT_MET' => 'Not met', 'NOT_OBSERVED' => 'Could not be checked'],
     'methods' => ['DOCUMENT' => 'Check documents', 'OBSERVE' => 'Observe', 'ASK' => 'Ask workers'],
     'print' => [
+        'contentInIndonesian' => 'The field guide material is currently available in Indonesian.',
         'title' => ':type guide',
         'session' => 'Session',
         'date' => 'Date',

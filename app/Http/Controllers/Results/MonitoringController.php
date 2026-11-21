@@ -33,7 +33,7 @@ class MonitoringController extends MonitoringStageController
             'canVerify' => $open && $this->assessor($roles) !== null,
             'canReview' => $assessment->status === AssessmentStatus::Monitoring && $this->assessor($roles) !== null,
             'open' => $open,
-            'monitoring' => $plans->monitoring($assessment, RespondentScope::units($request->user(), $assessment, $roles), now()),
+            'monitoring' => $plans->monitoring($assessment, RespondentScope::units($request->user(), $assessment, $roles, Resource::ActionPlans), now()),
         ]);
     }
 
@@ -46,7 +46,7 @@ class MonitoringController extends MonitoringStageController
             'progress' => ['required', 'integer', 'between:0,100'],
             'status' => ['required', Rule::in(ActionPlanRules::UPDATE_STATUSES)],
         ]);
-        $plans->addProgress($assessment, $request->user(), $actor, RespondentScope::units($request->user(), $assessment, $roles), $action, trim($data['note']), (int) $data['progress'], $data['status']);
+        $plans->addProgress($assessment, $request->user(), $actor, RespondentScope::units($request->user(), $assessment, $roles, Resource::ActionPlans, write: true), $action, trim($data['note']), (int) $data['progress'], $data['status']);
 
         return back()->with('status', 'saved');
     }

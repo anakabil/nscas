@@ -129,7 +129,7 @@ export function SetupShell({ module, common, children }: { module: string; commo
                             {notice}
                         </p>
                     ) : null}
-                    {flash?.status && ['saved', 'created', 'transitioned'].includes(flash.status) ? (
+                    {flash?.status && ['saved', 'created', 'transitioned', 'templateSaved'].includes(flash.status) ? (
                         <p
                             role="status"
                             className="rounded-md border border-success/30 bg-success/10 px-4 py-3 text-sm text-success"

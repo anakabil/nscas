@@ -8,6 +8,7 @@ use App\Domain\Setup\ConditionEvaluator;
 use App\Domain\Setup\ConsentTemplate;
 use App\Domain\Setup\DpaStatus;
 use App\Domain\Setup\EditableParameters;
+use App\Domain\Setup\JobTitles;
 use App\Domain\Setup\UnitTree;
 use App\Domain\Setup\UnitType;
 use App\Domain\Workflow\AssessmentStatus;
@@ -36,8 +37,8 @@ final class AssessmentSetup
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Asesmen baru berstatus draf. Pembuatnya menjadi asesor utama asesmen itu, dan lima strata bawaan disiapkan
-     * dengan populasi kosong.
+     * Asesmen baru berstatus draf. Pembuatnya menjadi asesor utama asesmen itu, dan strata disiapkan dengan populasi
+     * kosong: dari templat strata organisasi bila sudah disimpan, selain itu lima strata bawaan instrumen.
      *
      * @param  array{organization_id: string, name: string, scope_type: string, period_start: string, period_end: string, target_level: int, instrument_version_id: string}  $input
      */
@@ -58,17 +59,19 @@ final class AssessmentSetup
                 'created_by' => $actor->id,
                 ...$this->consentTexts($organization, $draft),
             ]);
-            foreach ($draft['defaultStrata'] ?? [] as $stratum) {
+            $template = $organization->strata_template;
+            foreach ($template ?: ($draft['defaultStrata'] ?? []) as $stratum) {
                 $assessment->strata()->create([
                     'code' => $stratum['code'],
                     'name' => $stratum['name'],
                     'group' => $stratum['group'],
                     'is_contractor' => (bool) $stratum['isContractor'],
+                    'job_titles' => JobTitles::parse($stratum['jobTitles'] ?? []),
                     'population' => 0,
                 ]);
             }
             $assessment->team()->create(['user_id' => $actor->id, 'role' => Role::LeadAssessor]);
-            Audit::record('assessment.create', $assessment, ['after' => $input, 'instrumentVersion' => $version->code], actorRole: Role::LeadAssessor);
+            Audit::record('assessment.create', $assessment, ['after' => $input, 'instrumentVersion' => $version->code, 'strataFromTemplate' => (bool) $template], actorRole: Role::LeadAssessor);
 
             return $assessment;
         });
@@ -151,24 +154,26 @@ final class AssessmentSetup
     // Strata
     // -----------------------------------------------------------------------------------------------------------------
 
-    /** @param  array{code: string, name: string, group: string, population: int, is_contractor: bool}  $input */
+    /** @param  array{code: string, name: string, group: string, population: int, is_contractor: bool, job_titles: list<string>}  $input */
     public function createStratum(Assessment $assessment, array $input): void
     {
         DB::transaction(function () use ($assessment, $input) {
             $locked = $this->lockEditable($assessment);
             $this->assertStratumCodeFree($locked, $input['code']);
+            $this->assertJobTitlesFree($locked, $input['job_titles']);
             $stratum = $locked->strata()->create($input);
             $this->invalidateSamplePlan($locked);
             Audit::record('stratum.create', $stratum, ['after' => $input], $locked, Role::LeadAssessor);
         });
     }
 
-    /** @param  array{code: string, name: string, group: string, population: int, is_contractor: bool}  $input */
+    /** @param  array{code: string, name: string, group: string, population: int, is_contractor: bool, job_titles: list<string>}  $input */
     public function updateStratum(Assessment $assessment, Stratum $stratum, array $input): void
     {
         DB::transaction(function () use ($assessment, $stratum, $input) {
             $locked = $this->lockEditable($assessment);
             $this->assertStratumCodeFree($locked, $input['code'], $stratum->id);
+            $this->assertJobTitlesFree($locked, $input['job_titles'], $stratum->id);
             $before = $stratum->only(array_keys($input));
             $stratum->update($input);
             $this->invalidateSamplePlan($locked);
@@ -195,6 +200,28 @@ final class AssessmentSetup
             }
             $this->invalidateSamplePlan($locked);
             Audit::record('stratum.populations', $locked, ['before' => $before, 'after' => $after], actorRole: Role::LeadAssessor);
+        });
+    }
+
+    /**
+     * Menyimpan susunan strata asesmen ini (kode, nama, kelompok, penyedia jasa, dan nama jabatan, tanpa jumlah pekerja)
+     * sebagai templat organisasi. Asesmen baru organisasi itu memakai templat ini. Asesmen ini sendiri tidak berubah,
+     * sehingga boleh dilakukan juga setelah parameter dikunci.
+     */
+    public function saveStrataTemplate(Assessment $assessment, Role $actorRole): void
+    {
+        DB::transaction(function () use ($assessment, $actorRole) {
+            $organization = Organization::whereKey($assessment->organization_id)->lockForUpdate()->firstOrFail();
+            $template = $assessment->strata()->orderBy('code')->get()->map(fn (Stratum $s) => [
+                'code' => $s->code, 'name' => $s->name, 'group' => $s->group->value, 'isContractor' => $s->is_contractor,
+                'jobTitles' => array_values($s->job_titles ?? []),
+            ])->all();
+            if ($template === []) {
+                throw RuleViolation::invalid('stratum', 'TEMPLATE_EMPTY');
+            }
+            $before = $organization->strata_template;
+            $organization->forceFill(['strata_template' => $template])->save();
+            Audit::record('organization.strata_template', $organization, ['before' => $before, 'after' => $template], $assessment, $actorRole);
         });
     }
 
@@ -510,6 +537,24 @@ final class AssessmentSetup
     }
 
     /**
+     * Isian nama jabatan sah, dan satu nama jabatan hanya boleh dipakai satu strata pada asesmen yang sama.
+     *
+     * @param  list<string>  $titles
+     */
+    private function assertJobTitlesFree(Assessment $assessment, array $titles, ?string $except = null): void
+    {
+        $error = JobTitles::error($titles);
+        if ($error !== null) {
+            throw RuleViolation::invalid('job_titles', $error);
+        }
+        $others = $assessment->strata()->when($except, fn ($q) => $q->whereKeyNot($except))->get()
+            ->map(fn (Stratum $s) => array_values($s->job_titles ?? []))->all();
+        if (JobTitles::conflicts($titles, $others) !== []) {
+            throw RuleViolation::invalid('job_titles', 'JOB_TITLE_TAKEN');
+        }
+    }
+
+    /**
      * @param  array<string, mixed>  $draft
      * @return array{consent_text_id: string, consent_text_en: string}
      */
@@ -547,7 +592,7 @@ final class AssessmentSetup
             'samplePlan' => $plan,
             'strata' => $assessment->strata()->get()->map(fn (Stratum $s) => [
                 'id' => $s->id, 'code' => $s->code, 'name' => $s->name, 'group' => $s->group->value,
-                'population' => $s->population, 'isContractor' => $s->is_contractor,
+                'population' => $s->population, 'isContractor' => $s->is_contractor, 'jobTitles' => array_values($s->job_titles ?? []),
             ])->all(),
             'units' => $assessment->units()->orderBy('name')->get()->map(fn (Unit $u) => [
                 'id' => $u->id, 'parentId' => $u->parent_id, 'name' => $u->name, 'type' => $u->type->value,

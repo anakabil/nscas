@@ -123,6 +123,7 @@ export const security = {
         organization: {
             create: 'Organisasi dibuat',
             update: 'Organisasi diubah',
+            strata_template: 'Templat strata organisasi disimpan',
         },
         panel: {
             decision: 'Keputusan panel dicatat',

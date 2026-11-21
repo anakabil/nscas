@@ -139,6 +139,11 @@ export default function ValidationSession(props: Props) {
                 </div>
             </div>
             <FormError message={errors.form} />
+            {s.fieldGuide && locale === 'en' ? (
+                <p className="text-sm text-muted-foreground" data-testid="guide-language-note">
+                    {t('validation.session.field.contentInIndonesian')}
+                </p>
+            ) : null}
 
             {s.fieldGuide?.kind === 'SITE_VISIT' ? <SiteChecklist {...props} guide={s.fieldGuide} /> : null}
 
@@ -278,7 +283,8 @@ function AssessorForm(props: Props) {
                                     {talk ? (
                                         <NativeSelect
                                             aria-label={`${t('validation.session.field.evidence')} ${c.code}`}
-                                            disabled={disabled}
+                                            // Kode hanya tersimpan bersama nilai; tanpa nilai, pilihan kode dinonaktifkan.
+                                            disabled={disabled || value.level === ''}
                                             value={value.evidence}
                                             onChange={(e) =>
                                                 form.setData('ratings', {
@@ -301,7 +307,8 @@ function AssessorForm(props: Props) {
                                     {group ? (
                                         <NativeSelect
                                             aria-label={`${t('validation.session.field.agreement')} ${c.code}`}
-                                            disabled={disabled}
+                                            // Kode hanya tersimpan bersama nilai; tanpa nilai, pilihan kode dinonaktifkan.
+                                            disabled={disabled || value.level === ''}
                                             value={value.agreement}
                                             onChange={(e) =>
                                                 form.setData('ratings', {

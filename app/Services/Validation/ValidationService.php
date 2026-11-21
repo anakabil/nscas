@@ -303,7 +303,7 @@ class ValidationService
                 ->map(fn ($p) => ['id' => $p->id, 'name' => $p->full_name, 'position' => $p->position])->all(),
             'guide' => $guide ? ['intro' => $guide->intro, 'questions' => $guide->questions] : null,
             'ratings' => $mine->map(fn (ValidationRating $r) => ['level' => $r->level, 'note' => $r->note, 'evidence' => $r->evidence_code, 'agreement' => $r->agreement])->all(),
-            'fieldGuide' => FieldGuide::forType($s->type),
+            'fieldGuide' => FieldGuide::forType($s->type, $this->instrumentCodes($assessment)),
             'siteChecks' => SiteVisitCheck::where('validation_session_id', $s->id)->get()
                 ->mapWithKeys(fn (SiteVisitCheck $c) => [$c->item_code => ['result' => $c->result, 'note' => $c->note]])->all(),
         ];
@@ -374,22 +374,22 @@ class ValidationService
             $before = ValidationRating::where('validation_session_id', $session->id)->where('assessor_id', $assessor->id)->get()
                 ->map(fn (ValidationRating $r) => ['characteristic' => $codes[$r->characteristic_id] ?? $r->characteristic_id, 'level' => $r->level, 'note' => $r->note,
                     'evidence' => $r->evidence_code, 'agreement' => $r->agreement])->values()->all();
+            // Kesepakatan kelompok hanya bermakna pada diskusi kelompok terarah; jejak audit mencatat nilai yang disimpan.
+            $agreement = fn (array $r): ?string => $session->type === SessionProposal::FOCUS_GROUP ? ($r['agreement'] ?? null) : null;
             foreach ($ratings as $r) {
                 $match = ['validation_session_id' => $session->id, 'characteristic_id' => $r['characteristicId'], 'assessor_id' => $assessor->id];
                 if ($r['level'] === null) {
                     ValidationRating::where($match)->delete();
                 } else {
                     ValidationRating::updateOrCreate($match, [
-                        'level' => $r['level'], 'note' => $r['note'], 'evidence_code' => $r['evidence'] ?? null,
-                        // Kesepakatan kelompok hanya bermakna pada diskusi kelompok terarah.
-                        'agreement' => $session->type === SessionProposal::FOCUS_GROUP ? ($r['agreement'] ?? null) : null,
+                        'level' => $r['level'], 'note' => $r['note'], 'evidence_code' => $r['evidence'] ?? null, 'agreement' => $agreement($r),
                     ]);
                 }
             }
             Audit::record('validation.rating_save', $session, [
                 'before' => $before,
                 'after' => array_values(array_map(fn (array $r) => ['characteristic' => $codes[$r['characteristicId']], 'level' => $r['level'], 'note' => $r['note'],
-                    'evidence' => $r['evidence'] ?? null, 'agreement' => $r['agreement'] ?? null], array_filter($ratings, fn (array $r) => $r['level'] !== null))),
+                    'evidence' => $r['evidence'] ?? null, 'agreement' => $agreement($r)], array_filter($ratings, fn (array $r) => $r['level'] !== null))),
             ], $locked, $actorRole);
         });
     }
@@ -402,7 +402,7 @@ class ValidationService
      */
     public function saveSiteChecks(Assessment $assessment, User $user, Role $actorRole, string $sessionId, array $checks): void
     {
-        $items = FieldGuide::siteItems();
+        $items = FieldGuide::siteItems($this->instrumentCodes($assessment));
         foreach ($checks as $c) {
             if (! array_key_exists($c['itemCode'], $items) || ($c['result'] !== null && ! in_array($c['result'], FieldCoding::SITE_RESULTS, true))) {
                 throw RuleViolation::invalid('checks', 'INVALID_CODE');
@@ -418,12 +418,16 @@ class ValidationService
                 throw RuleViolation::invalid('checks', 'NOT_SITE_VISIT');
             }
             $characteristics = Characteristic::where('instrument_version_id', $locked->instrument_version_id)->pluck('id', 'code');
-            $changed = [];
+            $before = [];
+            $after = [];
             foreach ($checks as $c) {
                 $match = ['validation_session_id' => $session->id, 'item_code' => $c['itemCode']];
+                $row = SiteVisitCheck::where($match)->first();
                 if ($c['result'] === null) {
-                    if (SiteVisitCheck::where($match)->delete() > 0) {
-                        $changed[] = ['item' => $c['itemCode'], 'result' => null];
+                    if ($row !== null) {
+                        $before[] = ['item' => $c['itemCode'], 'result' => $row->result, 'note' => $row->note];
+                        $after[] = ['item' => $c['itemCode'], 'result' => null, 'note' => null];
+                        $row->delete();
                     }
 
                     continue;
@@ -432,17 +436,24 @@ class ValidationService
                 if ($characteristicId === null) {
                     throw RuleViolation::invalid('checks', 'UNKNOWN_ITEM');
                 }
-                $row = SiteVisitCheck::firstOrNew($match);
-                if ($row->exists && $row->result === $c['result'] && $row->note === $c['note']) {
+                if ($row !== null && $row->result === $c['result'] && $row->note === $c['note']) {
                     continue;
                 }
+                $before[] = ['item' => $c['itemCode'], 'result' => $row?->result, 'note' => $row?->note];
+                $row ??= new SiteVisitCheck($match);
                 $row->fill(['characteristic_id' => $characteristicId, 'result' => $c['result'], 'note' => $c['note'], 'checked_by' => $user->id])->save();
-                $changed[] = ['item' => $c['itemCode'], 'result' => $c['result'], 'note' => $c['note']];
+                $after[] = ['item' => $c['itemCode'], 'result' => $c['result'], 'note' => $c['note']];
             }
-            if ($changed !== []) {
-                Audit::record('validation.site_check', $session, ['after' => $changed], $locked, $actorRole);
+            if ($after !== []) {
+                Audit::record('validation.site_check', $session, ['before' => $before, 'after' => $after], $locked, $actorRole);
             }
         });
+    }
+
+    /** @return list<string> kode karakteristik instrumen asesmen */
+    private function instrumentCodes(Assessment $assessment): array
+    {
+        return Characteristic::where('instrument_version_id', $assessment->instrument_version_id)->pluck('code')->map(fn ($c) => (string) $c)->values()->all();
     }
 
     /**

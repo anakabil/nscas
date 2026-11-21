@@ -53,7 +53,7 @@ Hasil NSCAS adalah pengukuran internal, bukan sertifikat. Daftar ini tidak mengg
 | K10 | Validasi masukan di server | Form Request atau `$request->validate()` di setiap pengendali yang menerima data | Tinjauan kode, tes validasi per modul | Terpenuhi |
 | K11 | Kebijakan keamanan konten dan header | CSP dengan nonce tanpa skrip pihak ketiga, `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `nosniff`, HSTS, `Permissions-Policy` (`SecurityHeaders`); berita acara dan laporan HTML disajikan dengan CSP tanpa skrip | `SecurityHeadersTest` | Terpenuhi |
 | K12 | Injeksi rumus pada ekspor | Sel CSV jejak audit yang diawali `=`, `+`, `-`, `@`, tab, atau carriage return diberi awalan kutip tunggal (`App\Domain\Audit\AuditCsv`) | `AuditCsvTest`, `AuditRetentionTest` | Terpenuhi |
-| K13 | Unggahan berkas | Jenis diperiksa dari isi, batas 25 MB, SHA-256 dihitung server, URL unggah dan unduh bertanda tangan berumur pendek, bucket privat | Tes bukti dan observasi | Terpenuhi |
+| K13 | Unggahan berkas | Jenis diperiksa dari isi, batas 25 MB, SHA-256 dihitung server, URL unggah dan unduh bertanda tangan berumur pendek, bucket privat. Sejak audit 21 November 2026, unggahan langsung ke penyimpanan objek dipindahkan dulu ke kunci akhir yang tidak pernah diberikan ke peramban, lalu kunci itu yang diperiksa dan dirujuk, sehingga URL unggah yang masih berlaku tidak dapat menimpa berkas yang sudah tercatat | Tes bukti dan observasi, `SealedUploadTest` | Terpenuhi |
 
 ### 3.4 Pustaka dan analisis kode
 
@@ -67,7 +67,7 @@ Hasil NSCAS adalah pengukuran internal, bukan sertifikat. Daftar ini tidak mengg
 | No | Kendali | Penerapan | Bukti | Status |
 |---|---|---|---|---|
 | K16 | Anonimitas jawaban survei | Tabel jawaban tanpa token, daftar responden, alamat IP, atau waktu kirim presisi; baris diacak setiap malam | `tests/Feature/Survey` | Terpenuhi |
-| K17 | Sel kecil disembunyikan | Kelompok dengan kurang dari 5 responden disembunyikan di dasbor, ekspor, dan laporan | Tes hasil dan laporan | Terpenuhi |
+| K17 | Sel kecil disembunyikan | Kelompok dengan kurang dari 5 responden disembunyikan di dasbor, ekspor, dan laporan, termasuk jumlah respondennya. Sejak audit 21 November 2026 ada penyembunyian pelengkap (`App\Domain\Results\CellSuppression`, dibawa dari v1): bila agregat sekelompok sel diterbitkan, satu sel tersembunyi tidak dapat dihitung balik. Koordinator unit tidak menerima agregat seluruh organisasi per strata | `CellSuppressionTest`, tes hasil dan laporan | Terpenuhi |
 | K18 | Enkripsi kolom data pribadi | Surel dan nomor telepon responden, surel penilai mandiri, dan surel penanggung jawab aksi memakai enkripsi Laravel (AES-256-CBC dengan HMAC-SHA256, kunci `APP_KEY`); rahasia TOTP dan kode pemulihan dienkripsi Fortify | Model `RosterEntry`, `SelfAssessment`, `ActionItem` | Terpenuhi |
 | K19 | Masa simpan dan pemusnahan | Masa simpan bawaan 36 bulan sejak laporan lengkap final ditandatangani (atau sejak hasil ditetapkan). Tugas mingguan menandai dan memberi tahu pengelola sistem; pemusnahan setelah konfirmasi tertulis klien, dengan berita acara PDF yang tidak dapat diubah | `AuditRetentionTest`, `RetentionRulesTest` | Terpenuhi |
 | K20 | Minimisasi data pada laporan dan jejak | Laporan tanpa nama narasumber; surel yang dicoba saat gagal masuk tetapi tidak terdaftar hanya disimpan sebagai HMAC; administrator klien melihat jejak audit tanpa isi perubahan | `ReportTest`, `SessionSecurityTest`, `AuditRetentionTest` | Terpenuhi |

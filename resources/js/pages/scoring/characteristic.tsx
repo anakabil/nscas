@@ -27,7 +27,7 @@ type Workspace = {
         survey?: number | null;
         answered?: number;
         dontKnowShare?: number | null;
-        groups?: Record<Group, { value: number | null; n: number; suppressed: boolean }>;
+        groups?: Record<Group, { value: number | null; n: number | null; suppressed: boolean }>;
         selfAssessment?: { mean: number | null; n: number };
     };
     evidence: { id: string; title: string; fileName: string; version: number; unit: string | null; url: string }[];
@@ -385,12 +385,15 @@ function TriangulationPanel({ c }: { c: Workspace }) {
             <ul className="space-y-1.5 text-sm text-charcoal" data-testid="workspace-triangulation">
                 {tri.talks.n > 0 && tri.talks.mean !== null ? (
                     <li>
-                        {t('scoringItem.validation.talks', { count: tri.talks.n, mean: formatNumber(tri.talks.mean, locale, 2) })}
+                        {t('scoringItem.validation.talks', {
+                            count: formatNumber(tri.talks.n, locale),
+                            mean: formatNumber(tri.talks.mean, locale, 2),
+                        })}
                         .{' '}
                         {t('scoringItem.validation.evidenceMix', {
-                            consistent: tri.talks.evidence.CONSISTENT,
-                            partial: tri.talks.evidence.PARTIAL,
-                            none: tri.talks.evidence.NONE,
+                            consistent: formatNumber(tri.talks.evidence.CONSISTENT, locale),
+                            partial: formatNumber(tri.talks.evidence.PARTIAL, locale),
+                            none: formatNumber(tri.talks.evidence.NONE, locale),
                         })}
                     </li>
                 ) : null}
@@ -398,7 +401,7 @@ function TriangulationPanel({ c }: { c: Workspace }) {
                     {tri.site.index !== null
                         ? t('scoringItem.validation.siteIndex', {
                               index: formatNumber(tri.site.index, locale, 2),
-                              count: checked,
+                              count: formatNumber(checked, locale),
                           })
                         : t('scoringItem.validation.siteNone')}
                 </li>
@@ -407,7 +410,7 @@ function TriangulationPanel({ c }: { c: Workspace }) {
             {c.siteChecks.length > 0 ? (
                 <details className="text-sm">
                     <summary className="cursor-pointer text-xs font-medium text-gold-deep select-none">
-                        {t('scoringItem.validation.siteItems')} ({c.siteChecks.length})
+                        {t('scoringItem.validation.siteItems')} ({formatNumber(c.siteChecks.length, locale)})
                     </summary>
                     <ul className="mt-2 divide-y divide-border">
                         {c.siteChecks.map((s, i) => (

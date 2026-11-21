@@ -71,7 +71,8 @@ final class SurveyService
             'closesAt' => $assessment->survey_closes_at?->toIso8601String(),
             'needsStratum' => $token->stratum_id === null,
             'strata' => $token->stratum_id === null
-                ? Stratum::where('assessment_id', $assessment->id)->orderBy('code')->get(['id', 'name'])->map(fn (Stratum $s) => ['id' => $s->id, 'name' => $s->name])->all()
+                ? Stratum::where('assessment_id', $assessment->id)->orderBy('code')->get(['id', 'name', 'job_titles'])
+                    ->map(fn (Stratum $s) => ['id' => $s->id, 'name' => $s->name, 'jobTitles' => array_values($s->job_titles ?? [])])->all()
                 : [],
             'characteristics' => array_map(fn (array $c) => [
                 'id' => $c['id'],

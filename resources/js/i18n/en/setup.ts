@@ -26,6 +26,7 @@ export const setup = {
         published: 'The action plan has been published.',
         signed: 'The report has been signed.',
         transitioned: 'Assessment status changed.',
+        templateSaved: 'The strata layout was saved as the organisation template.',
     },
     shell: {
         navTitle: 'Stage 1. Planning',
@@ -104,6 +105,21 @@ export const setup = {
         populationMissing: 'Number of workers not filled in',
         empty: 'No strata yet.',
         sampleNote: 'Changing strata or numbers of workers invalidates the saved sample calculator result.',
+        jobTitles: {
+            label: 'Job titles in the organisation',
+            hint: 'One title per line or separated by commas. Respondents see them as examples when choosing their job group, and the Job title column of the respondent list import is matched against them. Each job title can belong to one stratum only.',
+            placeholder: 'Example: Site Manager, Site Engineer, OSH Supervisor',
+            listed: 'Job titles: {titles}',
+            none: 'Organisation job titles not filled in yet',
+        },
+        template: {
+            title: 'Organisation strata template',
+            none: 'No template yet. Save this strata layout so the next assessment for the same organisation starts with the same strata names and job titles.',
+            saved: 'The organisation template holds {count} strata and is used automatically when a new assessment is created. Worker numbers are not saved.',
+            save: 'Save as template',
+            confirm: 'Save this strata layout as the organisation template?',
+            confirmReplace: 'The existing organisation template will be replaced with this strata layout. Continue?',
+        },
     },
     parameters: {
         intro: 'Adjust them if needed before the assessment is locked. After locking, the values cannot be changed.',

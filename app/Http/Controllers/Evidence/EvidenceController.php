@@ -32,7 +32,7 @@ class EvidenceController extends CollectionController
     {
         $roles = $this->pageRoles($request, $assessment, 'evidence');
         $assessor = in_array(Role::LeadAssessor, $roles, true) || in_array(Role::Assessor, $roles, true);
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations);
         $units = Unit::where('assessment_id', $assessment->id)->get(['id', 'parent_id', 'name']);
         $flat = UnitTree::flatten($units->map(fn (Unit $u) => ['id' => $u->id, 'parentId' => $u->parent_id, 'name' => $u->name])->all());
 
@@ -73,7 +73,7 @@ class EvidenceController extends CollectionController
             'supersedesId' => ['nullable', 'string', 'max:64'],
         ]);
 
-        return response()->json($evidence->requestUpload($assessment, $request->user(), RespondentScope::units($request->user(), $assessment, $roles), [
+        return response()->json($evidence->requestUpload($assessment, $request->user(), RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations, write: true), [
             'fileName' => trim($data['fileName']),
             'size' => (int) $data['size'],
             'contentType' => (string) ($data['contentType'] ?? ''),
@@ -96,7 +96,7 @@ class EvidenceController extends CollectionController
         $item = $evidence->finalize(
             $assessment,
             $request->user(),
-            RespondentScope::units($request->user(), $assessment, $roles),
+            RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations, write: true),
             $actor,
             $data['ticket'],
             isset($data['links']) ? $this->normalizeLinks($data['links']) : null,
@@ -110,7 +110,7 @@ class EvidenceController extends CollectionController
         $roles = $this->pageRoles($request, $assessment, 'evidence');
         $actor = $this->writerFor($roles, Resource::EvidenceAndObservations);
         $data = $request->validate($this->linkRules(nullable: false));
-        $evidence->updateLinks($assessment, RespondentScope::units($request->user(), $assessment, $roles), $actor, $item, $this->normalizeLinks($data['links'] ?? []));
+        $evidence->updateLinks($assessment, RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations, write: true), $actor, $item, $this->normalizeLinks($data['links'] ?? []));
 
         return back()->with('status', 'saved');
     }
@@ -119,7 +119,7 @@ class EvidenceController extends CollectionController
     {
         $roles = $this->pageRoles($request, $assessment, 'evidence');
         $actor = $this->writerFor($roles, Resource::EvidenceAndObservations);
-        $evidence->delete($assessment, RespondentScope::units($request->user(), $assessment, $roles), $actor, $item);
+        $evidence->delete($assessment, RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations, write: true), $actor, $item);
 
         return back()->with('status', 'saved');
     }
@@ -128,7 +128,7 @@ class EvidenceController extends CollectionController
     public function download(Request $request, Assessment $assessment, string $item, EvidenceService $evidence, ObjectStore $store): HttpResponse
     {
         $roles = $this->pageRoles($request, $assessment, 'evidence');
-        $found = $evidence->forDownload($assessment, RespondentScope::units($request->user(), $assessment, $roles), $item);
+        $found = $evidence->forDownload($assessment, RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations), $item);
         abort_if($found === null, 404);
 
         return $store->download($found->storage_key, $found->file_name, $found->mime_type, $request->boolean('inline'));

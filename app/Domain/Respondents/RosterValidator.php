@@ -13,11 +13,15 @@ use Normalizer;
  *
  * Daftar responden mencakup semua orang yang bekerja di bawah tanggung jawab organisasi: pekerja sendiri, alih daya,
  * harian, dan subkontraktor (docs/13 bagian 3.5).
+ *
+ * Kolom Jabatan bersifat pilihan. Bila kolom Strata kosong, strata ditentukan dari daftar nama jabatan organisasi
+ * pada setiap strata. Nama jabatan hanya dipakai untuk pemetaan ini dan tidak ikut disimpan.
  */
 final class RosterValidator
 {
-    public const COLUMNS = ['name', 'employeeNo', 'email', 'phone', 'unit', 'stratum', 'contractor'];
+    public const COLUMNS = ['name', 'employeeNo', 'email', 'phone', 'unit', 'jobTitle', 'stratum', 'contractor'];
 
+    /** Kolom wajib. Strata dianggap ada bila kolom Strata atau kolom Jabatan ditemukan. */
     public const REQUIRED = ['name', 'unit', 'stratum'];
 
     public const MAX_ROWS = 20_000;
@@ -29,6 +33,7 @@ final class RosterValidator
         'email' => 'Surel',
         'phone' => 'Telepon',
         'unit' => 'Unit',
+        'jobTitle' => 'Jabatan',
         'stratum' => 'Strata',
         'contractor' => 'Penyedia jasa',
     ];
@@ -40,6 +45,7 @@ final class RosterValidator
         'email' => ['surel', 'alamat surel', 'email', 'e-mail', 'e mail'],
         'phone' => ['telepon', 'nomor telepon', 'nomor ponsel', 'phone', 'phone number', 'no hp', 'hp'],
         'unit' => ['unit', 'nama unit', 'unit name'],
+        'jobTitle' => ['jabatan', 'nama jabatan', 'posisi', 'job title', 'position'],
         'stratum' => ['strata', 'kode strata', 'stratum', 'stratum code'],
         'contractor' => ['penyedia jasa', 'status penyedia jasa', 'pekerja penyedia jasa', 'contractor'],
     ];
@@ -72,7 +78,12 @@ final class RosterValidator
             }
         }
 
-        return ['columns' => $columns, 'missing' => array_values(array_diff(self::REQUIRED, array_keys($columns)))];
+        $present = array_keys($columns);
+        if (isset($columns['jobTitle'])) {
+            $present[] = 'stratum';
+        }
+
+        return ['columns' => $columns, 'missing' => array_values(array_diff(self::REQUIRED, $present))];
     }
 
     /** Nomor telepon dinormalkan ke format internasional (+62...). Null bila tidak sah. */
@@ -112,9 +123,10 @@ final class RosterValidator
      * @param  list<string>  $existingEmployeeNos  Nomor induk yang sudah terdaftar, huruf kecil.
      * @param  list<string>  $existingEmails  Kunci surel yang sudah terdaftar, dibentuk dengan $emailKey.
      * @param  (\Closure(string): string)|null  $emailKey  Pembentuk kunci pembanding surel (huruf kecil); bawaan surel itu sendiri.
+     * @param  array<string, array{id: string, isContractor: bool}>  $jobTitles  Kunci normalizeKey(nama jabatan) => strata.
      * @return array{missingColumns: list<string>, totalRows: int, tooManyRows: bool, valid: list<array<string, mixed>>, errors: list<array{row: int, column: string|null, code: string}>}
      */
-    public static function validate(array $rows, array $units, array $strata, ?array $unitScope, array $existingEmployeeNos, array $existingEmails, ?\Closure $emailKey = null): array
+    public static function validate(array $rows, array $units, array $strata, ?array $unitScope, array $existingEmployeeNos, array $existingEmails, ?\Closure $emailKey = null, array $jobTitles = []): array
     {
         $emailKey ??= static fn (string $email): string => $email;
         $header = $rows[0] ?? [];
@@ -167,11 +179,18 @@ final class RosterValidator
 
             $stratumKey = $cell($cells, 'stratum');
             $stratum = $stratumKey === '' ? null : ($strata[self::normalizeKey($stratumKey)] ?? null);
-            if ($stratumKey === '') {
-                $add('stratum', 'STRATUM_REQUIRED');
-            } elseif ($stratum === null) {
+            $title = $cell($cells, 'jobTitle');
+            $byTitle = $title === '' ? null : ($jobTitles[self::normalizeKey($title)] ?? null);
+            if ($stratumKey !== '' && $stratum === null) {
                 $add('stratum', 'STRATUM_NOT_FOUND');
+            } elseif ($stratumKey === '' && $title === '') {
+                $add('stratum', 'STRATUM_REQUIRED');
+            } elseif ($stratumKey === '' && $byTitle === null) {
+                $add('jobTitle', 'JOB_TITLE_NOT_FOUND');
+            } elseif ($stratum !== null && $byTitle !== null && $byTitle['id'] !== $stratum['id']) {
+                $add('jobTitle', 'JOB_TITLE_OTHER_STRATUM');
             }
+            $stratum ??= $byTitle;
 
             $employeeNo = $cell($cells, 'employeeNo');
             $employeeNo = $employeeNo === '' ? null : $employeeNo;

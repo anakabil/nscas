@@ -8,6 +8,7 @@ use App\Models\SiteVisitCheck;
 use App\Models\ValidationParticipant;
 use App\Models\ValidationRating;
 use App\Models\ValidationSession;
+use App\Support\TempFile;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
@@ -24,7 +25,7 @@ final class ValidationExport
     {
         $t = fn (string $key) => __("fieldwork.{$key}", [], $locale);
         $col = fn (string $key) => $t("columns.{$key}");
-        $path = tempnam(sys_get_temp_dir(), 'nscas-validation-').'.xlsx';
+        $path = TempFile::path('nscas-validation-', 'xlsx');
         $head = (new Style)->setFontBold()->setFontColor('FFFFFF')->setBackgroundColor('691B2E');
         $writer = new Writer;
         $writer->openToFile($path);
@@ -51,7 +52,9 @@ final class ValidationExport
 
         $writer->addNewSheetAndMakeItCurrent()->setName($t('sheets.codes'));
         $writer->addRow(Row::fromValues(array_map($col, ['session', 'type', 'layer', 'characteristic', 'assessor', 'level', 'evidence', 'agreement', 'note']), $head));
-        $ratings = ValidationRating::whereIn('validation_session_id', $sessions->pluck('id'))->orderBy('created_at')->get();
+        // Lembar kode dan kunjungan hanya memuat sesi yang tidak dibatalkan, sama dengan ringkasan triangulasi.
+        $active = $sessions->filter(fn (ValidationSession $s) => $s->status !== 'CANCELLED')->pluck('id');
+        $ratings = ValidationRating::whereIn('validation_session_id', $active)->orderBy('created_at')->get();
         $assessors = $ratings->pluck('assessor_id')->unique()->values()->flip()->map(fn ($i) => 'A'.($i + 1));
         $bySession = $sessions->keyBy('id');
         foreach ($ratings->sortBy(fn ($r) => [$bySession[$r->validation_session_id]->label, $code[$r->characteristic_id] ?? '']) as $r) {
@@ -71,7 +74,7 @@ final class ValidationExport
                 $items[$item['code']] = ['method' => $section['method'], 'text' => $item['text'], 'characteristic' => $item['characteristic']];
             }
         }
-        $checks = SiteVisitCheck::whereIn('validation_session_id', $sessions->pluck('id'))->orderBy('item_code')->get();
+        $checks = SiteVisitCheck::whereIn('validation_session_id', $active)->orderBy('item_code')->get();
         foreach ($checks->sortBy(fn ($c) => [$bySession[$c->validation_session_id]->label, $c->item_code]) as $c) {
             $s = $bySession[$c->validation_session_id];
             $item = $items[$c->item_code] ?? ['method' => null, 'text' => null, 'characteristic' => $code[$c->characteristic_id] ?? ''];

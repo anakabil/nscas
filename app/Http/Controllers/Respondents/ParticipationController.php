@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Respondents;
 
+use App\Domain\Access\Resource;
 use App\Domain\Setup\UnitTree;
 use App\Models\Assessment;
 use App\Services\Respondents\ParticipationReport;
@@ -19,7 +20,7 @@ class ParticipationController extends CollectionController
     public function index(Request $request, Assessment $assessment): Response
     {
         $roles = $this->pageRoles($request, $assessment, 'participation');
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::TokensAndParticipation);
         $report = ParticipationReport::for($assessment, $scope);
         // Urutan pohon unit (induk lalu anaknya) beserta kedalamannya untuk tampilan bertingkat.
         $byId = array_column($report['summary']['units'], null, 'unitId');

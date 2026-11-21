@@ -40,7 +40,7 @@ export const respondents = {
         },
         import: {
             title: 'Impor daftar responden',
-            intro: 'Kolom wajib: Nama, Unit, dan Strata. Pakai templat agar nama unit dan kode strata sesuai dengan asesmen ini.',
+            intro: 'Kolom wajib: Nama, Unit, dan Strata. Strata boleh dikosongkan bila kolom Jabatan berisi nama jabatan yang terdaftar di halaman Strata. Pakai templat agar nama unit dan kode strata sesuai dengan asesmen ini.',
             template: 'Unduh templat Excel',
             file: 'Berkas daftar responden',
             fileHint: 'Excel (.xlsx) atau CSV, paling besar 10 MB dan {max} baris.',
@@ -77,6 +77,7 @@ export const respondents = {
             email: 'Surel',
             phone: 'Telepon',
             unit: 'Unit',
+            jobTitle: 'Jabatan',
             stratum: 'Strata',
             contractor: 'Penyedia jasa',
         },
@@ -87,6 +88,10 @@ export const respondents = {
             UNIT_OUT_OF_SCOPE: 'Unit ini bukan unit yang ditugaskan kepada Anda.',
             STRATUM_REQUIRED: 'Strata wajib diisi.',
             STRATUM_NOT_FOUND: 'Kode strata tidak terdaftar di asesmen ini.',
+            JOB_TITLE_NOT_FOUND:
+                'Nama jabatan tidak terdaftar pada strata mana pun. Isi kolom Strata, atau tambahkan nama jabatan ini di halaman Strata.',
+            JOB_TITLE_OTHER_STRATUM:
+                'Nama jabatan ini terdaftar pada strata lain daripada isian kolom Strata. Periksa salah satunya.',
             EMAIL_INVALID: 'Alamat surel tidak sah.',
             PHONE_INVALID: 'Nomor telepon tidak sah.',
             CONTRACTOR_INVALID: 'Isi Ya atau Tidak.',

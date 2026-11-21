@@ -11,10 +11,15 @@ namespace App\Domain\Validation;
  *
  * Indeks kunjungan = (Sesuai + 0,5 x Sebagian) / butir yang dapat diperiksa, 0 sampai 1. Nilai sesi dinormalkan ke
  * 0 sampai 1 dengan (nilai - 1) / 4. Sumber dianggap perlu dibahas bila selisih keduanya paling sedikit 0,40.
+ * Nilai sesi yang diringkas hanya dari wawancara dan diskusi kelompok; nilai yang diberikan pada sesi kunjungan proyek
+ * sudah terwakili lembar kerjanya, sehingga tidak dihitung dua kali.
  */
 final class Triangulation
 {
     public const DIVERGENCE = 0.40;
+
+    /** Jenis sesi yang dihitung sebagai sumber cerita (wawancara dan diskusi). */
+    public const TALK_TYPES = [SessionProposal::INTERVIEW, SessionProposal::FOCUS_GROUP];
 
     /**
      * @param  list<string>  $codes  kode karakteristik berurutan
@@ -26,7 +31,7 @@ final class Triangulation
     {
         $out = [];
         foreach ($codes as $code) {
-            $own = array_values(array_filter($ratings, fn (array $r) => $r['code'] === $code));
+            $own = array_values(array_filter($ratings, fn (array $r) => $r['code'] === $code && in_array($r['type'], self::TALK_TYPES, true)));
             $site = array_values(array_filter($checks, fn (array $c) => $c['code'] === $code));
             $talkMean = $own === [] ? null : array_sum(array_column($own, 'level')) / count($own);
             $byLayer = [];
@@ -40,7 +45,7 @@ final class Triangulation
                     'mean' => $talkMean,
                     'byLayer' => array_map(fn (array $levels) => array_sum($levels) / count($levels), $byLayer),
                     'evidence' => self::count(array_column($own, 'evidence'), FieldCoding::EVIDENCE),
-                    'agreement' => self::count(array_column(array_filter($own, fn (array $r) => $r['type'] === 'FOCUS_GROUP'), 'agreement'), FieldCoding::AGREEMENT),
+                    'agreement' => self::count(array_column(array_filter($own, fn (array $r) => $r['type'] === SessionProposal::FOCUS_GROUP), 'agreement'), FieldCoding::AGREEMENT),
                 ],
                 'site' => [
                     'counts' => self::count(array_column($site, 'result'), FieldCoding::SITE_RESULTS),

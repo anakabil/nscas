@@ -146,6 +146,29 @@ class ObjectStore
         return ['size' => $total, 'sha256' => hash_final($hash), 'head' => $head];
     }
 
+    /**
+     * Memindahkan objek yang baru diunggah langsung ke penyimpanan objek ke kunci akhir yang tidak pernah diberikan ke
+     * peramban. URL PUT bertanda tangan tidak dapat dicabut sampai kedaluwarsa, sehingga tanpa langkah ini berkas yang
+     * sudah diperiksa dapat ditimpa dengan isi lain. Unggahan ulang ke kunci lama hanya membuat objek yatim yang tidak
+     * dirujuk catatan mana pun. Null bila objek tidak ada atau gagal disalin.
+     */
+    public function seal(string $key): ?string
+    {
+        $disk = $this->disk();
+        $extension = pathinfo($key, PATHINFO_EXTENSION);
+        $final = dirname($key).'/'.bin2hex(random_bytes(16)).($extension !== '' ? ".{$extension}" : '');
+        try {
+            if (! $disk->exists($key) || ! $disk->copy($key, $final)) {
+                return null;
+            }
+        } catch (\Throwable) {
+            return null;
+        }
+        $this->delete($key);
+
+        return $final;
+    }
+
     public function delete(string $key): void
     {
         try {

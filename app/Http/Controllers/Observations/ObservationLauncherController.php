@@ -31,7 +31,7 @@ class ObservationLauncherController extends Controller
             if (! Permissions::canWrite($roles, Resource::EvidenceAndObservations)) {
                 continue;
             }
-            $scope = RespondentScope::units($user, $assessment, $roles);
+            $scope = RespondentScope::units($user, $assessment, $roles, Resource::EvidenceAndObservations, write: true);
             $windows = ObservationWindow::where('assessment_id', $assessment->id)->where('opens_at', '<=', $now)->where('closes_at', '>', $now)
                 ->when($scope !== null, fn ($q) => $q->whereIn('unit_id', $scope))->with('unit:id,name')->orderBy('closes_at')->get();
             foreach ($windows as $window) {

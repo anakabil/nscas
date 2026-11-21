@@ -62,6 +62,10 @@ Tanda: B = baca, U = ubah, X = tidak ada akses.
 
 SUPER_ADMIN tidak dapat melihat daftar responden dan jawaban mentah agar pengelola sistem tidak dapat menghubungkan identitas dengan jawaban.
 
+Catatan "unitnya" berlaku per sumber daya (`App\Domain\Access\Permissions::unitRestricted`): akses dibatasi ke unit koordinator bila setiap peran yang memberi hak atas sumber daya itu adalah UNIT_COORDINATOR. Peran lain yang tidak memberi hak atas sumber daya tersebut, misalnya EXECUTIVE_VIEWER pada daftar responden, tidak melonggarkan batas unit. Pada dasbor hasil, koordinator unit hanya menerima peta unitnya; peta strata, selisih persepsi, dan partisipasi per strata seluruh organisasi tidak dikirim (audit 21 November 2026, sama dengan v1).
+
+Nama jabatan organisasi pada setiap strata hanya membantu responden memilih kelompok jabatan dan memetakan impor daftar responden. Nama jabatan tidak disimpan pada daftar responden maupun jawaban survei, sehingga tidak menambah data pribadi dan tidak mempersempit sel jawaban.
+
 Seluruh pemeriksaan dilakukan di server melalui `App\Support\AssessmentAccess::require($user, $assessment, $resource, $mode)`; matriksnya ada di `App\Domain\Access\Permissions`. Pengguna tanpa peran pada sebuah asesmen menerima 404 agar keberadaan asesmen organisasi lain tidak terungkap. Tes wajib mencakup upaya akses lintas organisasi dan lintas unit yang harus ditolak.
 
 ## 3. Autentikasi

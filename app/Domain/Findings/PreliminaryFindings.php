@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Findings;
 
+use App\Domain\Results\CellSuppression;
+
 /**
  * Temuan awal (docs/12 temuan T4): gambaran deskriptif tanpa tingkat, disusun sebelum validasi lapangan agar wawancara
  * dan diskusi kelompok terarah diarahkan oleh data (rancangan campuran berurutan, temuan T1). Isinya rata-rata survei
@@ -62,14 +64,13 @@ final class PreliminaryFindings
             }
             $answered = $total - $dontKnow;
             $overall = self::weighted($byStratum, $population);
-            $groups = [];
+            $raw = [];
             foreach (self::GROUPS as $g) {
                 $own = array_filter($byStratum, fn ($_, string $sid) => ($groupOf[$sid] ?? null) === $g, ARRAY_FILTER_USE_BOTH);
-                $n = array_sum(array_map('count', $own));
-                $value = self::weighted($own, $population);
-                $groups[$g] = ['value' => $n >= $minCell ? $value : null, 'n' => $n, 'suppressed' => $n < $minCell];
+                $raw[$g] = ['value' => self::weighted($own, $population), 'n' => array_sum(array_map('count', $own))];
             }
-            $gap = ! $groups['MANAGEMENT']['suppressed'] && ! $groups['FIELD']['suppressed'] && $groups['MANAGEMENT']['value'] !== null && $groups['FIELD']['value'] !== null
+            $groups = self::safeGroups($raw, $minCell);
+            $gap = $groups['MANAGEMENT']['value'] !== null && $groups['FIELD']['value'] !== null
                 ? $groups['MANAGEMENT']['value'] - $groups['FIELD']['value']
                 : null;
             $sa = $selfAssessment[$c['id']] ?? [];
@@ -101,6 +102,19 @@ final class PreliminaryFindings
             'climate' => self::climate($dimensions, $responses, $population, $groupOf, $minCell),
             'focus' => self::focus($rows, $gapAttention),
         ];
+    }
+
+    /**
+     * Nilai per kelompok jabatan dengan penyembunyian primer dan pelengkap. Rata-rata keseluruhan ikut diterbitkan,
+     * sehingga satu kelompok yang tersembunyi dapat dihitung balik dari dua kelompok lain; karena itu ketiga kelompok
+     * diperlakukan sebagai satu himpunan (App\Domain\Results\CellSuppression).
+     *
+     * @param  array<string, array{value: float|null, n: int}>  $raw
+     * @return array<string, array{value: float|null, n: int|null, suppressed: bool}>
+     */
+    private static function safeGroups(array $raw, int $minCell): array
+    {
+        return CellSuppression::apply($raw, $minCell, [self::GROUPS]);
     }
 
     /**
@@ -148,7 +162,7 @@ final class PreliminaryFindings
         }
         $out = [];
         foreach ($byAspect as $aspect => $ids) {
-            $groups = [];
+            $raw = [];
             foreach (self::GROUPS as $g) {
                 $byStratum = [];
                 foreach ($responses as $r) {
@@ -160,9 +174,9 @@ final class PreliminaryFindings
                         $byStratum[$r['stratumId']][] = array_sum($values) / count($values);
                     }
                 }
-                $n = array_sum(array_map('count', $byStratum));
-                $groups[$g] = ['value' => $n >= $minCell ? self::weighted($byStratum, $population) : null, 'n' => $n, 'suppressed' => $n < $minCell];
+                $raw[$g] = ['value' => self::weighted($byStratum, $population), 'n' => array_sum(array_map('count', $byStratum))];
             }
+            $groups = self::safeGroups($raw, $minCell);
             $gap = $groups['MANAGEMENT']['value'] !== null && $groups['FIELD']['value'] !== null
                 ? $groups['MANAGEMENT']['value'] - $groups['FIELD']['value']
                 : null;
@@ -185,7 +199,7 @@ final class PreliminaryFindings
     {
         $out = [];
         foreach ($dimensions as $d) {
-            $groups = [];
+            $raw = [];
             foreach (self::GROUPS as $g) {
                 $byStratum = [];
                 foreach ($responses as $r) {
@@ -203,10 +217,9 @@ final class PreliminaryFindings
                         $byStratum[$r['stratumId']][] = array_sum($values) / count($values);
                     }
                 }
-                $n = array_sum(array_map('count', $byStratum));
-                $groups[$g] = ['value' => $n >= $minCell ? self::weighted($byStratum, $population) : null, 'n' => $n, 'suppressed' => $n < $minCell];
+                $raw[$g] = ['value' => self::weighted($byStratum, $population), 'n' => array_sum(array_map('count', $byStratum))];
             }
-            $out[] = ['code' => $d['code'], 'name' => $d['name'], 'groups' => $groups];
+            $out[] = ['code' => $d['code'], 'name' => $d['name'], 'groups' => self::safeGroups($raw, $minCell)];
         }
 
         return $out;

@@ -21,6 +21,7 @@ export const survey = {
     stratum: {
         title: 'Your job group',
         intro: 'This is only used to group the results, not to identify you.',
+        examples: 'Example job titles: {titles}',
     },
     intro: {
         title: 'Quick guide',

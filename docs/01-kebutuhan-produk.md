@@ -50,17 +50,17 @@ Catatan versi 2. Siklus di atas berlaku dengan satu tambahan: status `VALIDATION
 ### M1. Administrasi dan konfigurasi asesmen
 - Membuat organisasi klien dan asesmen dengan lingkup KORPORAT, DIVISI, atau PROYEK, periode, dan tingkat sasaran.
 - Mengelola struktur unit (kantor pusat, divisi, proyek, cabang) secara bertingkat, termasuk lokasi geografis proyek untuk observasi digital.
-- Mengelola strata jabatan (bawaan lima strata dari seed) dan populasi tiap strata.
+- Mengelola strata jabatan (bawaan lima strata dari seed) dan populasi tiap strata, termasuk nama jabatan khas organisasi pada setiap strata (misalnya Site Manager atau Mandor). Susunan strata dapat disimpan sebagai templat organisasi dan dipakai otomatis oleh asesmen berikutnya organisasi itu.
 - Memilih versi instrumen dan menampilkan parameter bawaan dari seed; parameter dapat disesuaikan sebelum dikunci.
 - Tombol kunci menyalin seluruh parameter ke `Assessment.parameterSnapshot`.
 
 **Penerimaan:** setelah dikunci, formulir parameter menjadi baca saja dan upaya mengubah melalui API ditolak dengan kode 409.
 
 ### M2. Manajemen responden
-- Impor daftar responden dari Excel atau CSV dengan kolom: nama, nomor induk, surel, telepon, unit, strata, status penyedia jasa. Tampilkan pratinjau, galat per baris, dan ringkasan sebelum disimpan.
+- Impor daftar responden dari Excel atau CSV dengan kolom: nama, nomor induk, surel, telepon, unit, jabatan, strata, status penyedia jasa. Kolom strata boleh kosong bila jabatan cocok dengan nama jabatan pada salah satu strata; nama jabatan tidak disimpan. Tampilkan pratinjau, galat per baris, dan ringkasan sebelum disimpan.
 - Kalkulator sampel menampilkan kebutuhan minimum dan sasaran per strata sesuai `docs/03`.
 - Penerbitan token per responden. Distribusi melalui surel, tautan salin, dan kode QR yang dapat dicetak untuk ditempel di lokasi proyek.
-- Untuk pekerja penyedia jasa tanpa surel, koordinator dapat membagikan kode QR unit yang menerbitkan token sekali pakai saat dibuka; strata dipilih responden dari daftar tertutup.
+- Untuk pekerja penyedia jasa tanpa surel, koordinator dapat membagikan kode QR unit yang menerbitkan token sekali pakai saat dibuka; strata dipilih responden dari daftar tertutup, dengan contoh nama jabatan organisasi di bawah setiap pilihan.
 - Pengingat otomatis terjadwal (pg-boss) kepada token yang belum selesai, paling banyak tiga kali.
 - Dasbor partisipasi harian per strata dan per unit, dengan penanda strata di bawah 30 persen.
 
@@ -111,7 +111,7 @@ Catatan versi 2. Siklus di atas berlaku dengan satu tambahan: status `VALIDATION
 ### M9. Analitik dan dasbor
 - Kartu indeks organisasi, tingkat indikatif, status kemantapan tingkat, kesenjangan terhadap sasaran.
 - Grafik batang indeks per aspek dan per karakteristik terhadap sasaran.
-- Peta warna aspek terhadap strata dan aspek terhadap unit, dengan penyembunyian sel di bawah lima responden.
+- Peta warna aspek terhadap strata dan aspek terhadap unit, dengan penyembunyian sel di bawah lima responden beserta jumlah respondennya, dan penyembunyian pelengkap bila satu sel tersembunyi dapat dihitung balik dari rata-rata kelompok yang ikut diterbitkan. Koordinator unit hanya menerima peta unitnya, tanpa peta strata dan selisih persepsi seluruh organisasi.
 - Daftar karakteristik terkena aturan selisih persepsi dan bukti.
 - Kesenjangan persepsi manajemen terhadap pelaksana per aspek.
 - Statistik mutu: partisipasi, alfa Cronbach per dimensi, rwg per unit, jawaban yang ditandai.

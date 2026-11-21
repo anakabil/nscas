@@ -49,6 +49,9 @@
         <span>{{ $t('print.place') }}</span><span>{{ $s['unit'] ?? $s['location'] }}</span>
         <span>{{ $t('print.assessors') }}</span><span class="line"></span>
     </div>
+    @if ($loc === 'en')
+        <p class="muted">{{ $t('print.contentInIndonesian') }}</p>
+    @endif
 
     @if ($kind === 'SITE_VISIT')
         <p>{{ $g['intro'] }}</p>

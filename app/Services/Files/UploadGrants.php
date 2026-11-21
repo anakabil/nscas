@@ -62,6 +62,16 @@ class UploadGrants
      */
     public function verify(PendingUpload $upload, array $allowed, bool $checkExtension): array
     {
+        // Unggah langsung ke penyimpanan objek: objek dipindahkan dulu ke kunci akhir, lalu kunci akhir itulah yang
+        // diperiksa dan dirujuk, agar berkas tidak dapat ditimpa lewat URL unggah yang masih berlaku.
+        if ($this->store->direct()) {
+            $sealed = $this->store->seal($upload->storage_key);
+            if ($sealed === null) {
+                return ['ok' => false, 'code' => 'UPLOAD_MISSING'];
+            }
+            DB::table('pending_uploads')->where('id', $upload->id)->update(['storage_key' => $sealed]);
+            $upload->storage_key = $sealed;
+        }
         $inspected = $this->store->inspect($upload->storage_key);
         if ($inspected === null) {
             return ['ok' => false, 'code' => 'UPLOAD_MISSING'];

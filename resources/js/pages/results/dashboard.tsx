@@ -9,8 +9,11 @@ import { useLocale, useT } from '@/i18n';
 import { cn } from '@/lib/utils';
 
 type Group = 'MANAGEMENT' | 'SUPERVISORY' | 'FIELD';
-type Cell = { value: number | null; n: number; suppressed: boolean };
-type HeatMap = { columns: { id: string; label: string; name?: string }[]; rows: { aspectCode: string; cells: Cell[] }[] };
+type Cell = { value: number | null; n: number | null; suppressed: boolean };
+type HeatMap = {
+    columns: { id: string; label: string; name?: string }[];
+    rows: { aspectCode: string; cells: Cell[] }[];
+};
 type Scenario = {
     up: string;
     down: string;
@@ -26,7 +29,13 @@ type Results = {
     finalizedAt: string | null;
     targetLevel: number;
     minCell: number;
-    organization: { index: number; indicativeLevel: number; consolidated: boolean; gapToTarget: number; priorityAspect: string };
+    organization: {
+        index: number;
+        indicativeLevel: number;
+        consolidated: boolean;
+        gapToTarget: number;
+        priorityAspect: string;
+    };
     sclLevel: number | null;
     aspects: {
         code: string;
@@ -47,9 +56,14 @@ type Results = {
         flags: string[];
     }[];
     divergence: string[];
-    perceptionGap: { aspectCode: string; groups: Record<Group, Cell>; gap: number | null; gapAttention: boolean }[];
+    perceptionGap: {
+        aspectCode: string;
+        groups: Record<Group, Cell>;
+        gap: number | null;
+        gapAttention: boolean;
+    }[];
     gapAttention: number;
-    heatmaps: { strata: HeatMap; units: HeatMap };
+    heatmaps: { strata: HeatMap | null; units: HeatMap };
     quality: {
         counts: { analysed: number; excluded: number; flagged: number };
         strata: { code: string; belowMinimum: boolean }[];
@@ -83,7 +97,9 @@ export default function Dashboard(props: Props) {
     const t = useT();
     const locale = useLocale();
     const r = props.results;
-    const [map, setMap] = useState<'strata' | 'units'>('strata');
+    const [chosen, setMap] = useState<'strata' | 'units'>('strata');
+    // Koordinator unit tidak menerima peta strata; peta unit langsung ditampilkan.
+    const map = chosen === 'strata' && !props.results?.heatmaps.strata ? 'units' : chosen;
 
     return (
         <CollectionShell module="dashboard" common={props} canEdit={false} readOnlyNotice={false} showWindow={false}>
@@ -104,7 +120,9 @@ export default function Dashboard(props: Props) {
                         >
                             {r.provisional
                                 ? t('results.provisional')
-                                : t('results.final', { date: r.finalizedAt ? formatWib(r.finalizedAt, locale) : '' })}
+                                : t('results.final', {
+                                      date: r.finalizedAt ? formatWib(r.finalizedAt, locale) : '',
+                                  })}
                         </p>
                         <Button asChild variant="outline" size="sm">
                             <a href={ResultsController.export.url(props.assessment.id)} data-testid="results-export">
@@ -121,7 +139,9 @@ export default function Dashboard(props: Props) {
                                 {formatNumber(r.organization.index, locale, 2)}
                             </dd>
                             <dd className="text-xs text-muted-foreground">
-                                {t('results.cards.target', { value: r.targetLevel })}
+                                {t('results.cards.target', {
+                                    value: r.targetLevel,
+                                })}
                             </dd>
                         </div>
                         <div className="frame-hairline min-w-0 rounded-lg px-4 py-3">
@@ -212,36 +232,40 @@ export default function Dashboard(props: Props) {
                                 </ul>
                             )}
                         </Panel>
-                        <Panel
-                            title={t('results.gap.title')}
-                            hint={t('results.gap.hint', { value: formatNumber(r.gapAttention, locale, 1) })}
-                            className="min-w-0"
-                        >
-                            <ul className="space-y-2 text-sm" data-testid="results-gap">
-                                {r.perceptionGap.map((g) => (
-                                    <li key={g.aspectCode} className="flex items-baseline justify-between gap-3">
-                                        <span className="text-ink">{g.aspectCode}</span>
-                                        <span
-                                            className={cn(
-                                                'numeral',
-                                                g.gapAttention ? 'font-semibold text-gold-deep' : 'text-ink',
-                                            )}
-                                        >
-                                            {g.gap === null ? (
-                                                <span
-                                                    className="text-xs text-muted-foreground"
-                                                    title={t('hiddenCellHint', { min: r.minCell })}
-                                                >
-                                                    {t('hiddenCell')}
-                                                </span>
-                                            ) : (
-                                                `${g.gap > 0 ? '+' : ''}${formatNumber(g.gap, locale, 2)}`
-                                            )}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Panel>
+                        {r.perceptionGap.length > 0 ? (
+                            <Panel
+                                title={t('results.gap.title')}
+                                hint={t('results.gap.hint', {
+                                    value: formatNumber(r.gapAttention, locale, 1),
+                                })}
+                                className="min-w-0"
+                            >
+                                <ul className="space-y-2 text-sm" data-testid="results-gap">
+                                    {r.perceptionGap.map((g) => (
+                                        <li key={g.aspectCode} className="flex items-baseline justify-between gap-3">
+                                            <span className="text-ink">{g.aspectCode}</span>
+                                            <span
+                                                className={cn(
+                                                    'numeral',
+                                                    g.gapAttention ? 'font-semibold text-gold-deep' : 'text-ink',
+                                                )}
+                                            >
+                                                {g.gap === null ? (
+                                                    <span
+                                                        className="text-xs text-muted-foreground"
+                                                        title={t('hiddenCellHint', { min: r.minCell })}
+                                                    >
+                                                        {t('hiddenCell')}
+                                                    </span>
+                                                ) : (
+                                                    `${g.gap > 0 ? '+' : ''}${formatNumber(g.gap, locale, 2)}`
+                                                )}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Panel>
+                        ) : null}
                     </div>
 
                     <Panel title={t('results.heatmap.title')} hint={t('results.heatmap.hint', { min: r.minCell })}>
@@ -250,23 +274,25 @@ export default function Dashboard(props: Props) {
                             aria-label={t('results.heatmap.title')}
                             className="inline-flex rounded-md border border-border p-1"
                         >
-                            {(['strata', 'units'] as const).map((key) => (
-                                <button
-                                    key={key}
-                                    type="button"
-                                    role="tab"
-                                    aria-selected={map === key}
-                                    onClick={() => setMap(key)}
-                                    className={cn(
-                                        'rounded px-3.5 py-1.5 text-sm font-medium transition-colors',
-                                        map === key ? 'bg-maroon text-parchment' : 'text-foreground hover:bg-muted',
-                                    )}
-                                >
-                                    {t(`results.heatmap.${key}`)}
-                                </button>
-                            ))}
+                            {(['strata', 'units'] as const)
+                                .filter((key) => r.heatmaps[key] !== null)
+                                .map((key) => (
+                                    <button
+                                        key={key}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={map === key}
+                                        onClick={() => setMap(key)}
+                                        className={cn(
+                                            'rounded px-3.5 py-1.5 text-sm font-medium transition-colors',
+                                            map === key ? 'bg-maroon text-parchment' : 'text-foreground hover:bg-muted',
+                                        )}
+                                    >
+                                        {t(`results.heatmap.${key}`)}
+                                    </button>
+                                ))}
                         </div>
-                        <HeatTable map={r.heatmaps[map]} minCell={r.minCell} />
+                        <HeatTable map={r.heatmaps[map] ?? r.heatmaps.units} minCell={r.minCell} />
                     </Panel>
 
                     <div className="grid gap-8 lg:grid-cols-2">
@@ -418,7 +444,13 @@ function HeatTable({ map, minCell }: { map: HeatMap; minCell: number }) {
                                 <td
                                     key={i}
                                     className={cn('numeral rounded px-2 py-2 text-center', heatClass(cell.value))}
-                                    title={cell.suppressed ? t('hiddenCellHint', { min: minCell }) : undefined}
+                                    title={
+                                        cell.suppressed
+                                            ? t('hiddenCellHint', {
+                                                  min: minCell,
+                                              })
+                                            : undefined
+                                    }
                                 >
                                     {cell.value === null ? (
                                         <span className="text-xs">{t('hiddenCell')}</span>

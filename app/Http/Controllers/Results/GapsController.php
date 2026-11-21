@@ -26,7 +26,7 @@ class GapsController extends ReportingStageController
     public function index(Request $request, Assessment $assessment, ActionPlanService $plans): Response
     {
         $roles = $this->pageRoles($request, $assessment, 'gaps');
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::ActionPlans);
         $open = ActionPlanRules::planOpen($assessment->status);
         if ($open) {
             $plans->ensureGaps($assessment);
@@ -64,7 +64,7 @@ class GapsController extends ReportingStageController
     {
         $roles = $this->pageRoles($request, $assessment, 'gaps');
         $actor = $this->writerFor($roles, Resource::ActionPlans);
-        $plans->createAction($assessment, $request->user(), $actor, RespondentScope::units($request->user(), $assessment, $roles), $gap, $this->actionInput($request));
+        $plans->createAction($assessment, $request->user(), $actor, RespondentScope::units($request->user(), $assessment, $roles, Resource::ActionPlans, write: true), $gap, $this->actionInput($request));
 
         return back()->with('status', 'saved');
     }
@@ -73,7 +73,7 @@ class GapsController extends ReportingStageController
     {
         $roles = $this->pageRoles($request, $assessment, 'gaps');
         $actor = $this->writerFor($roles, Resource::ActionPlans);
-        $plans->updateAction($assessment, $actor, RespondentScope::units($request->user(), $assessment, $roles), $action, $this->actionInput($request));
+        $plans->updateAction($assessment, $actor, RespondentScope::units($request->user(), $assessment, $roles, Resource::ActionPlans, write: true), $action, $this->actionInput($request));
 
         return back()->with('status', 'saved');
     }

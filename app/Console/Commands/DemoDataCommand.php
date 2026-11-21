@@ -48,6 +48,7 @@ use App\Services\Respondents\SurveyLinks;
 use App\Services\Scoring\ScoringService;
 use App\Services\Validation\FieldGuide;
 use App\Services\Validation\ValidationService;
+use App\Support\TempFile;
 use Carbon\CarbonImmutable;
 use Database\Seeders\InstrumentVersionSeeder;
 use Illuminate\Console\Command;
@@ -216,6 +217,17 @@ class DemoDataCommand extends Command
         $setup->updatePopulations($assessment, $assessment->strata()->get()->mapWithKeys(
             fn ($stratum) => [$stratum->id => $populations[$stratum->code] ?? 0],
         )->all());
+        // Contoh nama jabatan organisasi per strata (fiktif), dipakai pilihan kelompok jabatan di survei dan impor.
+        $titles = [
+            'S1' => ['Direktur Utama', 'Direktur Operasi', 'Kepala Divisi'],
+            'S2' => ['Manajer Proyek', 'Site Manager', 'Kepala Seksi'],
+            'S3' => ['Site Engineer', 'Supervisor Lapangan', 'Pengawas K3'],
+            'S4' => ['Mandor', 'Juru Ukur', 'Operator Alat Berat'],
+            'S5' => ['Pekerja Subkontraktor', 'Tukang Besi', 'Tukang Kayu'],
+        ];
+        foreach ($assessment->strata()->get() as $stratum) {
+            $stratum->forceFill(['job_titles' => $titles[$stratum->code] ?? []])->save();
+        }
         $setup->addTeamMember($assessment, $assessor->id, Role::Assessor, Role::LeadAssessor);
         if (! $complete) {
             return;
@@ -272,7 +284,7 @@ class DemoDataCommand extends Command
                 ];
             }
         }
-        $path = tempnam(sys_get_temp_dir(), 'demo-roster-').'.csv';
+        $path = TempFile::path('demo-roster-', 'csv');
         file_put_contents($path, implode("\n", array_map(fn ($r) => implode(';', $r), $rows))."\n");
 
         Auth::setUser($admin);

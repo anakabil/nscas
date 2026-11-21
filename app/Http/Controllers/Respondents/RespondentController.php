@@ -38,7 +38,7 @@ class RespondentController extends CollectionController
     public function index(Request $request, Assessment $assessment): Response
     {
         $roles = $this->pageRoles($request, $assessment, 'respondents');
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::Roster);
         $open = $this->distribution($assessment) === 'open';
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
@@ -86,9 +86,10 @@ class RespondentController extends CollectionController
     {
         $roles = $this->pageRoles($request, $assessment, 'respondents');
         $this->writerFor($roles, Resource::Roster);
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::Roster, write: true);
         $units = Unit::where('assessment_id', $assessment->id)->when($scope !== null, fn ($q) => $q->whereIn('id', $scope))->orderBy('name')->pluck('name')->all();
-        $strata = $assessment->strata()->orderBy('code')->get(['code', 'name'])->map(fn ($s) => ['code' => $s->code, 'name' => $s->name])->all();
+        $strata = $assessment->strata()->orderBy('code')->get(['code', 'name', 'job_titles'])
+            ->map(fn ($s) => ['code' => $s->code, 'name' => $s->name, 'jobTitles' => array_values($s->job_titles ?? [])])->all();
         $path = RosterTemplate::build($units, $strata, [
             'optionsSheet' => __('respondents.template.optionsSheet'),
             'instructionsSheet' => __('respondents.template.instructionsSheet'),
@@ -109,7 +110,7 @@ class RespondentController extends CollectionController
             'file' => ['required', 'file', 'max:'.(RosterReader::MAX_BYTES / 1024)],
             'commit' => ['required', 'boolean'],
         ]);
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::Roster, write: true);
         $result = $service->import($assessment, $data['file']->getRealPath(), $scope, (bool) $data['commit'], $actor);
 
         return back()->with('rosterPreview', [
@@ -125,7 +126,7 @@ class RespondentController extends CollectionController
         $roles = $this->pageRoles($request, $assessment, 'respondents');
         $actor = $this->writerFor($roles, Resource::TokensAndParticipation);
         $data = $request->validate(['unit_id' => ['nullable', 'string', 'max:26'], 'only_without_email' => ['required', 'boolean']]);
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::TokensAndParticipation, write: true);
         $links = $service->issueLinks($assessment, $data['unit_id'] ?? null, (bool) $data['only_without_email'], $scope, $actor);
 
         return back()->with($links === [] ? 'respondentNotice' : 'issuedLinks', $links === [] ? ['key' => 'linksNone'] : $links);
@@ -136,7 +137,7 @@ class RespondentController extends CollectionController
         $roles = $this->pageRoles($request, $assessment, 'respondents');
         $actor = $this->writerFor($roles, Resource::TokensAndParticipation);
         $data = $request->validate(['unit_id' => ['nullable', 'string', 'max:26']]);
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::TokensAndParticipation, write: true);
         $count = $service->queueInvitations($assessment, $data['unit_id'] ?? null, $scope, $actor);
 
         return back()->with('respondentNotice', $count === 0 ? ['key' => 'invitationsNone'] : ['key' => 'invitationsQueued', 'count' => $count]);
@@ -146,7 +147,7 @@ class RespondentController extends CollectionController
     {
         $roles = $this->pageRoles($request, $assessment, 'respondents');
         $actor = $this->writerFor($roles, Resource::TokensAndParticipation);
-        $service->revoke($assessment, $entry, RespondentScope::units($request->user(), $assessment, $roles), $actor);
+        $service->revoke($assessment, $entry, RespondentScope::units($request->user(), $assessment, $roles, Resource::TokensAndParticipation, write: true), $actor);
 
         return back()->with('respondentNotice', ['key' => 'revoked']);
     }
@@ -156,7 +157,7 @@ class RespondentController extends CollectionController
         $roles = $this->pageRoles($request, $assessment, 'respondents');
         $actor = $this->writerFor($roles, Resource::TokensAndParticipation);
         $data = $request->validate(['channel' => ['required', Rule::in(['LINK', 'EMAIL'])]]);
-        $link = $service->reissue($assessment, $entry, $data['channel'], RespondentScope::units($request->user(), $assessment, $roles), $actor);
+        $link = $service->reissue($assessment, $entry, $data['channel'], RespondentScope::units($request->user(), $assessment, $roles, Resource::TokensAndParticipation, write: true), $actor);
 
         return $link === null
             ? back()->with('respondentNotice', ['key' => 'reissueQueued'])

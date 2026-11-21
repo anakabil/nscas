@@ -216,6 +216,7 @@ export const validation = {
             field: {
                 print: 'Print guide',
                 printHint: 'For use in the field without a connection; enter results in the application after the session.',
+                contentInIndonesian: 'The field guide material is currently available in Indonesian.',
                 flowTitle: 'Session flow',
                 rules: 'Discussion rules',
                 opening: 'Opening',

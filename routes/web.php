@@ -95,6 +95,7 @@ Route::middleware(['auth', 'usable'])->group(function () {
         Route::get('strata', [StratumController::class, 'index'])->name('strata');
         Route::post('strata', [StratumController::class, 'store'])->name('strata.store');
         Route::put('strata/populations', [StratumController::class, 'populations'])->name('strata.populations');
+        Route::post('strata/template', [StratumController::class, 'saveTemplate'])->name('strata.template');
         Route::put('strata/{stratum}', [StratumController::class, 'update'])->name('strata.update');
         Route::delete('strata/{stratum}', [StratumController::class, 'destroy'])->name('strata.destroy');
         Route::get('parameters', [ParameterController::class, 'edit'])->name('parameters');

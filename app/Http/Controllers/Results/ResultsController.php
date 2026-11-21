@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Results;
 
+use App\Domain\Access\Resource;
 use App\Models\Assessment;
 use App\Services\Respondents\RespondentScope;
 use App\Services\Results\ResultsExport;
@@ -24,14 +25,14 @@ class ResultsController extends ReportingStageController
 
         return Inertia::render('results/dashboard', [
             ...$this->collectionCommon($assessment, $roles),
-            'results' => $results->dashboard($assessment, $this->isAssessor($roles), RespondentScope::units($request->user(), $assessment, $roles)),
+            'results' => $results->dashboard($assessment, $this->isAssessor($roles), RespondentScope::units($request->user(), $assessment, $roles, Resource::ResultsDashboard)),
         ]);
     }
 
     public function export(Request $request, Assessment $assessment, ResultsService $results): BinaryFileResponse
     {
         $roles = $this->pageRoles($request, $assessment, 'dashboard');
-        $data = $results->dashboard($assessment, $this->isAssessor($roles), RespondentScope::units($request->user(), $assessment, $roles));
+        $data = $results->dashboard($assessment, $this->isAssessor($roles), RespondentScope::units($request->user(), $assessment, $roles, Resource::ResultsDashboard));
         abort_if($data === null, 404);
         $assessment->loadMissing('organization');
         $locale = app()->getLocale();

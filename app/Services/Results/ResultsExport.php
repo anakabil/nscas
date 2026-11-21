@@ -3,6 +3,7 @@
 namespace App\Services\Results;
 
 use App\Models\Assessment;
+use App\Support\TempFile;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
 use OpenSpout\Writer\XLSX\Writer;
@@ -23,7 +24,7 @@ final class ResultsExport
         $t = fn (string $key, array $replace = []) => __("results.{$key}", $replace, $locale);
         $hidden = $t('hidden');
         $num = fn (?float $v, int $digits = 2) => $v === null ? $hidden : round($v, $digits);
-        $path = tempnam(sys_get_temp_dir(), 'nscas-results-').'.xlsx';
+        $path = TempFile::path('nscas-results-', 'xlsx');
         $bold = (new Style)->setFontBold();
         $head = (new Style)->setFontBold()->setFontColor('FFFFFF')->setBackgroundColor('691B2E');
         $writer = new Writer;
@@ -71,8 +72,11 @@ final class ResultsExport
         }
 
         foreach (['strata' => 'sheets.strata', 'units' => 'sheets.units'] as $key => $sheetName) {
-            $writer->addNewSheetAndMakeItCurrent()->setName($t($sheetName));
             $map = $d['heatmaps'][$key];
+            if ($map === null) {
+                continue;
+            }
+            $writer->addNewSheetAndMakeItCurrent()->setName($t($sheetName));
             $writer->addRow(Row::fromValues([$t('cols.aspect'), ...array_column($map['columns'], 'label')], $head));
             foreach ($map['rows'] as $row) {
                 $writer->addRow(Row::fromValues([$row['aspectCode'], ...array_map(fn (array $cell) => $num($cell['value']), $row['cells'])]));

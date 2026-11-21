@@ -64,7 +64,8 @@ final class ResultsDomainTest extends TestCase
 
         $this->assertCount(1, $map['rows']);
         $this->assertSame(['value' => 3.0, 'n' => 5, 'suppressed' => false], $map['rows'][0]['cells'][0]);
-        $this->assertSame(['value' => null, 'n' => 1, 'suppressed' => true], $map['rows'][0]['cells'][1]);
+        // Jumlah responden sel tersembunyi tidak ikut terkirim.
+        $this->assertSame(['value' => null, 'n' => null, 'suppressed' => true], $map['rows'][0]['cells'][1]);
     }
 
     public function test_trend_orders_periods_and_computes_deltas(): void

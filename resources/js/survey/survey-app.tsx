@@ -21,7 +21,7 @@ export type SurveyData = {
     consent: { id: string; en: string };
     closesAt: string | null;
     needsStratum: boolean;
-    strata: { id: string; name: string }[];
+    strata: { id: string; name: string; jobTitles: string[] }[];
     characteristics: { id: string; code: string; name: Text; statements: { id: string; text: Text }[] }[];
     climateScreens: { id: string; text: Text }[][];
     draftKey: string;
@@ -511,7 +511,12 @@ function Survey({
                                 checked={draft.stratumId === s.id}
                                 onChange={() => update({ stratumId: s.id })}
                             >
-                                {s.name}
+                                <span className="sv-block">{s.name}</span>
+                                {s.jobTitles.length > 0 ? (
+                                    <span className="sv-block sv-muted" data-testid="survey-job-titles">
+                                        {t('stratum.examples', { titles: s.jobTitles.join(', ') })}
+                                    </span>
+                                ) : null}
                             </Choice>
                         ))}
                     </fieldset>

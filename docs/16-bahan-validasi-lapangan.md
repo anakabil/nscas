@@ -30,7 +30,7 @@ Bahan ini tidak menyalin kriteria skema sertifikasi Safety Culture Ladder (atura
 | Diskusi kelompok terarah | Aturan diskusi, pembukaan, pemanasan, per karakteristik: pertanyaan berbahasa sehari-hari dan dua pertanyaan pendalaman, penutup | Sesi diskusi kelompok; pertanyaan untuk kelompok pekerja otomatis memakai bahasa diskusi pada asesmen baru |
 | Lembar kerja kunjungan proyek | 37 butir dalam tiga bagian: periksa dokumen (15), amati area kerja (13), tanya pekerja di lokasi (9). Setiap butir terpetakan ke satu karakteristik, dan setiap karakteristik paling sedikit punya satu butir | Sesi kunjungan proyek, baik langsung maupun daring |
 
-Lembar kunjungan dibuat baku untuk semua asesmen, tidak dapat diubah per asesmen. Tujuannya agar hasil antarproyek dan antarperiode dapat dibandingkan. Setiap sesi juga dapat dicetak dari menu kerja asesor untuk dipakai di lapangan tanpa sambungan.
+Lembar kunjungan dibuat baku untuk semua asesmen, tidak dapat diubah per asesmen. Bahan ini disusun untuk kode karakteristik instrumen versi 1; butir dan pertanyaan yang karakteristiknya tidak ada di instrumen asesmen tidak ditampilkan. Pada antarmuka bahasa Inggris, bahan ditampilkan dalam bahasa Indonesia dengan catatan sampai terjemahannya ditelaah. Tujuannya agar hasil antarproyek dan antarperiode dapat dibandingkan. Setiap sesi juga dapat dicetak dari menu kerja asesor untuk dipakai di lapangan tanpa sambungan.
 
 ## 3. Kode untuk analisis
 
@@ -47,7 +47,7 @@ Kode disimpan per asesor untuk wawancara dan diskusi, sehingga kesepakatan antar
 
 Untuk setiap karakteristik, `App\Domain\Validation\Triangulation` menghitung:
 
-1. **Rerata nilai sesi:** keseluruhan dan per kelompok jabatan, beserta sebaran kode bukti dan kesepakatan kelompok.
+1. **Rerata nilai sesi:** keseluruhan dan per kelompok jabatan, beserta sebaran kode bukti dan kesepakatan kelompok. Hanya nilai dari wawancara dan diskusi kelompok yang dihitung; nilai yang diberikan pada sesi kunjungan proyek sudah terwakili lembar kerjanya sehingga tidak dihitung dua kali, dan sesi yang dibatalkan tidak ikut di ringkasan maupun ekspor (audit 21 November 2026).
 2. **Indeks kunjungan:** (jumlah Sesuai + 0,5 × jumlah Sebagian) dibagi jumlah butir yang dapat diperiksa, dengan rentang 0 sampai 1. Butir yang tidak dapat diperiksa tidak dihitung.
 3. **Penanda perlu dibahas:**
    - Nilai sesi dinormalkan ke rentang 0 sampai 1 dengan rumus (nilai − 1) / 4.

@@ -183,10 +183,14 @@ class SurveySubmissionTest extends TestCase
 
     public function test_qr_token_requires_a_stratum_of_this_assessment(): void
     {
+        $this->assessment->strata()->where('code', 'S4')->firstOrFail()->forceFill(['job_titles' => ['Mandor', 'Juru Ukur']])->save();
         $issued = $this->issue(withStratum: false);
         $data = $this->surveyData($this->get('/s/'.$issued['raw']));
         $this->assertTrue($data['needsStratum']);
         $this->assertCount(5, $data['strata']);
+        // Nama jabatan organisasi tampil sebagai contoh pada pilihan kelompok jabatan.
+        $this->assertSame(['Mandor', 'Juru Ukur'], $data['strata'][3]['jobTitles']);
+        $this->assertSame([], $data['strata'][0]['jobTitles']);
         $url = '/s/'.$issued['raw'].'/submit';
 
         $this->postJson($url, $this->answers($data))->assertStatus(422)->assertJson(['error' => 'STRATUM_REQUIRED']);

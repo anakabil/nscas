@@ -21,6 +21,7 @@ export const survey = {
     stratum: {
         title: 'Kelompok jabatan Anda',
         intro: 'Pilihan ini hanya untuk mengelompokkan hasil, bukan untuk mengenali Anda.',
+        examples: 'Contoh jabatan: {titles}',
     },
     intro: {
         title: 'Petunjuk singkat',

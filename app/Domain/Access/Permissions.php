@@ -35,6 +35,25 @@ final class Permissions
     }
 
     /**
+     * Apakah akses pengguna pada sumber daya ini dibatasi ke unitnya: ya bila setiap peran yang memberi hak (baca
+     * atau ubah) atas sumber daya itu adalah koordinator unit. Peran lain yang tidak memberi hak atas sumber daya
+     * itu tidak melonggarkan batas unit. Bila tidak ada peran yang memberi hak, hasilnya juga ya (paling ketat).
+     *
+     * @param  iterable<Role>  $roles
+     */
+    public static function unitRestricted(iterable $roles, Resource $resource, bool $write = false): bool
+    {
+        $allowed = self::of($resource)[$write ? 'write' : 'read'];
+        foreach ($roles as $role) {
+            if ($role !== Role::UnitCoordinator && in_array($role, $allowed, true)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @param  iterable<Role>  $roles
      */
     public static function canRead(iterable $roles, Resource $resource): bool

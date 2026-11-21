@@ -123,7 +123,7 @@ class RespondentDistributionTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('respondents.template', $this->assessment))->assertOk();
         $path = $response->getFile()->getPathname();
 
-        $this->assertSame(['Nama', 'Nomor induk', 'Surel', 'Telepon', 'Unit', 'Strata', 'Penyedia jasa'], RosterReader::read($path)['rows'][0]);
+        $this->assertSame(['Nama', 'Nomor induk', 'Surel', 'Telepon', 'Unit', 'Jabatan', 'Strata', 'Penyedia jasa'], RosterReader::read($path)['rows'][0]);
     }
 
     public function test_links_are_shown_once_and_only_their_hashes_are_stored(): void

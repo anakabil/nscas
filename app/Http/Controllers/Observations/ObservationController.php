@@ -33,7 +33,7 @@ class ObservationController extends CollectionController
     public function index(Request $request, Assessment $assessment, ObservationService $observations): Response
     {
         $roles = $this->pageRoles($request, $assessment, 'observations');
-        $scope = RespondentScope::units($request->user(), $assessment, $roles);
+        $scope = RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations);
         $units = Unit::where('assessment_id', $assessment->id)->get(['id', 'parent_id', 'name', 'type', 'latitude', 'longitude', 'radius_meters'])->keyBy('id');
         $flat = UnitTree::flatten($units->map(fn (Unit $u) => ['id' => $u->id, 'parentId' => $u->parent_id, 'name' => $u->name])->values()->all());
 
@@ -92,7 +92,7 @@ class ObservationController extends CollectionController
     {
         $roles = $this->pageRoles($request, $assessment, 'observations');
         $this->writerFor($roles, Resource::EvidenceAndObservations);
-        $found = $observations->windowFor($assessment, RespondentScope::units($request->user(), $assessment, $roles), $window);
+        $found = $observations->windowFor($assessment, RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations, write: true), $window);
         abort_if($found === null, 404);
         $counts = $observations->countsByItem($found);
 
@@ -138,7 +138,7 @@ class ObservationController extends CollectionController
             'accuracy' => (float) $data['location']['accuracy'],
         ] : null;
 
-        return response()->json($observations->requestCapture($assessment, $request->user(), RespondentScope::units($request->user(), $assessment, $roles), $window, [
+        return response()->json($observations->requestCapture($assessment, $request->user(), RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations, write: true), $window, [
             'checklistItemCode' => $data['checklistItemCode'],
             // Jenis tanpa parameter, misalnya "video/webm;codecs=vp9" menjadi "video/webm".
             'contentType' => strtolower(trim(explode(';', $data['contentType'])[0])),
@@ -156,7 +156,7 @@ class ObservationController extends CollectionController
             'ticket' => ['required', 'string', 'max:64'],
             'note' => ['nullable', 'string', 'max:'.ObservationRules::NOTE_MAX],
         ]);
-        $capture = $observations->finalizeCapture($assessment, $request->user(), RespondentScope::units($request->user(), $assessment, $roles), $actor, $data['ticket'], (string) ($data['note'] ?? ''));
+        $capture = $observations->finalizeCapture($assessment, $request->user(), RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations, write: true), $actor, $data['ticket'], (string) ($data['note'] ?? ''));
 
         return response()->json([
             'id' => $capture->id,
@@ -170,7 +170,7 @@ class ObservationController extends CollectionController
     public function file(Request $request, Assessment $assessment, string $capture, ObservationService $observations, ObjectStore $store): HttpResponse
     {
         $roles = $this->pageRoles($request, $assessment, 'observations');
-        $found = $observations->captureForDownload($assessment, RespondentScope::units($request->user(), $assessment, $roles), $capture);
+        $found = $observations->captureForDownload($assessment, RespondentScope::units($request->user(), $assessment, $roles, Resource::EvidenceAndObservations), $capture);
         abort_if($found === null, 404);
         $name = 'observasi-'.$found->checklist_item_code.'-'.$found->server_captured_at->setTimezone('Asia/Jakarta')->format('Ymd-His').'.'.FileType::extensionFor($found->mime_type);
 
